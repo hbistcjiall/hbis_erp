@@ -1,0 +1,43 @@
+server:
+  port: 8080
+  max-http-header-size: 10240
+
+hbis:
+  swagger-open: true                #是否开启swagger (true/false)
+  kaptcha-open: false               #是否开启登录时验证码 (true/false)
+  spring-session-open: false        #是否开启spring session,如果是多机环境需要开启(true/false)
+  session-invalidate-time: 1800     #session失效时间(只在单机环境下生效，多机环境在SpringSessionConfig类中配置) 单位：秒
+  session-validation-interval: 900  #多久检测一次失效的session(只在单机环境下生效) 单位：秒
+  #muti-datasource多数据源的时候再配置，单机情况下没任何用处
+  muti-datasource:
+    url: jdbc:mysql://47.94.21.130:3306/hbis_test?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: mytest
+    password: 123456
+    dataSourceNames:
+      - dataSourceHbis
+      - dataSourceBiz
+spring:
+  profiles:
+    active: dev
+  mvc:
+    view:
+      prefix: /pages
+  devtools:
+    restart:
+      enabled: false
+      additional-paths: src/main/java
+      exclude: assets/**,pages/**
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+  datasource:
+    url: jdbc:mysql://47.94.21.130:3306/hbis?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
+    username: mytest
+    password: 123456
+    filters: wall,mergeStat
+mybatis-plus:
+  typeAliasesPackage: cn.hbis.erp.modular.system.model
+
+logging:
+  path: hbis-logs
