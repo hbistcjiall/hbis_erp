@@ -1,7 +1,6 @@
 package cn.hbis.erp.core.aop;
 
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
-import cn.hbis.erp.core.common.exception.InvalidKaptchaException;
 import cn.hbis.erp.core.log.LogManager;
 import cn.hbis.erp.core.log.factory.LogTaskFactory;
 import cn.hbis.erp.core.shiro.ShiroKit;
@@ -79,18 +78,6 @@ public class GlobalExceptionHandler {
         String username = getRequest().getParameter("username");
         LogManager.me().executeLog(LogTaskFactory.loginLog(username, "账号密码错误", getIp()));
         model.addAttribute("tips", "账号密码错误");
-        return "/login.html";
-    }
-
-    /**
-     * 验证码错误异常
-     */
-    @ExceptionHandler(InvalidKaptchaException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String credentials(InvalidKaptchaException e, Model model) {
-        String username = getRequest().getParameter("username");
-        LogManager.me().executeLog(LogTaskFactory.loginLog(username, "验证码错误", getIp()));
-        model.addAttribute("tips", "验证码错误");
         return "/login.html";
     }
 

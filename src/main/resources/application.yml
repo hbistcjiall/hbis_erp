@@ -19,14 +19,10 @@ hbis:
 spring:
   profiles:
     active: dev
-  mvc:
-    view:
-      prefix: /pages
   devtools:
     restart:
       enabled: false
       additional-paths: src/main/java
-      exclude: assets/**,pages/**
   servlet:
     multipart:
       max-request-size: 100MB

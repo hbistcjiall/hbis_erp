@@ -10,7 +10,7 @@
         <version>2.1.1.RELEASE</version>
     </parent>
 
-    <groupId>cn.stylefeng</groupId>
+    <groupId>cn.hbi</groupId>
     <artifactId>hbis</artifactId>
     <version>1.0.0</version>
 
@@ -124,12 +124,6 @@
             <version>${ehcache3.version}</version>
         </dependency>
 
-        <!--验证码-->
-        <dependency>
-            <groupId>com.github.penggle</groupId>
-            <artifactId>kaptcha</artifactId>
-            <version>${kaptcha.version}</version>
-        </dependency>
         <!--swagger-->
         <dependency>
             <groupId>io.springfox</groupId>
@@ -202,40 +196,18 @@
                     <useDefaultDelimiters>false</useDefaultDelimiters>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.26.1</version>
-                <configuration>
-                    <dockerHost>tcp://demo.stylefeng.cn:2376</dockerHost>
-                    <certPath>_dockerCerts</certPath>
-                    <images>
-                        <image>
-                            <alias>service</alias>
-                            <name>stylefeng/${project.artifactId}:latest</name>
-                            <build>
-                                <from>java:8</from>
-                                <assembly>
-                                    <descriptor>docker-assembly.xml</descriptor>
-                                </assembly>
-                                <cmd>
-                                    <shell>java -jar /maven/${project.artifactId}.jar</shell>
-                                </cmd>
-                            </build>
-                        </image>
-                    </images>
-                </configuration>
-            </plugin>
         </plugins>
         <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
                     <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.*</include>
                 </includes>
             </resource>
         </resources>
