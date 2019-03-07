@@ -40,6 +40,8 @@ public class LayuiPageFactory {
         LayuiPageInfo result = new LayuiPageInfo();
         result.setCount(page.getTotal());
         result.setData(page.getRecords());
+        result.setPageSize(page.getSize());
+        result.setPageNo(page.getCurrent());
         return result;
     }
 }

@@ -21,6 +21,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.stylefeng.roses.core.base.controller.BaseController;
 import cn.stylefeng.roses.core.datascope.DataScope;
 import cn.stylefeng.roses.core.reqres.response.ResponseData;
+import cn.stylefeng.roses.core.reqres.response.SuccessResponseData;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import cn.stylefeng.roses.kernel.model.exception.RequestEmptyException;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
@@ -48,8 +49,7 @@ import java.util.UUID;
  *
  */
 @RestController
-@RequestMapping("/")
-@Api(value = "mgr",description = "系统管理员控制器")
+@RequestMapping("/mgr")
 public class UserMgrController extends BaseController {
 
     @Autowired
@@ -104,14 +104,16 @@ public class UserMgrController extends BaseController {
      */
     @ApiOperation(value = "查询管理员列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "name" ,value = "登录名",dataType ="String" ),
-            @ApiImplicitParam(name = "timeLimit" ,value = "密码",dataType ="String" ),
-            @ApiImplicitParam(name = "deptId" ,value = "记住密码",dataType ="String" )
+            @ApiImplicitParam(name = "name" ,value = "姓名",dataType ="String" ),
+            @ApiImplicitParam(name = "timeLimit" ,value = "时间区间",dataType ="String" ),
+            @ApiImplicitParam(name = "deptId" ,value = "部门ID",dataType ="String" ),
+            @ApiImplicitParam(name = "limit" ,value = "每页条数",dataType ="String" ),
+            @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
     })
-    @RequestMapping("list")
+    @RequestMapping(value = "/list",method = RequestMethod.POST)
     @Permission
     @ResponseBody
-    public Object list(String name, String timeLimit, Long deptId) {
+    public Object list(String name, String timeLimit, String deptId, String limit, String page) {
 
         //拼接查询条件
         String beginTime = "";
@@ -122,14 +124,18 @@ public class UserMgrController extends BaseController {
             beginTime = split[0];
             endTime = split[1];
         }
+        Long dId = null;
+        if (ToolUtil.isNotEmpty(deptId)){
+           dId = Long.valueOf(deptId);
+        }
 
         if (ShiroKit.isAdmin()) {
-            Page<Map<String, Object>> users = userService.selectUsers(null, name, beginTime, endTime, deptId);
+            Page<Map<String, Object>> users = userService.selectUsers(null, name, beginTime, endTime, dId);
             Page wrapped = new UserWrapper(users).wrap();
             return LayuiPageFactory.createPageInfo(wrapped);
         } else {
             DataScope dataScope = new DataScope(ShiroKit.getDeptDataScope());
-            Page<Map<String, Object>> users = userService.selectUsers(dataScope, name, beginTime, endTime, deptId);
+            Page<Map<String, Object>> users = userService.selectUsers(dataScope, name, beginTime, endTime, dId);
             Page wrapped = new UserWrapper(users).wrap();
             return LayuiPageFactory.createPageInfo(wrapped);
         }
@@ -140,8 +146,9 @@ public class UserMgrController extends BaseController {
      *
      *
      */
-    @RequestMapping("/add")
-    @BussinessLog(value = "添加管理员", key = "account", dict = UserDict.class)
+    @ApiOperation(value = "添加管理员")
+    @RequestMapping(value = "/add",method = RequestMethod.POST)
+    @BussinessLog(value = "添加管理员", key = "account")
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
     public ResponseData add(@Valid UserDto user, BindingResult result) {
@@ -175,8 +182,9 @@ public class UserMgrController extends BaseController {
      *
      *
      */
-    @RequestMapping("/delete")
-    @BussinessLog(value = "删除管理员", key = "userId", dict = UserDict.class)
+    @ApiOperation(value = "删除管理员（逻辑删除）")
+    @RequestMapping(value = "/delete",method = RequestMethod.POST)
+    @BussinessLog(value = "删除管理员")
     @Permission
     @ResponseBody
     public ResponseData delete(@RequestParam Long userId) {
@@ -222,7 +230,7 @@ public class UserMgrController extends BaseController {
         user.setSalt(ShiroKit.getRandomSalt(5));
         user.setPassword(ShiroKit.md5(Const.DEFAULT_PWD, user.getSalt()));
         this.userService.updateById(user);
-        return SUCCESS_TIP;
+        return SuccessResponseData.success();
     }
 
     /**

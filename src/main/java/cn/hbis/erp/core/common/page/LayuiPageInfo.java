@@ -21,4 +21,8 @@ public class LayuiPageInfo {
 
     private long count;
 
+    private long pageSize;
+
+    private long pageNo;
+
 }
