@@ -4,7 +4,6 @@ package cn.hbis.erp.core.common.exception;
 import cn.stylefeng.roses.kernel.model.exception.AbstractBaseExceptionEnum;
 
 /**
- *
  * @Description 所有业务异常的枚举
  */
 public enum BizExceptionEnum implements AbstractBaseExceptionEnum {
