@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static cn.stylefeng.roses.core.util.HttpContext.getIp;
 import static cn.stylefeng.roses.core.util.HttpContext.getRequest;
@@ -52,9 +54,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
     public String unAuth(AuthenticationException e) {
         log.error("用户未登陆：", e);
-        return "/login.html";
+        return "login";
     }
 
     /**
@@ -62,11 +65,13 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(DisabledAccountException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String accountLocked(DisabledAccountException e, Model model) {
+    @ResponseBody
+    public Map accountLocked(DisabledAccountException e) {
+        Map map = new HashMap();
         String username = getRequest().getParameter("username");
         LogManager.me().executeLog(LogTaskFactory.loginLog(username, "账号被冻结", getIp()));
-        model.addAttribute("tips", "账号被冻结");
-        return "/login.html";
+        map.put("msg", "账号被冻结");
+        return map;
     }
 
     /**
@@ -74,11 +79,13 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(CredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String credentials(CredentialsException e, Model model) {
+    @ResponseBody
+    public Map credentials(CredentialsException e) {
+        Map map = new HashMap();
         String username = getRequest().getParameter("username");
         LogManager.me().executeLog(LogTaskFactory.loginLog(username, "账号密码错误", getIp()));
-        model.addAttribute("tips", "账号密码错误");
-        return "/login.html";
+        map.put("msg", "账号密码错误");
+        return map;
     }
 
     /**

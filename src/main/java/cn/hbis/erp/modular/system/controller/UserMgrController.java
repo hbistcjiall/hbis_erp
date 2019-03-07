@@ -25,6 +25,10 @@ import cn.stylefeng.roses.core.util.ToolUtil;
 import cn.stylefeng.roses.kernel.model.exception.RequestEmptyException;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,68 +47,16 @@ import java.util.UUID;
  *
  *
  */
-@Controller
-@RequestMapping("/mgr")
+@RestController
+@RequestMapping("/")
+@Api(value = "mgr",description = "系统管理员控制器")
 public class UserMgrController extends BaseController {
-
-    private static String PREFIX = "/modular/system/user/";
 
     @Autowired
     private HbisProperties hbisProperties;
 
     @Autowired
     private UserService userService;
-
-    /**
-     * 跳转到查看管理员列表的页面
-     *
-     *
-     */
-    @RequestMapping("")
-    public String index() {
-        return PREFIX + "user.html";
-    }
-
-    /**
-     * 跳转到查看管理员列表的页面
-     *
-     *
-     */
-    @RequestMapping("/user_add")
-    public String addView() {
-        return PREFIX + "user_add.html";
-    }
-
-    /**
-     * 跳转到角色分配页面
-     *
-     *
-     */
-    @Permission
-    @RequestMapping("/role_assign")
-    public String roleAssign(@RequestParam Long userId, Model model) {
-        if (ToolUtil.isEmpty(userId)) {
-            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
-        }
-        model.addAttribute("userId", userId);
-        return PREFIX + "user_roleassign.html";
-    }
-
-    /**
-     * 跳转到编辑管理员页面
-     *
-     *
-     */
-    @Permission
-    @RequestMapping("/user_edit")
-    public String userEdit(@RequestParam Long userId) {
-        if (ToolUtil.isEmpty(userId)) {
-            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
-        }
-        User user = this.userService.getById(userId);
-        LogObjectHolder.me().set(user);
-        return PREFIX + "user_edit.html";
-    }
 
     /**
      * 获取用户详情
@@ -150,12 +102,16 @@ public class UserMgrController extends BaseController {
      *
      *
      */
-    @RequestMapping("/list")
+    @ApiOperation(value = "查询管理员列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name" ,value = "登录名",dataType ="String" ),
+            @ApiImplicitParam(name = "timeLimit" ,value = "密码",dataType ="String" ),
+            @ApiImplicitParam(name = "deptId" ,value = "记住密码",dataType ="String" )
+    })
+    @RequestMapping("list")
     @Permission
     @ResponseBody
-    public Object list(@RequestParam(required = false) String name,
-                       @RequestParam(required = false) String timeLimit,
-                       @RequestParam(required = false) Long deptId) {
+    public Object list(String name, String timeLimit, Long deptId) {
 
         //拼接查询条件
         String beginTime = "";

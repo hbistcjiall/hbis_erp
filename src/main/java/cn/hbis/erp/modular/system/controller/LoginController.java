@@ -57,17 +57,14 @@ public class LoginController extends BaseController {
 
         if (roleList == null || roleList.size() == 0) {
             ShiroKit.getSubject().logout();
-            map.put("msg", "1004");
+            map.put("msg", "该用户没有角色，无法登陆");
             map.put("page","login");
             return map;
         }
 
         List<MenuNode> menus = userService.getUserMenuNodes(roleList);
-        map.put("msg",1000);
         map.put("menus", menus);
         map.put("page","index");
-
-        Subject subject = SecurityUtils.getSubject();
 
         return map;
     }
@@ -113,19 +110,7 @@ public class LoginController extends BaseController {
             token.setRememberMe(false);
         }
         //执行shiro登录操作
-        Map map = new HashMap();
-        try {
-            currentUser.login(token);
-        } catch (IncorrectCredentialsException ice) {
-            map.put("msg","1001");
-            return map;
-        } catch (CredentialsException ce) {
-            map.put("msg","1002");
-            return map;
-        }catch (LockedAccountException lce) {
-            map.put("msg","1003");
-            return map;
-        }
+        currentUser.login(token);
 
         //登录成功，记录登录日志
         ShiroUser shiroUser = ShiroKit.getUserNotNull();
@@ -137,6 +122,7 @@ public class LoginController extends BaseController {
             user.setPassword(password);
             ShiroKit.getSession().setAttribute("pw",user);
         }
+
         User user = new User();
         user = (User) ShiroKit.getSession().getAttribute("pw");
         ShiroKit.getSession().setAttribute("sessionFlag", true);
