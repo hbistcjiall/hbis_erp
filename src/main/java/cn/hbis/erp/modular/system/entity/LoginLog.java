@@ -32,7 +32,7 @@ public class LoginLog implements Serializable {
      * 管理员id
      */
     @TableField("USER_ID")
-    private Long userId;
+    private String userId;
     /**
      * 创建时间
      */
@@ -71,11 +71,11 @@ public class LoginLog implements Serializable {
         this.logName = logName;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

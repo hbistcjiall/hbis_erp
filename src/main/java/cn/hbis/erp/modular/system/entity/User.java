@@ -24,7 +24,7 @@ public class User implements Serializable {
      * 主键id
      */
     @TableId(value = "USER_ID", type = IdType.ID_WORKER)
-    private Long userId;
+    private String userId;
     /**
      * 头像
      */
@@ -79,7 +79,7 @@ public class User implements Serializable {
      * 部门id(多个逗号隔开)
      */
     @TableField("DEPT_ID")
-    private Long deptId;
+    private String deptId;
     /**
      * 状态(字典)
      */

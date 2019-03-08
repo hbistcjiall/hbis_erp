@@ -88,7 +88,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      *
      *
      */
-    public void deleteUser(Long userId) {
+    public void deleteUser(String userId) {
 
         //不能删除超级管理员
         if (userId.equals(Const.ADMIN_ID)) {
@@ -103,7 +103,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      *
      *
      */
-    public int setStatus(Long userId, String status) {
+    public int setStatus(String userId, String status) {
         return this.baseMapper.setStatus(userId, status);
     }
 
@@ -113,7 +113,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      *
      */
     public void changePwd(String oldPassword, String newPassword) {
-        Long userId = ShiroKit.getUserNotNull().getId();
+        String userId = ShiroKit.getUserNotNull().getId();
         User user = this.getById(userId);
 
         String oldMd5 = ShiroKit.md5(oldPassword, user.getSalt());
@@ -142,7 +142,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      *
      *
      */
-    public int setRoles(Long userId, String roleIds) {
+    public int setRoles(String userId, String roleIds) {
         return this.baseMapper.setRoles(userId, roleIds);
     }
 
@@ -177,13 +177,13 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      *
      *
      */
-    public void assertAuth(Long userId) {
+    public void assertAuth(String userId) {
         if (ShiroKit.isAdmin()) {
             return;
         }
         List<Long> deptDataScope = ShiroKit.getDeptDataScope();
         User user = this.getById(userId);
-        Long deptId = user.getDeptId();
+        String deptId = user.getDeptId();
         if (deptDataScope.contains(deptId)) {
             return;
         } else {
@@ -199,7 +199,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      */
     public void refreshCurrentUser() {
         ShiroUser user = ShiroKit.getUserNotNull();
-        Long id = user.getId();
+        String id = user.getId();
         User currentUser = this.getById(id);
         ShiroUser shiroUser = userAuthService.shiroUser(currentUser);
         ShiroUser lastUser = ShiroKit.getUser();

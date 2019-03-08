@@ -21,7 +21,7 @@ public interface UserMapper extends BaseMapper<User> {
     /**
      * 修改用户状态
      */
-    int setStatus(@Param("userId") Long userId, @Param("status") String status);
+    int setStatus(@Param("userId") String userId, @Param("status") String status);
 
     /**
      * 修改密码
@@ -36,7 +36,7 @@ public interface UserMapper extends BaseMapper<User> {
     /**
      * 设置用户的角色
      */
-    int setRoles(@Param("userId") Long userId, @Param("roleIds") String roleIds);
+    int setRoles(@Param("userId") String userId, @Param("roleIds") String roleIds);
 
     /**
      * 通过账号获取用户

@@ -61,7 +61,7 @@ public class UserMgrController extends BaseController {
      */
     @RequestMapping("/getUserInfo")
     @ResponseBody
-    public Object getUserInfo(@RequestParam Long userId) {
+    public Object getUserInfo(@RequestParam String userId) {
         if (ToolUtil.isEmpty(userId)) {
             throw new RequestEmptyException();
         }
@@ -73,7 +73,7 @@ public class UserMgrController extends BaseController {
         HashMap<Object, Object> hashMap = CollectionUtil.newHashMap();
         hashMap.putAll(map);
         hashMap.put("roleName", ConstantFactory.me().getRoleName(user.getRoleId()));
-        hashMap.put("deptName", ConstantFactory.me().getDeptName(user.getDeptId()));
+        hashMap.put("deptName", ConstantFactory.me().getDeptName(user.getDeptId().toString()));
 
         return ResponseData.success(hashMap);
     }
@@ -146,6 +146,18 @@ public class UserMgrController extends BaseController {
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     @BussinessLog(value = "添加管理员", key = "account")
     @Permission(Const.ADMIN_NAME)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name" ,value = "姓名",dataType ="String" ),
+            @ApiImplicitParam(name = "timeLimit" ,value = "时间区间",dataType ="String" ),
+            @ApiImplicitParam(name = "deptId" ,value = "部门ID",dataType ="String" ),
+            @ApiImplicitParam(name = "limit" ,value = "每页条数",dataType ="String" ),
+            @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" ),
+            @ApiImplicitParam(name = "name" ,value = "姓名",dataType ="String" ),
+            @ApiImplicitParam(name = "timeLimit" ,value = "时间区间",dataType ="String" ),
+            @ApiImplicitParam(name = "deptId" ,value = "部门ID",dataType ="String" ),
+            @ApiImplicitParam(name = "limit" ,value = "每页条数",dataType ="String" ),
+            @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
+    })
     @ResponseBody
     public ResponseData add(@Valid UserDto user, BindingResult result) {
         if (result.hasErrors()) {
@@ -183,7 +195,7 @@ public class UserMgrController extends BaseController {
     @BussinessLog(value = "删除管理员")
     @Permission
     @ResponseBody
-    public ResponseData delete(@RequestParam Long userId) {
+    public ResponseData delete(@RequestParam String userId) {
         if (ToolUtil.isEmpty(userId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -199,7 +211,7 @@ public class UserMgrController extends BaseController {
      */
     @RequestMapping("/view/{userId}")
     @ResponseBody
-    public User view(@PathVariable Long userId) {
+    public User view(@PathVariable String userId) {
         if (ToolUtil.isEmpty(userId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -217,7 +229,7 @@ public class UserMgrController extends BaseController {
     @BussinessLog(value = "重置管理员密码", key = "userId", dict = UserDict.class)
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
-    public ResponseData reset(@RequestParam Long userId) {
+    public ResponseData reset(@RequestParam String userId) {
         if (ToolUtil.isEmpty(userId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -226,7 +238,7 @@ public class UserMgrController extends BaseController {
         user.setSalt(ShiroKit.getRandomSalt(5));
         user.setPassword(ShiroKit.md5(Const.DEFAULT_PWD, user.getSalt()));
         this.userService.updateById(user);
-        return SuccessResponseData.success();
+        return SUCCESS_TIP;
     }
 
     /**
@@ -235,39 +247,29 @@ public class UserMgrController extends BaseController {
      *
      *
      */
+    @ApiOperation(value = "冻结/解冻用户")
     @RequestMapping("/freeze")
-    @BussinessLog(value = "冻结用户", key = "userId", dict = UserDict.class)
+    @BussinessLog(value = "冻结/解冻用户", key = "userId")
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
-    public ResponseData freeze(@RequestParam Long userId) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" ),
+            @ApiImplicitParam(name = "status" ,value = "账户状态",dataType ="String" )
+    })
+    public ResponseData freeze(String userId,String status) {
         if (ToolUtil.isEmpty(userId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
         //不能冻结超级管理员
-        if (userId.equals(Const.ADMIN_ID)) {
+        if (Long.valueOf(userId).equals(Const.ADMIN_ID)) {
             throw new ServiceException(BizExceptionEnum.CANT_FREEZE_ADMIN);
         }
         this.userService.assertAuth(userId);
-        this.userService.setStatus(userId, ManagerStatus.FREEZED.getCode());
-        return SUCCESS_TIP;
-    }
-
-    /**
-     * 解除冻结用户
-     *
-     *
-     *
-     */
-    @RequestMapping("/unfreeze")
-    @BussinessLog(value = "解除冻结用户", key = "userId", dict = UserDict.class)
-    @Permission(Const.ADMIN_NAME)
-    @ResponseBody
-    public ResponseData unfreeze(@RequestParam Long userId) {
-        if (ToolUtil.isEmpty(userId)) {
-            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        if (status.equals("FREEZE")){
+            this.userService.setStatus(userId, ManagerStatus.FREEZED.getCode());
+        }else if (status.equals("ENABLE")){ //解冻
+            this.userService.setStatus(userId, ManagerStatus.OK.getCode());
         }
-        this.userService.assertAuth(userId);
-        this.userService.setStatus(userId, ManagerStatus.OK.getCode());
         return SUCCESS_TIP;
     }
 
@@ -281,7 +283,7 @@ public class UserMgrController extends BaseController {
     @BussinessLog(value = "分配角色", key = "userId,roleIds", dict = UserDict.class)
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
-    public ResponseData setRole(@RequestParam("userId") Long userId, @RequestParam("roleIds") String roleIds) {
+    public ResponseData setRole(@RequestParam("userId") String userId, @RequestParam("roleIds") String roleIds) {
         if (ToolUtil.isOneEmpty(userId, roleIds)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }

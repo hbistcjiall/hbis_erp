@@ -35,7 +35,7 @@ public class DeptWrapper extends BaseControllerWrapper {
 
     @Override
     protected void wrapTheMap(Map<String, Object> map) {
-        Long pid = (Long) map.get("pid");
+        String pid = map.get("pid").toString();
 
         if (ToolUtil.isEmpty(pid) || pid.equals(0)) {
             map.put("pName", "--");

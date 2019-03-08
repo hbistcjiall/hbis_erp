@@ -103,10 +103,10 @@ public class ConstantFactory implements IConstantFactory {
 
     @Override
     @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.DEPT_NAME + "'+#deptId")
-    public String getDeptName(Long deptId) {
+    public String getDeptName(String deptId) {
         if (deptId == null) {
             return "";
-        } else if (deptId == 0L) {
+        } else if (deptId.equals("24")) {
             return "顶级";
         } else {
             Dept dept = deptMapper.selectById(deptId);

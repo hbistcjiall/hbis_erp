@@ -42,7 +42,7 @@ public class Notice implements Serializable {
      * 创建人
      */
     @TableField(value = "CREATE_USER", fill = FieldFill.INSERT)
-    private Long createUser;
+    private String createUser;
     /**
      * 修改时间
      */
@@ -87,11 +87,11 @@ public class Notice implements Serializable {
         this.createTime = createTime;
     }
 
-    public Long getCreateUser() {
+    public String getCreateUser() {
         return createUser;
     }
 
-    public void setCreateUser(Long createUser) {
+    public void setCreateUser(String createUser) {
         this.createUser = createUser;
     }
 

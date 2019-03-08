@@ -138,7 +138,7 @@ public class DeptController extends BaseController {
         Dept dept = deptService.getById(deptId);
         DeptDto deptDto = new DeptDto();
         BeanUtil.copyProperties(dept, deptDto);
-        deptDto.setPName(ConstantFactory.me().getDeptName(deptDto.getPid()));
+        deptDto.setPName(ConstantFactory.me().getDeptName(deptDto.getPid().toString()));
         return deptDto;
     }
 
@@ -190,7 +190,7 @@ public class DeptController extends BaseController {
     public ResponseData delete(String deptId) {
 
         //缓存被删除的部门名称
-        LogObjectHolder.me().set(ConstantFactory.me().getDeptName(Long.valueOf(deptId)));
+        LogObjectHolder.me().set(ConstantFactory.me().getDeptName(deptId));
 
         deptService.deleteDept(Long.valueOf(deptId));
 

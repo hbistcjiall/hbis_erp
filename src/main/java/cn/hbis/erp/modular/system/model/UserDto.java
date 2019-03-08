@@ -14,7 +14,7 @@ import java.util.Date;
 @Data
 public class UserDto {
 
-    private Long userId;
+    private String userId;
     private String account;
     private String password;
     private String name;
@@ -25,7 +25,7 @@ public class UserDto {
     private String email;
     private String phone;
     private String roleId;
-    private Long deptId;
+    private String deptId;
     private String status;
     private String avatar;
 

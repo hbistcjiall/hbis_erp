@@ -98,12 +98,12 @@ public class SystemController extends BaseController {
      */
     @RequestMapping("/user_info")
     public String userInfo(Model model) {
-        Long userId = ShiroKit.getUserNotNull().getId();
+        String userId = ShiroKit.getUserNotNull().getId();
         User user = this.userService.getById(userId);
 
         model.addAllAttributes(BeanUtil.beanToMap(user));
         model.addAttribute("roleName", ConstantFactory.me().getRoleName(user.getRoleId()));
-        model.addAttribute("deptName", ConstantFactory.me().getDeptName(user.getDeptId()));
+        model.addAttribute("deptName", ConstantFactory.me().getDeptName(user.getDeptId().toString()));
         LogObjectHolder.me().set(user);
         return "/modular/frame/user_info.html";
     }
@@ -216,7 +216,7 @@ public class SystemController extends BaseController {
         HashMap<Object, Object> hashMap = CollectionUtil.newHashMap();
         hashMap.putAll(map);
         hashMap.put("roleName", ConstantFactory.me().getRoleName(user.getRoleId()));
-        hashMap.put("deptName", ConstantFactory.me().getDeptName(user.getDeptId()));
+        hashMap.put("deptName", ConstantFactory.me().getDeptName(user.getDeptId().toString()));
 
         return ResponseData.success(hashMap);
     }

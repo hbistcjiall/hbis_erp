@@ -37,7 +37,7 @@ public class OperationLog implements Serializable {
      * 用户id
      */
     @TableField("USER_ID")
-    private Long userId;
+    private String userId;
     /**
      * 类名称
      */
@@ -89,11 +89,11 @@ public class OperationLog implements Serializable {
         this.logName = logName;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
