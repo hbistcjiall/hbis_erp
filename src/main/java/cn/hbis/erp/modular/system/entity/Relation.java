@@ -25,40 +25,40 @@ public class Relation implements Serializable {
      * 主键
      */
     @TableId(value = "RELATION_ID", type = ID_WORKER)
-    private Long relationId;
+    private String relationId;
     /**
      * 菜单id
      */
     @TableField("MENU_ID")
-    private Long menuId;
+    private String menuId;
     /**
      * 角色id
      */
     @TableField("ROLE_ID")
-    private Long roleId;
+    private String roleId;
 
 
-    public Long getRelationId() {
+    public String getRelationId() {
         return relationId;
     }
 
-    public void setRelationId(Long relationId) {
+    public void setRelationId(String relationId) {
         this.relationId = relationId;
     }
 
-    public Long getMenuId() {
+    public String getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(Long menuId) {
+    public void setMenuId(String menuId) {
         this.menuId = menuId;
     }
 
-    public Long getRoleId() {
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Long roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 

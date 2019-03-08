@@ -22,12 +22,12 @@ public class Dept implements Serializable {
      * 主键id
      */
     @TableId(value = "DEPT_ID", type = IdType.ID_WORKER)
-    private Long deptId;
+    private String deptId;
     /**
      * 父部门id
      */
     @TableField("PID")
-    private Long pid;
+    private String pid;
     /**
      * 父级ids
      */
@@ -80,19 +80,19 @@ public class Dept implements Serializable {
     private String updateUser;
 
 
-    public Long getDeptId() {
+    public String getDeptId() {
         return deptId;
     }
 
-    public void setDeptId(Long deptId) {
+    public void setDeptId(String deptId) {
         this.deptId = deptId;
     }
 
-    public Long getPid() {
+    public String getPid() {
         return pid;
     }
 
-    public void setPid(Long pid) {
+    public void setPid(String pid) {
         this.pid = pid;
     }
 

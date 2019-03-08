@@ -22,12 +22,12 @@ public class Dict implements Serializable {
      * 主键id
      */
     @TableId(value = "DICT_ID", type = IdType.ID_WORKER)
-    private Long dictId;
+    private String dictId;
     /**
      * 父级字典id
      */
     @TableField("PID")
-    private Long pid;
+    private String pid;
     /**
      * 字典名称
      */
@@ -62,27 +62,27 @@ public class Dict implements Serializable {
      * 创建人
      */
     @TableField(value = "CREATE_USER", fill = FieldFill.INSERT)
-    private Long createUser;
+    private String createUser;
     /**
      * 修改人
      */
     @TableField(value = "UPDATE_USER", fill = FieldFill.UPDATE)
-    private Long updateUser;
+    private String updateUser;
 
 
-    public Long getDictId() {
+    public String getDictId() {
         return dictId;
     }
 
-    public void setDictId(Long dictId) {
+    public void setDictId(String dictId) {
         this.dictId = dictId;
     }
 
-    public Long getPid() {
+    public String getPid() {
         return pid;
     }
 
-    public void setPid(Long pid) {
+    public void setPid(String pid) {
         this.pid = pid;
     }
 
@@ -134,19 +134,19 @@ public class Dict implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Long getCreateUser() {
+    public String getCreateUser() {
         return createUser;
     }
 
-    public void setCreateUser(Long createUser) {
+    public void setCreateUser(String createUser) {
         this.createUser = createUser;
     }
 
-    public Long getUpdateUser() {
+    public String getUpdateUser() {
         return updateUser;
     }
 
-    public void setUpdateUser(Long updateUser) {
+    public void setUpdateUser(String updateUser) {
         this.updateUser = updateUser;
     }
 

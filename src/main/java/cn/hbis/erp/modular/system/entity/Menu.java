@@ -22,7 +22,7 @@ public class Menu implements Serializable {
      * 主键id
      */
     @TableId(value = "MENU_ID", type = IdType.ID_WORKER)
-    private Long menuId;
+    private String menuId;
     /**
      * 菜单编号
      */
@@ -102,19 +102,19 @@ public class Menu implements Serializable {
      * 创建人
      */
     @TableField(value = "CREATE_USER", fill = FieldFill.INSERT)
-    private Long createUser;
+    private String createUser;
     /**
      * 修改人
      */
     @TableField(value = "UPDATE_USER", fill = FieldFill.UPDATE)
-    private Long updateUser;
+    private String updateUser;
 
 
-    public Long getMenuId() {
+    public String getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(Long menuId) {
+    public void setMenuId(String menuId) {
         this.menuId = menuId;
     }
 
@@ -238,19 +238,19 @@ public class Menu implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Long getCreateUser() {
+    public String getCreateUser() {
         return createUser;
     }
 
-    public void setCreateUser(Long createUser) {
+    public void setCreateUser(String createUser) {
         this.createUser = createUser;
     }
 
-    public Long getUpdateUser() {
+    public String getUpdateUser() {
         return updateUser;
     }
 
-    public void setUpdateUser(Long updateUser) {
+    public void setUpdateUser(String updateUser) {
         this.updateUser = updateUser;
     }
 

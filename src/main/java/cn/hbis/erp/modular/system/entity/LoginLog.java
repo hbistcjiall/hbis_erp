@@ -22,7 +22,7 @@ public class LoginLog implements Serializable {
      * 主键
      */
     @TableId(value = "LOGIN_LOG_ID", type = IdType.ID_WORKER)
-    private Long loginLogId;
+    private String loginLogId;
     /**
      * 日志名称
      */
@@ -55,11 +55,11 @@ public class LoginLog implements Serializable {
     private String ipAddress;
 
 
-    public Long getLoginLogId() {
+    public String getLoginLogId() {
         return loginLogId;
     }
 
-    public void setLoginLogId(Long loginLogId) {
+    public void setLoginLogId(String loginLogId) {
         this.loginLogId = loginLogId;
     }
 

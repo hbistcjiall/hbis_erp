@@ -22,7 +22,7 @@ public class Notice implements Serializable {
      * 主键
      */
     @TableId(value = "NOTICE_ID", type = IdType.ID_WORKER)
-    private Long noticeId;
+    private String noticeId;
     /**
      * 标题
      */
@@ -52,14 +52,14 @@ public class Notice implements Serializable {
      * 修改人
      */
     @TableField(value = "UPDATE_USER", fill = FieldFill.UPDATE)
-    private Long updateUser;
+    private String updateUser;
 
 
-    public Long getNoticeId() {
+    public String getNoticeId() {
         return noticeId;
     }
 
-    public void setNoticeId(Long noticeId) {
+    public void setNoticeId(String noticeId) {
         this.noticeId = noticeId;
     }
 
@@ -103,11 +103,11 @@ public class Notice implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Long getUpdateUser() {
+    public String getUpdateUser() {
         return updateUser;
     }
 
-    public void setUpdateUser(Long updateUser) {
+    public void setUpdateUser(String updateUser) {
         this.updateUser = updateUser;
     }
 

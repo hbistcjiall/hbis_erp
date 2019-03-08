@@ -22,7 +22,7 @@ public class OperationLog implements Serializable {
      * 主键
      */
     @TableId(value = "OPERATION_LOG_ID", type = IdType.ID_WORKER)
-    private Long operationLogId;
+    private String operationLogId;
     /**
      * 日志类型(字典)
      */
@@ -65,11 +65,11 @@ public class OperationLog implements Serializable {
     private String message;
 
 
-    public Long getOperationLogId() {
+    public String getOperationLogId() {
         return operationLogId;
     }
 
-    public void setOperationLogId(Long operationLogId) {
+    public void setOperationLogId(String operationLogId) {
         this.operationLogId = operationLogId;
     }
 
