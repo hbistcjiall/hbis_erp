@@ -5,7 +5,7 @@ import cn.hbis.erp.core.common.constant.state.MenuStatus;
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
 import cn.hbis.erp.core.common.node.MenuNode;
 import cn.hbis.erp.core.common.node.ZTreeNode;
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
+import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.listener.ConfigListener;
 import cn.hbis.erp.modular.system.entity.Menu;
 import cn.hbis.erp.modular.system.mapper.MenuMapper;
@@ -174,7 +174,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
             code = menu.getCode();
         }
 
-        Page page = LayuiPageFactory.defaultPage();
+        Page page = PageFactory.defaultPage();
 
         return this.baseMapper.selectMenus(page, condition, level, menuId, code);
     }

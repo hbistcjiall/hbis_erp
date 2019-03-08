@@ -3,7 +3,7 @@ package cn.hbis.erp.modular.system.service;
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
 import cn.hbis.erp.core.common.node.TreeviewNode;
 import cn.hbis.erp.core.common.node.ZTreeNode;
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
+import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.modular.system.entity.Dept;
 import cn.hbis.erp.modular.system.mapper.DeptMapper;
 import cn.stylefeng.roses.core.util.ToolUtil;
@@ -112,7 +112,7 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
      *
      */
     public Page<Map<String, Object>> list(String condition, String deptId) {
-        Page page = LayuiPageFactory.defaultPage();
+        Page page = PageFactory.defaultPage();
         return this.baseMapper.list(page, condition, deptId);
     }
 

@@ -4,7 +4,7 @@ import cn.hbis.erp.core.common.constant.Const;
 import cn.hbis.erp.core.common.constant.state.ManagerStatus;
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
 import cn.hbis.erp.core.common.node.MenuNode;
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
+import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.shiro.ShiroKit;
 import cn.hbis.erp.core.shiro.ShiroUser;
 import cn.hbis.erp.core.shiro.service.UserAuthService;
@@ -133,7 +133,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      *
      */
     public Page<Map<String, Object>> selectUsers(DataScope dataScope, String name, String beginTime, String endTime, Long deptId) {
-        Page page = LayuiPageFactory.defaultPage();
+        Page page = PageFactory.defaultPage();
         return this.baseMapper.selectUsers(page, dataScope, name, beginTime, endTime, deptId);
     }
 

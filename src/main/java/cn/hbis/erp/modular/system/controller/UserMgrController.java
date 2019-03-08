@@ -9,8 +9,7 @@ import cn.hbis.erp.core.common.constant.dictmap.UserDict;
 import cn.hbis.erp.core.common.constant.factory.ConstantFactory;
 import cn.hbis.erp.core.common.constant.state.ManagerStatus;
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
-import cn.hbis.erp.core.log.LogObjectHolder;
+import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.shiro.ShiroKit;
 import cn.hbis.erp.modular.system.entity.User;
 import cn.hbis.erp.modular.system.factory.UserFactory;
@@ -26,13 +25,10 @@ import cn.stylefeng.roses.core.util.ToolUtil;
 import cn.stylefeng.roses.kernel.model.exception.RequestEmptyException;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -132,12 +128,12 @@ public class UserMgrController extends BaseController {
         if (ShiroKit.isAdmin()) {
             Page<Map<String, Object>> users = userService.selectUsers(null, name, beginTime, endTime, dId);
             Page wrapped = new UserWrapper(users).wrap();
-            return LayuiPageFactory.createPageInfo(wrapped);
+            return PageFactory.createPageInfo(wrapped);
         } else {
             DataScope dataScope = new DataScope(ShiroKit.getDeptDataScope());
             Page<Map<String, Object>> users = userService.selectUsers(dataScope, name, beginTime, endTime, dId);
             Page wrapped = new UserWrapper(users).wrap();
-            return LayuiPageFactory.createPageInfo(wrapped);
+            return PageFactory.createPageInfo(wrapped);
         }
     }
 

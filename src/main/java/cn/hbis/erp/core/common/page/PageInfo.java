@@ -6,12 +6,12 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 分页结果的封装(for Layui Table)
+ * 分页结果的封装(for Table)
  *
  *
  */
 @Data
-public class LayuiPageInfo {
+public class PageInfo {
 
     private Integer code = 0;
 

@@ -8,7 +8,7 @@ import cn.hbis.erp.core.common.constant.dictmap.RoleDict;
 import cn.hbis.erp.core.common.constant.factory.ConstantFactory;
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
 import cn.hbis.erp.core.common.node.ZTreeNode;
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
+import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.log.LogObjectHolder;
 import cn.hbis.erp.modular.system.entity.Role;
 import cn.hbis.erp.modular.system.entity.User;
@@ -112,7 +112,7 @@ public class RoleController extends BaseController {
     public Object list(@RequestParam(value = "roleName", required = false) String roleName) {
         Page<Map<String, Object>> roles = this.roleService.selectRoles(roleName);
         Page<Map<String, Object>> wrap = new RoleWrapper(roles).wrap();
-        return LayuiPageFactory.createPageInfo(wrap);
+        return PageFactory.createPageInfo(wrap);
     }
 
     /**

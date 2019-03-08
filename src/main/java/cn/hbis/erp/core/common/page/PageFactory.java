@@ -1,4 +1,3 @@
-
 package cn.hbis.erp.core.common.page;
 
 import cn.stylefeng.roses.core.util.HttpContext;
@@ -8,14 +7,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Layui Table默认的分页参数创建
- *
- *
- */
-public class LayuiPageFactory {
-
+ * Table默认的分页参数创建
+ * @author zhangb
+ * @Date 2019-03-08
+ **/
+public class PageFactory {
     /**
-     * 获取layui table的分页参数
+     * 获取 table的分页参数
      *
      *
      */
@@ -32,12 +30,12 @@ public class LayuiPageFactory {
     }
 
     /**
-     * 创建layui能识别的分页响应参数
+     * 创建能识别的分页响应参数
      *
      *
      */
-    public static LayuiPageInfo createPageInfo(IPage page) {
-        LayuiPageInfo result = new LayuiPageInfo();
+    public static PageInfo createPageInfo(IPage page) {
+        PageInfo result = new PageInfo();
         result.setCount(page.getTotal());
         result.setData(page.getRecords());
         result.setPageSize(page.getSize());

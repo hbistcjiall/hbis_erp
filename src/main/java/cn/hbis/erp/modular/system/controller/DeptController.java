@@ -1,18 +1,14 @@
 
 package cn.hbis.erp.modular.system.controller;
 
-import cn.hbis.erp.core.common.annotion.BussinessLog;
-import cn.hbis.erp.core.common.annotion.Permission;
-import cn.hbis.erp.core.common.constant.dictmap.DeptDict;
 import cn.hbis.erp.core.common.constant.factory.ConstantFactory;
 import cn.hbis.erp.core.common.node.TreeviewNode;
 import cn.hbis.erp.core.common.node.ZTreeNode;
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
+import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.log.LogObjectHolder;
 import cn.hbis.erp.core.shiro.ShiroKit;
 import cn.hbis.erp.core.shiro.ShiroUser;
 import cn.hbis.erp.modular.system.entity.Dept;
-import cn.hbis.erp.modular.system.entity.User;
 import cn.hbis.erp.modular.system.model.DeptDto;
 import cn.hbis.erp.modular.system.service.DeptService;
 import cn.hbis.erp.modular.system.warpper.DeptTreeWrapper;
@@ -23,19 +19,14 @@ import cn.stylefeng.roses.core.reqres.response.ResponseData;
 import cn.stylefeng.roses.core.treebuild.DefaultTreeBuildFactory;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import cn.stylefeng.roses.kernel.model.exception.RequestEmptyException;
-import com.alibaba.druid.sql.visitor.functions.Now;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +121,7 @@ public class DeptController extends BaseController {
     public Object list(String condition, String deptId) {
         Page<Map<String, Object>> list = this.deptService.list(condition, deptId);
         Page<Map<String, Object>> wrap = new DeptWrapper(list).wrap();
-        return LayuiPageFactory.createPageInfo(wrap);
+        return PageFactory.createPageInfo(wrap);
     }
 
     /**

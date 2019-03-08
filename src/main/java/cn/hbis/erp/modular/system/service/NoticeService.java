@@ -1,6 +1,6 @@
 package cn.hbis.erp.modular.system.service;
 
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
+import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.modular.system.entity.Notice;
 import cn.hbis.erp.modular.system.mapper.NoticeMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -25,7 +25,7 @@ public class NoticeService extends ServiceImpl<NoticeMapper, Notice> {
      *
      */
     public Page<Map<String, Object>> list(String condition) {
-        Page page = LayuiPageFactory.defaultPage();
+        Page page = PageFactory.defaultPage();
         return this.baseMapper.list(page, condition);
     }
 }

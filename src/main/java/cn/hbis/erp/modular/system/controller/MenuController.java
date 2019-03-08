@@ -8,8 +8,8 @@ import cn.hbis.erp.core.common.constant.dictmap.MenuDict;
 import cn.hbis.erp.core.common.constant.factory.ConstantFactory;
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
 import cn.hbis.erp.core.common.node.ZTreeNode;
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
-import cn.hbis.erp.core.common.page.LayuiPageInfo;
+import cn.hbis.erp.core.common.page.PageFactory;
+import cn.hbis.erp.core.common.page.PageInfo;
 import cn.hbis.erp.core.log.LogObjectHolder;
 import cn.hbis.erp.modular.system.entity.Menu;
 import cn.hbis.erp.modular.system.model.MenuDto;
@@ -121,7 +121,7 @@ public class MenuController extends BaseController {
                        @RequestParam(required = false) Long menuId) {
         Page<Map<String, Object>> menus = this.menuService.selectMenus(menuName, level, menuId);
         Page<Map<String, Object>> wrap = new MenuWrapper(menus).wrap();
-        return LayuiPageFactory.createPageInfo(wrap);
+        return PageFactory.createPageInfo(wrap);
     }
 
     /**
@@ -137,7 +137,7 @@ public class MenuController extends BaseController {
         List<Map<String, Object>> menus = this.menuService.selectMenuTree(menuName, level);
         List<Map<String, Object>> menusWrap = new MenuWrapper(menus).wrap();
 
-        LayuiPageInfo result = new LayuiPageInfo();
+        PageInfo result = new PageInfo();
         result.setData(menusWrap);
         return result;
     }

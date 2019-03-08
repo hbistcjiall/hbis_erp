@@ -4,7 +4,7 @@ package cn.hbis.erp.modular.system.controller;
 import cn.hbis.erp.core.common.annotion.BussinessLog;
 import cn.hbis.erp.core.common.annotion.Permission;
 import cn.hbis.erp.core.common.constant.Const;
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
+import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.modular.system.service.LoginLogService;
 import cn.hbis.erp.modular.system.warpper.LogWrapper;
 import cn.stylefeng.roses.core.base.controller.BaseController;
@@ -56,13 +56,13 @@ public class LoginLogController extends BaseController {
                        @RequestParam(required = false) String logName) {
 
         //获取分页参数
-        Page page = LayuiPageFactory.defaultPage();
+        Page page = PageFactory.defaultPage();
 
         //根据条件查询日志
         List<Map<String, Object>> result = loginLogService.getLoginLogs(page, beginTime, endTime, logName);
         page.setRecords(new LogWrapper(result).wrap());
 
-        return LayuiPageFactory.createPageInfo(page);
+        return PageFactory.createPageInfo(page);
     }
 
     /**

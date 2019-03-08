@@ -6,7 +6,7 @@ import cn.hbis.erp.core.common.annotion.Permission;
 import cn.hbis.erp.core.common.constant.Const;
 import cn.hbis.erp.core.common.constant.dictmap.DictMap;
 import cn.hbis.erp.core.common.constant.factory.ConstantFactory;
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
+import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.log.LogObjectHolder;
 import cn.hbis.erp.modular.system.model.DictDto;
 import cn.hbis.erp.modular.system.service.DictService;
@@ -93,7 +93,7 @@ public class DictController extends BaseController {
     public Object list(String condition) {
         Page<Map<String, Object>> list = this.dictService.list(condition);
         Page<Map<String, Object>> warpper = new DictWrapper(list).wrap();
-        return LayuiPageFactory.createPageInfo(warpper);
+        return PageFactory.createPageInfo(warpper);
     }
 
     /**

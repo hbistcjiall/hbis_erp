@@ -5,7 +5,7 @@ import cn.hbis.erp.core.common.annotion.BussinessLog;
 import cn.hbis.erp.core.common.annotion.Permission;
 import cn.hbis.erp.core.common.constant.Const;
 import cn.hbis.erp.core.common.constant.state.BizLogType;
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
+import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.modular.system.entity.OperationLog;
 import cn.hbis.erp.modular.system.service.OperationLogService;
 import cn.hbis.erp.modular.system.warpper.LogWrapper;
@@ -61,14 +61,14 @@ public class LogController extends BaseController {
                        @RequestParam(required = false) Integer logType) {
 
         //获取分页参数
-        Page page = LayuiPageFactory.defaultPage();
+        Page page = PageFactory.defaultPage();
 
         //根据条件查询操作日志
         List<Map<String, Object>> result = operationLogService.getOperationLogs(page, beginTime, endTime, logName, BizLogType.valueOf(logType));
 
         page.setRecords(new LogWrapper(result).wrap());
 
-        return LayuiPageFactory.createPageInfo(page);
+        return PageFactory.createPageInfo(page);
     }
 
     /**

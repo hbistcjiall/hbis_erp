@@ -1,7 +1,7 @@
 package cn.hbis.erp.modular.system.service;
 
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
+import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.modular.system.entity.Dict;
 import cn.hbis.erp.modular.system.mapper.DictMapper;
 import cn.hbis.erp.modular.system.model.DictDto;
@@ -121,7 +121,7 @@ public class DictService extends ServiceImpl<DictMapper, Dict> {
      *
      */
     public Page<Map<String, Object>> list(String conditiion) {
-        Page page = LayuiPageFactory.defaultPage();
+        Page page = PageFactory.defaultPage();
         return this.baseMapper.list(page, conditiion);
     }
 }

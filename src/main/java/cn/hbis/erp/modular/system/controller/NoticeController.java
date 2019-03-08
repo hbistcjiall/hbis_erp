@@ -5,7 +5,7 @@ import cn.hbis.erp.core.common.annotion.BussinessLog;
 import cn.hbis.erp.core.common.constant.dictmap.NoticeMap;
 import cn.hbis.erp.core.common.constant.factory.ConstantFactory;
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
-import cn.hbis.erp.core.common.page.LayuiPageFactory;
+import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.log.LogObjectHolder;
 import cn.hbis.erp.core.shiro.ShiroKit;
 import cn.hbis.erp.modular.system.entity.Notice;
@@ -97,7 +97,7 @@ public class NoticeController extends BaseController {
     public Object list(String condition) {
         Page<Map<String, Object>> list = this.noticeService.list(condition);
         Page<Map<String, Object>> wrap = new NoticeWrapper(list).wrap();
-        return LayuiPageFactory.createPageInfo(wrap);
+        return PageFactory.createPageInfo(wrap);
     }
 
     /**
