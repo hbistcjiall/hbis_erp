@@ -21,7 +21,7 @@ public class Notice implements Serializable {
     /**
      * 主键
      */
-    @TableId(value = "NOTICE_ID", type = IdType.ID_WORKER)
+    @TableId(value = "NOTICE_ID", type = IdType.ID_WORKER_STR)
     private String noticeId;
     /**
      * 标题

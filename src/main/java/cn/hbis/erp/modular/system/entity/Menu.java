@@ -21,7 +21,7 @@ public class Menu implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "MENU_ID", type = IdType.ID_WORKER)
+    @TableId(value = "MENU_ID", type = IdType.ID_WORKER_STR)
     private String menuId;
     /**
      * 菜单编号
