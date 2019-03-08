@@ -122,11 +122,11 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
      *
      */
     private void deptSetPids(Dept dept) {
-        if (ToolUtil.isEmpty(dept.getPid()) || dept.getPid().equals(0L)) {
-            dept.setPid(0L);
+        if (ToolUtil.isEmpty(dept.getPid()) || dept.getPid().equals("0")) {
+            dept.setPid("0");
             dept.setPids("[0],");
         } else {
-            Long pid = dept.getPid();
+            String  pid = dept.getPid();
             Dept temp = this.getById(pid);
             String pids = temp.getPids();
             dept.setPid(pid);

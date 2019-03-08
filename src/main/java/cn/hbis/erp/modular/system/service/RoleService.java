@@ -99,8 +99,8 @@ public class RoleService extends ServiceImpl<RoleMapper, Role> {
         // 添加新的权限
         for (Long id : Convert.toLongArray(ids.split(","))) {
             Relation relation = new Relation();
-            relation.setRoleId(roleId);
-            relation.setMenuId(id);
+            relation.setRoleId(roleId.toString());
+            relation.setMenuId(id.toString());
             this.relationMapper.insert(relation);
         }
 

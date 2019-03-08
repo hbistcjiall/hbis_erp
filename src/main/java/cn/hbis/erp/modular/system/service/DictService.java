@@ -60,7 +60,7 @@ public class DictService extends ServiceImpl<DictMapper, Dict> {
         BeanUtil.copyProperties(dictDto, dict);
 
         //类型的父级id都为0
-        dict.setPid(0L);
+        dict.setPid("0");
 
         this.save(dict);
     }
@@ -75,7 +75,7 @@ public class DictService extends ServiceImpl<DictMapper, Dict> {
         BeanUtil.copyProperties(dictDto, dict);
 
         //字典的父级id为字典tyeId
-        dict.setPid(dictDto.getDictTypeId());
+        dict.setPid(dictDto.getDictTypeId().toString());
 
         this.save(dict);
     }

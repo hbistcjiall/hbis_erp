@@ -156,7 +156,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
         wrapper = wrapper.like("PCODES", "%[" + menu.getCode() + "]%");
         List<Menu> menus = menuMapper.selectList(wrapper);
         for (Menu temp : menus) {
-            delMenu(temp.getMenuId());
+            delMenu(Long.valueOf(temp.getMenuId()));
         }
     }
 
@@ -301,7 +301,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
 
         //创建根节点
         Menu menu = new Menu();
-        menu.setMenuId(-1L);
+        menu.setMenuId("-1");
         menu.setName("根节点");
         menu.setCode("0");
         menu.setPcode("-2");
