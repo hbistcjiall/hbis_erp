@@ -24,7 +24,7 @@ public class DictWrapper extends BaseControllerWrapper {
     @Override
     protected void wrapTheMap(Map<String, Object> map) {
         StringBuilder detail = new StringBuilder();
-        Long id = Long.valueOf(map.get("dictId").toString());
+        String  id = map.get("dictId").toString();
         List<Dict> dicts = ConstantFactory.me().findInDict(id);
         if (dicts != null) {
             for (Dict dict : dicts) {

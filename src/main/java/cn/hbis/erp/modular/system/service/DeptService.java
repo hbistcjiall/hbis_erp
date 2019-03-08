@@ -74,7 +74,7 @@ public class DeptService extends ServiceImpl<DeptMapper, Dept> {
      *
      */
     @Transactional
-    public void deleteDept(Long deptId) {
+    public void deleteDept(String deptId) {
         Dept dept = deptMapper.selectById(deptId);
 
         //根据like查询删除所有级联的部门

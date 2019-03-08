@@ -17,11 +17,11 @@ public class DeptDto implements Serializable {
     /**
      * 主键id
      */
-    private Long deptId;
+    private String deptId;
     /**
      * 父部门id
      */
-    private Long pid;
+    private String pid;
     /**
      * 父部门名称
      */

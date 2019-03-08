@@ -17,7 +17,7 @@ public class DictDto implements Serializable {
     /**
      * 类型id
      */
-    private Long dictTypeId;
+    private String dictTypeId;
     /**
      * 名称
      */

@@ -192,7 +192,7 @@ public class DeptController extends BaseController {
         //缓存被删除的部门名称
         LogObjectHolder.me().set(ConstantFactory.me().getDeptName(deptId));
 
-        deptService.deleteDept(Long.valueOf(deptId));
+        deptService.deleteDept(deptId);
 
         return SUCCESS_TIP;
     }

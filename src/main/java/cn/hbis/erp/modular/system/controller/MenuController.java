@@ -76,7 +76,7 @@ public class MenuController extends BaseController {
      */
     @Permission(Const.ADMIN_NAME)
     @RequestMapping(value = "/menu_edit")
-    public String menuEdit(@RequestParam Long menuId) {
+    public String menuEdit(@RequestParam String menuId) {
         if (ToolUtil.isEmpty(menuId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -118,7 +118,7 @@ public class MenuController extends BaseController {
     @ResponseBody
     public Object list(@RequestParam(required = false) String menuName,
                        @RequestParam(required = false) String level,
-                       @RequestParam(required = false) Long menuId) {
+                       @RequestParam(required = false) String menuId) {
         Page<Map<String, Object>> menus = this.menuService.selectMenus(menuName, level, menuId);
         Page<Map<String, Object>> wrap = new MenuWrapper(menus).wrap();
         return PageFactory.createPageInfo(wrap);
@@ -165,7 +165,7 @@ public class MenuController extends BaseController {
     @RequestMapping(value = "/remove")
     @BussinessLog(value = "删除菜单", key = "menuId", dict = MenuDict.class)
     @ResponseBody
-    public ResponseData remove(@RequestParam Long menuId) {
+    public ResponseData remove(@RequestParam String menuId) {
         if (ToolUtil.isEmpty(menuId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -185,7 +185,7 @@ public class MenuController extends BaseController {
      */
     @RequestMapping(value = "/view/{menuId}")
     @ResponseBody
-    public ResponseData view(@PathVariable Long menuId) {
+    public ResponseData view(@PathVariable String menuId) {
         if (ToolUtil.isEmpty(menuId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -200,7 +200,7 @@ public class MenuController extends BaseController {
      */
     @RequestMapping(value = "/getMenuInfo")
     @ResponseBody
-    public ResponseData getMenuInfo(@RequestParam Long menuId) {
+    public ResponseData getMenuInfo(@RequestParam String menuId) {
         if (ToolUtil.isEmpty(menuId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -211,7 +211,7 @@ public class MenuController extends BaseController {
         BeanUtil.copyProperties(menu, menuDto);
 
         //设置pid和父级名称
-        menuDto.setPid(Long.valueOf(ConstantFactory.me().getMenuIdByCode(menuDto.getPcode())));
+        menuDto.setPid(ConstantFactory.me().getMenuIdByCode(menuDto.getPcode()));
         menuDto.setPcodeName(ConstantFactory.me().getMenuNameByCode(menuDto.getPcode()));
 
         return ResponseData.success(menuDto);
@@ -248,8 +248,8 @@ public class MenuController extends BaseController {
      */
     @RequestMapping(value = "/menuTreeListByRoleId/{roleId}")
     @ResponseBody
-    public List<ZTreeNode> menuTreeListByRoleId(@PathVariable Long roleId) {
-        List<Long> menuIds = this.menuService.getMenuIdsByRoleId(roleId);
+    public List<ZTreeNode> menuTreeListByRoleId(@PathVariable String roleId) {
+        List<String> menuIds = this.menuService.getMenuIdsByRoleId(roleId);
         if (ToolUtil.isEmpty(menuIds)) {
             return this.menuService.menuTreeList();
         } else {

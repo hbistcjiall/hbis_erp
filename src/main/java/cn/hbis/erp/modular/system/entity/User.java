@@ -94,7 +94,7 @@ public class User implements Serializable {
      * 创建人
      */
     @TableField(value = "CREATE_USER", fill = FieldFill.INSERT)
-    private Long createUser;
+    private String createUser;
     /**
      * 更新时间
      */
@@ -104,7 +104,7 @@ public class User implements Serializable {
      * 更新人
      */
     @TableField(value = "UPDATE_USER", fill = FieldFill.UPDATE)
-    private Long updateUser;
+    private String updateUser;
     /**
      * 乐观锁
      */

@@ -53,7 +53,7 @@ public class LoginController extends BaseController {
         Map map = new HashMap<>();
         //获取当前用户角色列表
         ShiroUser user = ShiroKit.getUserNotNull();
-        List<Long> roleList = user.getRoleList();
+        List<String> roleList = user.getRoleList();
 
         if (roleList == null || roleList.size() == 0) {
             ShiroKit.getSubject().logout();

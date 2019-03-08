@@ -45,7 +45,7 @@
         </if>
     </select>
 
-    <select id="getMenuIdsByRoleId" resultType="long">
+    <select id="getMenuIdsByRoleId" resultType="String">
         select MENU_ID from
         sys_relation where ROLE_ID = #{roleId}
     </select>
@@ -133,7 +133,7 @@
         delete from sys_relation where MENU_ID = #{menuId}
     </delete>
 
-    <select id="getResUrlsByRoleId" resultType="string">
+    <select id="getResUrlsByRoleId" resultType="java.lang.String">
         select URL from
         sys_relation rel
         inner join sys_menu m on rel.MENU_ID = m.MENU_ID

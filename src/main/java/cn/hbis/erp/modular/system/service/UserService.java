@@ -132,7 +132,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      *
      *
      */
-    public Page<Map<String, Object>> selectUsers(DataScope dataScope, String name, String beginTime, String endTime, Long deptId) {
+    public Page<Map<String, Object>> selectUsers(DataScope dataScope, String name, String beginTime, String endTime, String deptId) {
         Page page = PageFactory.defaultPage();
         return this.baseMapper.selectUsers(page, dataScope, name, beginTime, endTime, deptId);
     }
@@ -160,7 +160,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      *
      *
      */
-    public List<MenuNode> getUserMenuNodes(List<Long> roleList) {
+    public List<MenuNode> getUserMenuNodes(List<String> roleList) {
         if (roleList == null || roleList.size() == 0) {
             return new ArrayList<>();
         } else {

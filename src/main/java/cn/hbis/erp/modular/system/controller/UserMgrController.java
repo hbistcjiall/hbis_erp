@@ -128,9 +128,9 @@ public class UserMgrController extends BaseController {
             beginTime = split[0];
             endTime = split[1];
         }
-        Long dId = null;
+        String dId = null;
         if (ToolUtil.isNotEmpty(deptId)){
-           dId = Long.valueOf(deptId);
+           dId = deptId;
         }
 
         if (ShiroKit.isAdmin()) {
