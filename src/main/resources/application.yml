@@ -10,8 +10,8 @@ hbis:
   session-validation-interval: 900  #多久检测一次失效的session(只在单机环境下生效) 单位：秒
   #muti-datasource多数据源的时候再配置，单机情况下没任何用处
   muti-datasource:
-    url: jdbc:mysql://47.94.21.130:3306/hbis_test?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
-    username: mytest
+    url: jdbc:oracle:thin:@221.192.142.45:1521:orcl
+    username: hbis
     password: 123456
     dataSourceNames:
       - dataSourceHbis
@@ -28,8 +28,8 @@ spring:
       max-request-size: 100MB
       max-file-size: 100MB
   datasource:
-    url: jdbc:mysql://47.94.21.130:3306/hbis?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT
-    username: mytest
+    url: jdbc:oracle:thin:@221.192.142.45:1521:orcl
+    username: hbis
     password: 123456
     filters: wall,mergeStat
 mybatis-plus:
