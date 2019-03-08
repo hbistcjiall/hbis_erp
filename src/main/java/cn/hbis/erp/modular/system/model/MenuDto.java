@@ -20,7 +20,7 @@ public class MenuDto implements Serializable {
     /**
      * 主键id
      */
-    private Long menuId;
+    private String menuId;
     /**
      * 菜单编号
      */
@@ -28,7 +28,7 @@ public class MenuDto implements Serializable {
     /**
      * 菜单父级id
      */
-    private Long pid;
+    private String pid;
     /**
      * 菜单父编号
      */

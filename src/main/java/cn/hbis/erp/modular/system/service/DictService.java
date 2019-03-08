@@ -86,7 +86,7 @@ public class DictService extends ServiceImpl<DictMapper, Dict> {
      *
      */
     @Transactional
-    public void delteDict(Long dictId) {
+    public void delteDict(String dictId) {
 
         //删除这个字典的子词典
         QueryWrapper<Dict> dictEntityWrapper = new QueryWrapper<>();

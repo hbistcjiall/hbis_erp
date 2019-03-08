@@ -28,7 +28,7 @@ public class LogWrapper extends BaseControllerWrapper {
     protected void wrapTheMap(Map<String, Object> map) {
         String message = (String) map.get("message");
 
-        Long userid = (Long) map.get("userId");
+        String userid =  (String)map.get("userId");
         map.put("userName", ConstantFactory.me().getUserNameById(userid));
 
         //如果信息过长,则只截取前100位字符串

@@ -65,12 +65,12 @@ public class UserAuthServiceServiceImpl implements UserAuthService {
         ShiroUser shiroUser = ShiroKit.createShiroUser(user);
 
         //用户角色数组
-        Long[] roleArray = Convert.toLongArray(user.getRoleId());
+        String[] roleArray = Convert.toStrArray(user.getRoleId());
 
         //获取用户角色列表
-        List<Long> roleList = new ArrayList<>();
+        List<String> roleList = new ArrayList<>();
         List<String> roleNameList = new ArrayList<>();
-        for (Long roleId : roleArray) {
+        for (String roleId : roleArray) {
             roleList.add(roleId);
             roleNameList.add(ConstantFactory.me().getSingleRoleName(roleId));
         }
@@ -81,12 +81,12 @@ public class UserAuthServiceServiceImpl implements UserAuthService {
     }
 
     @Override
-    public List<String> findPermissionsByRoleId(Long roleId) {
+    public List<String> findPermissionsByRoleId(String roleId) {
         return menuMapper.getResUrlsByRoleId(roleId);
     }
 
     @Override
-    public String findRoleNameByRoleId(Long roleId) {
+    public String findRoleNameByRoleId(String roleId) {
         return ConstantFactory.me().getSingleRoleTip(roleId);
     }
 

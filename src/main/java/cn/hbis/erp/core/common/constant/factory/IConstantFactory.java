@@ -15,13 +15,13 @@ public interface IConstantFactory {
      * 根据用户id获取用户名称
      *
      */
-    String getUserNameById(Long userId);
+    String getUserNameById(String userId);
 
     /**
      * 根据用户id获取用户账号
      *
      */
-    String getUserAccountById(Long userId);
+    String getUserAccountById(String userId);
 
     /**
      * 通过角色ids获取角色名称
@@ -31,12 +31,12 @@ public interface IConstantFactory {
     /**
      * 通过角色id获取角色名称
      */
-    String getSingleRoleName(Long roleId);
+    String getSingleRoleName(String roleId);
 
     /**
      * 通过角色id获取角色英文名称
      */
-    String getSingleRoleTip(Long roleId);
+    String getSingleRoleTip(String roleId);
 
     /**
      * 获取部门名称
@@ -51,7 +51,7 @@ public interface IConstantFactory {
     /**
      * 获取菜单名称
      */
-    String getMenuName(Long menuId);
+    String getMenuName(String menuId);
 
     /**
      * 获取菜单通过编号
@@ -71,12 +71,12 @@ public interface IConstantFactory {
     /**
      * 获取字典名称
      */
-    String getDictName(Long dictId);
+    String getDictName(String dictId);
 
     /**
      * 获取通知标题
      */
-    String getNoticeTitle(Long dictId);
+    String getNoticeTitle(String dictId);
 
     /**
      * 根据字典名称和字典中的值获取对应的名称
@@ -101,7 +101,7 @@ public interface IConstantFactory {
     /**
      * 查询字典
      */
-    List<Dict> findInDict(Long id);
+    List<Dict> findInDict(String id);
 
     /**
      * 获取被缓存的对象(用户删除业务)
@@ -111,11 +111,11 @@ public interface IConstantFactory {
     /**
      * 获取子部门id
      */
-    List<Long> getSubDeptId(Long deptId);
+    List<Long> getSubDeptId(String deptId);
 
     /**
      * 获取所有父部门id
      */
-    List<Long> getParentDeptIds(Long deptId);
+    List<String> getParentDeptIds(String deptId);
 
 }

@@ -39,7 +39,7 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public String getUserNameById(Long userId) {
+    public String getUserNameById(String userId) {
         User user = userMapper.selectById(userId);
         if (user != null) {
             return user.getName();
@@ -49,7 +49,7 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public String getUserAccountById(Long userId) {
+    public String getUserAccountById(String userId) {
         User user = userMapper.selectById(userId);
         if (user != null) {
             return user.getAccount();
@@ -64,9 +64,9 @@ public class ConstantFactory implements IConstantFactory {
         if (ToolUtil.isEmpty(roleIds)) {
             return "";
         }
-        Long[] roles = Convert.toLongArray(roleIds);
+        String[] roles = Convert.toStrArray(roleIds);
         StringBuilder sb = new StringBuilder();
-        for (Long role : roles) {
+        for (String role : roles) {
             Role roleObj = roleMapper.selectById(role);
             if (ToolUtil.isNotEmpty(roleObj) && ToolUtil.isNotEmpty(roleObj.getName())) {
                 sb.append(roleObj.getName()).append(",");
@@ -77,8 +77,8 @@ public class ConstantFactory implements IConstantFactory {
 
     @Override
     @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.SINGLE_ROLE_NAME + "'+#roleId")
-    public String getSingleRoleName(Long roleId) {
-        if (0 == roleId) {
+    public String getSingleRoleName(String roleId) {
+        if ("0" == roleId) {
             return "--";
         }
         Role roleObj = roleMapper.selectById(roleId);
@@ -90,8 +90,8 @@ public class ConstantFactory implements IConstantFactory {
 
     @Override
     @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.SINGLE_ROLE_TIP + "'+#roleId")
-    public String getSingleRoleTip(Long roleId) {
-        if (0 == roleId) {
+    public String getSingleRoleTip(String roleId) {
+        if ("0" == roleId) {
             return "--";
         }
         Role roleObj = roleMapper.selectById(roleId);
@@ -119,9 +119,9 @@ public class ConstantFactory implements IConstantFactory {
 
     @Override
     public String getMenuNames(String menuIds) {
-        Long[] menus = Convert.toLongArray(menuIds);
+        String[] menus = Convert.toStrArray(menuIds);
         StringBuilder sb = new StringBuilder();
-        for (Long menu : menus) {
+        for (String menu : menus) {
             Menu menuObj = menuMapper.selectById(menu);
             if (ToolUtil.isNotEmpty(menuObj) && ToolUtil.isNotEmpty(menuObj.getName())) {
                 sb.append(menuObj.getName()).append(",");
@@ -131,7 +131,7 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public String getMenuName(Long menuId) {
+    public String getMenuName(String menuId) {
         if (ToolUtil.isEmpty(menuId)) {
             return "";
         } else {
@@ -198,7 +198,7 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public String getDictName(Long dictId) {
+    public String getDictName(String dictId) {
         if (ToolUtil.isEmpty(dictId)) {
             return "";
         } else {
@@ -212,7 +212,7 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public String getNoticeTitle(Long dictId) {
+    public String getNoticeTitle(String dictId) {
         if (ToolUtil.isEmpty(dictId)) {
             return "";
         } else {
@@ -262,7 +262,7 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public List<Dict> findInDict(Long id) {
+    public List<Dict> findInDict(String id) {
         if (ToolUtil.isEmpty(id)) {
             return null;
         } else {
@@ -282,7 +282,7 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public List<Long> getSubDeptId(Long deptId) {
+    public List<Long> getSubDeptId(String deptId) {
         QueryWrapper<Dept> wrapper = new QueryWrapper<>();
         wrapper = wrapper.like("PIDS", "%[" + deptId + "]%");
         List<Dept> depts = this.deptMapper.selectList(wrapper);
@@ -299,13 +299,13 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public List<Long> getParentDeptIds(Long deptId) {
+    public List<String> getParentDeptIds(String deptId) {
         Dept dept = deptMapper.selectById(deptId);
         String pids = dept.getPids();
         String[] split = pids.split(",");
-        ArrayList<Long> parentDeptIds = new ArrayList<>();
+        ArrayList<String> parentDeptIds = new ArrayList<>();
         for (String s : split) {
-            parentDeptIds.add(Long.valueOf(StrUtil.removeSuffix(StrUtil.removePrefix(s, "["), "]")));
+            parentDeptIds.add(StrUtil.removeSuffix(StrUtil.removePrefix(s, "["), "]"));
         }
         return parentDeptIds;
     }
