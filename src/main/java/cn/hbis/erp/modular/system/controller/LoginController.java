@@ -123,8 +123,6 @@ public class LoginController extends BaseController {
             ShiroKit.getSession().setAttribute("pw",user);
         }
 
-        User user = new User();
-        user = (User) ShiroKit.getSession().getAttribute("pw");
         ShiroKit.getSession().setAttribute("sessionFlag", true);
         return this.index();
     }
