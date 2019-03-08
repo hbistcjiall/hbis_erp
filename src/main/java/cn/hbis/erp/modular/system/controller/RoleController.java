@@ -171,7 +171,7 @@ public class RoleController extends BaseController {
         Role role = this.roleService.getById(roleId);
         Map<String, Object> roleMap = BeanUtil.beanToMap(role);
 
-        Long pid = role.getPid();
+        Long pid = Long.valueOf(role.getPid());
         String pName = ConstantFactory.me().getSingleRoleName(pid);
         roleMap.put("pName", pName);
 

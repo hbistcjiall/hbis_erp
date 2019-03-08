@@ -97,7 +97,7 @@ public class DeptController extends BaseController {
     public ResponseData add(String deptId,String pid,String simpleName ,String fullName,String description) {
         ShiroUser currentUser = ShiroKit.getUser();
         Dept dept = new Dept();
-        dept.setPid(Long.valueOf(pid));
+        dept.setPid(pid);
         dept.setSimpleName(simpleName);
         dept.setFullName(fullName);
         dept.setDescription(description);
@@ -167,7 +167,7 @@ public class DeptController extends BaseController {
 
         ShiroUser currentUser = ShiroKit.getUser();
         Dept dept = new Dept();
-        dept.setPid(Long.valueOf(pid));
+        dept.setPid(pid);
         dept.setSimpleName(simpleName);
         dept.setFullName(fullName);
         dept.setDescription(description);

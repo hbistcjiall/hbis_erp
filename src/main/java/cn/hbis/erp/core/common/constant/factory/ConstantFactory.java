@@ -183,11 +183,11 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public Long getMenuIdByCode(String code) {
+    public String  getMenuIdByCode(String code) {
         if (ToolUtil.isEmpty(code)) {
-            return 0L;
+            return "0";
         } else if (code.equals("0")) {
-            return 0L;
+            return "0";
         } else {
             Menu menu = new Menu();
             menu.setCode(code);
@@ -291,7 +291,7 @@ public class ConstantFactory implements IConstantFactory {
 
         if (depts != null && depts.size() > 0) {
             for (Dept dept : depts) {
-                deptids.add(dept.getDeptId());
+                deptids.add(Long.valueOf(dept.getDeptId()));
             }
         }
 

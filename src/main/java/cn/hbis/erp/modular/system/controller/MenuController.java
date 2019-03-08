@@ -211,7 +211,7 @@ public class MenuController extends BaseController {
         BeanUtil.copyProperties(menu, menuDto);
 
         //设置pid和父级名称
-        menuDto.setPid(ConstantFactory.me().getMenuIdByCode(menuDto.getPcode()));
+        menuDto.setPid(Long.valueOf(ConstantFactory.me().getMenuIdByCode(menuDto.getPcode())));
         menuDto.setPcodeName(ConstantFactory.me().getMenuNameByCode(menuDto.getPcode()));
 
         return ResponseData.success(menuDto);
