@@ -146,8 +146,8 @@
         m1.ICON AS icon,
         (
         CASE
-        WHEN (m2.MENU_ID = 0 OR m2.MENU_ID IS NULL) THEN
-        0
+        WHEN (m2.MENU_ID = '0' OR m2.MENU_ID IS NULL) THEN
+        Translate('0' USING NCHAR_CS)
         ELSE
         m2.MENU_ID
         END
