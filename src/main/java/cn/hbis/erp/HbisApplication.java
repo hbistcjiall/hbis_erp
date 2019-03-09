@@ -1,4 +1,3 @@
-
 package cn.hbis.erp;
 
 import cn.stylefeng.roses.core.config.WebAutoConfiguration;
@@ -8,10 +7,26 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * SpringBoot方式启动类
  *
+ *  ┏┓　　　┏┓
+ *┏┛┻━━━┛┻┓
+ *┃　　　　　　　┃ 　
+ *┃　　　━　　　┃
+ *┃　┳┛　┗┳　┃
+ *┃　　　　　　　┃
+ *┃　　　┻　　　┃
+ *┃　　　　　　　┃
+ *┗━┓　　　┏━┛
+ *　　┃　　　┃神兽保佑
+ *　　┃　　　┃代码无BUG！
+ *　　┃　　　┗━━━┓
+ *　　┃　　　　　　　┣┓
+ *　　┃　　　　　　　┏┛
+ *　　┗┓┓┏━┳┓┏┛
+ *　　　┃┫┫　┃┫┫
+ *　　　┗┻┛　┗┻┛
  *
- */
+ * */
 @SpringBootApplication(exclude = {WebAutoConfiguration.class})
 public class HbisApplication {
 
