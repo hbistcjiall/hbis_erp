@@ -77,7 +77,7 @@ public class RoleController extends BaseController {
      */
     @Permission
     @RequestMapping(value = "/role_edit")
-    public String roleEdit(@RequestParam Long roleId) {
+    public String roleEdit(@RequestParam String roleId) {
         if (ToolUtil.isEmpty(roleId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -93,7 +93,7 @@ public class RoleController extends BaseController {
      */
     @Permission
     @RequestMapping(value = "/role_assign/{roleId}")
-    public String roleAssign(@PathVariable("roleId") Long roleId, Model model) {
+    public String roleAssign(@PathVariable("roleId") String roleId, Model model) {
         if (ToolUtil.isEmpty(roleId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -152,7 +152,7 @@ public class RoleController extends BaseController {
     @BussinessLog(value = "删除角色", key = "roleId", dict = RoleDict.class)
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
-    public ResponseData remove(@RequestParam Long roleId) {
+    public ResponseData remove(@RequestParam String roleId) {
         this.roleService.delRoleById(roleId);
         return SUCCESS_TIP;
     }
@@ -164,14 +164,14 @@ public class RoleController extends BaseController {
      */
     @RequestMapping(value = "/view/{roleId}")
     @ResponseBody
-    public ResponseData view(@PathVariable Long roleId) {
+    public ResponseData view(@PathVariable String roleId) {
         if (ToolUtil.isEmpty(roleId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
         Role role = this.roleService.getById(roleId);
         Map<String, Object> roleMap = BeanUtil.beanToMap(role);
 
-        Long pid = Long.valueOf(role.getPid());
+        String  pid = role.getPid();
         String pName = ConstantFactory.me().getSingleRoleName(pid);
         roleMap.put("pName", pName);
 
@@ -187,7 +187,7 @@ public class RoleController extends BaseController {
     @BussinessLog(value = "配置权限", key = "roleId,ids", dict = RoleDict.class)
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
-    public ResponseData setAuthority(@RequestParam("roleId") Long roleId, @RequestParam("ids") String ids) {
+    public ResponseData setAuthority(@RequestParam("roleId") String roleId, @RequestParam("ids") String ids) {
         if (ToolUtil.isOneEmpty(roleId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -215,7 +215,7 @@ public class RoleController extends BaseController {
      */
     @RequestMapping(value = "/roleTreeListByUserId/{userId}")
     @ResponseBody
-    public List<ZTreeNode> roleTreeListByUserId(@PathVariable Long userId) {
+    public List<ZTreeNode> roleTreeListByUserId(@PathVariable String userId) {
         User theUser = this.userService.getById(userId);
         String roleId = theUser.getRoleId();
         if (ToolUtil.isEmpty(roleId)) {

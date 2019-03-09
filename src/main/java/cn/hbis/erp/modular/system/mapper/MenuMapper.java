@@ -25,14 +25,14 @@ public interface MenuMapper extends BaseMapper<Menu> {
      *
      * @return
      */
-    Page<Map<String, Object>> selectMenus(@Param("page") Page page, @Param("condition") String condition, @Param("level") String level, @Param("menuId") Long menuId, @Param("code") String code);
+    Page<Map<String, Object>> selectMenus(@Param("page") Page page, @Param("condition") String condition, @Param("level") String level, @Param("menuId") String menuId, @Param("code") String code);
 
     /**
      * 根据条件查询菜单
      *
      * @return
      */
-    List<Long> getMenuIdsByRoleId(@Param("roleId") Long roleId);
+    List<String> getMenuIdsByRoleId(@Param("roleId") String roleId);
 
     /**
      * 获取菜单列表树
@@ -46,7 +46,7 @@ public interface MenuMapper extends BaseMapper<Menu> {
      *
      * @return
      */
-    List<ZTreeNode> menuTreeListByMenuIds(List<Long> menuIds);
+    List<ZTreeNode> menuTreeListByMenuIds(List<String> menuIds);
 
     /**
      * 删除menu关联的relation
@@ -54,7 +54,7 @@ public interface MenuMapper extends BaseMapper<Menu> {
      * @param menuId
      * @return
      */
-    int deleteRelationByMenu(Long menuId);
+    int deleteRelationByMenu(String menuId);
 
     /**
      * 获取资源url通过角色id
@@ -62,7 +62,7 @@ public interface MenuMapper extends BaseMapper<Menu> {
      * @param roleId
      * @return
      */
-    List<String> getResUrlsByRoleId(Long roleId);
+    List<String> getResUrlsByRoleId(String roleId);
 
     /**
      * 根据角色获取菜单
@@ -70,7 +70,7 @@ public interface MenuMapper extends BaseMapper<Menu> {
      * @param roleIds
      * @return
      */
-    List<MenuNode> getMenusByRoleIds(List<Long> roleIds);
+    List<MenuNode> getMenusByRoleIds(List<String> roleIds);
 
     /**
      * 查询菜单树形列表

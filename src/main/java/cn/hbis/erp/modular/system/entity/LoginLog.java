@@ -21,7 +21,7 @@ public class LoginLog implements Serializable {
     /**
      * 主键
      */
-    @TableId(value = "LOGIN_LOG_ID", type = IdType.ID_WORKER)
+    @TableId(value = "LOGIN_LOG_ID", type = IdType.ID_WORKER_STR)
     private String loginLogId;
     /**
      * 日志名称
@@ -53,7 +53,6 @@ public class LoginLog implements Serializable {
      */
     @TableField("IP_ADDRESS")
     private String ipAddress;
-
 
     public String getLoginLogId() {
         return loginLogId;

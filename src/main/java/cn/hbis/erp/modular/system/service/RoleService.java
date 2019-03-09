@@ -91,16 +91,16 @@ public class RoleService extends ServiceImpl<RoleMapper, Role> {
      * @param ids    权限的id
      */
     @Transactional(rollbackFor = Exception.class)
-    public void setAuthority(Long roleId, String ids) {
+    public void setAuthority(String roleId, String ids) {
 
         // 删除该角色所有的权限
         this.roleMapper.deleteRolesById(roleId);
 
         // 添加新的权限
-        for (Long id : Convert.toLongArray(ids.split(","))) {
+        for (String id : Convert.toStrArray(ids.split(","))) {
             Relation relation = new Relation();
-            relation.setRoleId(roleId.toString());
-            relation.setMenuId(id.toString());
+            relation.setRoleId(roleId);
+            relation.setMenuId(id);
             this.relationMapper.insert(relation);
         }
 
@@ -114,7 +114,7 @@ public class RoleService extends ServiceImpl<RoleMapper, Role> {
      *
      */
     @Transactional(rollbackFor = Exception.class)
-    public void delRoleById(Long roleId) {
+    public void delRoleById(String roleId) {
 
         if (ToolUtil.isEmpty(roleId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
@@ -154,7 +154,7 @@ public class RoleService extends ServiceImpl<RoleMapper, Role> {
      * @param roleId 角色id
      * @return
      */
-    public int deleteRolesById(Long roleId) {
+    public int deleteRolesById(String roleId) {
         return this.baseMapper.deleteRolesById(roleId);
     }
 

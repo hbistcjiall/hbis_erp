@@ -1,5 +1,6 @@
 package cn.hbis.erp.modular.system.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -24,7 +25,7 @@ public class Relation implements Serializable {
     /**
      * 主键
      */
-    @TableId(value = "RELATION_ID", type = ID_WORKER)
+    @TableId(value = "RELATION_ID", type = IdType.ID_WORKER_STR)
     private String relationId;
     /**
      * 菜单id

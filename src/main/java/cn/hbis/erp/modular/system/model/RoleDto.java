@@ -17,11 +17,11 @@ public class RoleDto implements Serializable {
     /**
      * 主键id
      */
-    private Long roleId;
+    private String roleId;
     /**
      * 父角色id
      */
-    private Long pid;
+    private String pid;
     /**
      * 角色名称
      */

@@ -79,7 +79,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
         }
 
         //获取旧的菜单
-        Long id = menuDto.getMenuId();
+        String id = menuDto.getMenuId();
         Menu menu = this.getById(id);
 
         if (menu == null) {
@@ -129,7 +129,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
      *
      */
     @Transactional
-    public void delMenu(Long menuId) {
+    public void delMenu(String menuId) {
 
         //删除菜单
         this.menuMapper.deleteById(menuId);
@@ -144,7 +144,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
      *
      */
     @Transactional
-    public void delMenuContainSubMenus(Long menuId) {
+    public void delMenuContainSubMenus(String menuId) {
 
         Menu menu = menuMapper.selectById(menuId);
 
@@ -156,7 +156,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
         wrapper = wrapper.like("PCODES", "%[" + menu.getCode() + "]%");
         List<Menu> menus = menuMapper.selectList(wrapper);
         for (Menu temp : menus) {
-            delMenu(Long.valueOf(temp.getMenuId()));
+            delMenu(temp.getMenuId());
         }
     }
 
@@ -165,11 +165,11 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
      *
      * @return
      */
-    public Page<Map<String, Object>> selectMenus(String condition, String level, Long menuId) {
+    public Page<Map<String, Object>> selectMenus(String condition, String level, String menuId) {
 
         //获取menuId的code
         String code = "";
-        if (menuId != null && menuId != 0L) {
+        if (menuId != null && menuId != "0") {
             Menu menu = this.getById(menuId);
             code = menu.getCode();
         }
@@ -184,7 +184,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
      *
      * @return
      */
-    public List<Long> getMenuIdsByRoleId(Long roleId) {
+    public List<String> getMenuIdsByRoleId(String roleId) {
         return this.baseMapper.getMenuIdsByRoleId(roleId);
     }
 
@@ -202,7 +202,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
      *
      * @return
      */
-    public List<ZTreeNode> menuTreeListByMenuIds(List<Long> menuIds) {
+    public List<ZTreeNode> menuTreeListByMenuIds(List<String> menuIds) {
         return this.baseMapper.menuTreeListByMenuIds(menuIds);
     }
 
@@ -212,7 +212,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
      * @param menuId
      * @return
      */
-    public int deleteRelationByMenu(Long menuId) {
+    public int deleteRelationByMenu(String menuId) {
         return this.baseMapper.deleteRelationByMenu(menuId);
     }
 
@@ -222,7 +222,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
      * @param roleId
      * @return
      */
-    public List<String> getResUrlsByRoleId(Long roleId) {
+    public List<String> getResUrlsByRoleId(String roleId) {
         return this.baseMapper.getResUrlsByRoleId(roleId);
     }
 
@@ -232,7 +232,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
      * @param roleIds
      * @return
      */
-    public List<MenuNode> getMenusByRoleIds(List<Long> roleIds) {
+    public List<MenuNode> getMenusByRoleIds(List<String> roleIds) {
         List<MenuNode> menus = this.baseMapper.getMenusByRoleIds(roleIds);
 
         //给所有的菜单url加上ctxPath
@@ -270,7 +270,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
             resultMenu.setPcodes("[0],");
             resultMenu.setLevels(1);
         } else {
-            Long pid = menuParam.getPid();
+            String pid = menuParam.getPid();
             Menu pMenu = this.getById(pid);
             Integer pLevels = pMenu.getLevels();
             resultMenu.setPcode(pMenu.getCode());

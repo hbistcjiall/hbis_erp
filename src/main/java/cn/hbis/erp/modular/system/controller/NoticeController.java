@@ -68,7 +68,7 @@ public class NoticeController extends BaseController {
      *
      */
     @RequestMapping("/notice_update/{noticeId}")
-    public String noticeUpdate(@PathVariable Long noticeId, Model model) {
+    public String noticeUpdate(@PathVariable String noticeId, Model model) {
         Notice notice = this.noticeService.getById(noticeId);
         model.addAllAttributes(BeanUtil.beanToMap(notice));
         LogObjectHolder.me().set(notice);
@@ -125,7 +125,7 @@ public class NoticeController extends BaseController {
     @RequestMapping(value = "/delete")
     @ResponseBody
     @BussinessLog(value = "删除通知", key = "noticeId", dict = NoticeMap.class)
-    public Object delete(@RequestParam Long noticeId) {
+    public Object delete(@RequestParam String noticeId) {
 
         //缓存通知名称
         LogObjectHolder.me().set(ConstantFactory.me().getNoticeTitle(noticeId));

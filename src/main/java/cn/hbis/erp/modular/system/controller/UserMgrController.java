@@ -11,12 +11,14 @@ import cn.hbis.erp.core.common.constant.state.ManagerStatus;
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
 import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.shiro.ShiroKit;
+import cn.hbis.erp.core.shiro.ShiroUser;
 import cn.hbis.erp.modular.system.entity.User;
 import cn.hbis.erp.modular.system.factory.UserFactory;
 import cn.hbis.erp.modular.system.model.UserDto;
 import cn.hbis.erp.modular.system.service.UserService;
 import cn.hbis.erp.modular.system.warpper.UserWrapper;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.stylefeng.roses.core.base.controller.BaseController;
 import cn.stylefeng.roses.core.datascope.DataScope;
 import cn.stylefeng.roses.core.reqres.response.ResponseData;
@@ -35,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -83,8 +86,13 @@ public class UserMgrController extends BaseController {
      *
      *
      */
+    @ApiOperation(value = "修改当前用户的密码")
     @RequestMapping("/changePwd")
     @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "oldPassword" ,value = "旧密码",dataType ="String" ),
+            @ApiImplicitParam(name = "newPassword" ,value = "新密码",dataType ="String" )
+    })
     public Object changePwd(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword) {
         if (ToolUtil.isOneEmpty(oldPassword, newPassword)) {
             throw new RequestEmptyException();
@@ -120,9 +128,9 @@ public class UserMgrController extends BaseController {
             beginTime = split[0];
             endTime = split[1];
         }
-        Long dId = null;
+        String dId = null;
         if (ToolUtil.isNotEmpty(deptId)){
-           dId = Long.valueOf(deptId);
+           dId = deptId;
         }
 
         if (ShiroKit.isAdmin()) {
@@ -148,21 +156,33 @@ public class UserMgrController extends BaseController {
     @Permission(Const.ADMIN_NAME)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name" ,value = "姓名",dataType ="String" ),
-            @ApiImplicitParam(name = "timeLimit" ,value = "时间区间",dataType ="String" ),
+            @ApiImplicitParam(name = "account" ,value = "登录名",dataType ="String" ),
+            @ApiImplicitParam(name = "password" ,value = "密码",dataType ="String" ),
+            @ApiImplicitParam(name = "birthday" ,value = "生日",dataType ="String" ),
+            @ApiImplicitParam(name = "sex" ,value = "性别",dataType ="String" ),
+            @ApiImplicitParam(name = "email" ,value = "邮箱地址",dataType ="String" ),
+            @ApiImplicitParam(name = "phone" ,value = "电话号",dataType ="String" ),
+            @ApiImplicitParam(name = "roleId" ,value = "角色ID",dataType ="String" ),
             @ApiImplicitParam(name = "deptId" ,value = "部门ID",dataType ="String" ),
-            @ApiImplicitParam(name = "limit" ,value = "每页条数",dataType ="String" ),
-            @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" ),
-            @ApiImplicitParam(name = "name" ,value = "姓名",dataType ="String" ),
-            @ApiImplicitParam(name = "timeLimit" ,value = "时间区间",dataType ="String" ),
-            @ApiImplicitParam(name = "deptId" ,value = "部门ID",dataType ="String" ),
-            @ApiImplicitParam(name = "limit" ,value = "每页条数",dataType ="String" ),
-            @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
+            @ApiImplicitParam(name = "avatar" ,value = "头像",dataType ="String" )
     })
     @ResponseBody
-    public ResponseData add(@Valid UserDto user, BindingResult result) {
+    public ResponseData add(String name, String account, String password, String birthday, String sex, String email, String phone,
+                            String roleId, String deptId, String avatar, BindingResult result) {
         if (result.hasErrors()) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
+        UserDto user = new UserDto();
+        user.setName(name);
+        user.setAccount(account);
+        user.setPassword(password);
+        user.setBirthday(DateUtil.parseTimeToday(birthday));
+        user.setSex(sex);
+        user.setEmail(email);
+        user.setPhone(phone);
+        user.setRoleId(roleId);
+        user.setDeptId(deptId);
+        user.setAvatar(avatar);
         this.userService.addUser(user);
         return SUCCESS_TIP;
     }
@@ -173,13 +193,40 @@ public class UserMgrController extends BaseController {
      *
      *
      */
-    @RequestMapping("/edit")
-    @BussinessLog(value = "修改管理员", key = "account", dict = UserDict.class)
+    @ApiOperation(value = "修改管理员")
+    @RequestMapping(value = "/edit",method = RequestMethod.POST)
+    @BussinessLog(value = "修改管理员", key = "account")
     @ResponseBody
-    public ResponseData edit(@Valid UserDto user, BindingResult result) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" ),
+            @ApiImplicitParam(name = "name" ,value = "姓名",dataType ="String" ),
+            @ApiImplicitParam(name = "account" ,value = "登录名",dataType ="String" ),
+            @ApiImplicitParam(name = "password" ,value = "密码",dataType ="String" ),
+            @ApiImplicitParam(name = "birthday" ,value = "生日",dataType ="String" ),
+            @ApiImplicitParam(name = "sex" ,value = "性别",dataType ="String" ),
+            @ApiImplicitParam(name = "email" ,value = "邮箱地址",dataType ="String" ),
+            @ApiImplicitParam(name = "phone" ,value = "电话号",dataType ="String" ),
+            @ApiImplicitParam(name = "roleId" ,value = "角色ID",dataType ="String" ),
+            @ApiImplicitParam(name = "deptId" ,value = "部门ID",dataType ="String" ),
+            @ApiImplicitParam(name = "avatar" ,value = "头像",dataType ="String" )
+    })
+    public ResponseData edit(String userId, String name, String account, String password, String birthday, String sex, String email, String phone,
+                             String roleId, String deptId, String avatar, BindingResult result) {
         if (result.hasErrors()) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
+        UserDto user = new UserDto();
+        user.setUserId(userId);
+        user.setName(name);
+        user.setAccount(account);
+        user.setPassword(password);
+        user.setBirthday(DateUtil.parseTimeToday(birthday));
+        user.setSex(sex);
+        user.setEmail(email);
+        user.setPhone(phone);
+        user.setRoleId(roleId);
+        user.setDeptId(deptId);
+        user.setAvatar(avatar);
         this.userService.editUser(user);
         return SUCCESS_TIP;
     }
@@ -211,6 +258,8 @@ public class UserMgrController extends BaseController {
      */
     @RequestMapping("/view/{userId}")
     @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" )})
     public User view(@PathVariable String userId) {
         if (ToolUtil.isEmpty(userId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
@@ -225,10 +274,13 @@ public class UserMgrController extends BaseController {
      *
      *
      */
+    @ApiOperation(value = "重置管理员的密码")
     @RequestMapping("/reset")
-    @BussinessLog(value = "重置管理员密码", key = "userId", dict = UserDict.class)
+    @BussinessLog(value = "重置管理员密码", key = "userId")
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" )})
     public ResponseData reset(@RequestParam String userId) {
         if (ToolUtil.isEmpty(userId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
@@ -280,7 +332,7 @@ public class UserMgrController extends BaseController {
      *
      */
     @RequestMapping("/setRole")
-    @BussinessLog(value = "分配角色", key = "userId,roleIds", dict = UserDict.class)
+    @BussinessLog(value = "分配角色", key = "userId,roleIds")
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
     public ResponseData setRole(@RequestParam("userId") String userId, @RequestParam("roleIds") String roleIds) {

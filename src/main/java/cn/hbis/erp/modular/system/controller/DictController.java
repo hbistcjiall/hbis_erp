@@ -63,7 +63,7 @@ public class DictController extends BaseController {
      *
      */
     @RequestMapping("/dict_add_item")
-    public String deptAddItem(@RequestParam("dictId") Long dictId, Model model) {
+    public String deptAddItem(@RequestParam("dictId") String dictId, Model model) {
         model.addAttribute("dictTypeId", dictId);
         model.addAttribute("dictTypeName", ConstantFactory.me().getDictName(dictId));
         return PREFIX + "dict_add_item.html";
@@ -105,7 +105,7 @@ public class DictController extends BaseController {
     @RequestMapping(value = "/delete")
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
-    public ResponseData delete(@RequestParam Long dictId) {
+    public ResponseData delete(@RequestParam String dictId) {
 
         //缓存被删除的名称
         LogObjectHolder.me().set(ConstantFactory.me().getDictName(dictId));
