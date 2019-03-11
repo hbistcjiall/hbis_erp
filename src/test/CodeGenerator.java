@@ -47,7 +47,7 @@ public class CodeGenerator {
         strategy.setSkipView(true);
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-        strategy.setInclude("TEST");
+        strategy.setInclude("USER_TEST");//在这里改表名
         strategy.setEntityColumnConstant(false);
         strategy.setEntityLombokModel(true);
         strategy.setRestControllerStyle(true);
