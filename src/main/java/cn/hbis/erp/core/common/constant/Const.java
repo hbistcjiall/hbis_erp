@@ -33,12 +33,12 @@ public interface Const {
     /**
      * 管理员id
      */
-    Long ADMIN_ID = 1L;
+    String ADMIN_ID = "";
 
     /**
      * 超级管理员角色id
      */
-    Long ADMIN_ROLE_ID = 1L;
+    String ADMIN_ROLE_ID = "";
 
     /**
      * 接口文档的菜单名

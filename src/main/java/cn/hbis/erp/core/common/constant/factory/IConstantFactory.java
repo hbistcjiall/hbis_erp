@@ -111,7 +111,7 @@ public interface IConstantFactory {
     /**
      * 获取子部门id
      */
-    List<Long> getSubDeptId(String deptId);
+    List<String> getSubDeptId(String deptId);
 
     /**
      * 获取所有父部门id

@@ -9,6 +9,7 @@ import cn.hbis.erp.core.shiro.ShiroKit;
 import cn.hbis.erp.core.shiro.ShiroUser;
 import cn.hbis.erp.core.shiro.service.UserAuthService;
 import cn.hbis.erp.core.util.ApiMenuFilter;
+import cn.hbis.erp.core.util.DataScopeS;
 import cn.hbis.erp.modular.system.entity.User;
 import cn.hbis.erp.modular.system.factory.UserFactory;
 import cn.hbis.erp.modular.system.mapper.UserMapper;
@@ -132,7 +133,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      *
      *
      */
-    public Page<Map<String, Object>> selectUsers(DataScope dataScope, String name, String beginTime, String endTime, String deptId) {
+    public Page<Map<String, Object>> selectUsers(DataScopeS dataScope, String name, String beginTime, String endTime, String deptId) {
         Page page = PageFactory.defaultPage();
         return this.baseMapper.selectUsers(page, dataScope, name, beginTime, endTime, deptId);
     }
@@ -181,7 +182,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         if (ShiroKit.isAdmin()) {
             return;
         }
-        List<Long> deptDataScope = ShiroKit.getDeptDataScope();
+        List<String> deptDataScope = ShiroKit.getDeptDataScope();
         User user = this.getById(userId);
         String deptId = user.getDeptId();
         if (deptDataScope.contains(deptId)) {

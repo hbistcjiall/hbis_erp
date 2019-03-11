@@ -259,10 +259,10 @@ public class ShiroKit {
     /**
      * 获取当前用户的部门数据范围的集合
      */
-    public static List<Long> getDeptDataScope() {
+    public static List<String> getDeptDataScope() {
         String deptId = getUser().getDeptId();
-        List<Long> subDeptIds = ConstantFactory.me().getSubDeptId(deptId);
-        subDeptIds.add(Long.valueOf(deptId));
+        List<String> subDeptIds = ConstantFactory.me().getSubDeptId(deptId);
+        subDeptIds.add(deptId);
         return subDeptIds;
     }
 

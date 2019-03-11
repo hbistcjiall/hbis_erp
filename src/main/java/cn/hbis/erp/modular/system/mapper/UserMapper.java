@@ -1,5 +1,6 @@
 package cn.hbis.erp.modular.system.mapper;
 
+import cn.hbis.erp.core.util.DataScopeS;
 import cn.hbis.erp.modular.system.entity.User;
 import cn.stylefeng.roses.core.datascope.DataScope;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -31,7 +32,7 @@ public interface UserMapper extends BaseMapper<User> {
     /**
      * 根据条件查询用户列表
      */
-    Page<Map<String, Object>> selectUsers(@Param("page") Page page, @Param("dataScope") DataScope dataScope, @Param("name") String name, @Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("deptId") String deptId);
+    Page<Map<String, Object>> selectUsers(@Param("page") Page page, @Param("dataScope") DataScopeS dataScope, @Param("name") String name, @Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("deptId") String deptId);
 
     /**
      * 设置用户的角色

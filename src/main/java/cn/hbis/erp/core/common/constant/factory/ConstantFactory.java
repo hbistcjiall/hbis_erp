@@ -282,16 +282,16 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public List<Long> getSubDeptId(String deptId) {
+    public List<String> getSubDeptId(String deptId) {
         QueryWrapper<Dept> wrapper = new QueryWrapper<>();
         wrapper = wrapper.like("PIDS", "%[" + deptId + "]%");
         List<Dept> depts = this.deptMapper.selectList(wrapper);
 
-        ArrayList<Long> deptids = new ArrayList<>();
+        ArrayList<String> deptids = new ArrayList<>();
 
         if (depts != null && depts.size() > 0) {
             for (Dept dept : depts) {
-                deptids.add(Long.valueOf(dept.getDeptId()));
+                deptids.add(dept.getDeptId());
             }
         }
 
