@@ -23,7 +23,7 @@ public class User implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "USER_ID", type = IdType.ID_WORKER)
+    @TableId(value = "USER_ID", type = IdType.ID_WORKER_STR)
     private String userId;
     /**
      * 头像

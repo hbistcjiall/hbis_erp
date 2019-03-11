@@ -10,7 +10,7 @@
         <version>2.1.1.RELEASE</version>
     </parent>
 
-    <groupId>cn.hbi</groupId>
+    <groupId>cn.hbis</groupId>
     <artifactId>hbis</artifactId>
     <version>1.0.0</version>
 
@@ -46,6 +46,16 @@
             <artifactId>ojdbc7</artifactId>
             <version>11.1.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+            <version>3.0.7.1</version>
+        </dependency>
         <!--<dependency>-->
             <!--<groupId>mysql</groupId>-->
             <!--<artifactId>mysql-connector-java</artifactId>-->
@@ -58,9 +68,9 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
@@ -151,6 +161,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>5.1.4.RELEASE</version>
+            <scope>compile</scope>
         </dependency>
 
         <!--需要分布式session的话需要放开注释-->

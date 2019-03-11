@@ -21,7 +21,7 @@ public class OperationLog implements Serializable {
     /**
      * 主键
      */
-    @TableId(value = "OPERATION_LOG_ID", type = IdType.ID_WORKER)
+    @TableId(value = "OPERATION_LOG_ID", type = IdType.ID_WORKER_STR)
     private String operationLogId;
     /**
      * 日志类型(字典)

@@ -21,7 +21,7 @@ public class Role implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "ROLE_ID", type = IdType.ID_WORKER)
+    @TableId(value = "ROLE_ID", type = IdType.ID_WORKER_STR)
     private String roleId;
     /**
      * 父角色id
