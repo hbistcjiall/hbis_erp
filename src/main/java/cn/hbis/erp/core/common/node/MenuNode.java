@@ -134,7 +134,7 @@ public class MenuNode implements Comparable, Serializable {
             if (listMap != null && listMap.get(menuList.get(n).getId()) != null) {
                 menuList.get(n).setChildren(listMap.get(menuList.get(n).getId()));
             }
-            if (menuList.get(n).getParentId() != null && menuList.get(n).getParentId().equals("105")) {
+            if (menuList.get(n).getParentId() != null && !menuList.get(n).getParentId().equals("0")) {
                 //判断当前节点所属的pid是否已经创建了以该pid为key的键值对，没有则创建新的链表
                 currentMap.computeIfAbsent(menuList.get(n).getParentId(), k -> new LinkedList<>());
                 //将该节点插入到对应的list的头部
