@@ -1,21 +1,18 @@
 server:
   port: 8081
   max-http-header-size: 10240
+  compression:
+    enabled: true
+    mime-types: application/json,text/html,application/javascript,text/css
 hbis:
   swagger-open: true                #是否开启swagger (true/false)
   kaptcha-open: false               #是否开启登录时验证码 (true/false)
   spring-session-open: false        #是否开启spring session,如果是多机环境需要开启(true/false)
   session-invalidate-time: 1800     #session失效时间(只在单机环境下生效，多机环境在SpringSessionConfig类中配置) 单位：秒
   session-validation-interval: 900  #多久检测一次失效的session(只在单机环境下生效) 单位：秒
-  #muti-datasource多数据源的时候再配置，单机情况下没任何用处
-  muti-datasource:
-    url: jdbc:oracle:thin:@221.192.142.22:1521:orcl
-    username: hbistc_test
-    password: hbistc_test
-    dataSourceNames:
-      - dataSourceHbis
-      - dataSourceBiz
 spring:
+  application:
+    name: hbis
   profiles:
     active: dev
   devtools:
@@ -28,11 +25,54 @@ spring:
       max-file-size: 100MB
   datasource:
     url: jdbc:oracle:thin:@221.192.142.22:1521:orcl
+    driver-class-name: oracle.jdbc.OracleDriver
     username: hbistc_test
     password: hbistc_test
     filters: wall,mergeStat
 mybatis-plus:
+  #xml文件位置
+  mapper-locations: classpath:cn/hbis/erp/modular/system/mapper/mapping/*Mapper.xml
+  #检查xml文件
+  check-config-location: true
+  #实体类
   typeAliasesPackage: cn.hbis.erp.modular.system.model
-
+  #扫描typeAliasesPackage路径下以java.lang.Object作为父类的域对象
+  type-aliases-super-type: java.lang.Object
+  configuration:
+    #开启自动驼峰命名规则
+    mapUnderscoreToCamelCase: false
+    #懒加载对象全部加载，非按需加载
+    aggressive-lazy-loading: true
+    #对所有的 resultMap 都进行自动映射
+    auto-mapping-behavior: PARTIAL
+    #映射失败，要抛出异常
+    auto-mapping-unknown-column-behavior: FAILING
+    #开启映射器缓存
+    cache-enabled: true
+    #列即使为空也映射
+    call-setters-on-nulls: true
+  global-config:
+    #生产环境要关掉这个刷新！别忘了！xml热更新
+    #    refresh: true
+    #缓存 Sql 解析
+    sqlParserCache: true
+    db-config:
+      #是否开启大写命名
+      capital-mode: false
+      #映射列是否包含like
+      column-like: false
+      #数据库类型
+      db-type: oracle
+#      db-type: mysql
+      #新增修改验证字段不为null
+      field-strategy: not_null
+      #数据库id类型 uuid 32位String
+      id-type: uuid
+      #逻辑删除已删除标记0
+      logic-delete-value: 1
+      #逻辑删除未删除标记0
+      logic-not-delete-value: 0
+      #表名是否包含下划线
+      table-underline: true
 logging:
   path: hbis-logs
