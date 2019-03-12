@@ -30,9 +30,9 @@ public class CodeGenerator {
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setDbType(DbType.ORACLE);
         dsc.setDriverName("oracle.jdbc.driver.OracleDriver");
-        dsc.setUrl("jdbc:oracle:thin:@221.192.142.45:1521:orcl");
-        dsc.setUsername("hbis");
-        dsc.setPassword("123456");
+        dsc.setUrl("jdbc:oracle:thin:@221.192.142.22:orcl");
+        dsc.setUsername("hbistc_test");
+        dsc.setPassword("hbistc_test");
         // 包配置
         PackageConfig pc = new PackageConfig();
         pc.setParent("cn.hbis.erp.modular.system");
