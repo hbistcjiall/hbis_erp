@@ -32,6 +32,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -162,22 +163,10 @@ public class UserMgrController extends BaseController {
             @ApiImplicitParam(name = "avatar" ,value = "头像",dataType ="String" )
     })
     @ResponseBody
-    public ResponseData add(String name, String account, String password, String birthday, String sex, String email, String phone,
-                            String roleId, String deptId, String avatar, BindingResult result) {
+    public ResponseData add(@Valid UserDto user, BindingResult result) {
         if (result.hasErrors()) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
-        UserDto user = new UserDto();
-        user.setName(name);
-        user.setAccount(account);
-        user.setPassword(password);
-        user.setBirthday(DateUtil.parseTimeToday(birthday));
-        user.setSex(sex);
-        user.setEmail(email);
-        user.setPhone(phone);
-        user.setRoleId(roleId);
-        user.setDeptId(deptId);
-        user.setAvatar(avatar);
         this.userService.addUser(user);
         return SUCCESS_TIP;
     }
@@ -205,23 +194,10 @@ public class UserMgrController extends BaseController {
             @ApiImplicitParam(name = "deptId" ,value = "部门ID",dataType ="String" ),
             @ApiImplicitParam(name = "avatar" ,value = "头像",dataType ="String" )
     })
-    public ResponseData edit(String userId, String name, String account, String password, String birthday, String sex, String email, String phone,
-                             String roleId, String deptId, String avatar, BindingResult result) {
+    public ResponseData edit(@Valid UserDto user, BindingResult result) {
         if (result.hasErrors()) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
-        UserDto user = new UserDto();
-        user.setUserId(userId);
-        user.setName(name);
-        user.setAccount(account);
-        user.setPassword(password);
-        user.setBirthday(DateUtil.parseTimeToday(birthday));
-        user.setSex(sex);
-        user.setEmail(email);
-        user.setPhone(phone);
-        user.setRoleId(roleId);
-        user.setDeptId(deptId);
-        user.setAvatar(avatar);
         this.userService.editUser(user);
         return SUCCESS_TIP;
     }
@@ -251,11 +227,11 @@ public class UserMgrController extends BaseController {
      *
      *
      */
-    @RequestMapping("/view/{userId}")
+    @RequestMapping(value = "/view",method = RequestMethod.GET)
     @ResponseBody
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" )})
-    public User view(@PathVariable String userId) {
+    public User view(@RequestParam String userId) {
         if (ToolUtil.isEmpty(userId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -270,7 +246,7 @@ public class UserMgrController extends BaseController {
      *
      */
     @ApiOperation(value = "重置管理员的密码")
-    @RequestMapping("/reset")
+    @RequestMapping(value = "/reset",method = RequestMethod.POST)
     @BussinessLog(value = "重置管理员密码", key = "userId")
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
@@ -295,7 +271,7 @@ public class UserMgrController extends BaseController {
      *
      */
     @ApiOperation(value = "冻结/解冻用户")
-    @RequestMapping("/freeze")
+    @RequestMapping(value = "/freeze",method = RequestMethod.POST)
     @BussinessLog(value = "冻结/解冻用户", key = "userId")
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
@@ -303,7 +279,7 @@ public class UserMgrController extends BaseController {
             @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" ),
             @ApiImplicitParam(name = "status" ,value = "账户状态",dataType ="String" )
     })
-    public ResponseData freeze(String userId,String status) {
+    public ResponseData freeze(@RequestParam String userId,@RequestParam String status) {
         if (ToolUtil.isEmpty(userId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }

@@ -36,7 +36,7 @@ public class UserWrapper extends BaseControllerWrapper {
     protected void wrapTheMap(Map<String, Object> map) {
         map.put("SEXNAME", ConstantFactory.me().getSexName((String) map.get("SEX")));
         map.put("ROLENAME", ConstantFactory.me().getRoleName((String) map.get("ROLEID")));
-        map.put("DEPTNAME", ConstantFactory.me().getDeptName( map.get("DEPTID").toString()));
+        map.put("DEPTNAME", ConstantFactory.me().getDeptName((String)map.get("DEPTID")));
         map.put("STATUSNAME", ConstantFactory.me().getStatusName((String) map.get("STATUS")));
     }
 
