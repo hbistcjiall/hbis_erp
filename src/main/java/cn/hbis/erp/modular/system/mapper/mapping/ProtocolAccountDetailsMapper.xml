@@ -4,17 +4,15 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="cn.hbis.erp.modular.system.entity.ProtocolAccountDetails">
-        <id column="PROTOCOL_ACCOUNT_ID" property="protocolAccountId"/>
-        <result column="UPLOAD_TIME" property="uploadTime"/>
-        <result column="PROTOCOL_YEAR" property="protocolYear"/>
-        <result column="ACCOUNT_NAME" property="accountName"/>
-        <result column="SUPPLY_MODE" property="supplyMode"/>
-        <result column="VARIETIES" property="varieties"/>
-        <result column="MAIN_SALES_REGIONAL" property="mainSalesRegional"/>
-        <result column="AIDED_SALES_REGIONAL_ONE" property="aidedSalesRegionalOne"/>
-        <result column="AIDED_SALES_REGIONAL_TWO" property="aidedSalesRegionalTwo"/>
-        <result column="STEEL_MILLS" property="steelMills"/>
-        <result column="ANNUAL_AGREEMENT_VOLUME" property="annualAgreementVolume"/>
+        <!--<id column="OPERATION_LOG_ID" property="operationLogId"/>
+        <result column="LOG_TYPE" property="logType"/>
+        <result column="LOG_NAME" property="logName"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="CLASS_NAME" property="className"/>
+        <result column="METHOD" property="method"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="SUCCEED" property="succeed"/>
+        <result column="MESSAGE" property="message"/>-->
     </resultMap>
 
 
