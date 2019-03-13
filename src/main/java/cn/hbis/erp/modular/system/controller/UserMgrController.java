@@ -5,10 +5,12 @@ import cn.hbis.erp.config.properties.HbisProperties;
 import cn.hbis.erp.core.common.annotion.BussinessLog;
 import cn.hbis.erp.core.common.annotion.Permission;
 import cn.hbis.erp.core.common.constant.Const;
+import cn.hbis.erp.core.common.constant.dictmap.UserDict;
 import cn.hbis.erp.core.common.constant.factory.ConstantFactory;
 import cn.hbis.erp.core.common.constant.state.ManagerStatus;
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
 import cn.hbis.erp.core.common.page.PageFactory;
+import cn.hbis.erp.core.log.LogObjectHolder;
 import cn.hbis.erp.core.shiro.ShiroKit;
 import cn.hbis.erp.core.util.DataScopeS;
 import cn.hbis.erp.modular.system.entity.User;
@@ -58,8 +60,11 @@ public class UserMgrController extends BaseController {
      *
      *
      */
-    @RequestMapping("/getUserInfo")
-    @ResponseBody
+    @ApiOperation(value = "获取用户详情")
+    @PostMapping("/getUserInfo")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" )
+    })
     public Object getUserInfo(@RequestParam String userId) {
         if (ToolUtil.isEmpty(userId)) {
             throw new RequestEmptyException();
@@ -83,8 +88,7 @@ public class UserMgrController extends BaseController {
      *
      */
     @ApiOperation(value = "修改当前用户的密码")
-    @RequestMapping("/changePwd")
-    @ResponseBody
+    @RequestMapping(value = "/changePwd",method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "oldPassword" ,value = "旧密码",dataType ="String" ),
             @ApiImplicitParam(name = "newPassword" ,value = "新密码",dataType ="String" )
@@ -112,7 +116,6 @@ public class UserMgrController extends BaseController {
     })
     @RequestMapping(value = "/list",method = RequestMethod.POST)
     @Permission
-    @ResponseBody
     public Object list(String name, String timeLimit, String deptId, String limit, String page) {
 
         //拼接查询条件
@@ -148,7 +151,7 @@ public class UserMgrController extends BaseController {
      */
     @ApiOperation(value = "添加管理员")
     @RequestMapping(value = "/add",method = RequestMethod.POST)
-    @BussinessLog(value = "添加管理员", key = "account")
+    @BussinessLog(value = "添加管理员", key = "account",dict = UserDict.class)
     @Permission(Const.ADMIN_NAME)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name" ,value = "姓名",dataType ="String" ),
@@ -162,7 +165,6 @@ public class UserMgrController extends BaseController {
             @ApiImplicitParam(name = "deptId" ,value = "部门ID",dataType ="String" ),
             @ApiImplicitParam(name = "avatar" ,value = "头像",dataType ="String" )
     })
-    @ResponseBody
     public ResponseData add(@Valid UserDto user, BindingResult result) {
         if (result.hasErrors()) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
@@ -179,8 +181,7 @@ public class UserMgrController extends BaseController {
      */
     @ApiOperation(value = "修改管理员")
     @RequestMapping(value = "/edit",method = RequestMethod.POST)
-    @BussinessLog(value = "修改管理员", key = "account")
-    @ResponseBody
+    @BussinessLog(value = "修改管理员", key = "account",dict = UserDict.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" ),
             @ApiImplicitParam(name = "name" ,value = "姓名",dataType ="String" ),
@@ -195,6 +196,13 @@ public class UserMgrController extends BaseController {
             @ApiImplicitParam(name = "avatar" ,value = "头像",dataType ="String" )
     })
     public ResponseData edit(@Valid UserDto user, BindingResult result) {
+        if (ToolUtil.isEmpty(user.getUserId())) {
+            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        }
+        //缓存用户修改前详细信息
+        User userS = this.userService.getById(user.getUserId());
+        LogObjectHolder.me().set(userS);
+
         if (result.hasErrors()) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -210,9 +218,8 @@ public class UserMgrController extends BaseController {
      */
     @ApiOperation(value = "删除管理员（逻辑删除）")
     @RequestMapping(value = "/delete",method = RequestMethod.POST)
-    @BussinessLog(value = "删除管理员")
+    @BussinessLog(value = "删除管理员", key = "userId",dict = UserDict.class)
     @Permission
-    @ResponseBody
     public ResponseData delete(@RequestParam String userId) {
         if (ToolUtil.isEmpty(userId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
@@ -228,7 +235,6 @@ public class UserMgrController extends BaseController {
      *
      */
     @RequestMapping(value = "/view",method = RequestMethod.GET)
-    @ResponseBody
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" )})
     public User view(@RequestParam String userId) {
@@ -247,9 +253,8 @@ public class UserMgrController extends BaseController {
      */
     @ApiOperation(value = "重置管理员的密码")
     @RequestMapping(value = "/reset",method = RequestMethod.POST)
-    @BussinessLog(value = "重置管理员密码", key = "userId")
+    @BussinessLog(value = "重置管理员密码", key = "userId",dict = UserDict.class)
     @Permission(Const.ADMIN_NAME)
-    @ResponseBody
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" )})
     public ResponseData reset(@RequestParam String userId) {
@@ -272,9 +277,8 @@ public class UserMgrController extends BaseController {
      */
     @ApiOperation(value = "冻结/解冻用户")
     @RequestMapping(value = "/freeze",method = RequestMethod.POST)
-    @BussinessLog(value = "冻结/解冻用户", key = "userId")
+    @BussinessLog(value = "冻结/解冻用户", key = "userId",dict = UserDict.class)
     @Permission(Const.ADMIN_NAME)
-    @ResponseBody
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" ),
             @ApiImplicitParam(name = "status" ,value = "账户状态",dataType ="String" )
@@ -284,7 +288,7 @@ public class UserMgrController extends BaseController {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
         //不能冻结超级管理员
-        if (Long.valueOf(userId).equals(Const.ADMIN_ID)) {
+        if (userId.equals(Const.ADMIN_ID)) {
             throw new ServiceException(BizExceptionEnum.CANT_FREEZE_ADMIN);
         }
         this.userService.assertAuth(userId);
@@ -303,9 +307,8 @@ public class UserMgrController extends BaseController {
      *
      */
     @RequestMapping("/setRole")
-    @BussinessLog(value = "分配角色", key = "userId,roleIds")
+    @BussinessLog(value = "分配角色", key = "userId,roleIds",dict = UserDict.class)
     @Permission(Const.ADMIN_NAME)
-    @ResponseBody
     public ResponseData setRole(@RequestParam("userId") String userId, @RequestParam("roleIds") String roleIds) {
         if (ToolUtil.isOneEmpty(userId, roleIds)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
@@ -326,7 +329,6 @@ public class UserMgrController extends BaseController {
      *
      */
     @RequestMapping(method = RequestMethod.POST, path = "/upload")
-    @ResponseBody
     public String upload(@RequestPart("file") MultipartFile picture) {
 
         String pictureName = UUID.randomUUID().toString() + "." + ToolUtil.getFileSuffix(picture.getOriginalFilename());

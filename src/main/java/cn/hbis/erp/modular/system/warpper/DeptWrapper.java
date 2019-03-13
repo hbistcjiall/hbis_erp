@@ -35,12 +35,12 @@ public class DeptWrapper extends BaseControllerWrapper {
 
     @Override
     protected void wrapTheMap(Map<String, Object> map) {
-        String pid = map.get("pid").toString();
+        String pid = map.get("PID").toString();
 
         if (ToolUtil.isEmpty(pid) || pid.equals(0)) {
-            map.put("pName", "--");
+            map.put("PNAME", "--");
         } else {
-            map.put("pName", ConstantFactory.me().getDeptName(pid));
+            map.put("PNAME", ConstantFactory.me().getDeptName(pid));
         }
     }
 }
