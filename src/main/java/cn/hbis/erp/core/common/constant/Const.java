@@ -33,7 +33,7 @@ public interface Const {
     /**
      * 管理员id
      */
-    String ADMIN_ID = "1";
+    String ADMIN_ID = "";
 
     /**
      * 超级管理员角色id

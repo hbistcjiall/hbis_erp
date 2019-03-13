@@ -1,9 +1,6 @@
 
 package cn.hbis.erp.modular.system.controller;
 
-import cn.hbis.erp.core.common.annotion.BussinessLog;
-import cn.hbis.erp.core.common.annotion.Permission;
-import cn.hbis.erp.core.common.constant.dictmap.DeptDict;
 import cn.hbis.erp.core.common.constant.factory.ConstantFactory;
 import cn.hbis.erp.core.common.node.TreeviewNode;
 import cn.hbis.erp.core.common.node.ZTreeNode;
@@ -40,7 +37,8 @@ import java.util.Map;
  *
  */
 @RestController
-@RequestMapping("/dept")
+@RequestMapping("/")
+@Api(value = "dept",description = "部门")
 public class DeptController extends BaseController {
 
 
@@ -67,7 +65,7 @@ public class DeptController extends BaseController {
      *
      */
     @ApiOperation(value = "获取部门的tree列表，treeView格式")
-    @PostMapping("treeView")
+    @PostMapping(value = "treeView")
     public List<TreeviewNode> treeView() {
         List<TreeviewNode> treeViewNodes = this.deptService.treeviewNodes();
 
@@ -95,10 +93,16 @@ public class DeptController extends BaseController {
             @ApiImplicitParam(name = "fullName", value = "部门全称", dataType = "String"),
             @ApiImplicitParam(name = "description", value = "部门描述", dataType = "String")
     })
-    @PostMapping("add")
-    @Permission
-    @BussinessLog(value = "添加部门", key = "simpleName", dict = DeptDict.class)
-    public ResponseData add(Dept dept) {
+    @PostMapping(value = "add")
+    public ResponseData add(String deptId,String pid,String simpleName ,String fullName,String description) {
+        ShiroUser currentUser = ShiroKit.getUser();
+        Dept dept = new Dept();
+        dept.setPid(pid);
+        dept.setSimpleName(simpleName);
+        dept.setFullName(fullName);
+        dept.setDescription(description);
+        dept.setCreateTime(new Date());
+        dept.setCreateUser(currentUser.getId());
         this.deptService.addDept(dept);
         return SUCCESS_TIP;
     }
@@ -111,13 +115,10 @@ public class DeptController extends BaseController {
     @ApiOperation(value = "获取所有部门列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "condition", value = "部门简称或全称", dataType = "String"),
-            @ApiImplicitParam(name = "deptId", value = "部门ID", dataType = "String"),
-            @ApiImplicitParam(name = "limit" ,value = "每页条数",dataType ="String" ),
-            @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
+            @ApiImplicitParam(name = "deptId", value = "部门ID", dataType = "String")
     })
-    @PostMapping("list")
-    @Permission
-    public Object list(String condition, String deptId, String limit, String page) {
+    @PostMapping(value = "list")
+    public Object list(String condition, String deptId) {
         Page<Map<String, Object>> list = this.deptService.list(condition, deptId);
         Page<Map<String, Object>> wrap = new DeptWrapper(list).wrap();
         return PageFactory.createPageInfo(wrap);
@@ -132,8 +133,7 @@ public class DeptController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "deptId", value = "部门ID", dataType = "String")
     })
-    @PostMapping("detail")
-    @Permission
+    @PostMapping(value = "detail")
     public Object detail(String deptId) {
         Dept dept = deptService.getById(deptId);
         DeptDto deptDto = new DeptDto();
@@ -155,18 +155,24 @@ public class DeptController extends BaseController {
             @ApiImplicitParam(name = "fullName", value = "部门全称", dataType = "String"),
             @ApiImplicitParam(name = "description", value = "部门描述", dataType = "String")
     })
-    @PostMapping("update")
-    @Permission
-    @BussinessLog(value = "修改部门", key = "simpleName", dict = DeptDict.class)
-    public ResponseData update(Dept dept) {
-        if (ToolUtil.isEmpty(dept.getDeptId())) {
+    @PostMapping(value = "update")
+    public ResponseData update(String deptId,String pid,String simpleName ,String fullName,String description) {
+        if (ToolUtil.isEmpty(deptId)) {
             throw new RequestEmptyException();
         }
 
         //缓存部门修改前详细信息
-        Dept dep = deptService.getById(dept.getDeptId());
+        Dept dep = deptService.getById(deptId);
         LogObjectHolder.me().set(dep);
 
+        ShiroUser currentUser = ShiroKit.getUser();
+        Dept dept = new Dept();
+        dept.setPid(pid);
+        dept.setSimpleName(simpleName);
+        dept.setFullName(fullName);
+        dept.setDescription(description);
+        dept.setUpdateTime(new Date());
+        dept.setUpdateUser(currentUser.getId());
         deptService.editDept(dept);
         return SUCCESS_TIP;
     }
@@ -180,9 +186,7 @@ public class DeptController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "deptId", value = "部门ID", dataType = "String")
     })
-    @PostMapping("delete")
-    @Permission
-    @BussinessLog(value = "删除部门", key = "deptId", dict = DeptDict.class)
+    @PostMapping(value = "delete")
     public ResponseData delete(String deptId) {
 
         //缓存被删除的部门名称

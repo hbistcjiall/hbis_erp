@@ -22,10 +22,6 @@ import cn.stylefeng.roses.core.reqres.response.ResponseData;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,9 +35,11 @@ import java.util.Map;
  *
  *
  */
-@RestController
+@Controller
 @RequestMapping("/role")
 public class RoleController extends BaseController {
+
+    private static String PREFIX = "/modular/system/role";
 
     @Autowired
     private UserService userService;
@@ -50,19 +48,65 @@ public class RoleController extends BaseController {
     private RoleService roleService;
 
     /**
+     * 跳转到角色列表页面
+     *
+     *
+     */
+    @RequestMapping("")
+    public String index() {
+        return PREFIX + "/role.html";
+    }
+
+    /**
+     * 跳转到添加角色
+     *
+     *
+     */
+    @RequestMapping(value = "/role_add")
+    public String roleAdd() {
+        return PREFIX + "/role_add.html";
+    }
+
+    /**
+     * 跳转到修改角色
+     *
+     *
+     */
+    @Permission
+    @RequestMapping(value = "/role_edit")
+    public String roleEdit(@RequestParam String roleId) {
+        if (ToolUtil.isEmpty(roleId)) {
+            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        }
+        Role role = this.roleService.getById(roleId);
+        LogObjectHolder.me().set(role);
+        return PREFIX + "/role_edit.html";
+    }
+
+    /**
+     * 跳转到权限分配
+     *
+     *
+     */
+    @Permission
+    @RequestMapping(value = "/role_assign/{roleId}")
+    public String roleAssign(@PathVariable("roleId") String roleId, Model model) {
+        if (ToolUtil.isEmpty(roleId)) {
+            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        }
+        model.addAttribute("roleId", roleId);
+        return PREFIX + "/role_assign.html";
+    }
+
+    /**
      * 获取角色列表
      *
      *
      */
-    @ApiOperation(value = "获取角色列表")
     @Permission
-    @PostMapping("list")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleName", value = "角色名称", dataType = "String"),
-            @ApiImplicitParam(name = "limit" ,value = "每页条数",dataType ="String" ),
-            @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
-    })
-    public Object listRole(String roleName, String limit, String page) {
+    @RequestMapping(value = "/list")
+    @ResponseBody
+    public Object list(@RequestParam(value = "roleName", required = false) String roleName) {
         Page<Map<String, Object>> roles = this.roleService.selectRoles(roleName);
         Page<Map<String, Object>> wrap = new RoleWrapper(roles).wrap();
         return PageFactory.createPageInfo(wrap);
@@ -73,17 +117,11 @@ public class RoleController extends BaseController {
      *
      *
      */
-    @ApiOperation(value = "角色新增")
-    @PostMapping("addRole")
+    @RequestMapping(value = "/add")
     @BussinessLog(value = "添加角色", key = "name", dict = RoleDict.class)
     @Permission(Const.ADMIN_NAME)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "角色名称", dataType = "String"),
-            @ApiImplicitParam(name = "pid", value = "父ID", dataType = "String"),
-            @ApiImplicitParam(name = "description", value = "提示", dataType = "String"),
-            @ApiImplicitParam(name = "sort", value = "序号", dataType = "Integer")
-    })
-    public ResponseData addRole(Role role) {
+    @ResponseBody
+    public ResponseData add(Role role) {
         this.roleService.addRole(role);
         return SUCCESS_TIP;
     }
@@ -93,20 +131,11 @@ public class RoleController extends BaseController {
      *
      *
      */
-    @ApiOperation(value = "角色修改")
-    @PostMapping("editRole")
+    @RequestMapping(value = "/edit")
     @BussinessLog(value = "修改角色", key = "name", dict = RoleDict.class)
     @Permission(Const.ADMIN_NAME)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "角色名称", dataType = "String"),
-            @ApiImplicitParam(name = "pid", value = "父ID", dataType = "String"),
-            @ApiImplicitParam(name = "description", value = "提示", dataType = "String"),
-            @ApiImplicitParam(name = "sort", value = "序号", dataType = "Integer")
-    })
-    public ResponseData editRole(RoleDto roleDto) {
-        if (ToolUtil.isEmpty(roleDto.getRoleId())) {
-            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
-        }
+    @ResponseBody
+    public ResponseData edit(RoleDto roleDto) {
         this.roleService.editRole(roleDto);
         return SUCCESS_TIP;
     }
@@ -116,14 +145,11 @@ public class RoleController extends BaseController {
      *
      *
      */
-    @ApiOperation(value = "删除角色")
-    @PostMapping("removeRole")
+    @RequestMapping(value = "/remove")
     @BussinessLog(value = "删除角色", key = "roleId", dict = RoleDict.class)
     @Permission(Const.ADMIN_NAME)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId" ,value = "角色ID",dataType ="String" )
-    })
-    public ResponseData removeRole(@RequestParam String roleId) {
+    @ResponseBody
+    public ResponseData remove(@RequestParam String roleId) {
         this.roleService.delRoleById(roleId);
         return SUCCESS_TIP;
     }
@@ -133,12 +159,9 @@ public class RoleController extends BaseController {
      *
      *
      */
-    @ApiOperation(value = "查看角色")
-    @PostMapping(value = "viewRole")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId" ,value = "角色ID",dataType ="String" )
-    })
-    public ResponseData viewRole(@RequestParam String roleId) {
+    @RequestMapping(value = "/view/{roleId}")
+    @ResponseBody
+    public ResponseData view(@PathVariable String roleId) {
         if (ToolUtil.isEmpty(roleId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -157,14 +180,10 @@ public class RoleController extends BaseController {
      *
      *
      */
-    @ApiOperation(value = "配置权限")
-    @PostMapping("/setAuthority")
+    @RequestMapping("/setAuthority")
     @BussinessLog(value = "配置权限", key = "roleId,ids", dict = RoleDict.class)
     @Permission(Const.ADMIN_NAME)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId" ,value = "角色ID",dataType ="String" ),
-            @ApiImplicitParam(name = "ids" ,value = "权限ID集合",dataType ="String" )
-    })
+    @ResponseBody
     public ResponseData setAuthority(@RequestParam("roleId") String roleId, @RequestParam("ids") String ids) {
         if (ToolUtil.isOneEmpty(roleId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
@@ -178,8 +197,8 @@ public class RoleController extends BaseController {
      *
      *
      */
-    @ApiOperation(value = "获取角色列表")
-    @PostMapping("/roleTreeList")
+    @RequestMapping(value = "/roleTreeList")
+    @ResponseBody
     public List<ZTreeNode> roleTreeList() {
         List<ZTreeNode> roleTreeList = this.roleService.roleTreeList();
         roleTreeList.add(ZTreeNode.createParent());
@@ -191,11 +210,8 @@ public class RoleController extends BaseController {
      *
      *
      */
-    @ApiOperation(value = "获取角色列表，通过用户id")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" )
-    })
-    @PostMapping("/roleTreeListByUserId")
+    @RequestMapping(value = "/roleTreeListByUserId",method = RequestMethod.POST)
+    @ResponseBody
     public List<ZTreeNode> roleTreeListByUserId(@RequestParam("userId") String userId) {
         User theUser = this.userService.getById(userId);
         String roleId = theUser.getRoleId();

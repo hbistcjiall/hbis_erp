@@ -37,7 +37,7 @@
 
     <select id="roleTreeList" resultType="cn.hbis.erp.core.common.node.ZTreeNode">
 		select ROLE_ID AS id, PID as pId,
-		NAME as name, (case when (PID = "0" or PID is null) then 'true'
+		NAME as name, (case when (PID = 0 or PID is null) then 'true'
 		else 'false' end) as `open` from sys_role
 	</select>
 
@@ -48,7 +48,7 @@
         NAME AS `name`,
         (
         CASE
-        WHEN (PID = "0" OR PID IS NULL) THEN
+        WHEN (PID = 0 OR PID IS NULL) THEN
         'true'
         ELSE
         'false'
@@ -56,7 +56,7 @@
         ) as `open`,
         (
         CASE
-        WHEN (r1.ROLE_ID = "0" OR r1.ROLE_ID IS NULL) THEN
+        WHEN (r1.ROLE_ID = 0 OR r1.ROLE_ID IS NULL) THEN
         'false'
         ELSE
         'true'
