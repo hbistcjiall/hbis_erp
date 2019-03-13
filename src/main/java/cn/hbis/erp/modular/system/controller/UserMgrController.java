@@ -302,10 +302,15 @@ public class UserMgrController extends BaseController {
      *
      *
      */
-    @RequestMapping("/setRole")
+    @ApiOperation(value = "分配角色")
+    @RequestMapping("setRole")
     @BussinessLog(value = "分配角色", key = "userId,roleIds",dict = UserDict.class)
     @Permission(Const.ADMIN_NAME)
-    public ResponseData setRole(@RequestParam("userId") String userId, @RequestParam("roleIds") String roleIds) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" ),
+            @ApiImplicitParam(name = "roleIds" ,value = "角色集合",dataType ="String" )
+    })
+    public ResponseData setRole( String userId, String roleIds) {
         if (ToolUtil.isOneEmpty(userId, roleIds)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }

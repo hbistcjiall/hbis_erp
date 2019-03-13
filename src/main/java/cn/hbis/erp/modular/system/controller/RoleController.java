@@ -56,7 +56,7 @@ public class RoleController extends BaseController {
      */
     @ApiOperation(value = "获取角色列表")
     @Permission
-    @PostMapping("listRole")
+    @PostMapping("list")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleName", value = "角色名称", dataType = "String"),
             @ApiImplicitParam(name = "limit" ,value = "每页条数",dataType ="String" ),
@@ -74,7 +74,7 @@ public class RoleController extends BaseController {
      *
      */
     @ApiOperation(value = "角色新增")
-    @PostMapping("addRole")
+    @PostMapping("add")
     @BussinessLog(value = "添加角色", key = "name", dict = RoleDict.class)
     @Permission(Const.ADMIN_NAME)
     @ApiImplicitParams({
@@ -94,7 +94,7 @@ public class RoleController extends BaseController {
      *
      */
     @ApiOperation(value = "角色修改")
-    @PostMapping("editRole")
+    @PostMapping("edit")
     @BussinessLog(value = "修改角色", key = "name", dict = RoleDict.class)
     @Permission(Const.ADMIN_NAME)
     @ApiImplicitParams({
@@ -158,7 +158,7 @@ public class RoleController extends BaseController {
      *
      */
     @ApiOperation(value = "配置权限")
-    @PostMapping("/setAuthority")
+    @PostMapping("setAuthority")
     @BussinessLog(value = "配置权限", key = "roleId,ids", dict = RoleDict.class)
     @Permission(Const.ADMIN_NAME)
     @ApiImplicitParams({
@@ -179,7 +179,7 @@ public class RoleController extends BaseController {
      *
      */
     @ApiOperation(value = "获取角色列表")
-    @PostMapping("/roleTreeList")
+    @PostMapping("roleTreeList")
     public List<ZTreeNode> roleTreeList() {
         List<ZTreeNode> roleTreeList = this.roleService.roleTreeList();
         roleTreeList.add(ZTreeNode.createParent());
@@ -195,7 +195,7 @@ public class RoleController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" )
     })
-    @PostMapping("/roleTreeListByUserId")
+    @PostMapping("roleTreeListByUserId")
     public List<ZTreeNode> roleTreeListByUserId(@RequestParam("userId") String userId) {
         User theUser = this.userService.getById(userId);
         String roleId = theUser.getRoleId();
