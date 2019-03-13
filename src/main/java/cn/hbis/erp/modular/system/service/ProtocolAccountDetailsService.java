@@ -3,7 +3,6 @@ package cn.hbis.erp.modular.system.service;
 import cn.hbis.erp.modular.system.entity.ProtocolAccountDetails;
 import cn.hbis.erp.modular.system.mapper.ProtocolAccountDetailsMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
@@ -15,7 +14,6 @@ import javax.annotation.Resource;
  *
  *
  */
-@Service
 public class ProtocolAccountDetailsService extends ServiceImpl<ProtocolAccountDetailsMapper, ProtocolAccountDetails> {
 
 }

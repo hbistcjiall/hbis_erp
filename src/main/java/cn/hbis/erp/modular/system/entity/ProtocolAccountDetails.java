@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * <p>
@@ -15,6 +14,7 @@ import java.util.Date;
  *
  */
 @TableName("sys_protocol_account_details")
+@Data
 public class ProtocolAccountDetails implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,7 +28,7 @@ public class ProtocolAccountDetails implements Serializable {
      * 上传时间
      */
     @TableField(value = "UPLOAD_TIME", fill = FieldFill.INSERT)
-    private Date uploadTime;
+    private Data uploadTime;
     /**
      * 协议年份
      */
@@ -83,11 +83,11 @@ public class ProtocolAccountDetails implements Serializable {
         this.protocolAccountId = protocolAccountId;
     }
 
-    public Date getUploadTime() {
+    public Data getUploadTime() {
         return uploadTime;
     }
 
-    public void setUploadTime(Date uploadTime) {
+    public void setUploadTime(Data uploadTime) {
         this.uploadTime = uploadTime;
     }
 
