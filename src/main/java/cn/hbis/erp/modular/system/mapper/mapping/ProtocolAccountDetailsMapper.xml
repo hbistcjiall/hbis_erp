@@ -17,5 +17,25 @@
         <result column="ANNUAL_AGREEMENT_VOLUME" property="annualAgreementVolume"/>
     </resultMap>
 
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        PROTOCOL_ACCOUNT_ID AS protocolAccountId, UPLOAD_TIME AS uploadTime, PROTOCOL_YEAR AS protocolYear, ACCOUNT_NAME AS accountName, SUPPLY_MODE AS supplyMode, VARIETIES AS varieties, MAIN_SALES_REGIONAL AS mainSalesRegional, AIDED_SALES_REGIONAL_ONE AS aidedSalesRegionalOne, AIDED_SALES_REGIONAL_TWO AS aidedSalesRegionalTwo, STEEL_MILLS AS steelMills, ANNUAL_AGREEMENT_VOLUME AS annualAgreementVolume
+    </sql>
+
+    <select id="searchProtocolAccountDetailList" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from SYS_PROTOCOL_ACCOUNT_DETAILS where 1 = 1
+        <if test="beginTime != null and beginTime !='' and endTime != null and endTime != ''">
+            and (UPLOAD_TIME between to_date(CONCAT(#{beginTime},' 00:00:00'), 'yyyy-mm-dd hh24:mi:ss') and to_date(CONCAT(#{endTime},' 23:59:59'), 'yyyy-mm-dd hh24:mi:ss'))
+        </if>
+        <if test="protocolYear != null and protocolYear !=''">
+            and PROTOCOL_YEAR like CONCAT(CONCAT('%',#{protocolYear}),'%')
+        </if>
+        <if test="steelMills != null and steelMills !=''">
+            and STEEL_MILLS like CONCAT(CONCAT('%',#{steelMills}),'%')
+        </if>
+    </select>
+
 
 </mapper>
