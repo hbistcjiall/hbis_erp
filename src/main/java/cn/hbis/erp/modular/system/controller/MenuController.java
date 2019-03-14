@@ -22,12 +22,10 @@ import cn.stylefeng.roses.core.reqres.response.ResponseData;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -37,11 +35,9 @@ import java.util.Map;
  *
  *
  */
-@Controller
+@RestController
 @RequestMapping("/menu")
 public class MenuController extends BaseController {
-
-    private static String PREFIX = "/modular/system/menu/";
 
     @Autowired
     private MenuService menuService;
@@ -50,53 +46,14 @@ public class MenuController extends BaseController {
     private UserService userService;
 
     /**
-     * 跳转到菜单列表列表页面
-     *
-     *
-     */
-    @RequestMapping("")
-    public String index() {
-        return PREFIX + "menu.html";
-    }
-
-    /**
-     * 跳转到菜单列表列表页面
-     *
-     *
-     */
-    @RequestMapping(value = "/menu_add")
-    public String menuAdd() {
-        return PREFIX + "menu_add.html";
-    }
-
-    /**
-     * 跳转到菜单详情列表页面
-     *
-     *
-     */
-    @Permission(Const.ADMIN_NAME)
-    @RequestMapping(value = "/menu_edit")
-    public String menuEdit(@RequestParam String menuId) {
-        if (ToolUtil.isEmpty(menuId)) {
-            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
-        }
-
-        //获取菜单当前信息，记录日志用
-        Menu menu = this.menuService.getById(menuId);
-        LogObjectHolder.me().set(menu);
-
-        return PREFIX + "menu_edit.html";
-    }
-
-    /**
      * 修该菜单
      *
      *
      */
+    @ApiOperation(value = "修改菜单")
     @Permission(Const.ADMIN_NAME)
-    @RequestMapping(value = "/edit")
+    @PostMapping("edit")
     @BussinessLog(value = "修改菜单", key = "name", dict = MenuDict.class)
-    @ResponseBody
     public ResponseData edit(MenuDto menu) {
 
         //如果修改了编号，则该菜单的子菜单也要修改对应编号
@@ -113,9 +70,9 @@ public class MenuController extends BaseController {
      *
      *
      */
+    @ApiOperation(value = "获取菜单列表")
     @Permission(Const.ADMIN_NAME)
-    @RequestMapping(value = "/list")
-    @ResponseBody
+    @PostMapping("list")
     public Object list(@RequestParam(required = false) String menuName,
                        @RequestParam(required = false) String level,
                        @RequestParam(required = false) String menuId) {
@@ -129,9 +86,9 @@ public class MenuController extends BaseController {
      *
      *
      */
+    @ApiOperation(value = "获取菜单列表（s树形）")
     @Permission(Const.ADMIN_NAME)
-    @RequestMapping(value = "/listTree")
-    @ResponseBody
+    @PostMapping("listTree")
     public Object listTree(@RequestParam(required = false) String menuName,
                            @RequestParam(required = false) String level) {
         List<Map<String, Object>> menus = this.menuService.selectMenuTree(menuName, level);
@@ -147,10 +104,10 @@ public class MenuController extends BaseController {
      *
      *
      */
+    @ApiOperation(value = "新增菜单")
     @Permission(Const.ADMIN_NAME)
-    @RequestMapping(value = "/add")
+    @PostMapping("add")
     @BussinessLog(value = "菜单新增", key = "name", dict = MenuDict.class)
-    @ResponseBody
     public ResponseData add(MenuDto menu) {
         this.menuService.addMenu(menu);
         return SUCCESS_TIP;
@@ -161,10 +118,10 @@ public class MenuController extends BaseController {
      *
      *
      */
+    @ApiOperation(value = "新增菜单")
     @Permission(Const.ADMIN_NAME)
-    @RequestMapping(value = "/remove")
+    @PostMapping("remove")
     @BussinessLog(value = "删除菜单", key = "menuId", dict = MenuDict.class)
-    @ResponseBody
     public ResponseData remove(@RequestParam String menuId) {
         if (ToolUtil.isEmpty(menuId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
@@ -183,9 +140,9 @@ public class MenuController extends BaseController {
      *
      *
      */
-    @RequestMapping(value = "/view/{menuId}")
-    @ResponseBody
-    public ResponseData view(@PathVariable String menuId) {
+    @ApiOperation(value = "查看菜单")
+    @PostMapping("view")
+    public ResponseData view(String menuId) {
         if (ToolUtil.isEmpty(menuId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
@@ -198,14 +155,17 @@ public class MenuController extends BaseController {
      *
      *
      */
-    @RequestMapping(value = "/getMenuInfo")
-    @ResponseBody
+    @ApiOperation(value = "查看菜单")
+    @PostMapping("getMenuInfo")
+    @Permission(Const.ADMIN_NAME)
     public ResponseData getMenuInfo(@RequestParam String menuId) {
         if (ToolUtil.isEmpty(menuId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
 
+        //获取菜单当前信息，记录日志用
         Menu menu = this.menuService.getById(menuId);
+        LogObjectHolder.me().set(menu);
 
         MenuDto menuDto = new MenuDto();
         BeanUtil.copyProperties(menu, menuDto);
@@ -222,8 +182,8 @@ public class MenuController extends BaseController {
      *
      *
      */
-    @RequestMapping(value = "/menuTreeList")
-    @ResponseBody
+    @ApiOperation(value = "获取菜单列表(首页用)")
+    @PostMapping("menuTreeList")
     public List<ZTreeNode> menuTreeList() {
         return this.menuService.menuTreeList();
     }
@@ -233,8 +193,8 @@ public class MenuController extends BaseController {
      *
      *
      */
-    @RequestMapping(value = "/selectMenuTreeList")
-    @ResponseBody
+    @ApiOperation(value = "获取菜单列表(选择父级菜单用)")
+    @PostMapping("selectMenuTreeList")
     public List<ZTreeNode> selectMenuTreeList() {
         List<ZTreeNode> roleTreeList = this.menuService.menuTreeList();
         roleTreeList.add(ZTreeNode.createParent());
@@ -246,9 +206,10 @@ public class MenuController extends BaseController {
      *
      *
      */
-    @RequestMapping(value = "/menuTreeListByRoleId/{roleId}")
+    @ApiOperation(value = "获取角色的菜单列表")
+    @PostMapping("menuTreeListByRoleId")
     @ResponseBody
-    public List<ZTreeNode> menuTreeListByRoleId(@PathVariable String roleId) {
+    public List<ZTreeNode> menuTreeListByRoleId(String roleId) {
         List<String> menuIds = this.menuService.getMenuIdsByRoleId(roleId);
         if (ToolUtil.isEmpty(menuIds)) {
             return this.menuService.menuTreeList();

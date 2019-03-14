@@ -24,3 +24,4 @@ public interface ProtocolAccountDetailsMapper extends BaseMapper<ProtocolAccount
                                          @Param("beginTime") String beginTime, @Param("endTime") String endTime,
                                          @Param("protocolYear") String protocolYear, @Param("steelMills") String steelMills);
 }
+

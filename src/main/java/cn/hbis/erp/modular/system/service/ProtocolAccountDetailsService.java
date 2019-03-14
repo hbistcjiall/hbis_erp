@@ -35,6 +35,5 @@ public class ProtocolAccountDetailsService extends ServiceImpl<ProtocolAccountDe
         Page page = PageFactory.defaultPage();
         return this.baseMapper.searchProtocolAccountDetailList(page, mainSalesRegional, beginTime, endTime, protocolYear, steelMills);
     }
-
-
 }
+

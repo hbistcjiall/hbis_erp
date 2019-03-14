@@ -102,7 +102,7 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.DEPT_NAME + "'+#deptId")
+    @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.DEPT_NAME + "'+#DEPTID")
     public String getDeptName(String deptId) {
         if (deptId == null) {
             return "";
