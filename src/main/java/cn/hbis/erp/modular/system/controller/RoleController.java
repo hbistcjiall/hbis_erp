@@ -7,6 +7,7 @@ import cn.hbis.erp.core.common.constant.Const;
 import cn.hbis.erp.core.common.constant.dictmap.RoleDict;
 import cn.hbis.erp.core.common.constant.factory.ConstantFactory;
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
+import cn.hbis.erp.core.common.node.TreeviewNode;
 import cn.hbis.erp.core.common.node.ZTreeNode;
 import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.log.LogObjectHolder;
@@ -15,20 +16,19 @@ import cn.hbis.erp.modular.system.entity.User;
 import cn.hbis.erp.modular.system.model.RoleDto;
 import cn.hbis.erp.modular.system.service.RoleService;
 import cn.hbis.erp.modular.system.service.UserService;
+import cn.hbis.erp.modular.system.warpper.DeptTreeWrapper;
 import cn.hbis.erp.modular.system.warpper.RoleWrapper;
 import cn.hutool.core.bean.BeanUtil;
 import cn.stylefeng.roses.core.base.controller.BaseController;
 import cn.stylefeng.roses.core.reqres.response.ResponseData;
+import cn.stylefeng.roses.core.treebuild.DefaultTreeBuildFactory;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -80,7 +80,7 @@ public class RoleController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", value = "角色名称", dataType = "String"),
             @ApiImplicitParam(name = "pid", value = "父ID", dataType = "String"),
-            @ApiImplicitParam(name = "description", value = "提示", dataType = "String"),
+            @ApiImplicitParam(name = "description", value = "别名", dataType = "String"),
             @ApiImplicitParam(name = "sort", value = "序号", dataType = "Integer")
     })
     public ResponseData addRole(Role role) {
@@ -94,19 +94,22 @@ public class RoleController extends BaseController {
      *
      */
     @ApiOperation(value = "角色修改")
-    @PostMapping("edit")
+    @RequestMapping(value = "/edit",method = RequestMethod.POST)
     @BussinessLog(value = "修改角色", key = "name", dict = RoleDict.class)
     @Permission(Const.ADMIN_NAME)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", value = "角色名称", dataType = "String"),
             @ApiImplicitParam(name = "pid", value = "父ID", dataType = "String"),
             @ApiImplicitParam(name = "description", value = "提示", dataType = "String"),
-            @ApiImplicitParam(name = "sort", value = "序号", dataType = "Integer")
+            @ApiImplicitParam(name = "sort", value = "序号", dataType = "String")
     })
     public ResponseData editRole(RoleDto roleDto) {
         if (ToolUtil.isEmpty(roleDto.getRoleId())) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
+        Role role = this.roleService.getById(roleDto.getRoleId());
+        LogObjectHolder.me().set(role);
+
         this.roleService.editRole(roleDto);
         return SUCCESS_TIP;
     }
@@ -203,4 +206,24 @@ public class RoleController extends BaseController {
         }
     }
 
+    /**
+     * 获取角色的tree列表，treeView格式
+     *
+     *
+     */
+    @ApiOperation(value = "获取角色的tree列表，treeView格式")
+    @PostMapping("treeView")
+    public List<TreeviewNode> treeViewRole() {
+        List<TreeviewNode> treeViewNodes = this.roleService.TreeListRole();
+
+        //构建树
+        DefaultTreeBuildFactory<TreeviewNode> factory = new DefaultTreeBuildFactory<>();
+        factory.setRootParentId("0");
+        List<TreeviewNode> results = factory.doTreeBuild(treeViewNodes);
+
+        //把子节点为空的设为null
+        DeptTreeWrapper.clearNull(results);
+
+        return results;
+    }
 }

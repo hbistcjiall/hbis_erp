@@ -4,6 +4,7 @@ import cn.hbis.erp.core.common.constant.Const;
 import cn.hbis.erp.core.common.constant.cache.Cache;
 import cn.hbis.erp.core.common.constant.factory.ConstantFactory;
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
+import cn.hbis.erp.core.common.node.TreeviewNode;
 import cn.hbis.erp.core.common.node.ZTreeNode;
 import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.log.LogObjectHolder;
@@ -176,4 +177,12 @@ public class RoleService extends ServiceImpl<RoleMapper, Role> {
         return this.baseMapper.roleTreeListByRoleId(roleId);
     }
 
+    /**
+     * 获取角色列表树
+     *
+     * @return
+     */
+    public List<TreeviewNode> TreeListRole() {
+        return this.baseMapper.treeViewNodesRole();
+    }
 }

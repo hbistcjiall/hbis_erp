@@ -99,6 +99,7 @@ public class DeptController extends BaseController {
     @Permission
     @BussinessLog(value = "添加部门", key = "simpleName", dict = DeptDict.class)
     public ResponseData add(Dept dept) {
+        System.out.println();
         this.deptService.addDept(dept);
         return SUCCESS_TIP;
     }
@@ -155,7 +156,7 @@ public class DeptController extends BaseController {
             @ApiImplicitParam(name = "fullName", value = "部门全称", dataType = "String"),
             @ApiImplicitParam(name = "description", value = "部门描述", dataType = "String")
     })
-    @PostMapping("update")
+    @RequestMapping(value = "update",method = RequestMethod.POST)
     @Permission
     @BussinessLog(value = "修改部门", key = "simpleName", dict = DeptDict.class)
     public ResponseData update(Dept dept) {

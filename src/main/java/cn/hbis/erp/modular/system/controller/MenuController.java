@@ -52,7 +52,7 @@ public class MenuController extends BaseController {
      */
     @ApiOperation(value = "修改菜单")
     @Permission(Const.ADMIN_NAME)
-    @PostMapping("edit")
+    @RequestMapping(value = "edit",method = RequestMethod.DELETE)
     @BussinessLog(value = "修改菜单", key = "name", dict = MenuDict.class)
     public ResponseData edit(MenuDto menu) {
 
@@ -212,9 +212,13 @@ public class MenuController extends BaseController {
     public List<ZTreeNode> menuTreeListByRoleId(@RequestParam String roleId) {
         List<String> menuIds = this.menuService.getMenuIdsByRoleId(roleId);
         if (ToolUtil.isEmpty(menuIds)) {
-            return this.menuService.menuTreeList();
+            List<ZTreeNode> menuTreeList = this.menuService.menuTreeList();
+            menuTreeList.add(ZTreeNode.createParent());
+            return menuTreeList;
         } else {
-            return this.menuService.menuTreeListByMenuIds(menuIds);
+            List<ZTreeNode> menuTreeList = this.menuService.menuTreeListByMenuIds(menuIds);
+            menuTreeList.add(ZTreeNode.createParent());
+            return menuTreeList;
         }
     }
 

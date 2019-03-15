@@ -21,7 +21,7 @@ public class Dict implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "DICT_ID", type = IdType.ID_WORKER_STR)
+    @TableId(value = "DICT_ID", type = IdType.UUID)
     private String dictId;
     /**
      * 父级字典id
