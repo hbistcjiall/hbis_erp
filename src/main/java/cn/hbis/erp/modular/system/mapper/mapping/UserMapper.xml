@@ -27,7 +27,7 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         USER_ID AS userId, AVATAR AS avatar, ACCOUNT AS account,
-        NAME AS name, BIRTHDAY AS birthday, SEX AS sex, EMAIL AS email, PHONE AS phone,
+        NAME AS name, to_char(BIRTHDAY,'YYYY-MM-DD') AS birthday, SEX AS sex, EMAIL AS email, PHONE AS phone,
          ROLE_ID AS roleId, DEPT_ID AS deptId, STATUS AS status, CREATE_TIME AS createTime, CREATE_USER AS createUser,
           UPDATE_TIME AS updateTime, UPDATE_USER AS updateUser, VERSION AS version
     </sql>
@@ -45,15 +45,15 @@
         from sys_user
         where STATUS != 'DELETED'
         <if test="name != null and name != ''">
-            and (PHONE like CONCAT('%',#{name},'%')
-            or ACCOUNT like CONCAT('%',#{name},'%')
-            or NAME like CONCAT('%',#{name},'%'))
+            and (PHONE like CONCAT(#{name},'%')
+            or ACCOUNT like CONCAT(#{name},'%')
+            or NAME like CONCAT(#{name},'%'))
         </if>
         <if test="deptId != null and deptId != 0">
-            and (DEPT_ID = #{deptId} or DEPT_ID in ( select DEPT_ID from sys_dept where PIDS like CONCAT('%[', #{deptId}, ']%') ))
+            and (DEPT_ID = #{deptId} or DEPT_ID in ( select DEPT_ID from sys_dept where PIDS like CONCAT(#{deptId}, ']%') ))
         </if>
         <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
-            and (CREATE_TIME between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+            and (CREATE_TIME between TO_DATE(#{beginTime},'yyyy-MM-dd HH24:MI:SS') and TO_DATE(#{endTime},'yyyy-MM-dd HH24:MI:SS'))
         </if>
     </select>
 

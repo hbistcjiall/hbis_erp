@@ -303,7 +303,7 @@ public class UserMgrController extends BaseController {
      *
      */
     @ApiOperation(value = "分配角色")
-    @RequestMapping("setRole")
+    @PostMapping("setRole")
     @BussinessLog(value = "分配角色", key = "userId,roleIds",dict = UserDict.class)
     @Permission(Const.ADMIN_NAME)
     @ApiImplicitParams({

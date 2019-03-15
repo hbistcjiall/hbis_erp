@@ -161,10 +161,6 @@ public class RoleController extends BaseController {
     @PostMapping("setAuthority")
     @BussinessLog(value = "配置权限", key = "roleId,ids", dict = RoleDict.class)
     @Permission(Const.ADMIN_NAME)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId" ,value = "角色ID",dataType ="String" ),
-            @ApiImplicitParam(name = "ids" ,value = "权限ID集合",dataType ="String" )
-    })
     public ResponseData setAuthority(@RequestParam("roleId") String roleId, @RequestParam("ids") String ids) {
         if (ToolUtil.isOneEmpty(roleId)) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);

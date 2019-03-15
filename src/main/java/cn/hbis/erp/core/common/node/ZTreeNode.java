@@ -51,7 +51,7 @@ public class ZTreeNode {
         zTreeNode.setId("0");
         zTreeNode.setName("顶级");
         zTreeNode.setOpen(true);
-        zTreeNode.setPId("0");
+        zTreeNode.setPId("");
         return zTreeNode;
     }
 }

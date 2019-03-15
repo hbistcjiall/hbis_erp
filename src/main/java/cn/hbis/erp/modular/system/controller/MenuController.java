@@ -75,7 +75,8 @@ public class MenuController extends BaseController {
     @PostMapping("list")
     public Object list(@RequestParam(required = false) String menuName,
                        @RequestParam(required = false) String level,
-                       @RequestParam(required = false) String menuId) {
+                       @RequestParam(required = false) String menuId,
+                       @RequestParam String limit, @RequestParam String page) {
         Page<Map<String, Object>> menus = this.menuService.selectMenus(menuName, level, menuId);
         Page<Map<String, Object>> wrap = new MenuWrapper(menus).wrap();
         return PageFactory.createPageInfo(wrap);
@@ -118,7 +119,7 @@ public class MenuController extends BaseController {
      *
      *
      */
-    @ApiOperation(value = "新增菜单")
+    @ApiOperation(value = "删除菜单")
     @Permission(Const.ADMIN_NAME)
     @PostMapping("remove")
     @BussinessLog(value = "删除菜单", key = "menuId", dict = MenuDict.class)
@@ -208,8 +209,7 @@ public class MenuController extends BaseController {
      */
     @ApiOperation(value = "获取角色的菜单列表")
     @PostMapping("menuTreeListByRoleId")
-    @ResponseBody
-    public List<ZTreeNode> menuTreeListByRoleId(String roleId) {
+    public List<ZTreeNode> menuTreeListByRoleId(@RequestParam String roleId) {
         List<String> menuIds = this.menuService.getMenuIdsByRoleId(roleId);
         if (ToolUtil.isEmpty(menuIds)) {
             return this.menuService.menuTreeList();

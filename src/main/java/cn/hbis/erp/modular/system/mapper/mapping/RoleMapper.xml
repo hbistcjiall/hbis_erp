@@ -45,7 +45,7 @@
         SELECT
         r.ROLE_ID as id,
         PID as pId,
-        NAME AS `name`,
+        NAME AS name,
         (
         CASE
         WHEN (PID = '0' OR PID IS NULL) THEN
@@ -72,8 +72,8 @@
         WHERE
         ROLE_ID IN
 
-        <foreach collection="array" index="index" item="i" open="(" separator="," close=")">
-            #{i}
+        <foreach collection='array' index='index' item='i' open='(' separator=',' close=')'>
+              #{i}
         </foreach>
 
         ) r1 ON r.ROLE_ID = r1.ROLE_ID
