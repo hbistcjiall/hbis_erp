@@ -264,7 +264,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
         Menu resultMenu = new Menu();
         BeanUtil.copyProperties(menuParam, resultMenu);
 
-        if (ToolUtil.isEmpty(menuParam.getPid()) || menuParam.getPid().equals(0L)) {
+        if (ToolUtil.isEmpty(menuParam.getPid()) || menuParam.getPid().equals("0")) {
             resultMenu.setPcode("0");
             resultMenu.setPcodes("[0],");
             resultMenu.setLevels(1);
