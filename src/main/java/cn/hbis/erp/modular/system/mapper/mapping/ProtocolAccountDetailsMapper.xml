@@ -15,6 +15,7 @@
         <result column="AIDED_SALES_REGIONAL_TWO" property="aidedSalesRegionalTwo"/>
         <result column="STEEL_MILLS" property="steelMills"/>
         <result column="ANNUAL_AGREEMENT_VOLUME" property="annualAgreementVolume"/>
+        <result column="DELETESTATUS" property="deletestatus"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -25,7 +26,22 @@
     <select id="searchProtocolAccountDetailList" resultType="map">
         select
         <include refid="Base_Column_List"/>
-        from SYS_PROTOCOL_ACCOUNT_DETAILS where 1 = 1
+        from SYS_PROTOCOL_ACCOUNT_DETAILS where DELETESTATUS = '0'
+        <if test="varieties != null and '热板' == varieties">
+            and VARIETIES = '热板' or VARIETIES = '酸洗'
+        </if>
+        <if test="varieties != null and '冷板' == varieties">
+            and VARIETIES = '彩涂' or VARIETIES = '冷板' or VARIETIES = '镀锌'
+        </if>
+        <if test="varieties != null and '宽厚板' == varieties">
+            and VARIETIES = '宽厚板'
+        </if>
+        <if test="varieties != null and '棒线' == varieties">
+            and VARIETIES = '钢筋' or VARIETIES = '普线' or VARIETIES = '品种线' or VARIETIES = '优钢' or VARIETIES = '锚杆钢'
+        </if>
+        <if test="varieties != null and'型带' == varieties">
+            and VARIETIES = '角钢' or VARIETIES = '矿用钢'
+        </if>
         <if test="beginTime != null and beginTime !='' and endTime != null and endTime != ''">
             and (UPLOAD_TIME between to_date(CONCAT(#{beginTime},' 00:00:00'), 'yyyy-mm-dd hh24:mi:ss') and to_date(CONCAT(#{endTime},' 23:59:59'), 'yyyy-mm-dd hh24:mi:ss'))
         </if>

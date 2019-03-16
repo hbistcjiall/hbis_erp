@@ -52,7 +52,7 @@ public class MenuController extends BaseController {
      */
     @ApiOperation(value = "修改菜单")
     @Permission(Const.ADMIN_NAME)
-    @RequestMapping(value = "edit",method = RequestMethod.DELETE)
+    @RequestMapping(value = "edit",method = RequestMethod.POST)
     @BussinessLog(value = "修改菜单", key = "name", dict = MenuDict.class)
     public ResponseData edit(MenuDto menu) {
         if (ToolUtil.isEmpty(menu.getMenuId())) {

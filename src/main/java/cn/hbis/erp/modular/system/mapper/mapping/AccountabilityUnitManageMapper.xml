@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hbis.erp.modular.system.mapper.AccountabilityUnitManageMapper">
+
+
+    <resultMap id="BaseResultMap" type="cn.hbis.erp.modular.system.entity.AccountabilityUnitManage">
+        <id column="ACCOUNTABILITY_UNIT_ID" property="accountabilityunitid"/>
+        <result column="ACCOUNTABILITY_UNIT_CODE" property="accountabilityunitcode"/>
+        <result column="ACCOUNTABILITY_UNIT_NAME" property="accountname"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ACCOUNTABILITY_UNIT_ID AS ID,ACCOUNTABILITY_UNIT_CODE AS CODE,ACCOUNTABILITY_UNIT_NAME AS "NAME"
+    </sql>
+    <select id="selectaccunitname" parameterType="String" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from SYS_ACCOUNTABILITY_UNIT_MANAGE
+        where DELETESTATUS = '0'
+        <if test="accountname != null and accountname !=''">
+
+            and ACCOUNTABILITY_UNIT_NAME like CONCAT(CONCAT('%',#{accountname}),'%')
+
+        </if>
+    </select>
+</mapper>
