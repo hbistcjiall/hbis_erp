@@ -214,7 +214,7 @@ public class UserMgrController extends BaseController {
      */
     @ApiOperation(value = "删除管理员（逻辑删除）")
     @RequestMapping(value = "/delete",method = RequestMethod.POST)
-    @BussinessLog(value = "删除管理员", key = "userId",dict = UserDict.class)
+    @BussinessLog(value = "删除管理员", key = "account",dict = UserDict.class)
     @Permission
     public ResponseData delete(@RequestParam String userId) {
         if (ToolUtil.isEmpty(userId)) {
@@ -249,7 +249,7 @@ public class UserMgrController extends BaseController {
      */
     @ApiOperation(value = "重置管理员的密码")
     @RequestMapping(value = "/reset",method = RequestMethod.POST)
-    @BussinessLog(value = "重置管理员密码", key = "userId",dict = UserDict.class)
+    @BussinessLog(value = "重置管理员密码", key = "account",dict = UserDict.class)
     @Permission(Const.ADMIN_NAME)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" )})
@@ -273,7 +273,7 @@ public class UserMgrController extends BaseController {
      */
     @ApiOperation(value = "冻结/解冻用户")
     @RequestMapping(value = "/freeze",method = RequestMethod.POST)
-    @BussinessLog(value = "冻结/解冻用户", key = "userId",dict = UserDict.class)
+    @BussinessLog(value = "冻结/解冻用户", key = "account",dict = UserDict.class)
     @Permission(Const.ADMIN_NAME)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId" ,value = "用户ID",dataType ="String" ),

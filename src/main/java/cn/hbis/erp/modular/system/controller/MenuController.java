@@ -55,6 +55,13 @@ public class MenuController extends BaseController {
     @RequestMapping(value = "edit",method = RequestMethod.DELETE)
     @BussinessLog(value = "修改菜单", key = "name", dict = MenuDict.class)
     public ResponseData edit(MenuDto menu) {
+        if (ToolUtil.isEmpty(menu.getMenuId())) {
+            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        }
+
+        //获取菜单当前信息，记录日志用
+        Menu menuM = this.menuService.getById(menu.getMenuId());
+        LogObjectHolder.me().set(menuM);
 
         //如果修改了编号，则该菜单的子菜单也要修改对应编号
         this.menuService.updateMenu(menu);

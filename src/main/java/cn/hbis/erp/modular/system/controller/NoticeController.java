@@ -19,10 +19,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -33,68 +30,22 @@ import java.util.Map;
  *
  *
  */
-@Controller
+@RestController
 @RequestMapping("/notice")
 public class NoticeController extends BaseController {
 
-    private String PREFIX = "/modular/system/notice/";
-
     @Autowired
     private NoticeService noticeService;
-
-    /**
-     * 跳转到通知列表首页
-     *
-     *
-     */
-    @RequestMapping("")
-    public String index() {
-        return PREFIX + "notice.html";
-    }
-
-    /**
-     * 跳转到添加通知
-     *
-     *
-     */
-    @RequestMapping("/notice_add")
-    public String noticeAdd() {
-        return PREFIX + "notice_add.html";
-    }
-
-    /**
-     * 跳转到修改通知
-     *
-     *
-     */
-    @RequestMapping("/notice_update/{noticeId}")
-    public String noticeUpdate(@PathVariable String noticeId, Model model) {
-        Notice notice = this.noticeService.getById(noticeId);
-        model.addAllAttributes(BeanUtil.beanToMap(notice));
-        LogObjectHolder.me().set(notice);
-        return PREFIX + "notice_edit.html";
-    }
-
-    /**
-     * 跳转到首页通知
-     *
-     *
-     */
-    @RequestMapping("/hello")
-    public String hello() {
-        List<Notice> notices = noticeService.list();
-        super.setAttr("noticeList", notices);
-        return PREFIX + "notice_index.html";
-    }
 
     /**
      * 获取通知列表
      *
      *
      */
-    @RequestMapping(value = "/list")
-    @ResponseBody
-    public Object list(String condition) {
+    @PostMapping("list")
+    public Object list(@RequestParam(required = false) String condition,
+                       @RequestParam String limit,
+                       @RequestParam String page) {
         Page<Map<String, Object>> list = this.noticeService.list(condition);
         Page<Map<String, Object>> wrap = new NoticeWrapper(list).wrap();
         return PageFactory.createPageInfo(wrap);
@@ -105,8 +56,7 @@ public class NoticeController extends BaseController {
      *
      *
      */
-    @RequestMapping(value = "/add")
-    @ResponseBody
+    @PostMapping("add")
     @BussinessLog(value = "新增通知", key = "title", dict = NoticeMap.class)
     public Object add(Notice notice) {
         if (ToolUtil.isOneEmpty(notice, notice.getTitle(), notice.getContent())) {
@@ -122,8 +72,7 @@ public class NoticeController extends BaseController {
      * 删除通知
      *
      */
-    @RequestMapping(value = "/delete")
-    @ResponseBody
+    @PostMapping("delete")
     @BussinessLog(value = "删除通知", key = "noticeId", dict = NoticeMap.class)
     public Object delete(@RequestParam String noticeId) {
 
@@ -140,14 +89,16 @@ public class NoticeController extends BaseController {
      *
      *
      */
-    @RequestMapping(value = "/update")
-    @ResponseBody
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
     @BussinessLog(value = "修改通知", key = "title", dict = NoticeMap.class)
     public Object update(Notice notice) {
         if (ToolUtil.isOneEmpty(notice, notice.getNoticeId(), notice.getTitle(), notice.getContent())) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
         Notice old = this.noticeService.getById(notice.getNoticeId());
+        //获取菜单当前信息，记录日志用
+        LogObjectHolder.me().set(old);
+
         old.setTitle(notice.getTitle());
         old.setContent(notice.getContent());
         this.noticeService.updateById(old);

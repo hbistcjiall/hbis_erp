@@ -79,8 +79,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> {
         }
 
         //获取旧的菜单
-        String id = menuDto.getMenuId();
-        Menu menu = this.getById(id);
+        Menu menu = this.getById(menuDto.getMenuId());
 
         if (menu == null) {
             throw new RequestEmptyException();
