@@ -16,6 +16,7 @@ import cn.hbis.erp.modular.system.mapper.UserMapper;
 import cn.hbis.erp.modular.system.model.UserDto;
 import cn.hutool.core.bean.BeanUtil;
 import cn.stylefeng.roses.core.datascope.DataScope;
+import cn.stylefeng.roses.core.util.ToolUtil;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -135,6 +136,10 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      */
     public Page<Map<String, Object>> selectUsers(DataScopeS dataScope, String name, String beginTime, String endTime, String deptId) {
         Page page = PageFactory.defaultPage();
+        if(ToolUtil.isNotEmpty(beginTime) && ToolUtil.isNotEmpty(endTime)){
+            beginTime = beginTime + " 00:00:00";
+            endTime = endTime + " 23:59:59";
+        }
         return this.baseMapper.selectUsers(page, dataScope, name, beginTime, endTime, deptId);
     }
 

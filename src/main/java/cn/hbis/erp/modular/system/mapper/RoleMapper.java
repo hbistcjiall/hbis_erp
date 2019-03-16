@@ -1,5 +1,6 @@
 package cn.hbis.erp.modular.system.mapper;
 
+import cn.hbis.erp.core.common.node.TreeviewNode;
 import cn.hbis.erp.core.common.node.ZTreeNode;
 import cn.hbis.erp.modular.system.entity.Role;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -48,4 +49,9 @@ public interface RoleMapper extends BaseMapper<Role> {
      */
     List<ZTreeNode> roleTreeListByRoleId(String[] roleId);
 
+    /**
+     *获取角色列表树
+     * @return
+     */
+    List<TreeviewNode> treeViewNodesRole();
 }

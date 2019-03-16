@@ -26,7 +26,7 @@
         <include refid="Base_Column_List"/>
         from sys_role
         <if test="condition != null">
-            where NAME like CONCAT('%',#{condition},'%')
+            where NAME like CONCAT(#{condition},'%')
         </if>
         order by SORT asc
     </select>
@@ -45,7 +45,7 @@
         SELECT
         r.ROLE_ID as id,
         PID as pId,
-        NAME AS `name`,
+        NAME AS name,
         (
         CASE
         WHEN (PID = '0' OR PID IS NULL) THEN
@@ -72,12 +72,16 @@
         WHERE
         ROLE_ID IN
 
-        <foreach collection="array" index="index" item="i" open="(" separator="," close=")">
-            #{i}
+        <foreach collection='array' index='index' item='i' open='(' separator=',' close=')'>
+              #{i}
         </foreach>
 
         ) r1 ON r.ROLE_ID = r1.ROLE_ID
         ORDER BY PID,SORT ASC
+    </select>
+
+    <select id="treeViewNodesRole" resultType="cn.hbis.erp.core.common.node.TreeviewNode">
+        select ROLE_ID AS tags, PID as parentId, NAME as text from sys_role
     </select>
 
 </mapper>

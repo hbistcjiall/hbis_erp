@@ -2,6 +2,7 @@ package cn.hbis.erp.modular.system.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -23,7 +24,7 @@ public class User implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "USER_ID", type = IdType.ID_WORKER_STR)
+    @TableId(value = "USER_ID", type = IdType.UUID)
     private String userId;
     /**
      * 头像

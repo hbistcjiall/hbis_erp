@@ -22,7 +22,7 @@ public class ProtocolAccountDetails implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "PROTOCOL_ACCOUNT_ID", type = IdType.ID_WORKER_STR)
+    @TableId(value = "PROTOCOL_ACCOUNT_ID", type = IdType.UUID)
     private String protocolAccountId;
     /**
      * 上传时间

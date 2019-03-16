@@ -25,7 +25,7 @@ public class Relation implements Serializable {
     /**
      * 主键
      */
-    @TableId(value = "RELATION_ID", type = IdType.ID_WORKER_STR)
+    @TableId(value = "RELATION_ID", type = IdType.UUID)
     private String relationId;
     /**
      * 菜单id

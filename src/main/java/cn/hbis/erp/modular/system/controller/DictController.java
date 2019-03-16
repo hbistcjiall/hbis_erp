@@ -6,6 +6,7 @@ import cn.hbis.erp.core.common.annotion.Permission;
 import cn.hbis.erp.core.common.constant.Const;
 import cn.hbis.erp.core.common.constant.dictmap.DictMap;
 import cn.hbis.erp.core.common.constant.factory.ConstantFactory;
+import cn.hbis.erp.core.common.exception.BizExceptionEnum;
 import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.log.LogObjectHolder;
 import cn.hbis.erp.modular.system.model.DictDto;
@@ -13,14 +14,16 @@ import cn.hbis.erp.modular.system.service.DictService;
 import cn.hbis.erp.modular.system.warpper.DictWrapper;
 import cn.stylefeng.roses.core.base.controller.BaseController;
 import cn.stylefeng.roses.core.reqres.response.ResponseData;
+import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -28,56 +31,25 @@ import java.util.Map;
  *
  *
  */
-@Controller
+@RestController
 @RequestMapping("/dict")
 public class DictController extends BaseController {
-
-    private String PREFIX = "/modular/system/dict/";
 
     @Autowired
     private DictService dictService;
 
     /**
-     * 跳转到字典管理首页
-     *
-     *
-     */
-    @RequestMapping("")
-    public String index() {
-        return PREFIX + "dict.html";
-    }
-
-    /**
-     * 跳转到添加字典类型
-     *
-     *
-     */
-    @RequestMapping("/dict_add_type")
-    public String deptAddType() {
-        return PREFIX + "dict_add_type.html";
-    }
-
-    /**
-     * 跳转到添加字典条目
-     *
-     *
-     */
-    @RequestMapping("/dict_add_item")
-    public String deptAddItem(@RequestParam("dictId") String dictId, Model model) {
-        model.addAttribute("dictTypeId", dictId);
-        model.addAttribute("dictTypeName", ConstantFactory.me().getDictName(dictId));
-        return PREFIX + "dict_add_item.html";
-    }
-
-    /**
      * 新增字典
-     *
+     *添加字典条目传dictTypeId,字典类型不传
      *
      */
-    @RequestMapping(value = "/add")
+    @ApiOperation(value = "新增字典")
+    @PostMapping("add")
     @Permission(Const.ADMIN_NAME)
-    @ResponseBody
-    public ResponseData add(DictDto dictDto) {
+    public ResponseData add(@Valid DictDto dictDto, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        }
         this.dictService.addDict(dictDto);
         return SUCCESS_TIP;
     }
@@ -87,10 +59,10 @@ public class DictController extends BaseController {
      *
      *
      */
-    @RequestMapping(value = "/list")
+    @ApiOperation(value = "获取所有字典列表")
+    @PostMapping("list")
     @Permission(Const.ADMIN_NAME)
-    @ResponseBody
-    public Object list(String condition) {
+    public Object list(@RequestParam(required = false) String condition,@RequestParam String limit,@RequestParam String page) {
         Page<Map<String, Object>> list = this.dictService.list(condition);
         Page<Map<String, Object>> warpper = new DictWrapper(list).wrap();
         return PageFactory.createPageInfo(warpper);
@@ -101,10 +73,10 @@ public class DictController extends BaseController {
      *
      *
      */
+    @ApiOperation(value = "删除字典记录")
     @BussinessLog(value = "删除字典记录", key = "dictId", dict = DictMap.class)
-    @RequestMapping(value = "/delete")
+    @PostMapping("delete")
     @Permission(Const.ADMIN_NAME)
-    @ResponseBody
     public ResponseData delete(@RequestParam String dictId) {
 
         //缓存被删除的名称
