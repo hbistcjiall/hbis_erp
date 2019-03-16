@@ -25,7 +25,7 @@ public class TargetQuantityManagementController extends BaseController {
     @ApiOperation(value = "获取责任公司列表")
     @PostMapping("/selTargetManage")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "companyname" ,value = "责任公司名称",dataType ="String" ),
+            @ApiImplicitParam(name = "companyname" ,value = "责任公司id",dataType ="String" ),
             @ApiImplicitParam(name = "year" ,value = "年限",dataType ="String" ),
             @ApiImplicitParam(name = "limit" ,value = "每页多少条数据",dataType ="String" ),
             @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
