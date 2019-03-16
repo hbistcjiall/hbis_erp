@@ -1,5 +1,548 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.hbis.erp.modular.system.mapper.ScmSteelSettleMapper">
+    <select id="getcx" resultType="map">
+        SELECT /*+ FULL(@SEL$58 SETTLE) */
+        *
+        FROM (SELECT decode(settle.company_id,
+        9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') AS companyname,
+        DATA.NAME,
+        settle.company_id,
+        xsztdzb.sale_body,
+        SUM(settle.fkimg) AS fkimg,
+        SUM(a.fkimg) AS pzgl,
+        CASE
+        WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
+        '--'
+        ELSE
+        to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
+        END AS bz
+        FROM scm_steel_settle settle
+        JOIN scm_delivery_detail detail
+        ON settle.aubel = detail.order_no
+        AND settle.aupos = detail.order_item
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.TYPE = 3
+        AND DATA.parent_name IS NOT NULL
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        LEFT JOIN (SELECT settle.ID, settle.fkimg
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        JOIN report_product_class_level pzg
+        ON sso.company_id = pzg.company_id
+        AND sso.product_type = pzg.product_class
+        WHERE pzg.product_grade = '品种钢'
+        OR pzg.product_grade = '高端产品'
+        OR pzg.product_grade = '特色战略产品'
+        AND pzg.status = '0') a
+        ON settle.ID = a.ID
+        INNER JOIN scm_variety_to_pt_gp svtpg
+        ON sso.product_code = svtpg.product_group
+        AND sso.company_id = svtpg.company_id
+        AND sso.order_type_describe NOT IN
+        (SELECT DISTINCT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.data_type = '2'
+        AND cfd.company_id = sso.company_id
+        AND cfd.status = '0')
+        AND sso.order_mount   &gt; 1
+        AND (sso.deleted IS NULL OR sso.deleted != 'X')
+        AND sso.sale_group NOT IN
+        (SELECT sso.sale_group
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 8
+        AND cfd.status = 0)
+        AND sso.saler_name NOT IN
+        (SELECT t.data_name
+        FROM crm_filter_data t
+        WHERE t.data_type = '1'
+        AND t.status = '0'
+        AND t.company_id = sso.company_id)
+        LEFT JOIN price_salebody_relation xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_group = xsztdzb.sale_body_des
+        where 1=1
+        <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐钢中厚板公司' ]]>-->
+        <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐钢不锈钢公司' ]]>-->
+        <!--AND <![CDATA[ xsztdzb.sale_body ='出口' ]]>-->
+        <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐银联营公司数据' ]]>-->
+        <if test="cx != null">
+            AND DATA.NAME=#{cx}
+        </if>
+        <if test="dw != null">
+            AND settle.company_id=#{dw}
+        </if>
+        GROUP BY settle.company_id, DATA.NAME, xsztdzb.sale_body
+        ORDER BY company_id) a
+        LEFT JOIN (SELECT settle.company_id,
+        xsztdzb.sale_body,
+        SUM(settle.fkimg) AS fkimg1,
+        SUM(a.fkimg) AS pzgl1,
+        CASE
+        WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
+        '--'
+        ELSE
+        to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
+        END AS bz1
+        FROM scm_steel_settle settle
+        LEFT JOIN scm_delivery_detail detail
+        ON settle.aubel = detail.order_no
+        AND settle.aupos = detail.order_item
+        LEFT JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.TYPE = 3
+        AND DATA.parent_name IS NOT NULL
+        LEFT JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        LEFT JOIN (SELECT settle.ID, settle.fkimg
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        JOIN report_product_class_level pzg
+        ON sso.company_id = pzg.company_id
+        AND sso.product_type = pzg.product_class
+        WHERE pzg.product_grade = '品种钢'
+        OR pzg.product_grade = '高端产品'
+        OR pzg.product_grade = '特色战略产品'
+        AND pzg.status = '0') a
+        ON settle.ID = a.ID
+        LEFT JOIN scm_variety_to_pt_gp svtpg
+        ON sso.product_code = svtpg.product_group
+        AND sso.company_id = svtpg.company_id
+        AND sso.order_type_describe NOT IN
+        (SELECT DISTINCT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.data_type = '2'
+        AND cfd.company_id = sso.company_id
+        AND cfd.status = '0')
+        AND sso.order_mount   &gt; 1
+        AND (sso.deleted IS NULL OR sso.deleted != 'X')
+        AND sso.sale_group NOT IN
+        (SELECT sso.sale_group
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 8
+        AND cfd.status = 0)
+        AND sso.saler_name NOT IN
+        (SELECT t.data_name
+        FROM crm_filter_data t
+        WHERE t.data_type = '1'
+        AND t.status = '0'
+        AND t.company_id = sso.company_id)
+        JOIN price_salebody_relation xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_group = xsztdzb.sale_body_des
+        WHERE xsztdzb.sale_body = '专业公司'
+        GROUP BY settle.company_id, xsztdzb.sale_body
+        ORDER BY company_id) b
+        ON a.sale_body = b.sale_body
+        LEFT JOIN (SELECT settle.company_id,
+        xsztdzb.sale_body,
+        SUM(settle.fkimg) AS fkimg2,
+        SUM(a.fkimg) AS pzgl2,
+        CASE
+        WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
+        '--'
+        ELSE
+        to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
+        END AS bz2
+        FROM scm_steel_settle settle
+        LEFT JOIN scm_delivery_detail detail
+        ON settle.aubel = detail.order_no
+        AND settle.aupos = detail.order_item
+        LEFT JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.TYPE = 3
+        AND DATA.parent_name IS NOT NULL
+        LEFT JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        LEFT JOIN (SELECT settle.ID, settle.fkimg
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        JOIN report_product_class_level pzg
+        ON sso.company_id = pzg.company_id
+        AND sso.product_type = pzg.product_class
+        WHERE pzg.product_grade = '品种钢'
+        OR pzg.product_grade = '高端产品'
+        OR pzg.product_grade = '特色战略产品'
+        AND pzg.status = '0') a
+        ON settle.ID = a.ID
+        LEFT JOIN scm_variety_to_pt_gp svtpg
+        ON sso.product_code = svtpg.product_group
+        AND sso.company_id = svtpg.company_id
+        AND sso.order_type_describe NOT IN
+        (SELECT DISTINCT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.data_type = '2'
+        AND cfd.company_id = sso.company_id
+        AND cfd.status = '0')
+        AND sso.order_mount   &gt; 1
+        AND (sso.deleted IS NULL OR sso.deleted != 'X')
+        AND sso.sale_group NOT IN
+        (SELECT sso.sale_group
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 8
+        AND cfd.status = 0)
+        AND sso.saler_name NOT IN
+        (SELECT t.data_name
+        FROM crm_filter_data t
+        WHERE t.data_type = '1'
+        AND t.status = '0'
+        AND t.company_id = sso.company_id)
+        JOIN price_salebody_relation xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_group = xsztdzb.sale_body_des
+        WHERE xsztdzb.sale_body = '分公司'
+        GROUP BY settle.company_id, xsztdzb.sale_body
+        ORDER BY company_id) c
+        ON a.sale_body = c.sale_body
+        LEFT JOIN (SELECT settle.company_id,
+        xsztdzb.sale_body,
+        SUM(settle.fkimg) AS fkimg3,
+        SUM(a.fkimg) AS pzgl3,
+        CASE
+        WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
+        '--'
+        ELSE
+        to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
+        END AS bz3
+        FROM scm_steel_settle settle
+        LEFT JOIN scm_delivery_detail detail
+        ON settle.aubel = detail.order_no
+        AND settle.aupos = detail.order_item
+        LEFT JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.TYPE = 3
+        AND DATA.parent_name IS NOT NULL
+        LEFT JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        LEFT JOIN (SELECT settle.ID, settle.fkimg
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        JOIN report_product_class_level pzg
+        ON sso.company_id = pzg.company_id
+        AND sso.product_type = pzg.product_class
+        WHERE pzg.product_grade = '品种钢'
+        OR pzg.product_grade = '高端产品'
+        OR pzg.product_grade = '特色战略产品') a
+        ON settle.ID = a.ID
+        LEFT JOIN scm_variety_to_pt_gp svtpg
+        ON sso.product_code = svtpg.product_group
+        AND sso.company_id = svtpg.company_id
+        AND sso.order_type_describe NOT IN
+        (SELECT DISTINCT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.data_type = '2'
+        AND cfd.company_id = sso.company_id
+        AND cfd.status = '0')
+        AND sso.order_mount   &gt; 1
+        AND (sso.deleted IS NULL OR sso.deleted != 'X')
+        AND sso.sale_group NOT IN
+        (SELECT sso.sale_group
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+
+        AND cfd.data_type = 8
+        AND cfd.status = 0)
+        AND sso.saler_name NOT IN
+        (SELECT t.data_name
+        FROM crm_filter_data t
+        WHERE t.data_type = '1'
+        AND t.status = '0'
+        AND t.company_id = sso.company_id)
+        JOIN price_salebody_relation xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_group = xsztdzb.sale_body_des
+        WHERE xsztdzb.sale_body = '子公司'
+        GROUP BY settle.company_id, xsztdzb.sale_body
+        ORDER BY company_id) d
+        ON a.sale_body = d.sale_body
+
+    </select>
+
+
+    <select id="getpz" resultType="map">
+        SELECT /*+ FULL(@SEL$58 SETTLE) */ *
+        FROM   (SELECT
+        B.VARIETY,
+        SUM(settle.fkimg) AS fkimg,
+        SUM(a.fkimg) AS pzgl,
+        CASE
+        WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
+        '--'
+        ELSE
+        to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
+        END AS bz
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        JOIN scm_variety_to_pt_gp B
+        ON sso.product_code = B.product_group
+        and sso.company_id = B.company_id
+
+        LEFT JOIN (SELECT settle.ID, settle.fkimg
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        JOIN report_product_class_level pzg
+        ON sso.company_id = pzg.company_id
+        AND sso.product_type = pzg.product_class
+        WHERE pzg.product_grade = '品种钢'
+        OR pzg.product_grade = '高端产品'
+        OR pzg.product_grade = '特色战略产品'
+        AND pzg.status = '0') a
+        ON settle.ID = a.ID
+        INNER JOIN scm_variety_to_pt_gp svtpg
+        ON sso.product_code = svtpg.product_group
+        AND sso.company_id = svtpg.company_id
+        AND sso.order_type_describe NOT IN
+        (SELECT DISTINCT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.data_type = '2'
+        AND cfd.company_id = sso.company_id
+        AND cfd.status = '0')
+        AND sso.order_mount &gt; 1
+        AND (sso.deleted IS NULL OR sso.deleted != 'X')
+        AND sso.sale_group NOT IN
+        (SELECT sso.sale_group
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 8
+        AND cfd.status = 0)
+        AND sso.saler_name NOT IN
+        (SELECT t.data_name
+        FROM crm_filter_data t
+        WHERE t.data_type = '1'
+        AND t.status = '0'
+        AND t.company_id = sso.company_id)
+        LEFT JOIN price_salebody_relation xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_group = xsztdzb.sale_body_des
+        where 1=1
+        <if test="pz != null">
+            AND  B.VARIETY=#{pz}
+        </if>
+        <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐钢中厚板公司' ]]>-->
+        <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐钢不锈钢公司' ]]>-->
+        <!--AND <![CDATA[ xsztdzb.sale_body ='出口' ]]>-->
+        <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐银联营公司数据' ]]>-->
+        GROUP BY   B.VARIETY
+        ) a
+        LEFT JOIN ( SELECT
+        B.VARIETY,
+        SUM(settle.fkimg) AS fkimg,
+        SUM(a.fkimg) AS pzgl,
+        CASE
+        WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
+        '--'
+        ELSE
+        to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
+        END AS bz
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        JOIN scm_variety_to_pt_gp B
+        ON sso.product_code = B.product_group
+        and sso.company_id = B.company_id
+
+        LEFT JOIN (SELECT settle.ID, settle.fkimg
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        JOIN report_product_class_level pzg
+        ON sso.company_id = pzg.company_id
+        AND sso.product_type = pzg.product_class
+        WHERE pzg.product_grade = '品种钢'
+        OR pzg.product_grade = '高端产品'
+        OR pzg.product_grade = '特色战略产品'
+        AND pzg.status = '0') a
+        ON settle.ID = a.ID
+        INNER JOIN scm_variety_to_pt_gp svtpg
+        ON sso.product_code = svtpg.product_group
+        AND sso.company_id = svtpg.company_id
+        AND sso.order_type_describe NOT IN
+        (SELECT DISTINCT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.data_type = '2'
+        AND cfd.company_id = sso.company_id
+        AND cfd.status = '0')
+        AND sso.order_mount &gt; 1
+        AND (sso.deleted IS NULL OR sso.deleted != 'X')
+        AND sso.sale_group NOT IN
+        (SELECT sso.sale_group
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 8
+        AND cfd.status = 0)
+        AND sso.saler_name NOT IN
+        (SELECT t.data_name
+        FROM crm_filter_data t
+        WHERE t.data_type = '1'
+        AND t.status = '0'
+        AND t.company_id = sso.company_id)
+        LEFT JOIN price_salebody_relation xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_group = xsztdzb.sale_body_des
+        where xsztdzb.sale_body = '专业公司'
+        GROUP BY   B.VARIETY) b
+        ON a.VARIETY = b.VARIETY
+        LEFT JOIN ( SELECT
+        B.VARIETY,
+        SUM(settle.fkimg) AS fkimg,
+        SUM(a.fkimg) AS pzgl,
+        CASE
+        WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
+        '--'
+        ELSE
+        to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
+        END AS bz
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        JOIN scm_variety_to_pt_gp B
+        ON sso.product_code = B.product_group
+        and sso.company_id = B.company_id
+
+        LEFT JOIN (SELECT settle.ID, settle.fkimg
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        JOIN report_product_class_level pzg
+        ON sso.company_id = pzg.company_id
+        AND sso.product_type = pzg.product_class
+        WHERE pzg.product_grade = '品种钢'
+        OR pzg.product_grade = '高端产品'
+        OR pzg.product_grade = '特色战略产品'
+        AND pzg.status = '0') a
+        ON settle.ID = a.ID
+        INNER JOIN scm_variety_to_pt_gp svtpg
+        ON sso.product_code = svtpg.product_group
+        AND sso.company_id = svtpg.company_id
+        AND sso.order_type_describe NOT IN
+        (SELECT DISTINCT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.data_type = '2'
+        AND cfd.company_id = sso.company_id
+        AND cfd.status = '0')
+        AND sso.order_mount &gt; 1
+        AND (sso.deleted IS NULL OR sso.deleted != 'X')
+        AND sso.sale_group NOT IN
+        (SELECT sso.sale_group
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 8
+        AND cfd.status = 0)
+        AND sso.saler_name NOT IN
+        (SELECT t.data_name
+        FROM crm_filter_data t
+        WHERE t.data_type = '1'
+        AND t.status = '0'
+        AND t.company_id = sso.company_id)
+        LEFT JOIN price_salebody_relation xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_group = xsztdzb.sale_body_des
+        where xsztdzb.sale_body = '分公司'
+        GROUP BY   B.VARIETY) c
+        ON a.VARIETY = c.VARIETY
+        LEFT JOIN (  SELECT
+        B.VARIETY,
+        SUM(settle.fkimg) AS fkimg,
+        SUM(a.fkimg) AS pzgl,
+        CASE
+        WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
+        '--'
+        ELSE
+        to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
+        END AS bz
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        JOIN scm_variety_to_pt_gp B
+        ON sso.product_code = B.product_group
+        and sso.company_id = B.company_id
+
+        LEFT JOIN (SELECT settle.ID, settle.fkimg
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        JOIN report_product_class_level pzg
+        ON sso.company_id = pzg.company_id
+        AND sso.product_type = pzg.product_class
+        WHERE pzg.product_grade = '品种钢'
+        OR pzg.product_grade = '高端产品'
+        OR pzg.product_grade = '特色战略产品'
+        AND pzg.status = '0') a
+        ON settle.ID = a.ID
+        INNER JOIN scm_variety_to_pt_gp svtpg
+        ON sso.product_code = svtpg.product_group
+        AND sso.company_id = svtpg.company_id
+        AND sso.order_type_describe NOT IN
+        (SELECT DISTINCT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.data_type = '2'
+        AND cfd.company_id = sso.company_id
+        AND cfd.status = '0')
+        AND sso.order_mount &gt; 1
+        AND (sso.deleted IS NULL OR sso.deleted != 'X')
+        AND sso.sale_group NOT IN
+        (SELECT sso.sale_group
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 8
+        AND cfd.status = 0)
+        AND sso.saler_name NOT IN
+        (SELECT t.data_name
+        FROM crm_filter_data t
+        WHERE t.data_type = '1'
+        AND t.status = '0'
+        AND t.company_id = sso.company_id)
+        LEFT JOIN price_salebody_relation xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_group = xsztdzb.sale_body_des
+        where xsztdzb.sale_body = '子公司'
+        GROUP BY   B.VARIETY) d
+        ON a.VARIETY = d.VARIETY
+    </select>
+
 
 </mapper>
+
+
