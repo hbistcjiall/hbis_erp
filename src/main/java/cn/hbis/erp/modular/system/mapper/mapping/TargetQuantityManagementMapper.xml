@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hbis.erp.modular.system.mapper.TargetQuantityManagementMapper">
+
+    <sql id="Base_Column_List">
+        TQ.TARGET_QUANTITY_MANAGEMENT_ID AS ID,TQ."YEAR",AM.ACCOUNTABILITY_UNIT_NAME AS "NAME" ,JANUARY,FEBRUARY,MARCH,APRIL,MAY,JUNE,JULY,AUGUST,SEPTEMBER,OCTOBER,NOVEMBER,DECEMBER
+    </sql>
+    <select id="selTargetManagement" parameterType="String" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from SYS_TARGET_QUANTITY_MANAGEMENT TQ
+        LEFT JOIN
+        SYS_ACCOUNTABILITY_UNIT_MANAGE AM
+        ON
+        AM.ACCOUNTABILITY_UNIT_CODE = TQ.RESPONSIBILITY_UNIT
+        where TQ.DELETESTATUS = '0'
+        AMD AM.DELETESTATUS = '0'
+        <if test="targetname != null and targetname !=''">
+
+            and RESPONSIBILITY_UNIT like CONCAT(CONCAT('%',#{targetname}),'%')
+
+        </if>
+        <if test="year != null and year !=''">
+
+            and YEAR like CONCAT(CONCAT('%',#{year}),'%')
+
+        </if>
+    </select>
+</mapper>
