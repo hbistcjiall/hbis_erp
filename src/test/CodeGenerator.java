@@ -30,7 +30,7 @@ public class CodeGenerator {
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setDbType(DbType.ORACLE);
         dsc.setDriverName("oracle.jdbc.driver.OracleDriver");
-        dsc.setUrl("jdbc:oracle:thin:@221.192.142.22:orcl");
+        dsc.setUrl("jdbc:oracle:thin:@221.192.142.22:1521:orcl");
         dsc.setUsername("hbistc_test");
         dsc.setPassword("hbistc_test");
         // 包配置
@@ -47,7 +47,7 @@ public class CodeGenerator {
         strategy.setSkipView(true);
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-        strategy.setInclude("USER_TEST");//在这里改表名
+        strategy.setInclude("SCM_STEEL_SETTLE");//在这里改表名
         strategy.setEntityColumnConstant(false);
         strategy.setEntityLombokModel(true);
         strategy.setRestControllerStyle(true);
