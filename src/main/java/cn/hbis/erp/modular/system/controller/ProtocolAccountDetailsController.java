@@ -13,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,5 +54,27 @@ public class ProtocolAccountDetailsController extends BaseController {
         Page<Map<String, Object>> protocolAccounts = protocolAccountDetailsService.searchList(mainSalesRegional, beginTime, endTime, protocolYear, steelMills);
         Page wrapped = new ProtocolAccountDetailsWrapper(protocolAccounts).wrap();
         return PageFactory.createPageInfo(wrapped);
+    }
+
+    @ApiOperation(value = "协议上传")
+    @RequestMapping(value = "/importexcel" ,method = RequestMethod.POST)
+    @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "year" ,value = "年份",dataType ="String" ),
+            @ApiImplicitParam(name = "filepath" ,value = "文件路径",dataType ="String" )
+    })
+    public Map execlimport( String  filepath, String year){
+        Map map= new HashMap();
+        try{
+            List<ProtocolAccountDetails> list = protocolAccountDetailsService.excleIn(filepath,year);
+            for (int i=0;i<list.size();i++){
+                protocolAccountDetailsService.save(list.get(i));
+            }
+            map.put("massage","导入成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            map.put("massage","导入失败");
+        }
+        return map;
     }
 }
