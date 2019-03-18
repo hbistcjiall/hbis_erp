@@ -13,7 +13,7 @@ import java.util.List;
  * 结算清单信息接口 服务实现类
  * </p>
  *
- * @author jiarsi
+ * @author yaojiaqi
  * @since 2019-03-16
  */
 
@@ -46,4 +46,13 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     public List<ScmSteelSettle> getndpz(String pz) {
         return scmSteelSettleMapper.getpz(pz);
     }
+
+    /*
+    报表责任部门
+ */
+    public List<ScmSteelSettle> getzebm(String zrbm) {
+        return scmSteelSettleMapper.getzebm(zrbm);
+    }
+
+
 }

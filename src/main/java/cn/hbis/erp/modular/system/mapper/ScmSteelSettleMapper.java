@@ -10,7 +10,7 @@ import java.util.List;
  * 结算清单信息接口 Mapper 接口
  * </p>
  *
- * @author jiarsi
+ * @author yaojiaqi
  * @since 2019-03-16
  */
 public interface ScmSteelSettleMapper extends BaseMapper<ScmSteelSettle> {
@@ -18,5 +18,5 @@ public interface ScmSteelSettleMapper extends BaseMapper<ScmSteelSettle> {
     List<ScmSteelSettle> getpz(@Param("pz") String pz);
     List<ScmSteelSettle> getndcx(@Param("dw") String dw,@Param("cx") String cx);
     List<ScmSteelSettle> getndpz(@Param("pz") String pz);
-
+    List<ScmSteelSettle> getzebm(@Param("zrbm") String zrbm);
 }

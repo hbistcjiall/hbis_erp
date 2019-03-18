@@ -66,6 +66,16 @@ public class ScmSteelSettleController {
         return getpz;
     }
 
+    @ApiOperation(value = "责任部门报表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "zrdw", value = "责任单位", dataType = "String"),
+    })
+    @PostMapping("getzebm")
+    public  List<ScmSteelSettle>  getzebm(String zrbm) {
+        List<ScmSteelSettle> getpz=scmSteelSettleService.getzebm(zrbm);
+        return getpz;
+    }
+
 
 
 }
