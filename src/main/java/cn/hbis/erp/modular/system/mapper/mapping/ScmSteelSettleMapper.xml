@@ -691,7 +691,6 @@
         or settle.COMPANY_ID = '9196'
         or settle.COMPANY_ID = '1932'
         or settle.COMPANY_ID = '1778'
-        -- where xsztdzb.sale_body='专业公司'
 
         group by settle.COMPANY_ID
         union all
@@ -754,13 +753,11 @@
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐钢不锈钢公司' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body ='出口' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐银联营公司数据' ]]>-->
-        -- where xsztdzb.sale_body='专业公司'
         where settle.COMPANY_ID = '8110'
         or settle.COMPANY_ID = '8493'
---      and to_char(settle.fkdat,'yyyy-mm')  like '%2019-02%'  concat(concat('%',#{rq}),'%')
         group by settle.COMPANY_ID) c
         left join
-        （select
+        (select
         SAU.ACCOUNTABILITY_UNIT_NAME zrbm,
         JANUARY +
         FEBRUARY +
@@ -776,7 +773,7 @@
         DECEMBER mbl
         from SCM_ACCOUNTABILITY_UNIT_MANAGE SAU
         LEFT JOIN SCM_TARGET_QUANTITY_MANAGEMENT SQM
-        on SAU.ACCOUNTABILITY_UNIT_CODE = SQM.RESPONSIBILITY_UNIT） mb
+        on SAU.ACCOUNTABILITY_UNIT_CODE = SQM.RESPONSIBILITY_UNIT) mb
         on mb.zrbm = c.companyName ) order by sx
     </select>
 </mapper>
