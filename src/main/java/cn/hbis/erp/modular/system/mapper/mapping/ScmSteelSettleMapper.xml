@@ -545,7 +545,7 @@
     <select id="getzrbm" resultType="map">
         select companyName,fkimg,pzgl,bz,mbl,pzgl/mbl,sx wc from
         (select *
-        from （SELECT B.VARIETY || '公司'as companyName,
+        from (SELECT B.VARIETY || '公司'as companyName,
         SUM(settle.fkimg) AS fkimg,
         SUM(a.fkimg) AS pzgl,
         CASE
