@@ -50,8 +50,8 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     /*
     报表责任部门
  */
-    public List<ScmSteelSettle> getzebm(String zrbm) {
-        return scmSteelSettleMapper.getzebm(zrbm);
+    public List<ScmSteelSettle> getzrbm(String zrbm) {
+        return scmSteelSettleMapper.getzrbm(zrbm);
     }
 
 

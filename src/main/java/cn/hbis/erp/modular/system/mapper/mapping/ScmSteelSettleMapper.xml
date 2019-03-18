@@ -543,7 +543,7 @@
     </select>
 
 
-    <select id="getcx" resultType="map">
+    <select id="get" resultType="map">
 
         select companyName,fkimg,pzgl,bz,mbl,pzgl/mbl,sx wc from
         (select *

@@ -70,10 +70,10 @@ public class ScmSteelSettleController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "zrdw", value = "责任单位", dataType = "String"),
     })
-    @PostMapping("getzebm")
-    public  List<ScmSteelSettle>  getzebm(String zrbm) {
-        List<ScmSteelSettle> getpz=scmSteelSettleService.getzebm(zrbm);
-        return getpz;
+    @PostMapping("getzrbm")
+    public  List<ScmSteelSettle>  getzrbm(String zrbm) {
+        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getzrbm(zrbm);
+        return getzrbm;
     }
 
 

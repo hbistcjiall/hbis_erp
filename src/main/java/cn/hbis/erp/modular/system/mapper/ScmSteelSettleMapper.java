@@ -18,5 +18,5 @@ public interface ScmSteelSettleMapper extends BaseMapper<ScmSteelSettle> {
     List<ScmSteelSettle> getpz(@Param("pz") String pz);
     List<ScmSteelSettle> getndcx(@Param("dw") String dw,@Param("cx") String cx);
     List<ScmSteelSettle> getndpz(@Param("pz") String pz);
-    List<ScmSteelSettle> getzebm(@Param("zrbm") String zrbm);
+    List<ScmSteelSettle> getzrbm(@Param("zrbm") String zrbm);
 }
