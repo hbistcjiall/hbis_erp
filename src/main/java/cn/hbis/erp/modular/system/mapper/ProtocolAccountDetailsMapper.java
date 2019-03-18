@@ -22,5 +22,7 @@ public interface ProtocolAccountDetailsMapper extends BaseMapper<ProtocolAccount
     Page<Map<String, Object>> searchProtocolAccountDetailList(@Param("page") Page page, @Param("varieties") String varieties,
                                                               @Param("beginTime") String beginTime, @Param("endTime") String endTime,
                                                               @Param("protocolYear") String protocolYear, @Param("steelMills") String steelMills);
+
+    Object getProtocolAccountDetailsById(@Param("protocolAccountId") String protocolAccountId);
 }
 

@@ -1,9 +1,13 @@
 package cn.hbis.erp.modular.system.controller;
 
+import cn.hbis.erp.core.common.annotion.Permission;
 import cn.hbis.erp.core.common.page.PageFactory;
+import cn.hbis.erp.modular.system.entity.Dept;
 import cn.hbis.erp.modular.system.entity.ProtocolAccountDetails;
+import cn.hbis.erp.modular.system.model.ProtocolAccountDetailsDto;
 import cn.hbis.erp.modular.system.service.ProtocolAccountDetailsService;
 import cn.hbis.erp.modular.system.warpper.ProtocolAccountDetailsWrapper;
+import cn.hutool.core.bean.BeanUtil;
 import cn.stylefeng.roses.core.base.controller.BaseController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiImplicitParam;
@@ -37,7 +41,7 @@ public class ProtocolAccountDetailsController extends BaseController {
     private ProtocolAccountDetailsService protocolAccountDetailsService;
 
     /**
-     * 获取所有部门列表
+     * 获取协议户明细列表
      *
      *
      */
@@ -57,6 +61,91 @@ public class ProtocolAccountDetailsController extends BaseController {
         Page wrapped = new ProtocolAccountDetailsWrapper(protocolAccounts).wrap();
         return PageFactory.createPageInfo(wrapped);
     }
+    /**
+     * 获取协议户明细
+     *
+     *
+     */
+    @ApiOperation(value = "协议户明细详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "protocolAccountId", value = "协议户明细ID", dataType = "String")
+    })
+    @PostMapping("detail")
+    public Object detail(String protocolAccountId) {
+        ProtocolAccountDetails protocolAccountDetails = protocolAccountDetailsService.getById(protocolAccountId);
+        ProtocolAccountDetailsDto protocolAccountDetailsDto = new ProtocolAccountDetailsDto();
+        BeanUtil.copyProperties(protocolAccountDetails, protocolAccountDetailsDto);
+        return protocolAccountDetailsDto;
+    }
+    /**
+     * 修改协议户明细
+     *
+     *
+     */
+    @ApiOperation(value = "修改协议户明细")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "protocolAccountId", value = "协议ID", dataType = "String"),
+            @ApiImplicitParam(name = "protocolYear", value = "协议年份", dataType = "String"),
+            @ApiImplicitParam(name = "accountName", value = "用户名称", dataType = "String"),
+            @ApiImplicitParam(name = "varieties" ,value = "品种",dataType ="String" ),
+            @ApiImplicitParam(name = "mainSalesRegional" ,value = "主销售区域",dataType ="String" ),
+            @ApiImplicitParam(name = "aidedSalesRegionalOne", value = "辅助销售区域一", dataType = "String"),
+            @ApiImplicitParam(name = "aidedSalesRegionalTwo", value = "辅助销售区域二", dataType = "String"),
+            @ApiImplicitParam(name = "steelMills" ,value = "钢厂",dataType ="String" ),
+            @ApiImplicitParam(name = "annualAgreementVolume" ,value = "年协议量（吨）",dataType ="String" )
+    })
+    @PostMapping(value = "update")
+    public Map protocolAccountDetailsUpdate(String protocolAccountId, String protocolYear, String accountName, String varieties, String mainSalesRegional, String aidedSalesRegionalOne, String aidedSalesRegionalTwo, String steelMills, String annualAgreementVolume) {
+        Map map = new HashMap();
+        boolean flag = protocolAccountDetailsService.update(protocolAccountId,protocolYear,accountName,varieties,mainSalesRegional,aidedSalesRegionalOne,aidedSalesRegionalTwo,steelMills,annualAgreementVolume);
+        if(flag){
+            map.put("massage","修改成功");
+        }else{
+            map.put("massage","修改失败");
+        }
+        return map;
+    }
+    /**
+     * 协议户明细删除
+     *
+     *
+     */
+    @ApiOperation(value = "协议户明细删除")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "protocolAccountId" ,value = "协议户明细Id",dataType ="String" )
+    })
+    @PostMapping("delete")
+    public Map delete(String protocolAccountId){
+        boolean flag = protocolAccountDetailsService.delete(protocolAccountId);
+        Map map = new HashMap();
+        if(flag){
+            map.put("massage","删除成功");
+        }else{
+            map.put("massage","删除失败");
+        }
+        return map;
+    }
+    /**
+     * 协议户明细批量删除
+     *
+     *
+     */
+    /*@ApiOperation(value = "协议户明细批量删除")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "list" ,value = "idList",dataType ="List" )
+    })
+    @PostMapping("delete")
+    public Map delete(List list){
+        boolean flag = protocolAccountDetailsService.deleteList(list);
+        Map map = new HashMap();
+        if(flag){
+            map.put("massage","删除成功");
+        }else{
+            map.put("massage","删除失败");
+        }
+        return map;
+    }*/
+
 
     @ApiOperation(value = "协议上传")
     @RequestMapping(value = "/importexcel" ,method = RequestMethod.POST)
