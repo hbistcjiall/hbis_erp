@@ -93,23 +93,20 @@ public class ProtocolAccountDetailsService extends ServiceImpl<ProtocolAccountDe
     /**
      * 协议户明细批量删除
      *
-     *
      */
-    /*public  boolean deleteList(List list){
+    public  boolean deleteList(List<String> list){
         boolean flag = false;
-        for(int i = 0 ; i <= list.size(); i++) {
-            String id = list.get(i).toString();
+        for(int i = 0 ; i < list.size(); i++) {
+            String id = list.get(i);
             ProtocolAccountDetails protocolAccountDetails = protocolAccountDetailsMapper.selectById(id);
             protocolAccountDetails.setDeleteStatus("1");
             int num = protocolAccountDetailsMapper.updateById(protocolAccountDetails);
-            if(num ==1){
-                flag=true;
-                return  flag;
+            if(num == 1){
+                flag = true;
             }
-            return flag;
         }
         return flag;
-    }*/
+    }
 
 
 
