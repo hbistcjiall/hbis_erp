@@ -51,8 +51,13 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
             boolean flag = false;
             if(id != null && !id.equals("")){
                 AccountabilityUnitManage accounManage = accounUnitManageMapper.selectById(id);
-                accounManage.setAccountabilityunitcode(code);
-                accounManage.setAccountabilityunitname(name);
+                if(!code.equals("")&&code==null){
+                    accounManage.setAccountabilityunitcode(code);
+                }
+                if(!name.equals("")&&name==null){
+                    accounManage.setAccountabilityunitname(name);
+                }
+
                 int sun = accounUnitManageMapper.updateById(accounManage);
                 if(sun  ==1){
                      flag= true;
@@ -61,16 +66,20 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
                     return flag;
                 }
 
-            }
+            }else{
             AccountabilityUnitManage accounManage = new AccountabilityUnitManage();
-            accounManage.setAccountabilityunitname(name);
-            accounManage.setAccountabilityunitcode(code);
+            if(!code.equals("")&&code!=null){
+                accounManage.setAccountabilityunitcode(code);
+            }
+            if(!name.equals("")&&name!=null){
+                accounManage.setAccountabilityunitname(name);
+            }
             accounManage.setDeletestatus("0");
             int sun  = accounUnitManageMapper.insert(accounManage);
             if(sun  ==1){
                 flag= true;
                 return flag;
-            }else
+            }}
             return flag;
         }
 
@@ -93,5 +102,10 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
 
                 }
             return flag;
+        }
+        public AccountabilityUnitManage getOne(String id){
+
+                AccountabilityUnitManage   am = accounUnitManageMapper.selectById(id);
+                return am;
         }
 }

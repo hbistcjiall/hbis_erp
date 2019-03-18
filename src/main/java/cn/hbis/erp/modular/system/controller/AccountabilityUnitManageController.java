@@ -69,4 +69,17 @@ public class AccountabilityUnitManageController extends BaseController {
                 }
                 return map;
             }
+                @ApiOperation(value = "责任公司更新显示")
+                @PostMapping("/selectOne")
+                @ApiImplicitParams({
+                        @ApiImplicitParam(name = "id" ,value = "责任公司Id",dataType ="String" )
+                })
+                public Map GetOne(String id){
+                Map map = new HashMap();
+                AccountabilityUnitManage am= accManageService.getOne(id);
+
+                map.put("massage",am);
+
+                        return map;
+                }
 }

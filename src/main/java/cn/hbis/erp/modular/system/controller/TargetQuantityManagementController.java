@@ -2,6 +2,7 @@ package cn.hbis.erp.modular.system.controller;
 
 
 import cn.hbis.erp.core.common.page.PageFactory;
+import cn.hbis.erp.modular.system.entity.TargetQuantityManagement;
 import cn.hbis.erp.modular.system.service.TargetQuantityManagementService;
 import cn.hbis.erp.modular.system.warpper.TargetQuantityManagementWrapper;
 import cn.stylefeng.roses.core.base.controller.BaseController;
@@ -25,13 +26,13 @@ public class TargetQuantityManagementController extends BaseController {
     @ApiOperation(value = "获取责任公司列表")
     @PostMapping("/selTargetManage")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "companyname" ,value = "责任公司编码",dataType ="String" ),
+            @ApiImplicitParam(name = "code" ,value = "责任公司编码",dataType ="String" ),
             @ApiImplicitParam(name = "year" ,value = "年限",dataType ="String" ),
             @ApiImplicitParam(name = "limit" ,value = "每页多少条数据",dataType ="String" ),
             @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
     })
-    public Object selaccountmanager(String companyname,String year,String limit, String page){
-        Page<Map<String, Object>> objcet = targetService.selectTargetManeg(companyname,year);
+    public Object selaccountmanager(String code,String year,String limit, String page){
+        Page<Map<String, Object>> objcet = targetService.selectTargetManeg(code,year);
         Page wrapped = new TargetQuantityManagementWrapper(objcet).wrap();
         return PageFactory.createPageInfo(wrapped);
     }
@@ -55,7 +56,7 @@ public class TargetQuantityManagementController extends BaseController {
     @ApiOperation(value = "责任公司添加和更新")
     @PostMapping("/addorupTargetManage")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "targetname" ,value = "责任公司名称",dataType ="String" ),
+            @ApiImplicitParam(name = "code" ,value = "责任公司编码",dataType ="String" ),
             @ApiImplicitParam(name = "year" ,value = "年限",dataType ="String" ),
             @ApiImplicitParam(name = "jan" ,value = "一月",dataType ="String" ),
             @ApiImplicitParam(name = "feb" ,value = "二月",dataType ="String" ),
@@ -71,9 +72,9 @@ public class TargetQuantityManagementController extends BaseController {
             @ApiImplicitParam(name = "dec" ,value = "十二月",dataType ="String" ),
             @ApiImplicitParam(name = "id" ,value = "责任公司Id",dataType ="String" )
     })
-    public Map addORUpadte(String id,String targetname,String year,String jan,String feb,String mar,String apr,String may,String jun,String jul,String aug,String sep,String oct,String nov,String dec){
+    public Map addORUpadte(String id,String code,String year,String jan,String feb,String mar,String apr,String may,String jun,String jul,String aug,String sep,String oct,String nov,String dec){
         Map map = new HashMap();
-        boolean flag = targetService.addORUpadte(id,targetname,year,jan,feb,mar,apr,may,jun,jul,aug,sep,oct,nov,dec);
+        boolean flag = targetService.addORUpadte(id,code,year,jan,feb,mar,apr,may,jun,jul,aug,sep,oct,nov,dec);
         if(flag){
             map.put("massage","添加或修改成功");
         }else{
@@ -81,4 +82,17 @@ public class TargetQuantityManagementController extends BaseController {
         }
         return map;
     }
+    @ApiOperation(value = "责任公司更新显示")
+    @PostMapping("/selectone")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "责任公司ID", dataType = "String")
+
+    })
+    public Map getOne(String id){
+        Map map =  new HashMap();
+        TargetQuantityManagement tm = targetService.getOne(id);
+        map.put("entity",tm);
+        return  map;
+
+            }
 }
