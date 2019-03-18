@@ -1,8 +1,6 @@
 package cn.hbis.erp.modular.system.controller;
 
-import cn.hbis.erp.core.common.annotion.Permission;
 import cn.hbis.erp.core.common.page.PageFactory;
-import cn.hbis.erp.modular.system.entity.Dept;
 import cn.hbis.erp.modular.system.entity.ProtocolAccountDetails;
 import cn.hbis.erp.modular.system.model.ProtocolAccountDetailsDto;
 import cn.hbis.erp.modular.system.service.ProtocolAccountDetailsService;
@@ -14,13 +12,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
@@ -130,13 +123,13 @@ public class ProtocolAccountDetailsController extends BaseController {
      *
      *
      */
-    /*@ApiOperation(value = "协议户明细批量删除")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "list" ,value = "idList",dataType ="List" )
-    })
-    @PostMapping("delete")
-    public Map delete(List list){
-        boolean flag = protocolAccountDetailsService.deleteList(list);
+    @ApiOperation(value = "协议户明细批量删除")
+    /*@ApiImplicitParams({
+            @ApiImplicitParam(name = "list" ,value = "idList",dataType ="List<String>" )
+    })*/
+    @PostMapping("deleteList")
+    public Map delete(@RequestParam(value = "idList") List<String> idList){
+        boolean flag = protocolAccountDetailsService.deleteList(idList);
         Map map = new HashMap();
         if(flag){
             map.put("massage","删除成功");
@@ -144,7 +137,7 @@ public class ProtocolAccountDetailsController extends BaseController {
             map.put("massage","删除失败");
         }
         return map;
-    }*/
+    }
 
 
     @ApiOperation(value = "协议上传")
