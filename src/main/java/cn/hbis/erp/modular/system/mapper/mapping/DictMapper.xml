@@ -39,9 +39,9 @@
         select
         <include refid="Base_Column_List"/>
         from sys_dict
-        where PID = 0
+        where PID = '0'
         <if test="condition != null and condition != ''">
-            AND NAME like CONCAT('%',#{condition},'%')
+            AND NAME like CONCAT(#{condition},'%')
         </if>
         order by SORT ASC
     </select>

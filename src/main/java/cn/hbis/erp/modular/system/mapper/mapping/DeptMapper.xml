@@ -27,7 +27,7 @@
 		select DEPT_ID AS id, PID as pId, SIMPLE_NAME as name,
 		(
 		CASE
-		WHEN (PID = 0 OR PID IS NULL) THEN
+		WHEN (PID = '0' OR PID IS NULL) THEN
 		'true'
 		ELSE
 		'false'
