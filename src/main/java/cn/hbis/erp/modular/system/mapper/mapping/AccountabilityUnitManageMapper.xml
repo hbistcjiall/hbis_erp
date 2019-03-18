@@ -16,7 +16,7 @@
     <select id="selectaccunitname" parameterType="String" resultType="map">
         select
         <include refid="Base_Column_List"/>
-        from SYS_ACCOUNTABILITY_UNIT_MANAGE
+        from SCM_ACCOUNTABILITY_UNIT_MANAGE
         where DELETESTATUS = '0'
         <if test="accountname != null and accountname !=''">
 

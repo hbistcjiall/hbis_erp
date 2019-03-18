@@ -8,7 +8,7 @@
     <select id="selTargetManagement" parameterType="String" resultType="map">
         select
         <include refid="Base_Column_List"/>
-        from SYS_TARGET_QUANTITY_MANAGEMENT TQ
+        from SCM_TARGET_QUANTITY_MANAGEMENT TQ
         LEFT JOIN
         SYS_ACCOUNTABILITY_UNIT_MANAGE AM
         ON
