@@ -26,7 +26,7 @@
     <select id="searchProtocolAccountDetailList" resultType="map">
         select
         <include refid="Base_Column_List"/>
-        from SYS_PROTOCOL_ACCOUNT_DETAILS where DELETESTATUS = '0'
+        from SCM_PROTOCOL_ACCOUNT_DETAILS where DELETESTATUS = '0'
         <if test="varieties != null and '热板' == varieties">
             and VARIETIES = '热板' or VARIETIES = '酸洗'
         </if>
