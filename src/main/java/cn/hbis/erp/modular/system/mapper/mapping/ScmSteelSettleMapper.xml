@@ -65,7 +65,6 @@
         WHERE cfd.data_type = '2'
         AND cfd.company_id = sso.company_id
         AND cfd.status = '0')
-        AND sso.order_mount   &gt; 1
         AND (sso.deleted IS NULL OR sso.deleted != 'X')
         AND sso.sale_group NOT IN
         (SELECT sso.sale_group
@@ -95,16 +94,17 @@
         </if>
         GROUP BY settle.company_id, DATA.NAME, xsztdzb.sale_body
         ORDER BY company_id) a
-        LEFT JOIN (SELECT settle.company_id,
+        LEFT JOIN (
+        SELECT settle.company_id,
         xsztdzb.sale_body,
-        SUM(settle.fkimg) AS fkimg1,
-        SUM(a.fkimg) AS pzgl1,
+        SUM(settle.fkimg) AS zyfkimg,
+        SUM(a.fkimg) AS zypzgl,
         CASE
         WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
         '--'
         ELSE
         to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
-        END AS bz1
+        END AS zybz
         FROM scm_steel_settle settle
         LEFT JOIN scm_delivery_detail detail
         ON settle.aubel = detail.order_no
@@ -138,7 +138,6 @@
         WHERE cfd.data_type = '2'
         AND cfd.company_id = sso.company_id
         AND cfd.status = '0')
-        AND sso.order_mount   &gt; 1
         AND (sso.deleted IS NULL OR sso.deleted != 'X')
         AND sso.sale_group NOT IN
         (SELECT sso.sale_group
@@ -161,14 +160,14 @@
         ON a.sale_body = b.sale_body
         LEFT JOIN (SELECT settle.company_id,
         xsztdzb.sale_body,
-        SUM(settle.fkimg) AS fkimg2,
-        SUM(a.fkimg) AS pzgl2,
+        SUM(settle.fkimg) AS fgsfkimg,
+        SUM(a.fkimg) AS fgpzgl,
         CASE
         WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
         '--'
         ELSE
         to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
-        END AS bz2
+        END AS fgsbz
         FROM scm_steel_settle settle
         LEFT JOIN scm_delivery_detail detail
         ON settle.aubel = detail.order_no
@@ -202,8 +201,8 @@
         WHERE cfd.data_type = '2'
         AND cfd.company_id = sso.company_id
         AND cfd.status = '0')
-        AND sso.order_mount   &gt; 1
-        AND (sso.deleted IS NULL OR sso.deleted != 'X')
+        AND (sso.deleted IS NULL
+        OR sso.deleted != 'X')
         AND sso.sale_group NOT IN
         (SELECT sso.sale_group
         FROM crm_filter_data cfd
@@ -225,14 +224,14 @@
         ON a.sale_body = c.sale_body
         LEFT JOIN (SELECT settle.company_id,
         xsztdzb.sale_body,
-        SUM(settle.fkimg) AS fkimg3,
-        SUM(a.fkimg) AS pzgl3,
+        SUM(settle.fkimg) AS zgsfkimg,
+        SUM(a.fkimg) AS zgspzgl,
         CASE
         WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
         '--'
         ELSE
         to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
-        END AS bz3
+        END AS zgsbz
         FROM scm_steel_settle settle
         LEFT JOIN scm_delivery_detail detail
         ON settle.aubel = detail.order_no
@@ -362,14 +361,14 @@
         ) a
         LEFT JOIN ( SELECT
         B.VARIETY,
-        SUM(settle.fkimg) AS fkimg,
-        SUM(a.fkimg) AS pzgl,
+        SUM(settle.fkimg) AS zyfkimg,
+        SUM(a.fkimg) AS zypzgl,
         CASE
         WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
         '--'
         ELSE
         to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
-        END AS bz
+        END AS zybz
         FROM scm_steel_settle settle
         JOIN scm_sale_order sso
         ON sso.order_no = settle.aubel
@@ -422,14 +421,14 @@
         ON a.VARIETY = b.VARIETY
         LEFT JOIN ( SELECT
         B.VARIETY,
-        SUM(settle.fkimg) AS fkimg,
-        SUM(a.fkimg) AS pzgl,
+        SUM(settle.fkimg) AS fgsfkimg,
+        SUM(a.fkimg) AS fgspzgl,
         CASE
         WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
         '--'
         ELSE
         to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
-        END AS bz
+        END AS fgsbz
         FROM scm_steel_settle settle
         JOIN scm_sale_order sso
         ON sso.order_no = settle.aubel
@@ -482,14 +481,14 @@
         ON a.VARIETY = c.VARIETY
         LEFT JOIN (  SELECT
         B.VARIETY,
-        SUM(settle.fkimg) AS fkimg,
-        SUM(a.fkimg) AS pzgl,
+        SUM(settle.fkimg) AS zgsfkimg,
+        SUM(a.fkimg) AS zgspzgl,
         CASE
         WHEN SUM(settle.fkimg) / SUM(a.fkimg) IS NULL THEN
         '--'
         ELSE
         to_char(round(SUM(settle.fkimg) / SUM(a.fkimg), 2))
-        END AS bz
+        END AS zgsbz
         FROM scm_steel_settle settle
         JOIN scm_sale_order sso
         ON sso.order_no = settle.aubel
@@ -543,8 +542,7 @@
     </select>
 
 
-    <select id="get" resultType="map">
-
+    <select id="getzrbm" resultType="map">
         select companyName,fkimg,pzgl,bz,mbl,pzgl/mbl,sx wc from
         (select *
         from （SELECT B.VARIETY || '公司'as companyName,
@@ -759,14 +757,27 @@
         -- where xsztdzb.sale_body='专业公司'
         where settle.COMPANY_ID = '8110'
         or settle.COMPANY_ID = '8493'
---         and to_char(settle.fkdat,'yyyy-mm')  like '%2019-02%'
+--      and to_char(settle.fkdat,'yyyy-mm')  like '%2019-02%'  concat(concat('%',#{rq}),'%')
         group by settle.COMPANY_ID) c
         left join
-        （select SAU.ACCOUNTABILITY_UNIT_NAME zrbm, JANUARY + FEBRUARY + MARCH + APRIL + MAY + JUNE + JULY + AUGUST + SEPTEMBER + OCTOBER + NOVEMBER + DECEMBER mbl
+        （select
+        SAU.ACCOUNTABILITY_UNIT_NAME zrbm,
+        JANUARY +
+        FEBRUARY +
+        MARCH +
+        APRIL +
+        MAY +
+        JUNE +
+        JULY +
+        AUGUST +
+        SEPTEMBER +
+        OCTOBER +
+        NOVEMBER +
+        DECEMBER mbl
         from SCM_ACCOUNTABILITY_UNIT_MANAGE SAU
         LEFT JOIN SCM_TARGET_QUANTITY_MANAGEMENT SQM
-        on SAU.ACCOUNTABILITY_UNIT_CODE = SQM.RESPONSIBILITY_UNIT） mb on
-        mb.zrbm = c.companyName ) order by sx
+        on SAU.ACCOUNTABILITY_UNIT_CODE = SQM.RESPONSIBILITY_UNIT） mb
+        on mb.zrbm = c.companyName ) order by sx
     </select>
 </mapper>
 

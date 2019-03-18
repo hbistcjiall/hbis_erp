@@ -68,7 +68,7 @@ public class ScmSteelSettleController {
 
     @ApiOperation(value = "责任部门报表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "zrdw", value = "责任单位", dataType = "String"),
+            @ApiImplicitParam(name = "zrbm", value = "责任部门", dataType = "String"),
     })
     @PostMapping("getzrbm")
     public  List<ScmSteelSettle>  getzrbm(String zrbm) {
