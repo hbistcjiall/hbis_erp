@@ -14,7 +14,7 @@ import java.util.Date;
  *
  *
  */
-@TableName("sys_protocol_account_details")
+@TableName("scm_protocol_account_details")
 public class ProtocolAccountDetails implements Serializable {
 
     private static final long serialVersionUID = 1L;
