@@ -124,9 +124,6 @@ public class ProtocolAccountDetailsController extends BaseController {
      *
      */
     @ApiOperation(value = "协议户明细批量删除")
-    /*@ApiImplicitParams({
-            @ApiImplicitParam(name = "list" ,value = "idList",dataType ="List<String>" )
-    })*/
     @PostMapping("deleteList")
     public Map delete(@RequestParam(value = "idList") List<String> idList){
         boolean flag = protocolAccountDetailsService.deleteList(idList);
