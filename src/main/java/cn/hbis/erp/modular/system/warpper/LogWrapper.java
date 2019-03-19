@@ -26,10 +26,17 @@ public class LogWrapper extends BaseControllerWrapper {
 
     @Override
     protected void wrapTheMap(Map<String, Object> map) {
-        String message = map.get("MESSAGE").toString();
+        String message = "";
+        if(map.get("MESSAGE") == null){
+            message = (String)map.get("MESSAGE");
+        }else {
+            message = map.get("MESSAGE").toString();
+        }
 
         String userid =  (String)map.get("USERID");
-        map.put("userName", ConstantFactory.me().getUserNameById(userid));
+        if (ToolUtil.isNotEmpty(userid) || userid != null){
+            map.put("userName", ConstantFactory.me().getUserNameById(userid));
+        }
 
         //如果信息过长,则只截取前100位字符串
         if (ToolUtil.isNotEmpty(message) && message.length() >= 100) {
