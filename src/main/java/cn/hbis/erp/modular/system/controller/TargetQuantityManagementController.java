@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,7 +25,7 @@ import java.util.Map;
 public class TargetQuantityManagementController extends BaseController {
     @Autowired
     private TargetQuantityManagementService targetService;
-    @ApiOperation(value = "获取责任公司列表")
+    @ApiOperation(value = "目标量明细列表")
     @PostMapping("/selTargetManage")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code" ,value = "责任公司编码",dataType ="String" ),
@@ -53,7 +55,7 @@ public class TargetQuantityManagementController extends BaseController {
     }
 
 
-    @ApiOperation(value = "责任公司添加和更新")
+    @ApiOperation(value = "目标量明细添加和更新")
     @PostMapping("/addorupTargetManage")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code" ,value = "责任公司编码",dataType ="String" ),
@@ -82,7 +84,7 @@ public class TargetQuantityManagementController extends BaseController {
         }
         return map;
     }
-    @ApiOperation(value = "责任公司更新显示")
+    @ApiOperation(value = "目标量明细更新显示")
     @PostMapping("/selectone")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "责任公司ID", dataType = "String")
@@ -95,4 +97,11 @@ public class TargetQuantityManagementController extends BaseController {
         return  map;
 
             }
+    @ApiOperation(value = "目标量明细无条件查询")
+    @PostMapping("/selectlist")
+    public List<Map> selectList(){
+        List<Map> map = new ArrayList<>();
+        map = targetService.getlist();
+        return map;
+    }
 }
