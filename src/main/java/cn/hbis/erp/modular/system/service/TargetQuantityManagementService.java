@@ -9,7 +9,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -26,14 +28,11 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
 
         public boolean addORUpadte(String id,String targetname,String year,String jan,String feb,String mar,String apr,String may,String jun,String jul,String aug,String sep,String oct,String nov,String dec){
             boolean flag =false;
+
             if(id != null && !id.equals("")){
                 TargetQuantityManagement targetManagement = targetManagementMapper.selectById(id);
                     if(!year.equals("")&&year!=null){
                         targetManagement.setYaer(year);
-                    }
-                    if(!targetname.equals("")&&targetname!=null){
-
-                        targetManagement.setResponsibilityunit(targetname);
                     }
 
                     if(jan==null||jan.equals("")){
@@ -96,6 +95,13 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                     return flag;
                 }
             }else{
+                List<Map> list = targetManagementMapper.theList();
+                for(int i=0;i<list.size();i++){
+                    String names = list.get(i).get("CODE").toString();
+                    if(targetname.equals(names)){
+                        return false;
+                    }
+                }
                 TargetQuantityManagement targetManagement = new TargetQuantityManagement();
                 if(!year.equals("")&&year!=null){
                     targetManagement.setYaer(year);
@@ -170,6 +176,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             boolean flag = false;
             TargetQuantityManagement targetManagement = targetManagementMapper.selectById(id);
                     targetManagement.setDeletestatus("1");
+                    targetManagement.setResponsibilityunit("");
                     int num = targetManagementMapper.updateById(targetManagement);
                     if(num ==1){
                         flag=true;
@@ -182,5 +189,11 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 TargetQuantityManagement tm = targetManagementMapper.selectById(id);
 
             return tm;
+        }
+
+        public List<Map> getlist(){
+            List<Map> map = new ArrayList<>();
+            map = targetManagementMapper.selectList();
+            return map ;
         }
 }

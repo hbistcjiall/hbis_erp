@@ -25,5 +25,25 @@
             and YEAR like CONCAT(CONCAT('%',#{year}),'%')
 
         </if>
+        ORDER BY TQ.RESPONSIBILITY_UNIT
+    </select>
+    <select id="selectList" resultType="map">
+        select ACCOUNTABILITY_UNIT_ID AS ID,ACCOUNTABILITY_UNIT_CODE AS CODE,ACCOUNTABILITY_UNIT_NAME AS "NAME"
+        from SCM_ACCOUNTABILITY_UNIT_MANAGE
+        where DELETESTATUS = '0' ORDER BY CODE
+    </select>
+    <select id="theList" resultType="map">
+        select RESPONSIBILITY_UNIT AS CODE
+        from SCM_TARGET_QUANTITY_MANAGEMENT
+        where DELETESTATUS = '0' ORDER BY RESPONSIBILITY_UNIT
+    </select>
+    <!--<sql id="Base_Column_Lists">
+       TARGET_QUANTITY_MANAGEMENT_ID,"YEAR",RESPONSIBILITY_UNIT,JANUARY,FEBRUARY,MARCH,APRIL,MAY,JUNE,JULY,AUGUST,SEPTEMBER,OCTOBER,NOVEMBER,DECEMBER
+    </sql>-->
+    <select id="selectTa" resultType="String">
+        select
+         TARGET_QUANTITY_MANAGEMENT_ID AS id
+        from SCM_TARGET_QUANTITY_MANAGEMENT
+        where RESPONSIBILITY_UNIT = #{code}
     </select>
 </mapper>

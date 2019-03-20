@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 public interface TargetQuantityManagementMapper extends BaseMapper<TargetQuantityManagement> {
@@ -13,5 +14,7 @@ public interface TargetQuantityManagementMapper extends BaseMapper<TargetQuantit
 
 
     Page<Map<String, Object>> selTargetManagement(@Param("page") Page page, @Param("targetname") String targetname, @Param("year") String year);
-
+    List<Map> theList();
+    List<Map> selectList();
+    String selectTa(String code);
 }

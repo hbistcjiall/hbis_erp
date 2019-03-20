@@ -41,12 +41,11 @@ public class AccountabilityUnitManageController extends BaseController {
             @PostMapping("/addorupdatemanager")
             @ApiImplicitParams({
                     @ApiImplicitParam(name = "companyname" ,value = "责任公司名称",dataType ="String" ),
-                    @ApiImplicitParam(name = "code" ,value = "责任公司编码",dataType ="String" ),
                     @ApiImplicitParam(name = "id" ,value = "责任公司Id",dataType ="String" )
             })
-            public Map addORUpdate(String companyname,String code,String id){
+            public Map addORUpdate(String companyname,String id){
                 Map map = new HashMap();
-                boolean flag = accManageService.AddORUpdate(id,code,companyname);
+                boolean flag = accManageService.AddORUpdate(id,companyname);
                 if(flag){
                     map.put("massage","添加或修改成功");
                 }else{

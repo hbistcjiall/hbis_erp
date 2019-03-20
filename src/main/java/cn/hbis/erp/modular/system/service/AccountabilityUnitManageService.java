@@ -3,7 +3,9 @@ package cn.hbis.erp.modular.system.service;
 
 import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.modular.system.entity.AccountabilityUnitManage;
+import cn.hbis.erp.modular.system.entity.TargetQuantityManagement;
 import cn.hbis.erp.modular.system.mapper.AccountabilityUnitManageMapper;
+import cn.hbis.erp.modular.system.mapper.TargetQuantityManagementMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * <p>
@@ -28,6 +31,9 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
         @Resource
         private  AccountabilityUnitManageMapper accounUnitManageMapper;
 
+        @Resource
+        private TargetQuantityManagementMapper taManagementMapper;
+
         /**
          * 责任公司管理的列表
          * @param accountname
@@ -42,18 +48,21 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
         /**
          * 责任公司添加和更新
           * @param id
-         * @param code
          * @param name
          * @return
          */
         @Transactional(rollbackFor = Exception.class)
-        public boolean AddORUpdate(String id,String code,String name){
+        public boolean AddORUpdate(String id,String name){
             boolean flag = false;
+            List<Map> list = taManagementMapper.selectList();
+            for(int i=0;i<list.size();i++){
+                String names = list.get(i).get("NAME").toString();
+                if(name.equals(names)) {
+                    return false;
+                }
+            }
             if(id != null && !id.equals("")){
                 AccountabilityUnitManage accounManage = accounUnitManageMapper.selectById(id);
-                if(!code.equals("")&&code==null){
-                    accounManage.setAccountabilityunitcode(code);
-                }
                 if(!name.equals("")&&name==null){
                     accounManage.setAccountabilityunitname(name);
                 }
@@ -68,9 +77,14 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
 
             }else{
             AccountabilityUnitManage accounManage = new AccountabilityUnitManage();
-            if(!code.equals("")&&code!=null){
-                accounManage.setAccountabilityunitcode(code);
-            }
+                //生成uuid的hashCode值
+                int hashCode = UUID.randomUUID().toString().hashCode();
+                if(hashCode<0){
+                    hashCode=-hashCode;
+                }
+                accounManage.setAccountabilityunitcode(String.valueOf(hashCode).substring(0,4));
+               /* String code = String.valueOf((int)((Math.random()*9+1)*100000));
+                accounManage.setAccountabilityunitcode(code);*/
             if(!name.equals("")&&name!=null){
                 accounManage.setAccountabilityunitname(name);
             }
@@ -94,6 +108,15 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
                 if(id != null && !id.equals("")){
                     AccountabilityUnitManage accounManage = accounUnitManageMapper.selectById(id);
                     accounManage.setDeletestatus("1");
+                    accounManage.setAccountabilityunitname("");
+
+                    String code =accounManage.getAccountabilityunitcode();
+                    String  ids = taManagementMapper.selectTa(code);
+                    TargetQuantityManagement tm = taManagementMapper.selectById(ids);
+                                tm.setResponsibilityunit("");
+                                tm.setDeletestatus("1");
+                                taManagementMapper.updateById(tm);
+                    /*int sun = accounUnitManageMapper.deleteById(id);*/
                     int sun = accounUnitManageMapper.updateById(accounManage);
                     if(sun  ==1){
                         flag= true;
