@@ -86,6 +86,8 @@
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐钢不锈钢公司' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body ='出口' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐银联营公司数据' ]]>-->
+        AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         <if test="cx != null">
             AND DATA.NAME=#{cx}
         </if>
@@ -155,6 +157,8 @@
         ON sso.company_id = xsztdzb.company_id
         AND sso.sale_group = xsztdzb.sale_body_des
         WHERE xsztdzb.sale_body = '专业公司'
+        AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         GROUP BY settle.company_id, xsztdzb.sale_body
         ORDER BY company_id) b
         ON a.sale_body = b.sale_body
@@ -219,6 +223,8 @@
         ON sso.company_id = xsztdzb.company_id
         AND sso.sale_group = xsztdzb.sale_body_des
         WHERE xsztdzb.sale_body = '分公司'
+        AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         GROUP BY settle.company_id, xsztdzb.sale_body
         ORDER BY company_id) c
         ON a.sale_body = c.sale_body
@@ -283,6 +289,8 @@
         ON sso.company_id = xsztdzb.company_id
         AND sso.sale_group = xsztdzb.sale_body_des
         WHERE xsztdzb.sale_body = '子公司'
+        AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         GROUP BY settle.company_id, xsztdzb.sale_body
         ORDER BY company_id) d
         ON a.sale_body = d.sale_body
@@ -350,6 +358,8 @@
         ON sso.company_id = xsztdzb.company_id
         AND sso.sale_group = xsztdzb.sale_body_des
         where 1=1
+        AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         <if test="pz != null">
             AND  B.VARIETY=#{pz}
         </if>
@@ -399,7 +409,6 @@
         WHERE cfd.data_type = '2'
         AND cfd.company_id = sso.company_id
         AND cfd.status = '0')
-        AND sso.order_mount &gt; 1
         AND (sso.deleted IS NULL OR sso.deleted != 'X')
         AND sso.sale_group NOT IN
         (SELECT sso.sale_group
@@ -417,6 +426,8 @@
         ON sso.company_id = xsztdzb.company_id
         AND sso.sale_group = xsztdzb.sale_body_des
         where xsztdzb.sale_body = '专业公司'
+        AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         GROUP BY   B.VARIETY) b
         ON a.VARIETY = b.VARIETY
         LEFT JOIN ( SELECT
@@ -477,6 +488,8 @@
         ON sso.company_id = xsztdzb.company_id
         AND sso.sale_group = xsztdzb.sale_body_des
         where xsztdzb.sale_body = '分公司'
+        AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         GROUP BY   B.VARIETY) c
         ON a.VARIETY = c.VARIETY
         LEFT JOIN (  SELECT
@@ -519,7 +532,6 @@
         WHERE cfd.data_type = '2'
         AND cfd.company_id = sso.company_id
         AND cfd.status = '0')
-        AND sso.order_mount &gt; 1
         AND (sso.deleted IS NULL OR sso.deleted != 'X')
         AND sso.sale_group NOT IN
         (SELECT sso.sale_group
@@ -537,6 +549,8 @@
         ON sso.company_id = xsztdzb.company_id
         AND sso.sale_group = xsztdzb.sale_body_des
         where xsztdzb.sale_body = '子公司'
+        AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         GROUP BY   B.VARIETY) d
         ON a.VARIETY = d.VARIETY
     </select>
@@ -545,7 +559,7 @@
     <select id="getzrbm" resultType="map">
         select companyName,fkimg,pzgl,bz,mbl,pzgl/mbl,sx wc from
         (select *
-        from （SELECT B.VARIETY || '公司'as companyName,
+        from (SELECT B.VARIETY || '公司'as companyName,
         SUM(settle.fkimg) AS fkimg,
         SUM(a.fkimg) AS pzgl,
         CASE
@@ -584,13 +598,11 @@
         WHERE cfd.data_type = '2'
         AND cfd.company_id = sso.company_id
         AND cfd.status = '0')
-
         AND (sso.deleted IS NULL OR sso.deleted != 'X')
         AND sso.sale_group NOT IN
         (SELECT sso.sale_group
         FROM crm_filter_data cfd
         WHERE cfd.company_id = sso.company_id
-
         AND cfd.data_type = 8
         AND cfd.status = 0)
         AND sso.saler_name NOT IN
@@ -602,7 +614,8 @@
         LEFT JOIN price_salebody_relation xsztdzb
         ON sso.company_id = xsztdzb.company_id
         AND sso.sale_group = xsztdzb.sale_body_des
-
+        where  settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐钢中厚板公司' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐钢不锈钢公司' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body ='出口' ]]>-->
@@ -632,7 +645,6 @@
         to_char(round(sum(settle.fkimg) / sum(a.fkimg), 2))
         end as bz,
         '2' as sx
-
         from scm_steel_settle settle
         join scm_delivery_detail detail
         on settle.aubel = detail.order_no
@@ -653,7 +665,6 @@
         or pzg.PRODUCT_GRADE = '特色战略产品'
         and pzg.status = '0') a
         on settle.id = a.id
-
         inner join scm_variety_to_pt_gp svtpg
         on sso.product_code = svtpg.product_group
         and sso.company_id = svtpg.company_id
@@ -663,7 +674,6 @@
         where cfd.data_type = '2'
         and cfd.company_id = sso.company_id
         and cfd.status = '0')
-
         AND (sso.deleted is null or sso.deleted != 'X')
         and sso.sale_group not in
         (SELECT sso.sale_group
@@ -677,7 +687,6 @@
         where t.data_type = '1'
         and t.status = '0'
         and t.company_id = sso.company_Id)
-
         left join price_salebody_relation xsztdzb
         on sso.COMPANY_ID = xsztdzb.COMPANY_ID
         and sso.sale_group = xsztdzb.sale_body_des
@@ -685,14 +694,16 @@
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐钢不锈钢公司' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body ='出口' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐银联营公司数据' ]]>-->
-        where settle.COMPANY_ID = '9580'
+        where
+        settle.COMPANY_ID = '9580'
         or settle.COMPANY_ID = '9727'
         or settle.COMPANY_ID = '9193'
         or settle.COMPANY_ID = '9196'
         or settle.COMPANY_ID = '1932'
         or settle.COMPANY_ID = '1778'
-        -- where xsztdzb.sale_body='专业公司'
-
+        AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+        <!-- where xsztdzb.sale_body='专业公司'-->
         group by settle.COMPANY_ID
         union all
         select decode(settle.COMPANY_ID, 8110, '石钢公司', 8493, '衡板公司') as companyName,
@@ -754,10 +765,11 @@
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐钢不锈钢公司' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body ='出口' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐银联营公司数据' ]]>-->
-        -- where xsztdzb.sale_body='专业公司'
+        <!-- where xsztdzb.sale_body='专业公司'-->
         where settle.COMPANY_ID = '8110'
         or settle.COMPANY_ID = '8493'
---      and to_char(settle.fkdat,'yyyy-mm')  like '%2019-02%'  concat(concat('%',#{rq}),'%')
+        AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         group by settle.COMPANY_ID) c
         left join
         （select
@@ -776,9 +788,8 @@
         DECEMBER mbl
         from SCM_ACCOUNTABILITY_UNIT_MANAGE SAU
         LEFT JOIN SCM_TARGET_QUANTITY_MANAGEMENT SQM
-        on SAU.ACCOUNTABILITY_UNIT_CODE = SQM.RESPONSIBILITY_UNIT） mb
+        on SAU.ACCOUNTABILITY_UNIT_CODE = SQM.RESPONSIBILITY_UNIT
+        where SQM.DELETESTATUS='0') mb
         on mb.zrbm = c.companyName ) order by sx
     </select>
 </mapper>
-
-

@@ -14,9 +14,7 @@ import java.util.List;
  * @since 2019-03-16
  */
 public interface ScmSteelSettleMapper extends BaseMapper<ScmSteelSettle> {
-    List<ScmSteelSettle> getcx(@Param("dw") String dw,@Param("cx") String cx);
-    List<ScmSteelSettle> getpz(@Param("pz") String pz);
-    List<ScmSteelSettle> getndcx(@Param("dw") String dw,@Param("cx") String cx);
-    List<ScmSteelSettle> getndpz(@Param("pz") String pz);
-    List<ScmSteelSettle> getzrbm(@Param("zrbm") String zrbm);
+    List<ScmSteelSettle> getcx(@Param("dw") String dw,@Param("cx") String cx,@Param("startTime") String startTime,@Param("endTime")String endTime);
+    List<ScmSteelSettle> getpz(@Param("pz") String pz,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    List<ScmSteelSettle> getzrbm(@Param("zrbm") String zrbm,@Param("startTime") String startTime,@Param("endTime") String endTime);
 }

@@ -17,7 +17,7 @@ import java.util.List;
  * 结算清单信息接口 前端控制器
  * </p>
  *
- * @author jiarsi
+ * @author yaojiaqi
  * @since 2019-03-16
  */
 @RestController
@@ -28,51 +28,35 @@ public class ScmSteelSettleController {
 
     @ApiOperation(value = "月度产线报表")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
             @ApiImplicitParam(name = "dw", value = "单位", dataType = "String"),
             @ApiImplicitParam(name = "cx", value = "产线", dataType = "String"),
     })
     @PostMapping("getcx")
-    public  List<ScmSteelSettle>  getcx(String dw,String cx) {
-        List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx);
+    public  List<ScmSteelSettle>  getcx(String dw,String cx,String startTime,String endTime) {
+        List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx,startTime,endTime);
         return getcx ;
     }
     @ApiOperation(value = "月度品种报表")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
             @ApiImplicitParam(name = "pz", value = "品种", dataType = "String"),
     })
     @PostMapping("getpz")
-    public  List<ScmSteelSettle>  getpz(String pz) {
-        List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz);
+    public  List<ScmSteelSettle>  getpz(String pz,String startTime,String endTime) {
+        List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz,startTime,endTime);
         return getpz;
     }
-
-    @ApiOperation(value = "年度度产线报表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "dw", value = "单位", dataType = "String"),
-            @ApiImplicitParam(name = "cx", value = "产线", dataType = "String"),
-    })
-    @PostMapping("getndcx")
-    public  List<ScmSteelSettle>  getndcx(String dw,String cx) {
-        List<ScmSteelSettle> getcx=scmSteelSettleService.getndcx(dw,cx);
-        return getcx ;
-    }
-    @ApiOperation(value = "年度品种报表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "pz", value = "品种", dataType = "String"),
-    })
-    @PostMapping("getndpz")
-    public  List<ScmSteelSettle>  getndpz(String pz) {
-        List<ScmSteelSettle> getpz=scmSteelSettleService.getndpz(pz);
-        return getpz;
-    }
-
     @ApiOperation(value = "责任部门报表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "zrbm", value = "责任部门", dataType = "String"),
+            @ApiImplicitParam(name = "rq", value = "日期", dataType = "String"),
     })
     @PostMapping("getzrbm")
-    public  List<ScmSteelSettle>  getzrbm(String zrbm) {
-        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getzrbm(zrbm);
+    public  List<ScmSteelSettle>  getzrbm(String zrbm,String startTime,String endTime) {
+        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getzrbm(zrbm,startTime,endTime);
         return getzrbm;
     }
 
