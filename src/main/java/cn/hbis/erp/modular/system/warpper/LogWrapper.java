@@ -26,8 +26,10 @@ public class LogWrapper extends BaseControllerWrapper {
 
     @Override
     protected void wrapTheMap(Map<String, Object> map) {
-        String message = map.get("MESSAGE").toString();
-
+        String message ="";
+        if(map.get("MESSAGE")!=null){
+            message = map.get("MESSAGE").toString();
+        }
         String userid =  (String)map.get("USERID");
         map.put("userName", ConstantFactory.me().getUserNameById(userid));
 
