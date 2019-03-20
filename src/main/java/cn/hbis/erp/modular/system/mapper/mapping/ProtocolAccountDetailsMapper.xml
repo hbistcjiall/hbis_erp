@@ -20,13 +20,13 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        PROTOCOL_ACCOUNT_ID AS protocolAccountId, UPLOAD_TIME AS uploadTime, PROTOCOL_YEAR AS protocolYear, ACCOUNT_NAME AS accountName, SUPPLY_MODE AS supplyMode, VARIETIES AS varieties, MAIN_SALES_REGIONAL AS mainSalesRegional, AIDED_SALES_REGIONAL_ONE AS aidedSalesRegionalOne, AIDED_SALES_REGIONAL_TWO AS aidedSalesRegionalTwo, STEEL_MILLS AS steelMills, ANNUAL_AGREEMENT_VOLUME AS annualAgreementVolume
+        PROTOCOL_ACCOUNT_ID AS protocolAccountId, UPLOAD_TIME AS uploadTime, PROTOCOL_YEAR AS protocolYear, ACCOUNT_NAME AS accountName, SUPPLY_MODE AS supplyMode, VARIETIES AS varieties, MAIN_SALES_REGIONAL AS mainSalesRegional, AIDED_SALES_REGIONAL_ONE AS aidedSalesRegionalOne, AIDED_SALES_REGIONAL_TWO AS aidedSalesRegionalTwo, STEEL_MILLS AS steelMills, ANNUAL_AGREEMENT_VOLUME AS annualAgreementVolume, ANNUALAGREEMENTVOLUMETOTAL, ACCOUNTNAMECOUNT
     </sql>
 
     <select id="searchProtocolAccountDetailList" resultType="map">
         select
         <include refid="Base_Column_List"/>
-        from SCM_PROTOCOL_ACCOUNT_DETAILS where DELETESTATUS = '0'
+        from SCM_PROTOCOL_ACCOUNT_DETAILS, (SELECT sum(ANNUAL_AGREEMENT_VOLUME) AS ANNUALAGREEMENTVOLUMETOTAL, count(distinct ACCOUNT_NAME) AS ACCOUNTNAMECOUNT FROM SCM_PROTOCOL_ACCOUNT_DETAILS) where DELETESTATUS = '0'
         <if test="varieties != null and '热板' == varieties">
             and VARIETIES = '热板' or VARIETIES = '酸洗'
         </if>
