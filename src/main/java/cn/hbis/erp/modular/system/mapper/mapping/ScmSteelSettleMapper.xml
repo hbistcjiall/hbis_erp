@@ -701,9 +701,13 @@
         or settle.COMPANY_ID = '9196'
         or settle.COMPANY_ID = '1932'
         or settle.COMPANY_ID = '1778'
+<<<<<<< HEAD
         AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
         AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         <!-- where xsztdzb.sale_body='专业公司'-->
+=======
+
+>>>>>>> e43fae4acdf32b85208d2cb2540750cc4ccb7666
         group by settle.COMPANY_ID
         union all
         select decode(settle.COMPANY_ID, 8110, '石钢公司', 8493, '衡板公司') as companyName,
@@ -765,14 +769,19 @@
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐钢不锈钢公司' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body ='出口' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐银联营公司数据' ]]>-->
+<<<<<<< HEAD
         <!-- where xsztdzb.sale_body='专业公司'-->
         where settle.COMPANY_ID = '8110'
         or settle.COMPANY_ID = '8493'
         AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
         AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+=======
+        where settle.COMPANY_ID = '8110'
+        or settle.COMPANY_ID = '8493'
+>>>>>>> e43fae4acdf32b85208d2cb2540750cc4ccb7666
         group by settle.COMPANY_ID) c
         left join
-        （select
+        (select
         SAU.ACCOUNTABILITY_UNIT_NAME zrbm,
         JANUARY +
         FEBRUARY +
@@ -788,8 +797,12 @@
         DECEMBER mbl
         from SCM_ACCOUNTABILITY_UNIT_MANAGE SAU
         LEFT JOIN SCM_TARGET_QUANTITY_MANAGEMENT SQM
+<<<<<<< HEAD
         on SAU.ACCOUNTABILITY_UNIT_CODE = SQM.RESPONSIBILITY_UNIT
         where SQM.DELETESTATUS='0') mb
+=======
+        on SAU.ACCOUNTABILITY_UNIT_CODE = SQM.RESPONSIBILITY_UNIT) mb
+>>>>>>> e43fae4acdf32b85208d2cb2540750cc4ccb7666
         on mb.zrbm = c.companyName ) order by sx
     </select>
 </mapper>
