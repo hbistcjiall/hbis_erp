@@ -701,8 +701,12 @@
         or settle.COMPANY_ID = '9196'
         or settle.COMPANY_ID = '1932'
         or settle.COMPANY_ID = '1778'
-        AND settle.fkdat &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
-        AND settle.fkdat &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+
+        AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+        <!-- where xsztdzb.sale_body='专业公司'-->
+
+
         group by settle.COMPANY_ID
         union all
         select decode(settle.COMPANY_ID, 8110, '石钢公司', 8493, '衡板公司') as companyName,
@@ -764,6 +768,7 @@
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐钢不锈钢公司' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body ='出口' ]]>-->
         <!--AND <![CDATA[ xsztdzb.sale_body_des ='唐银联营公司数据' ]]>-->
+        <!-- where xsztdzb.sale_body='专业公司'-->
         where settle.COMPANY_ID = '8110'
         or settle.COMPANY_ID = '8493'
         AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
@@ -793,4 +798,86 @@
         on SAU.ACCOUNTABILITY_UNIT_CODE = SQM.RESPONSIBILITY_UNIT) mb
         on mb.zrbm = c.companyName ) order by sx
     </select>
+
+
+    <select id="getjszl" resultType="map">
+        SELECT decode(settle.company_id,
+        9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') AS companyname,
+        settle.company_id,
+        round(SUM(settle.fkimg),2),
+        SUM(KZWI6) AS jsjg,
+        round(SUM(KZWI6)/SUM(settle.fkimg),2) jsjj
+        FROM scm_steel_settle settle
+        left JOIN scm_delivery_detail detail
+        ON settle.aubel = detail.order_no
+        AND settle.aupos = detail.order_item
+        JOIN scm_sale_order sso
+        ON sso.order_no = settle.aubel
+        AND sso.company_id = settle.company_id
+        GROUP BY settle.company_id
+        ORDER BY company_id
+    </select>
+
+    <select id="getpzjszl" resultType="map">
+         SELECT
+            B.VARIETY,
+            round(SUM(settle.fkimg),2) jsl,
+            SUM(KZWI6) AS jsjg,
+            round(SUM(KZWI6)/SUM(settle.fkimg),2) jsjj
+            FROM scm_steel_settle settle
+            JOIN scm_sale_order sso
+            ON sso.order_no = settle.aubel
+            AND sso.company_id = settle.company_id
+            JOIN scm_variety_to_pt_gp B
+            ON sso.product_code = B.product_group
+            and sso.company_id = B.company_id
+            group by  B.VARIETY
+    </select>
+
+    <select id="getpzgjswc" resultType="map">
+    select name,jsl,pzgl,nmb/jsl from (
+            SELECT
+            B.VARIETY name,
+            SUM(pz.fkimg) pzgl,
+            round(SUM(settle.fkimg),2) jsl
+            FROM scm_steel_settle settle
+            JOIN scm_sale_order sso
+            ON sso.order_no = settle.aubel
+            AND sso.company_id = settle.company_id
+            JOIN scm_variety_to_pt_gp B
+            ON sso.product_code = B.product_group
+            and sso.company_id = B.company_id
+             LEFT JOIN (SELECT settle.ID, settle.fkimg
+            FROM scm_steel_settle settle
+            JOIN scm_sale_order sso
+            ON sso.order_no = settle.aubel
+            AND sso.company_id = settle.company_id
+            JOIN report_product_class_level pzg
+            ON sso.company_id = pzg.company_id
+            AND sso.product_type = pzg.product_class
+            WHERE pzg.product_grade = '品种钢'
+            OR pzg.product_grade = '高端产品'
+            OR pzg.product_grade = '特色战略产品'
+            AND pzg.status = '0') pz
+            ON settle.ID = pz.ID
+            group by  B.VARIETY ) a
+            join (select pz_name,sum(MBL_YEAR) nmb from crm_resource_allocation zyjh where 1=1 group by pz_name) jh
+            on jh.pz_name= a.name
+   </select>
+
 </mapper>
