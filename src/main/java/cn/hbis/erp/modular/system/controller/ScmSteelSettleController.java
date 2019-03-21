@@ -60,6 +60,27 @@ public class ScmSteelSettleController {
         return getzrbm;
     }
 
+    @ApiOperation(value = "结算完成情况报表")
+    @ApiImplicitParams({
+
+    })
+    @PostMapping("getstrike")
+    public  List<ScmSteelSettle>  getstrike(String startTime,String endTime) {
+        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getstrike(startTime,endTime);
+        return getzrbm;
+    }
+
+
+    @ApiOperation(value = "品种钢完成情况报表")
+    @ApiImplicitParams({
+
+    })
+    @PostMapping("getstrike")
+    public  List<ScmSteelSettle>  getstrike(String startTime,String endTime) {
+        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getstrike(startTime,endTime);
+        return getzrbm;
+    }
+
 
 
 }
