@@ -34,10 +34,28 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     public List<ScmSteelSettle> getpz(String pz,String startTime,String endTime) {
         return scmSteelSettleMapper.getpz(pz,startTime,endTime);
     }
+
+
     /*
-    报表责任部门
- */
+ 报表责任部门
+*/
     public List<ScmSteelSettle> getzrbm(String zrbm,String startTime,String endTime) {
         return scmSteelSettleMapper.getzrbm(zrbm,startTime,endTime);
     }
+
+    /*
+结算量报表
+*/
+    public List<ScmSteelSettle> getpzjszl(String startTime,String endTime) {
+        return scmSteelSettleMapper.getpzjszl(startTime,endTime);
+    }
+
+    /*
+品种钢结算量报表
+*/
+    public List<ScmSteelSettle> getpzgjswc(String startTime,String endTime) {
+        return scmSteelSettleMapper.getpzgjswc(startTime,endTime);
+    }
+
+
 }

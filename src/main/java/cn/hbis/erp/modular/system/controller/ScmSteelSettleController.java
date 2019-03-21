@@ -64,9 +64,9 @@ public class ScmSteelSettleController {
     @ApiImplicitParams({
 
     })
-    @PostMapping("getstrike")
-    public  List<ScmSteelSettle>  getstrike(String startTime,String endTime) {
-        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getstrike(startTime,endTime);
+    @PostMapping("getpzjszl")
+    public  List<ScmSteelSettle>  getpzjszl(String startTime,String endTime) {
+        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getpzjszl(startTime,endTime);
         return getzrbm;
     }
 
@@ -75,9 +75,9 @@ public class ScmSteelSettleController {
     @ApiImplicitParams({
 
     })
-    @PostMapping("getstrike")
-    public  List<ScmSteelSettle>  getstrike(String startTime,String endTime) {
-        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getstrike(startTime,endTime);
+    @PostMapping("getpzgjswc")
+    public  List<ScmSteelSettle>  getpzgjswc(String startTime,String endTime) {
+        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getpzgjswc(startTime,endTime);
         return getzrbm;
     }
 
