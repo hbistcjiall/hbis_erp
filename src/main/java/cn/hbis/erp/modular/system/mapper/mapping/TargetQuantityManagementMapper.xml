@@ -10,11 +10,11 @@
         <include refid="Base_Column_List"/>
         from SCM_TARGET_QUANTITY_MANAGEMENT TQ
         LEFT JOIN
-        SYS_ACCOUNTABILITY_UNIT_MANAGE AM
+        SCM_ACCOUNTABILITY_UNIT_MANAGE AM
         ON
         AM.ACCOUNTABILITY_UNIT_CODE = TQ.RESPONSIBILITY_UNIT
         where TQ.DELETESTATUS = '0'
-        AMD AM.DELETESTATUS = '0'
+        AND AM.DELETESTATUS = '0'
         <if test="targetname != null and targetname !=''">
 
             and RESPONSIBILITY_UNIT like CONCAT(CONCAT('%',#{targetname}),'%')
@@ -26,4 +26,12 @@
 
         </if>
     </select>
+
+	<select id="getlist" resultType="map">
+		select sa.ACCOUNTABILITY_UNIT_CODE code,sa.ACCOUNTABILITY_UNIT_NAME NAME
+		from SCM_ACCOUNTABILITY_UNIT_MANAGE  sa
+		WHERE sa.DELETESTATUS = '0'
+	</select>
+
+
 </mapper>
