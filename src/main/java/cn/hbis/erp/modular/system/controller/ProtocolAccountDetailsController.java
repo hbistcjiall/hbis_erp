@@ -1,26 +1,25 @@
 package cn.hbis.erp.modular.system.controller;
 
+import cn.hbis.erp.config.properties.HbisProperties;
 import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.modular.system.entity.ProtocolAccountDetails;
 import cn.hbis.erp.modular.system.service.ProtocolAccountDetailsService;
 import cn.hbis.erp.modular.system.warpper.ProtocolAccountDetailsWrapper;
 import cn.stylefeng.roses.core.base.controller.BaseController;
+import cn.stylefeng.roses.core.util.ToolUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 协议户明细控制器
@@ -35,6 +34,8 @@ public class ProtocolAccountDetailsController extends BaseController {
 
     @Autowired
     private ProtocolAccountDetailsService protocolAccountDetailsService;
+    @Autowired
+    private HbisProperties hbisProperties;
 
     /**
      * 获取所有部门列表
@@ -65,8 +66,11 @@ public class ProtocolAccountDetailsController extends BaseController {
             @ApiImplicitParam(name = "year" ,value = "年份",dataType ="String" ),
             @ApiImplicitParam(name = "filepath" ,value = "文件路径",dataType ="String" )
     })
-    public Map execlimport( String  filepath, String year){
+    public Map execlimport(@RequestPart("file") MultipartFile picture, String year){
         Map map= new HashMap();
+        String pictureName =  "." + ToolUtil.getFileSuffix(picture.getOriginalFilename());
+        String fileSavePath = hbisProperties.getFileUploadPath();
+        String filepath = fileSavePath+pictureName;
         try{
             List<ProtocolAccountDetails> list = protocolAccountDetailsService.excleIn(filepath,year);
             for (int i=0;i<list.size();i++){
