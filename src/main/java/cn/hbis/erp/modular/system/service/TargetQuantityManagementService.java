@@ -8,6 +8,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -21,7 +24,10 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             Page page = PageFactory.defaultPage();
             return this.targetManagementMapper.selTargetManagement(page,targetname,year);
         }
-
+        public List<Map> getlist(){
+            List<Map> list = targetManagementMapper.getlist();
+            return list;
+        }
         public boolean addORUpadte(String id,String targetname,String year,String jan,String feb,String mar,String apr,String may,String jun,String jul,String aug,String sep,String oct,String nov,String dec){
             boolean flag =false;
             if(id != null && !id.equals("")){
@@ -85,4 +91,6 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                     }
                     return flag;
         }
+
+     
 }

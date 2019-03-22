@@ -841,11 +841,13 @@
             JOIN scm_variety_to_pt_gp B
             ON sso.product_code = B.product_group
             and sso.company_id = B.company_id
+            where settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+            AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
             group by  B.VARIETY
     </select>
 
     <select id="getpzgjswc" resultType="map">
-    select name,jsl,pzgl,nmb/jsl from (
+    select name ,jsl,pzgl,nmb/jsl wcl from (
             SELECT
             B.VARIETY name,
             SUM(pz.fkimg) pzgl,
@@ -868,11 +870,54 @@
             WHERE pzg.product_grade = '品种钢'
             OR pzg.product_grade = '高端产品'
             OR pzg.product_grade = '特色战略产品'
+            AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+            AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
             AND pzg.status = '0') pz
             ON settle.ID = pz.ID
             group by  B.VARIETY ) a
             join (select pz_name,sum(MBL_YEAR) nmb from crm_resource_allocation zyjh where 1=1 group by pz_name) jh
             on jh.pz_name= a.name
    </select>
+
+    <select id="getzgsjswc" resultType="map">
+        select companyname name ,sum(fkimg) jsl,sum(mb) mb，sum(fkimg)/sum(mb) wcl from (
+        select* from
+        (SELECT decode(settle.company_id,
+        9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') AS companyname,
+        DATA.NAME,
+        settle.company_id,
+        sum(settle.fkimg) AS fkimg
+        FROM scm_steel_settle settle
+        JOIN scm_delivery_detail detail
+        ON settle.aubel = detail.order_no
+        AND settle.aupos = detail.order_item
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.TYPE = 3
+        AND DATA.parent_name IS NOT NULL
+        where settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+        group by settle.company_id,DATA.NAME
+       )a
+        left join (select cx_name, sum(MBL_YEAR) mb from crm_resource_allocation group by cx_name) b on b.cx_name=a.NAME ) group by  companyname
+</select>
+
+
+
 
 </mapper>

@@ -19,4 +19,5 @@ public interface ScmSteelSettleMapper extends BaseMapper<ScmSteelSettle> {
     List<ScmSteelSettle> getzrbm(@Param("zrbm") String zrbm,@Param("startTime") String startTime,@Param("endTime") String endTime);
     List<ScmSteelSettle> getpzjszl(@Param("startTime") String startTime,@Param("endTime") String endTime);
     List<ScmSteelSettle> getpzgjswc(@Param("startTime") String startTime,@Param("endTime") String endTime);
+    List<ScmSteelSettle> getzgsjswc(@Param("startTime") String startTime,@Param("endTime") String endTime);
 }
