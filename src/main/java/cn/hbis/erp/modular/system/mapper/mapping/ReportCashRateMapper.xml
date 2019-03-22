@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hbis.erp.modular.system.mapper.ReportCashRateMapper">
+    <!--<typeAlias alias="reportCashRate" type="com.hundsun.network.report.core.domain.ReportCashRate"/>
+    <typeAlias alias="reportCashRateSummary" type="com.hundsun.network.report.core.domain.ReportCashRateSummary"/>-->
+    <!-- 定时任务处理兑现率明细 -->
+    <insert id="insert" parameterType="String">
+        INSERT INTO REPORT_CASH_RATE
+        SELECT SEQ_REPORT_CASH_RATE.NEXTVAL,
+        decode(t.customer_manager, null, '-.空.-', t.customer_manager) customer_manager,<!-- 客户经理  -->
+        decode(t.end_user, null, '-.空.-', t.end_user) end_user,<!-- 终端用户   -->
+        decode(t.contract_unit, null,'-.空.-', t.contract_unit) contract_unit,<!--  合同单位  -->
+        t.company_id, <!-- 子公司  -->
+        t.variety, <!-- 品种  -->
+        t.order_no, <!-- 合同号  -->
+        t.grade, <!-- 牌号 -->
+        t.standard,<!--  规格 -->
+        t.order_weight, <!-- 合同量  -->
+        t.order_create, <!-- 合同签订日期   -->
+        t.order_stop_date, <!-- 交货截止日期   -->
+        to_date(to_char(t.dj_date,'yyyy-mm-dd'), 'yyyy-mm-dd') dj_date,<!-- 定价日期   -->
+        t.scheduled_weight, <!-- 按期交货量  -->
+        t.delayed_weight, <!-- 延期交货量  -->
+        t.DELIVERY_WEIGHT , <!-- 发货量汇总  -->
+        decode(t.order_weight, 0,0,t.DELIVERY_WEIGHT/ t.order_weight) cash_rete,<!--兑现率情况  -->
+        decode(t.order_weight,0,0,t.scheduled_weight / t.order_weight) scheduled_cash_rate, <!--按期兑现率 , -->
+        decode(t.order_weight,0,0,(t.scheduled_weight + t.delayed_weight) / t.order_weight)
+        actual_cash_rate, <!--实际兑现率 -->
+        <if test="summaryType != null and 1 == summaryType">
+            '1',
+        </if>
+        <if test="summaryType != null and 0 == summaryType">
+            '0',
+        </if>
+        sysdate,
+        sysdate,
+        trunc(sysdate)||'记录数据',
+        trunc(sysdate),
+        t.product_class,
+        t.product_grade
+        FROM (
+        SELECT decode(s.customer_manager, NULL, '-.空.-', s.customer_manager) customer_manager,
+        decode(s.end_user, NULL, '-.空.-', s.end_user) end_user,
+        decode(s.contract_unit, NULL, '-.空.-', s.contract_unit) contract_unit,
+        s.company_id,
+        s.variety,
+        s.grade,
+        s.order_no,
+        s.standard,
+        s.order_create,
+        s.order_stop_date,
+        s.dj_date,
+        s.product_class,
+        s.product_grade,
+        SUM(s.order_weight) order_weight, <!-- 合同量 -->
+        SUM(s.DELIVERY_WEIGHT) DELIVERY_WEIGHT,
+        SUM(s.scheduled_weight) scheduled_weight,  <!-- 按期交货量 -->
+        SUM(s.delayed_weight) delayed_weight <!-- 延期交货量 -->
+        FROM (SELECT tt.id,
+        tt.customer_manager,
+        tt.end_user,
+        tt.contract_unit,
+        tt.company_id,
+        tt.variety,
+        tt.order_no,
+        tt.ATTRIBUTE1 grade,
+        tt.ATTRIBUTE2 standard,
+        tt.order_weight,
+        tt.order_create,
+        tt.order_stop_date,
+        tt.dj_date,
+        cc.product_class,
+        d.product_grade,
+        (decode(scheduled_weight, null, 0, scheduled_weight) +
+        decode(delayed_weight, null, 0, delayed_weight)) DELIVERY_WEIGHT,
+        decode(scheduled_weight, null, 0, scheduled_weight) scheduled_weight,
+        decode(delayed_weight, null, 0, delayed_weight) delayed_weight,
+        tt.ext
+        FROM (SELECT sso.id,
+        (SELECT DISTINCT t.manager
+        FROM crm_manager_target t
+        WHERE t.customer = sso.saler_name
+        AND t.variety_name = svtpg.variety
+        AND to_char(t.year_date, 'yyyy') = to_char(trunc(add_months(sysdate, -1), 'mm'), 'yyyy')
+        AND t.company_id = sso.company_id
+        AND t.status = '0'
+        AND rownum = 1
+        ) customer_manager,
+        sso.END_USER end_user,
+        sso.SALER_NAME contract_unit,
+        sso.company_id,
+        sso.attribute3,
+        sso.attribute4,
+        svtpg.variety,
+        sso.product_type,
+        sso.order_no,
+        sso.ATTRIBUTE1,
+        sso.ATTRIBUTE2,
+        sso.order_mount order_weight,
+        trunc(sso.DOCUMENT_DATE, 'dd') order_create,
+        trunc(sso.ORDER_STOP_DATE, 'dd') order_stop_date,
+        to_date(sso.dj_date, 'yyyymmdd') dj_date,
+        (SELECT sum(gh.TOTAL_WEIGHT)
+        FROM scm_delivery_detail gh
+        WHERE sso.order_no = gh.order_no
+        AND sso.order_row = gh.order_item
+        AND sso.company_id = gh.company_id
+        AND trunc(gh.ACTUAL_DATE, 'dd')<![CDATA[ <= ]]> trunc(sso.ORDER_STOP_DATE, 'dd')
+        AND (gh.delivery_delete != 'X' or  gh.delivery_delete is null)
+        ) scheduled_weight,
+        (SELECT sum(gh.TOTAL_WEIGHT)
+        FROM scm_delivery_detail gh
+        WHERE sso.order_no = gh.order_no
+        AND sso.order_row = gh.order_item
+        AND sso.company_id = gh.company_id
+        AND trunc(gh.ACTUAL_DATE, 'dd') <![CDATA[ > ]]>  trunc(sso.ORDER_STOP_DATE, 'dd')
+        AND (gh.delivery_delete != 'X' or  gh.delivery_delete is null)
+        ) delayed_weight,
+        (SELECT sum(gh.TOTAL_WEIGHT)
+        FROM scm_delivery_detail gh
+        WHERE sso.order_no = gh.order_no
+        AND sso.order_row = gh.order_item
+        AND sso.company_id = gh.company_id
+        AND (gh.delivery_delete != 'X' or   gh.delivery_delete is null)
+        ) DELIVERY_WEIGHT,
+        (SELECT max(gh.ext)
+        FROM scm_delivery_detail gh
+        WHERE sso.order_no = gh.order_no
+        AND sso.order_row = gh.order_item
+        AND sso.company_id = gh.company_id
+        AND (gh.delivery_delete != 'X' or   gh.delivery_delete is null)) ext
+        FROM scm_sale_order sso
+        INNER JOIN scm_variety_to_pt_gp svtpg
+        ON sso.product_code = svtpg.product_group
+        AND sso.company_id = svtpg.company_id
+        WHERE to_char(sso.ORDER_STOP_DATE, 'yyyymmdd') <![CDATA[>=]]>  to_char(trunc(add_months(sysdate, -1), 'mm'), 'yyyymmdd')
+        AND to_char(sso.ORDER_STOP_DATE, 'yyyymmdd') <![CDATA[<=]]>  to_char(last_day(add_months(sysdate, -1)), 'yyyymmdd')
+        AND sso.order_mount > 0
+        AND (sso.deleted IS NULL OR sso.deleted != 'X')
+        AND sso.order_type_describe NOT IN
+        (SELECT DISTINCT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.data_type = '2'
+        AND cfd.company_id = sso.company_id
+        AND cfd.status = '0')
+        AND sso.sale_group NOT IN
+        (SELECT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 9
+        AND cfd.status = 0)
+        ) tt
+        LEFT JOIN crm_line_class_relation cc
+        ON tt.company_id = cc.company_id
+        AND tt.ext = cc.product_line
+        LEFT JOIN (SELECT DISTINCT rpc.company_id,
+        rpc.product_class,
+        rpc.product_line_class,
+        rpc.product_class_crude,
+        rpc.product_class_fine,
+        rpc.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL rpc
+        WHERE rpc.status = '0'
+        UNION ALL
+        SELECT DISTINCT rpc.company_id,
+        rpc.second_code,
+        rpc.product_line_class,
+        rpc.product_class_crude,
+        rpc.product_class_fine,
+        rpc.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL rpc
+        WHERE rpc.status = '0') d
+        ON tt.company_id = d.company_id
+        AND tt.product_type = d.product_class
+        AND cc.product_class = d.product_line_class
+        where tt.contract_unit NOT IN
+        (SELECT t.data_name
+        FROM crm_filter_data t
+        WHERE t.data_type = '1'
+        AND t.status = '0'
+        AND t.company_id = tt.company_Id
+        AND instr(concat(tt.ext, tt.company_id),concat(t.product_line, t.company_id)) > 0)
+        <if test="summaryType != null and 1 == summaryType">
+          and tt.DELIVERY_WEIGHT>0
+        </if>
+        ) s
+        GROUP BY s.customer_manager,
+        s.end_user,
+        s.order_no,
+        s.contract_unit,
+        s.company_id,
+        s.variety,
+        s.grade,
+        s.standard,
+        s.order_create,
+        s.order_stop_date,
+        s.dj_date,
+        s.product_class,
+        s.product_grade
+        ) t
+    </insert>
+    <!-- 兑现率明细查询 报表 -->
+    <select id="getCashRateDetail" resultType="java.lang.String">
+        select
+        a.ID as id
+        , a.CUSTOMER_MANAGER as customerManager
+        , a.END_USER as endUser
+        , a.CONTRACT_UNIT as contractUnit
+        , a.COMPANY_ID as companyId
+        , a.VARIETY as variety
+        , a.ORDER_NO as orderNo
+        , a.GRADE as grade
+        , a.STANDARD as standard
+        , a.CONTRACT_WEIGHT as contractWeight
+        , a.ORDER_CREATE as orderCreate
+        , a.ORDER_STOP_DATE as orderStopDate
+        , a.scheduled_weight as scheduledWeight
+        , a.delayed_weight as delayedWeight
+        , a.DELIVERY_WEIGHT as deliveryWeight
+        , a.CASH_RETE as cashRete
+        , a.SCHEDULED_CASH_RATE as scheduledCashRate
+        , a.ACTUAL_CASH_RATE as actualCashRate
+        , a.GMT_CREATE as gmtCreate
+        , a.GMT_MODIFY as gmtModify
+        , a.REMARK as remark
+        , a.RECORD_DATE as recordDate
+        , a.PRODUCT_CLASS as productClass
+        , a.PRODUCT_GRADE as productGrade
+        from REPORT_CASH_RATE a
+        where 1 = 1
+        <if test="companyId != null and 9727 == companyId">
+            and a.COMPANY_ID in ('9727','7778')
+        </if>
+        <if test="companyId != null and 9196 == companyId">
+            and a.COMPANY_ID in ('9196')
+        </if>
+        <if test="companyId != null and 1932 == companyId">
+            and a.COMPANY_ID in ('1932')
+        </if>
+        <if test="companyId != null and 8493 == companyId">
+            and a.COMPANY_ID in ('8493')
+        </if>
+        <if test="companyId != null and 9193 == companyId">
+            and a.COMPANY_ID in ('9193')
+        </if>
+        <if test="companyId != null and 9580 == companyId">
+            and a.COMPANY_ID in ('9580')
+        </if>
+        <if test="companyId != null and 8110 == companyId">
+            and a.COMPANY_ID in ('8110')
+        </if>
+        <if test="orderStopDateS != null and orderStopDateS !=''">
+            and to_char(a.ORDER_STOP_DATE,'yyyy-mm') <![CDATA[ >= ]]> #{orderStopDateS}
+        </if>
+        <if test="orderStopDateE != null and orderStopDateE !=''">
+            and to_char(a.ORDER_STOP_DATE,'yyyy-mm') <![CDATA[ <= ]]> #{orderStopDateE}
+        </if>
+        <if test="recordDate != null and recordDate !=''">
+            and to_char(a.RECORD_DATE,'yyyy-mm-dd') = #{recordDate}
+        </if>
+        <if test="summaryType != null and summaryType !=''">
+            and a.SUMMARY_TYPE = #{summaryType}
+        </if>
+        order by decode(a.company_id,9580,1,9727,2,7778,3,9193,4,9196,5,1932,6,8110,7,8493,8) asc
+    </select>
+    <!-- 兑现率分布 饼状图 -->
+    <!--<select id="getCashRateDistribution" resultClass="reportCashRate">
+        SELECT remark, count(distinct b.order_no) contractNum
+        FROM (SELECT distinct case when trunc(t.cash_rete, 5) <![CDATA[ <= ]]> 0.2 then
+        '20%以下'
+        when trunc(t.cash_rete, 5) > 0.2 and
+        trunc(t.cash_rete, 5) <![CDATA[ <= ]]> 0.4 then
+        '20-40%'
+        when trunc(t.cash_rete, 5) > 0.4 and
+        trunc(t.cash_rete, 5) <![CDATA[ <= ]]> 0.6 then
+        '40-60%'
+        when trunc(t.cash_rete, 5) > 0.6 and
+        trunc(t.cash_rete, 5) <![CDATA[ <= ]]> 0.8 then
+        '60-80%'
+        when trunc(t.cash_rete, 5) > 0.8 and
+        trunc(t.cash_rete, 5) <![CDATA[ <= ]]> 0.9 then
+        '80-90%'
+        when trunc(t.cash_rete, 5) > 0.9 then
+        '90%以上'
+        end remark,
+        t.order_no
+        FROM REPORT_CASH_RATE t
+        <dynamic prepend="where ">
+            <isNotEmpty property="companyId" prepend="and">
+                &lt;!&ndash;     <isNotEqual compareValue="-1" property="companyId">
+                        t.COMPANY_ID = #companyId#
+                    </isNotEqual> &ndash;&gt;
+                <isEqual compareValue="9727" property="companyId">
+                    t.COMPANY_ID in ('9727','7778')
+                </isEqual>
+                <isEqual compareValue="9196" property="companyId">
+                    t.COMPANY_ID in ('9196')
+                </isEqual>
+                <isEqual compareValue="1932" property="companyId">
+                    t.COMPANY_ID in ('1932')
+                </isEqual>
+                <isEqual compareValue="8493" property="companyId">
+                    t.COMPANY_ID in ('8493')
+                </isEqual>
+                <isEqual compareValue="9193" property="companyId">
+                    t.COMPANY_ID in ('9193')
+                </isEqual>
+                <isEqual compareValue="9580" property="companyId">
+                    t.COMPANY_ID in ('9580')
+                </isEqual>
+                <isEqual compareValue="8110" property="companyId">
+                    t.COMPANY_ID in ('8110')
+                </isEqual>
+            </isNotEmpty>
+            <isNotEmpty property="recordDate" prepend="and">
+                to_char(t.RECORD_DATE,'yyyy-mm-dd') <![CDATA[ = ]]> #recordDate#
+            </isNotEmpty>
+            <isNotEmpty property="summaryType" prepend="and">
+                t.SUMMARY_TYPE = #summaryType#
+            </isNotEmpty>
+        </dynamic>
+        ORDER BY ID DESC) b
+        group by remark
+    </select>-->
+    <!-- ***************************************************************************兑现率汇总********************** -->
+    <!-- 定时任务兑现率汇总 -->
+    <insert id="insertSummary" parameterType="String">
+        insert into REPORT_CASH_RATE_SUMMARY
+        SELECT SEQ_REPORT_CASH_RATE_SUMMARY.NEXTVAL,
+        t.company_id,
+        t.order_stop_date,
+        t.delivery_weight,
+        t.contract_weight,
+        decode(t.contract_weight,0, 0,t.delivery_weight / t.contract_weight) cash_rate,
+        sysdate,
+        sysdate,
+        trunc(sysdate),
+        trunc(sysdate)||'记录数据',
+        <if test="summaryType != null and 1 == summaryType">
+            '1',
+        </if>
+        <if test="summaryType != null and 0 == summaryType">
+            '0',
+        </if>
+        t.product_class,
+        t.product_grade
+        FROM (SELECT b.company_id,
+        sum(b.delivery_weight) delivery_weight,
+        sum(b.contract_weight) contract_weight,
+        b.order_stop_date,
+        b.product_class,
+        b.product_grade
+        FROM (SELECT a.company_id,
+        to_char(a.ORDER_STOP_DATE, 'yyyy-mm') order_stop_date,
+        a.contract_weight,
+        a.delivery_weight,
+        a.summary_type,
+        a.product_class,
+        a.product_grade
+        FROM REPORT_CASH_RATE a
+        WHERE
+        <if test="summaryType != null and 1 == summaryType">
+            and a.summary_type = 1 and a.record_date= trunc(sysdate) <!-- modify by panjf18918 增加日期限制 -->
+        </if>
+        <if test="summaryType != null and 0 == summaryType">
+            and a.summary_type = 0 and a.record_date= trunc(sysdate)  <!-- modify by panjf18918 增加日期限制 -->
+        </if>
+        ) b
+        group by b.company_id, b.order_stop_date,b.product_class,b.product_grade) t
+    </insert>
+
+
+    <select id="getCashRateSummary" resultType="cn.hbis.erp.modular.system.entity.ReportCashRateSummary">
+        SELECT b.company_id as companyId,
+        sum(b.contract_weight) as contractWeight,
+        sum(b.delivery_weight) as deliveryWeight,
+        sum(case when substr(b.order_stop_date, 6, 2) = '01' then b.contract_weight else 0 end) as contractWeightJan,
+        sum(case when substr(b.order_stop_date, 6, 2) = '01' then b.delivery_weight else 0 end) as deliveryWeightJan,
+        sum(case when substr(b.order_stop_date, 6, 2) = '02' then b.contract_weight else 0 end) as contractWeightFeb,
+        sum(case when substr(b.order_stop_date, 6, 2) = '02' then b.delivery_weight else 0 end) as deliveryWeightFeb,
+        sum(case when substr(b.order_stop_date, 6, 2) = '03' then b.contract_weight else 0 end) as contractWeightMar,
+        sum(case when substr(b.order_stop_date, 6, 2) = '03' then b.delivery_weight else 0 end) as deliveryWeightMar,
+        sum(case when substr(b.order_stop_date, 6, 2) = '04' then b.contract_weight else 0 end) as contractWeightApr,
+        sum(case when substr(b.order_stop_date, 6, 2) = '04' then b.delivery_weight else 0 end) as deliveryWeightApr,
+        sum(case when substr(b.order_stop_date, 6, 2) = '05' then b.contract_weight else 0 end) as contractWeightMay,
+        sum(case when substr(b.order_stop_date, 6, 2) = '05' then b.delivery_weight else 0 end) as deliveryWeightMay,
+        sum(case when substr(b.order_stop_date, 6, 2) = '06' then b.contract_weight else 0 end) as contractWeightJun,
+        sum(case when substr(b.order_stop_date, 6, 2) = '06' then b.delivery_weight else 0 end) as deliveryWeightJun,
+        sum(case when substr(b.order_stop_date, 6, 2) = '07' then b.contract_weight else 0 end) as contractWeightJul,
+        sum(case when substr(b.order_stop_date, 6, 2) = '07' then b.delivery_weight else 0 end) as deliveryWeightJul,
+        sum(case when substr(b.order_stop_date, 6, 2) = '08' then b.contract_weight else 0 end) as contractWeightAug,
+        sum(case when substr(b.order_stop_date, 6, 2) = '08' then b.delivery_weight else 0 end) as deliveryWeightAug,
+        sum(case when substr(b.order_stop_date, 6, 2) = '09' then b.contract_weight else 0 end) as contractWeightSept,
+        sum(case when substr(b.order_stop_date, 6, 2) = '09' then b.delivery_weight else 0 end) as deliveryWeightSept,
+        sum(case when substr(b.order_stop_date, 6, 2) = '10' then b.contract_weight else 0 end) as contractWeightOct,
+        sum(case when substr(b.order_stop_date, 6, 2) = '10' then b.delivery_weight else 0 end) as deliveryWeightOct,
+        sum(case when substr(b.order_stop_date, 6, 2) = '11' then b.contract_weight else 0 end) as contractWeightNov,
+        sum(case when substr(b.order_stop_date, 6, 2) = '11' then b.delivery_weight else 0 end) as deliveryWeightNov,
+        sum(case when substr(b.order_stop_date, 6, 2) = '12' then b.contract_weight else 0 end) as contractWeightDec,
+        sum(case when substr(b.order_stop_date, 6, 2) = '12' then b.delivery_weight else 0 end) as deliveryWeightDec
+        FROM (SELECT a.company_id,
+        a.order_stop_date,
+        a.contract_weight,
+        a.delivery_weight,
+        a.cash_rate,
+        a.summary_type,
+        a.product_class,
+        a.product_grade
+        FROM report_cash_rate_summary a
+        WHERE 1=1
+        <if test="companyId != null and 9727 == companyId">
+            and a.COMPANY_ID in ('9727','7778')
+        </if>
+        <if test="companyId != null and 9196 == companyId">
+            and a.COMPANY_ID in ('9196')
+        </if>
+        <if test="companyId != null and 1932 == companyId">
+            and a.COMPANY_ID in ('1932')
+        </if>
+        <if test="companyId != null and 8493 == companyId">
+            and a.COMPANY_ID in ('8493')
+        </if>
+        <if test="companyId != null and 9193 == companyId">
+            and a.COMPANY_ID in ('9193')
+        </if>
+        <if test="companyId != null and 9580 == companyId">
+            and a.COMPANY_ID in ('9580')
+        </if>
+        <if test="companyId != null and 8110 == companyId">
+            and a.COMPANY_ID in ('8110')
+        </if>
+        <if test="orderStopDateS != null and orderStopDateS !=''">
+            and a.order_stop_date <![CDATA[ >= ]]> #{orderStopDateS}
+        </if>
+        <if test="orderStopDateE != null and orderStopDateE !=''">
+            and a.order_stop_date <![CDATA[ <= ]]> #{orderStopDateE}
+        </if>
+        <if test="recordDate != null and recordDate !=''">
+            and to_char(a.RECORD_DATE,'dd') = to_char(to_date(#{recordDate},'yyyy-mm-dd'),'dd')
+        </if>
+        <if test="summaryType != null and summaryType !=''">
+            and a.SUMMARY_TYPE = #{summaryType}
+        </if>
+        ) b
+        group by rollup(b.company_id)
+        order by decode(b.company_id,
+        null,
+        1,
+        9580,
+        2,
+        9727,
+        3,
+        7778,
+        4,
+        9193,
+        5,
+        9196,
+        6,
+        1932,
+        7,
+        8110,
+        8,
+        8493,
+        9) asc
+
+    </select>
+
+
+    <select id="getCashRateCurve" resultType="cn.hbis.erp.modular.system.entity.ReportCashRateSummary">
+        SELECT a.companyId,
+        decode(a.cashRateJan,null,0,a.cashRateJan) cashRateJan,
+        decode(a.cashRateFeb,null,0,a.cashRateFeb) cashRateFeb,
+        decode(a.cashRateMar,null,0,a.cashRateMar) cashRateMar,
+        decode(a.cashRateApr,null,0,a.cashRateApr) cashRateApr,
+        decode(a.cashRateMay,null,0,a.cashRateMay) cashRateMay,
+        decode(a.cashRateJun,null,0,a.cashRateJun) cashRateJun,
+        decode(a.cashRateJul,null,0,a.cashRateJul) cashRateJul,
+        decode(a.cashRateAug,null,0,a.cashRateAug) cashRateAug,
+        decode(a.cashRateSept,null,0,a.cashRateSept) cashRateSept,
+        decode(a.cashRateOct,null,0,a.cashRateOct) cashRateOct,
+        decode(a.cashRateNov,null,0,a.cashRateNov) cashRateNov,
+        decode(a.cashRateDec,null,0,a.cashRateDec) cashRateDec
+        FROM (SELECT t.company_id as companyId,
+        sum(case when substr(t.order_stop_date, 6, 2) = '01' then t.cash_rate end) cashRateJan,
+        sum(case when substr(t.order_stop_date, 6, 2) = '02' then t.cash_rate end) cashRateFeb,
+        sum(case when substr(t.order_stop_date, 6, 2) = '03' then t.cash_rate end) cashRateMar,
+        sum(case when substr(t.order_stop_date, 6, 2) = '04' then t.cash_rate end) cashRateApr,
+        sum(case when substr(t.order_stop_date, 6, 2) = '05' then t.cash_rate end) cashRateMay,
+        sum(case when substr(t.order_stop_date, 6, 2) = '06' then t.cash_rate end) cashRateJun,
+        sum(case when substr(t.order_stop_date, 6, 2) = '07' then t.cash_rate end) cashRateJul,
+        sum(case when substr(t.order_stop_date, 6, 2) = '08' then t.cash_rate end) cashRateAug,
+        sum(case when substr(t.order_stop_date, 6, 2) = '09' then t.cash_rate end) cashRateSept,
+        sum(case when substr(t.order_stop_date, 6, 2) = '10' then t.cash_rate end) cashRateOct,
+        sum(case when substr(t.order_stop_date, 6, 2) = '11' then t.cash_rate end) cashRateNov,
+        sum(case when substr(t.order_stop_date, 6, 2) = '12' then t.cash_rate end) cashRateDec
+        FROM report_cash_rate_summary t
+        WHERE 1 = 1
+        <if test="companyId != null and 9727 == companyId">
+            and t.COMPANY_ID in ('9727','7778')
+        </if>
+        <if test="companyId != null and 9196 == companyId">
+            and t.COMPANY_ID in ('9196')
+        </if>
+        <if test="companyId != null and 1932 == companyId">
+            and t.COMPANY_ID in ('1932')
+        </if>
+        <if test="companyId != null and 8493 == companyId">
+            and t.COMPANY_ID in ('8493')
+        </if>
+        <if test="companyId != null and 9193 == companyId">
+            and t.COMPANY_ID in ('9193')
+        </if>
+        <if test="companyId != null and 9580 == companyId">
+            and t.COMPANY_ID in ('9580')
+        </if>
+        <if test="companyId != null and 8110 == companyId">
+            and t.COMPANY_ID in ('8110')
+        </if>
+        <!--<if test="orderStopDateS != null and orderStopDateS !=''">
+            and t.order_stop_date <![CDATA[ = ]]> #{orderStopDateS}
+        </if>-->
+        <if test="recordDate != null and recordDate !=''">
+            and to_char(t.RECORD_DATE,'dd') = to_char(to_date(#{recordDate},'yyyy-mm-dd'),'dd')
+        </if>
+        <if test="summaryType != null and summaryType !=''">
+            and t.SUMMARY_TYPE = #{summaryType}
+        </if>
+        group by t.company_id ) a
+        order by decode(a.companyId,
+        9580,
+        2,
+        9727,
+        3,
+        7778,
+        4,
+        9193,
+        5,
+        9196,
+        6,
+        1932,
+        7,
+        8110,
+        8,
+        8493,
+        9) asc
+
+
+    </select>
+
+    <!--  =================================wangsf=============================================================================================================== -->
+
+    <select id="getCashRateSummaryGrade" resultType="cn.hbis.erp.modular.system.entity.ReportCashRateSummary">
+        SELECT b.company_id as companyId,
+        case when b.product_grade is null THEN '合计' ELSE b.product_grade END as productGrade,
+        sum(b.contract_weight) as contractWeight,
+        sum(b.delivery_weight) as deliveryWeight,
+        sum(case when substr(b.order_stop_date, 6, 2) = '01' then b.contract_weight else 0 end) as contractWeightJan,
+        sum(case when substr(b.order_stop_date, 6, 2) = '01' then b.delivery_weight else 0 end) as deliveryWeightJan,
+        sum(case when substr(b.order_stop_date, 6, 2) = '02' then b.contract_weight else 0 end) as contractWeightFeb,
+        sum(case when substr(b.order_stop_date, 6, 2) = '02' then b.delivery_weight else 0 end) as deliveryWeightFeb,
+        sum(case when substr(b.order_stop_date, 6, 2) = '03' then b.contract_weight else 0 end) as contractWeightMar,
+        sum(case when substr(b.order_stop_date, 6, 2) = '03' then b.delivery_weight else 0 end) as deliveryWeightMar,
+        sum(case when substr(b.order_stop_date, 6, 2) = '04' then b.contract_weight else 0 end) as contractWeightApr,
+        sum(case when substr(b.order_stop_date, 6, 2) = '04' then b.delivery_weight else 0 end) as deliveryWeightApr,
+        sum(case when substr(b.order_stop_date, 6, 2) = '05' then b.contract_weight else 0 end) as contractWeightMay,
+        sum(case when substr(b.order_stop_date, 6, 2) = '05' then b.delivery_weight else 0 end) as deliveryWeightMay,
+        sum(case when substr(b.order_stop_date, 6, 2) = '06' then b.contract_weight else 0 end) as contractWeightJun,
+        sum(case when substr(b.order_stop_date, 6, 2) = '06' then b.delivery_weight else 0 end) as deliveryWeightJun,
+        sum(case when substr(b.order_stop_date, 6, 2) = '07' then b.contract_weight else 0 end) as contractWeightJul,
+        sum(case when substr(b.order_stop_date, 6, 2) = '07' then b.delivery_weight else 0 end) as deliveryWeightJul,
+        sum(case when substr(b.order_stop_date, 6, 2) = '08' then b.contract_weight else 0 end) as contractWeightAug,
+        sum(case when substr(b.order_stop_date, 6, 2) = '08' then b.delivery_weight else 0 end) as deliveryWeightAug,
+        sum(case when substr(b.order_stop_date, 6, 2) = '09' then b.contract_weight else 0 end) as contractWeightSept,
+        sum(case when substr(b.order_stop_date, 6, 2) = '09' then b.delivery_weight else 0 end) as deliveryWeightSept,
+        sum(case when substr(b.order_stop_date, 6, 2) = '10' then b.contract_weight else 0 end) as contractWeightOct,
+        sum(case when substr(b.order_stop_date, 6, 2) = '10' then b.delivery_weight else 0 end) as deliveryWeightOct,
+        sum(case when substr(b.order_stop_date, 6, 2) = '11' then b.contract_weight else 0 end) as contractWeightNov,
+        sum(case when substr(b.order_stop_date, 6, 2) = '11' then b.delivery_weight else 0 end) as deliveryWeightNov,
+        sum(case when substr(b.order_stop_date, 6, 2) = '12' then b.contract_weight else 0 end) as contractWeightDec,
+        sum(case when substr(b.order_stop_date, 6, 2) = '12' then b.delivery_weight else 0 end) as deliveryWeightDec
+        FROM (SELECT a.company_id,
+        a.order_stop_date,
+        a.contract_weight,
+        a.delivery_weight,
+        a.cash_rate,
+        a.summary_type,
+        a.product_class,
+        a.product_grade
+        FROM report_cash_rate_summary a
+        WHERE
+            a.product_grade is not null
+        <if test="companyId != null and 9727 == companyId">
+            and a.COMPANY_ID in ('9727','7778')
+        </if>
+        <if test="companyId != null and 9196 == companyId">
+            and a.COMPANY_ID in ('9196')
+        </if>
+        <if test="companyId != null and 1932 == companyId">
+            and a.COMPANY_ID in ('1932')
+        </if>
+        <if test="companyId != null and 8493 == companyId">
+            and a.COMPANY_ID in ('8493')
+        </if>
+        <if test="companyId != null and 9193 == companyId">
+            and a.COMPANY_ID in ('9193')
+        </if>
+        <if test="companyId != null and 9580 == companyId">
+            and a.COMPANY_ID in ('9580')
+        </if>
+        <if test="companyId != null and 8110 == companyId">
+            and a.COMPANY_ID in ('8110')
+        </if>
+        <if test="orderStopDateS != null and orderStopDateS !=''">
+            and a.order_stop_date <![CDATA[ >= ]]> #{orderStopDateS}
+        </if>
+        <if test="orderStopDateE != null and orderStopDateE !=''">
+            and a.order_stop_date <![CDATA[ <= ]]> #{orderStopDateE}
+        </if>
+        <if test="recordDate != null and recordDate !=''">
+            and to_char(a.RECORD_DATE,'dd') = to_char(to_date(#{recordDate},'yyyy-mm-dd'),'dd')
+        </if>
+        <if test="summaryType != null and summaryType !=''">
+            and a.SUMMARY_TYPE = #{summaryType}
+        </if>
+        ) b
+        group by rollup(b.company_id,b.product_grade)
+        order by decode(b.company_id,
+        null,
+        1,
+        9580,
+        2,
+        9727,
+        3,
+        7778,
+        4,
+        9193,
+        5,
+        9196,
+        6,
+        1932,
+        7,
+        8110,
+        8,
+        8493,
+        9) asc,decode(b.product_grade,
+        null,
+        '1',
+        '特色战略产品',
+        '2',
+        '高端产品',
+        '3',
+        '品种钢',
+        '4',
+        '普材') asc
+    </select>
+
+    <!--  ===============================wangsf================================================================================================================= -->
+</mapper>
