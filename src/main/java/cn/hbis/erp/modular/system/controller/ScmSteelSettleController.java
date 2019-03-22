@@ -73,11 +73,19 @@ public class ScmSteelSettleController {
 
     @ApiOperation(value = "品种钢完成情况报表")
     @ApiImplicitParams({
-
+            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
+            @ApiImplicitParam(name = "zt", value = "状态", dataType = "String"),
     })
     @PostMapping("getpzgjswc")
-    public  List<ScmSteelSettle>  getpzgjswc(String startTime,String endTime) {
-        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getpzgjswc(startTime,endTime);
+    public  List<ScmSteelSettle>  getpzgjswc(String zt,String startTime,String endTime) {
+        List<ScmSteelSettle> getzrbm;
+        if(zt.equals("1")){
+            getzrbm=scmSteelSettleService.getpzgjswc(startTime,endTime);
+        }else{
+            getzrbm=scmSteelSettleService.getzgsjswc(startTime,endTime);
+        }
+
         return getzrbm;
     }
 

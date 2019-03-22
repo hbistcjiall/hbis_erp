@@ -58,4 +58,12 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     }
 
 
+    /*
+子公司结算量报表
+*/
+    public List<ScmSteelSettle> getzgsjswc(String startTime,String endTime) {
+        return scmSteelSettleMapper.getzgsjswc(startTime,endTime);
+    }
+
+
 }
