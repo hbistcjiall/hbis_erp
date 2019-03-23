@@ -61,13 +61,13 @@ public class TestController extends BaseController {
             list.add(temp_);
         }
         ExportExcel<List<Map<String, Object>>> exportExcel = new ExportExcel<>();
-        DateFormat format = new SimpleDateFormat("yyyMMddHHmmss");
+        DateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
         StringBuffer filename = null;
         if(ToolUtil.isEmpty(map.get("fileName"))) {
             filename = new StringBuffer();
             filename.append(format.format(new Date()));
         } else {
-            filename = ((StringBuffer)map.get("fileName")).insert(0,format.format(new Date()).toString());
+            filename = ((StringBuffer)map.get("fileName")).insert(0,format.format(new Date()).substring(0,7));
         }
         if(ToolUtil.isEmpty(map.get("excel_type"))) {
             filename.append(EXPORT_XLSX_FILE_SUFFIX);
