@@ -31,7 +31,7 @@ spring:
 #    password: hbistc_ol2012
 #    filters: wall,mergeStat
 #测试服务器 随便连
-    url: jdbc:oracle:thin:@221.192.142.22:1521:coredb1
+    url: jdbc:oracle:thin:@221.192.142.22:1521:orcl
     driver-class-name: oracle.jdbc.OracleDriver
     username: hbistc_test
     password: hbistc_test
