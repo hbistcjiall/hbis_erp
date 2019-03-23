@@ -109,11 +109,12 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             double b=Double.parseDouble(jsl);
             double c=Double.parseDouble(pzgl);
             double bi = a/b;
+            String result = String.valueOf(bi).substring(0,6);
             Map type = new HashMap();
             type.put("NAME","总量");
             type.put("JSL",b);
             type.put("PZGL",c);
-            type.put("BILI",bi);
+            type.put("BILI",Double.parseDouble(result));
             List<Map> list = targetManagementMapper.typeselect(name);
             list.add(type);
             return list;
@@ -165,11 +166,12 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             if(jhs/jsls>0){
                 bi = jhs/jsls;
             }
+            String result = String.valueOf(bi).substring(0,6);
             Map type =  new HashMap();
             type.put("COMPANYNAME","集团");
             type.put("PZGL",pzgls);
             type.put("JSL",jsls);
-            type.put("BILI",bi);
+            type.put("BILI",Double.parseDouble(result));
             List<Map> list = targetManagementMapper.Steellist(name);
             list.add(type);
             return list;
@@ -192,7 +194,8 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 String mi =String.valueOf( ma.get("ZYFKIMG"));
                 double  mis = Double.parseDouble(mi);
                 double bi = mis/sums;
-                ma.put("BILI",bi);
+                String result = String.valueOf(bi).substring(0,6);
+                ma.put("BILI",Double.parseDouble(result));
                 newlist.add(ma);
 
             }

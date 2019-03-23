@@ -38,7 +38,7 @@
 		"NAME",
 		jsl,
 		pzgl,
-		nmb / jsl bili
+		ROUND(nmb / jsl,4) bili
 		FROM
 		(
 		SELECT
@@ -398,7 +398,7 @@
 
 	<select id="Steellist" resultType="map">
 		select
-		a.companyname,a.pzgl,a.jsl,b.jh/a.jsl bili
+		a.companyname,a.pzgl,a.jsl, ROUND(b.jh/a.jsl,4) bili
 		from
 		(
 		SELECT
