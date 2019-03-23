@@ -24,7 +24,14 @@ spring:
       max-request-size: 100MB
       max-file-size: 100MB
   datasource:
-    url: jdbc:oracle:thin:@221.192.142.22:1521:orcl
+#正式服务器 非必要勿连
+#    url: jdbc:oracle:thin:@18.0.126.1:1521:coredb1
+#    driver-class-name: oracle.jdbc.OracleDriver
+#    username: hbistc_ol
+#    password: hbistc_ol2012
+#    filters: wall,mergeStat
+#测试服务器 随便连
+    url: jdbc:oracle:thin:@221.192.142.22:1521:coredb1
     driver-class-name: oracle.jdbc.OracleDriver
     username: hbistc_test
     password: hbistc_test
