@@ -139,7 +139,7 @@
 
 	<select id="Steelmillsplan" resultType="map">
 		select
-		cb.companyname,cb.jh,jk.xh
+		cb.companyname,cb.jh,NVL(jk.xh, 0) xh
 		from   (SELECT
 		cx.companyname,
 		SUM(cr.MBL_YEAR) jh

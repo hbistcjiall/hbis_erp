@@ -134,6 +134,8 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 String xh = String.valueOf(map.get("XH"));
                 if (xh != null && !xh.equals("") && !xh.equals("null")) {
                     xhs = Double.parseDouble(xh);
+                }else{
+                    xhs = 0;
                 }
             Map mills = new HashMap();
             mills.put("companyname", "集团");
