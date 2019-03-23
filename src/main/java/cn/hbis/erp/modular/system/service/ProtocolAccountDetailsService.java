@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +33,64 @@ public class ProtocolAccountDetailsService extends ServiceImpl<ProtocolAccountDe
     public Page<Map<String, Object>> searchList(String varieties, String beginTime, String endTime, String protocolYear, String steelMills) {
         Page page = PageFactory.defaultPage();
         return this.baseMapper.searchProtocolAccountDetailList(page, varieties, beginTime, endTime, protocolYear, steelMills);
+    }
+    /**
+     * 修改协议户明细
+     *
+     *
+     */
+    public boolean update(String protocolAccountId, String protocolYear, String accountName, String varieties, String mainSalesRegional, String aidedSalesRegionalOne, String aidedSalesRegionalTwo, String steelMills, String annualAgreementVolume){
+        boolean flag =false;
+        ProtocolAccountDetails protocolAccountDetails = protocolAccountDetailsMapper.selectById(protocolAccountId);
+        protocolAccountDetails.setProtocolYear(protocolYear);
+        protocolAccountDetails.setAccountName(accountName);
+        protocolAccountDetails.setVarieties(varieties);
+        protocolAccountDetails.setMainSalesRegional(mainSalesRegional);
+        protocolAccountDetails.setAidedSalesRegionalOne(aidedSalesRegionalOne);
+        protocolAccountDetails.setAidedSalesRegionalTwo(aidedSalesRegionalTwo);
+        protocolAccountDetails.setSteelMills(steelMills);
+        protocolAccountDetails.setAnnualAgreementVolume(annualAgreementVolume);
+        int num = protocolAccountDetailsMapper.updateById(protocolAccountDetails);
+        if(num == 1){
+            flag = true;
+            return flag;
+        }else{
+            return flag;
+        }
+    }
+    /**
+     * 协议户明细删除
+     *
+     *
+     */
+    public  boolean delete(String protocolAccountId){
+        boolean flag = false;
+        ProtocolAccountDetails protocolAccountDetails = protocolAccountDetailsMapper.selectById(protocolAccountId);
+        protocolAccountDetails.setDeleteStatus("1");
+        int num = protocolAccountDetailsMapper.updateById(protocolAccountDetails);
+        if(num ==1){
+            flag=true;
+            return  flag;
+        }
+        return flag;
+    }
+    /**
+     * 协议户明细批量删除
+     *
+     *
+     */
+    public  boolean deleteList(List list){
+        boolean flag = false;
+        for(int i = 0 ; i < list.size(); i++) {
+            String id = list.get(i).toString();
+            ProtocolAccountDetails protocolAccountDetails = protocolAccountDetailsMapper.selectById(id);
+            protocolAccountDetails.setDeleteStatus("1");
+            int num = protocolAccountDetailsMapper.updateById(protocolAccountDetails);
+            if(num ==1){
+                flag = true;
+            }
+        }
+        return flag;
     }
 
 

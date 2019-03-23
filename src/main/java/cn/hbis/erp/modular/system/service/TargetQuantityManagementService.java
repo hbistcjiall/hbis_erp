@@ -92,5 +92,114 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                     return flag;
         }
 
-     
+        public List<Map> typesa(String name){
+            List<Map> sum = targetManagementMapper.typessum(name);
+            Map map = sum.get(0);
+            String  jsl = "";
+            String pzgl = "";
+            String  nmb = "";
+            if(map.get("JSL")!=null){
+                jsl = map.get("JSL").toString();
+            }
+            if(map.get("PZGL")!=null){
+                pzgl = map.get("PZGL").toString();}
+            if(map.get("NMB")!=null){
+                nmb = map.get("NMB").toString();}
+            double a = Double.parseDouble(nmb);
+            double b=Double.parseDouble(jsl);
+            double c=Double.parseDouble(pzgl);
+            double bi = a/b;
+            String result = String.valueOf(bi).substring(0,6);
+            Map type = new HashMap();
+            type.put("NAME","总量");
+            type.put("JSL",b);
+            type.put("PZGL",c);
+            type.put("BILI",Double.parseDouble(result));
+            List<Map> list = targetManagementMapper.typeselect(name);
+            list.add(type);
+            return list;
+
+
+        }
+
+        public List<Map> mills(String name) {
+            List<Map> sum = targetManagementMapper.Steelmillssum(name);
+            Map map = sum.get(0);
+            double jhs = 0;
+            double xhs = 0;
+            String jh = String.valueOf(map.get("JH"));
+            if (jh != null &&!jh.equals("") && !jh.equals("null")) {
+                jhs = Double.parseDouble(map.get("JH").toString());
+            }
+                String xh = String.valueOf(map.get("XH"));
+                if (xh != null && !xh.equals("") && !xh.equals("null")) {
+                    xhs = Double.parseDouble(xh);
+                }
+            Map mills = new HashMap();
+            mills.put("companyname", "集团");
+            mills.put("JH", jhs);
+            mills.put("XH", xhs);
+            List<Map> list = targetManagementMapper.Steelmillsplan(name);
+            list.add(mills);
+            return list;
+        }
+
+        public List<Map> settl(String name){
+            List<Map> sum = targetManagementMapper.Steelsum(name);
+            Map map = sum.get(0);
+            double jhs = 0;
+            double jsls = 0;
+            double pzgls=0;
+            double bi = 0;
+            String  jh =  map.get("JH").toString();
+            String jsl =  map.get("JSL").toString();
+            String   pzgl =  map.get("PZGL").toString();
+            if (jh != null && !jh.equals("") && !jh.equals("null")) {
+                jhs = Double.parseDouble(jh);
+            }
+            if (jsl != null && !jsl.equals("") && !jsl.equals("null")) {
+                jsls = Double.parseDouble(jsl);
+            }
+            if (pzgl != null && !pzgl.equals("") && !pzgl.equals("null")) {
+                pzgls = Double.parseDouble(pzgl);
+            }
+            if(jhs/jsls>0){
+                bi = jhs/jsls;
+            }
+            String result = String.valueOf(bi).substring(0,6);
+            Map type =  new HashMap();
+            type.put("COMPANYNAME","集团");
+            type.put("PZGL",pzgls);
+            type.put("JSL",jsls);
+            type.put("BILI",Double.parseDouble(result));
+            List<Map> list = targetManagementMapper.Steellist(name);
+            list.add(type);
+            return list;
+
+        }
+
+        public List<Map> salesmain( String name){
+            List<Map> list = targetManagementMapper.salesmain(name);
+            List<Map> su = targetManagementMapper.salesmainsum(name);
+            Map map = su.get(0);
+            String  sum =String.valueOf( map.get("ZYFKIMG"));
+            double  sums = Double.parseDouble(sum);
+            Map type = new HashMap();
+            type.put("SALE_BODY","集团产销资源总量");
+            type.put("ZYFKIMG",sums);
+            List<Map> newlist = new ArrayList<>();
+            newlist.add(type);
+            for(int i=0;i<list.size();i++){
+                Map ma = list.get(i);
+                String mi =String.valueOf( ma.get("ZYFKIMG"));
+                double  mis = Double.parseDouble(mi);
+                double bi = mis/sums;
+                String result = String.valueOf(bi).substring(0,6);
+                ma.put("BILI",Double.parseDouble(result));
+                newlist.add(ma);
+
+            }
+            return  newlist;
+        }
+
 }
