@@ -139,6 +139,9 @@
         <if test="year != null and year != ''">
             and YEAR = #{year}
         </if>
+        <if test="flName != null and flName != ''">
+            and FL = #{flName}
+        </if>
         ) A
         LEFT JOIN (
         SELECT

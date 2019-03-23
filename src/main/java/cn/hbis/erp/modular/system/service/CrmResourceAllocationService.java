@@ -37,7 +37,7 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         return crmResourceAllocationMapper.selSchedule(date,month,year,flName);
     }
 
-    public List<Allocation> selScheduleByCx(String date,String sort){
+    public List<Allocation> selScheduleByCx(String date,String sort,String flName){
         String month = "";
         String year = "";
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
@@ -51,6 +51,6 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         }else {
             sort = "ASC";
         }
-        return crmResourceAllocationMapper.selScheduleByCx(date,month,year,sort);
+        return crmResourceAllocationMapper.selScheduleByCx(date,month,year,sort,flName);
     }
 }

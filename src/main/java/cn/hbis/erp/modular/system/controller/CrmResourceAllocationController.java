@@ -41,11 +41,12 @@ public class CrmResourceAllocationController {
     @ApiOperation(value = "通过产线获取合同进度")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "date", value = "日期", dataType = "String"),
-            @ApiImplicitParam(name = "sort", value = "排序", dataType = "String")
+            @ApiImplicitParam(name = "sort", value = "排序", dataType = "String"),
+            @ApiImplicitParam(name = "flName", value = "分类名称", dataType = "String")
     })
     @RequestMapping(value = "/selScheduleByCx",method = RequestMethod.POST)
-    public List<Allocation> selScheduleByCx(String date,String sort){
-        return this.crmResourceAllocationService.selScheduleByCx(date,sort);
+    public List<Allocation> selScheduleByCx(String date,String sort,String flName){
+        return this.crmResourceAllocationService.selScheduleByCx(date,sort,flName);
     }
 }
 
