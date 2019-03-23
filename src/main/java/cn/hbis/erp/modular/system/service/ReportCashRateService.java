@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -88,7 +89,7 @@ public class ReportCashRateService extends ServiceImpl<ReportCashRateMapper, Rep
      * @return List<ReportCustomerCashRate>
      * @throws
      */
-    public List<String> getCashRateDetail(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
+    public List<Map> getCashRateDetail(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
         return reportCashRateMapper.getCashRateDetail(companyId, orderStopDateS, orderStopDateE, recordDate, summaryType);
     }
     /**

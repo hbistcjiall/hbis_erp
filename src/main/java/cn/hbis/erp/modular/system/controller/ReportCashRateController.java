@@ -193,7 +193,7 @@ public class ReportCashRateController {
         if(null==summaryType || "".equals(summaryType)) {
             summaryType = EnumSummaryType.WITHOUT_ZERO.getCode();
         }
-        List<String> list = reportCashRateService.getCashRateDetail(companyId, orderStopDateS, orderStopDateE, recordDate, summaryType);
+        List<Map> list = reportCashRateService.getCashRateDetail(companyId, orderStopDateS, orderStopDateE, recordDate, summaryType);
         map.put("list", list);
 //        model.addAttribute("query", query);
 //        model.addAttribute("company", EnumCompany.toMap());

@@ -200,7 +200,7 @@
         ) t
     </insert>
     <!-- 兑现率明细查询 报表 -->
-    <select id="getCashRateDetail" resultType="java.lang.String">
+    <select id="getCashRateDetail" resultType="map">
         select
         a.ID as id
         , a.CUSTOMER_MANAGER as customerManager

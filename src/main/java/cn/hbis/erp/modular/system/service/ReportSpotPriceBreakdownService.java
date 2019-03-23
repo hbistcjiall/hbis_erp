@@ -17,6 +17,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -34,24 +35,28 @@ public class ReportSpotPriceBreakdownService extends ServiceImpl<ReportSpotPrice
     @Resource
     private ReportSpotPriceBreakdownMapper reportSpotPriceBreakdownMapper;
 
-    public List<ReportSpotPriceBreakdown> queryDayList(String startMonth, String endMonth,String company) {
+    public List<Map> queryDayList(String startMonth, String endMonth, String company) {
         //log.info("== query days list ==");
+        System.out.println(reportSpotPriceBreakdownMapper.queryDayList(startMonth, endMonth, company));
         return reportSpotPriceBreakdownMapper.queryDayList(startMonth, endMonth, company);
     }
-    public List<ReportSpotPriceBreakdown> queryXunList(String startMonth, String endMonth,String company) {
+    public List<Map> queryXunList(String startMonth, String endMonth,String company) {
         //log.info("== query xun list ==");
+        System.out.println(reportSpotPriceBreakdownMapper.queryXunList(startMonth, endMonth, company));
         return reportSpotPriceBreakdownMapper.queryXunList(startMonth, endMonth, company);
     }
-    public List<ReportSpotPriceBreakdown> queryMonthList(String startMonth, String endMonth,String company) {
+    public List<Map> queryMonthList(String startMonth, String endMonth,String company) {
         //log.info("== query month list ==");
+        System.out.println(reportSpotPriceBreakdownMapper.queryMonthList(startMonth, endMonth, company));
         return reportSpotPriceBreakdownMapper.queryMonthList(startMonth, endMonth, company);
     }
-    public List<ReportSpotPriceBreakdown> queryYearList(String startMonth, String endMonth,String company) {
+    public List<Map> queryYearList(String startMonth, String endMonth,String company) {
         //log.info("== query year list ==");
+        System.out.println(reportSpotPriceBreakdownMapper.queryYearList(startMonth, endMonth, company));
         return reportSpotPriceBreakdownMapper.queryYearList(startMonth, endMonth, company);
     }
 
-    public void exportExcel(String startMonth, String endMonth, String company, HttpServletRequest request,
+    /*public void exportExcel(String startMonth, String endMonth, String company, HttpServletRequest request,
                             HttpServletResponse response) {
         try {
             String fileName = "建材北京市场现货价格分类汇总";
@@ -73,8 +78,8 @@ public class ReportSpotPriceBreakdownService extends ServiceImpl<ReportSpotPrice
         } catch (Exception e) {
             //log.error(e.getMessage(),e);
         }
-    }
-    private void createExcel(String fileName, HttpServletResponse response, OutputStream out,
+    }*/
+    /*private void createExcel(String fileName, HttpServletResponse response, OutputStream out,
                              String startMonth, String endMonth, String company, List<ReportSpotPriceBreakdown> days,
                              List<ReportSpotPriceBreakdown> xuns,
                              List<ReportSpotPriceBreakdown> months,
@@ -140,14 +145,14 @@ public class ReportSpotPriceBreakdownService extends ServiceImpl<ReportSpotPrice
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    private int fillData(int row_num, HSSFSheet sheet, HSSFRow row, HSSFCellStyle styleBold, HSSFCellStyle numberStyle, List<ReportSpotPriceBreakdown> datas) {
+    }*/
+    /*private int fillData(int row_num, HSSFSheet sheet, HSSFRow row, HSSFCellStyle styleBold, HSSFCellStyle numberStyle, List<ReportSpotPriceBreakdown> datas) {
         if(!datas.isEmpty()) {
             for(ReportSpotPriceBreakdown d : datas) {
                 row = sheet.createRow(row_num);
-                /**
+                *//**
                  * 填充时间
-                 */
+                 *//*
                 String cell_one ="";
                 //填充xx月xx日
                 if(null!=d.getOrderDay()) {
@@ -176,9 +181,9 @@ public class ReportSpotPriceBreakdownService extends ServiceImpl<ReportSpotPrice
                     cell_one = d.getOrderYear()+"年";
                 }
                 ExportExcelUtil.fillCell(row,0, styleBold,cell_one);
-                /**
+                *//**
                  * 填充单位
-                 */
+                 *//*
                 if(null!=d.getCompany()) {
                     if("XUANGANG".equals(d.getCompany())) {
                         ExportExcelUtil.fillCell(row,1, styleBold,"宣钢");
@@ -189,23 +194,23 @@ public class ReportSpotPriceBreakdownService extends ServiceImpl<ReportSpotPrice
                 }else {
                     ExportExcelUtil.fillCell(row,1, styleBold,"小计");
                 }
-                /**
+                *//**
                  * 填充类型
-                 */
+                 *//*
                 if("1".equals(d.getType())) {
                     ExportExcelUtil.fillCell(row,2, styleBold,"结算数量");
                 }else {
                     ExportExcelUtil.fillCell(row,2, styleBold,"结算价格");
                 }
-                /**
+                *//**
                  * 填充其他数据
-                 */
+                 *//*
                 this.setNumberData(row,numberStyle,d);
                 row_num++;
             }
         }
         return row_num;
-    }
+    }*/
     /**
      * @title ReportSpotPriceBreakdownManager.fillTitle
      * @description 设置表头
@@ -220,7 +225,7 @@ public class ReportSpotPriceBreakdownService extends ServiceImpl<ReportSpotPrice
      * @return void
      * @throws
      */
-    private void fillTitle(HSSFWorkbook workbook, HSSFSheet sheet, HSSFRow row,
+    /*private void fillTitle(HSSFWorkbook workbook, HSSFSheet sheet, HSSFRow row,
                            HSSFCellStyle headStyle,String fileName) {
         //标题填充数据
         sheet.addMergedRegion(new CellRangeAddress(0, 2, 0, 0));// 合并单元格
@@ -311,8 +316,8 @@ public class ReportSpotPriceBreakdownService extends ServiceImpl<ReportSpotPrice
         ExportExcelUtil.fillCell(row, 38, headStyle,"φ36mm");
         ExportExcelUtil.fillCell(row, 39, headStyle,"φ40mm");
         ExportExcelUtil.fillCell(row, 40, headStyle,"φ18—25mm");
-    }
-    private void setNumberData(HSSFRow row, HSSFCellStyle numberStyle, ReportSpotPriceBreakdown d) {
+    }*/
+    /*private void setNumberData(HSSFRow row, HSSFCellStyle numberStyle, ReportSpotPriceBreakdown d) {
         ExportExcelUtil.fillCell(row,3, numberStyle,d.getGxData1());
         ExportExcelUtil.fillCell(row,4, numberStyle,d.getGxData2());
         ExportExcelUtil.fillCell(row,5, numberStyle,d.getGxData3());
@@ -351,6 +356,6 @@ public class ReportSpotPriceBreakdownService extends ServiceImpl<ReportSpotPrice
         ExportExcelUtil.fillCell(row,38, numberStyle,d.getLwData24());
         ExportExcelUtil.fillCell(row,39, numberStyle,d.getLwData25());
         ExportExcelUtil.fillCell(row,40, numberStyle,d.getLwData26());
-    }
+    }*/
 
 }

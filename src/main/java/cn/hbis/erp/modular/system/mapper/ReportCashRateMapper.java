@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -25,9 +26,9 @@ public interface ReportCashRateMapper extends BaseMapper<ReportCashRateSummary> 
                                                         @Param("orderStopDateE") String orderStopDateE, @Param("recordDate") String recordDate,
                                                         @Param("summaryType") String summaryType);
 
-    List<String> getCashRateDetail(@Param("companyId") String companyId, @Param("orderStopDateS") String orderStopDateS,
-                                   @Param("orderStopDateE") String orderStopDateE, @Param("recordDate") String recordDate,
-                                   @Param("summaryType") String summaryType);
+    List<Map> getCashRateDetail(@Param("companyId") String companyId, @Param("orderStopDateS") String orderStopDateS,
+                                @Param("orderStopDateE") String orderStopDateE, @Param("recordDate") String recordDate,
+                                @Param("summaryType") String summaryType);
 
     List<ReportCashRateSummary> getCashRateCurve(@Param("companyId") String companyId, @Param("recordDate") String recordDate, @Param("summaryType") String summaryType);
 

@@ -57,11 +57,11 @@ public class ReportSpotPriceBreakdownController {
         //query.setStartMonth(DateUtil.getFirstDayOfMonth(query.getEndMonth()));
         String startMonth = DateUtil.getFirstDayOfMonth(endMonth);
         //1-按日查询
-        List<ReportSpotPriceBreakdown> dayList = reportSpotPriceBreakdownService.queryDayList(startMonth, endMonth, company);
-        List<ReportSpotPriceBreakdown> xunList = reportSpotPriceBreakdownService.queryXunList(startMonth, endMonth, company);
-        List<ReportSpotPriceBreakdown> monthList = reportSpotPriceBreakdownService.queryMonthList(startMonth, endMonth, company);
+        List<Map> dayList = reportSpotPriceBreakdownService.queryDayList(startMonth, endMonth, company);
+        List<Map> xunList = reportSpotPriceBreakdownService.queryXunList(startMonth, endMonth, company);
+        List<Map> monthList = reportSpotPriceBreakdownService.queryMonthList(startMonth, endMonth, company);
         startMonth = DateUtil.getFirstDayDateOfYear(endMonth);
-        List<ReportSpotPriceBreakdown> yearList = reportSpotPriceBreakdownService.queryYearList(startMonth, endMonth, company);
+        List<Map> yearList = reportSpotPriceBreakdownService.queryYearList(startMonth, endMonth, company);
         map.put("dayList", dayList);
         map.put("xunList", xunList);
         map.put("monthList", monthList);
@@ -69,7 +69,7 @@ public class ReportSpotPriceBreakdownController {
         //map.put("query", query);
         return map;
     }
-    @ApiOperation(value = "导出建材北京市场现货价格列表")
+    /*@ApiOperation(value = "导出建材北京市场现货价格列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "endMonth" ,value = "记录日期",dataType ="String" ),
             @ApiImplicitParam(name = "company" ,value = "钢厂",dataType ="String" )
@@ -88,5 +88,5 @@ public class ReportSpotPriceBreakdownController {
         String startMonth = DateUtil.getFirstDayOfMonth(endMonth);
         //开始导出
         reportSpotPriceBreakdownService.exportExcel(startMonth, endMonth, company, request, response);
-    }
+    }*/
 }
