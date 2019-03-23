@@ -46,15 +46,14 @@ public class ReportSpotPriceBreakdownController {
     public Map list(String endMonth, String company) {
         Map map = new HashMap();
         // 默认查询当日
-        /*if (null == query.getEndMonth()|| "".equals(query.getEndMonth())) {
+        if (null == endMonth || "".equals(endMonth)) {
             Calendar calendar = Calendar.getInstance();
-            query.setEndMonth(new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
-        }*/
+            endMonth = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+        }
         //默认所有公司
-        /*if (null == query.getCompany()) {
-            query.setCompany("0");
-        }*/
-        //query.setStartMonth(DateUtil.getFirstDayOfMonth(query.getEndMonth()));
+        if (null == company) {
+            company = "0";
+        }
         String startMonth = DateUtil.getFirstDayOfMonth(endMonth);
         //1-按日查询
         List<Map> dayList = reportSpotPriceBreakdownService.queryDayList(startMonth, endMonth, company);
