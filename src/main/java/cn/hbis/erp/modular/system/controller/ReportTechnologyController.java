@@ -75,7 +75,7 @@ public class ReportTechnologyController {
             @ApiImplicitParam(name = "queryDate" ,value = "月份",dataType ="String" )
     })
     @PostMapping(value = "exportSubsidiaryVarietySteel")
-    public void exportVarietySteelState(Map<String, Object> map ,String queryDate, HttpServletResponse response) {
+    public void exportVarietySteelState(Map<String, Object> map, String queryDate, HttpServletResponse response) {
         String startDate = DateUtil.getFirstDayOfMonth(queryDate);
         String endDate = DateUtil.getLastDayOfMonth(queryDate);
         List<ReportVarietySteelBean> resultList = reportTechnologyService.subsidiaryVarietySteel(startDate, endDate);

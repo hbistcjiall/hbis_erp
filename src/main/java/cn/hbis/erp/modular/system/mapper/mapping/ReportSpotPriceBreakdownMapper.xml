@@ -341,7 +341,7 @@
         decode(c.type,1,sum(c.lwWeight26),decode(sum(c.lwWeight26),0,0,sum(c.lwPrice26)/sum(c.lwWeight26))) lwData26
     </sql>
     <!-- 按年月日计算数据 -->
-    <select id="queryDayList" resultType="map">
+    <select id="queryDayList" resultType="cn.hbis.erp.modular.system.entity.ReportSpotPriceBreakdown">
         SELECT d.* FROM (
         SELECT c.order_day orderDay,c.erp_system company,c.type,
         <include refid="query_columns"/>
@@ -354,7 +354,7 @@
         order by d.orderDay asc,d.company desc nulls last,d.type
     </select>
     <!-- 按旬计算数据 -->
-    <select id="queryXunList" resultType="map">
+    <select id="queryXunList" resultType="cn.hbis.erp.modular.system.entity.ReportSpotPriceBreakdown">
         SELECT d.* FROM (
         SELECT c.order_month orderMonth,c.order_xun orderXun,c.erp_system company,c.type,
         <include refid="query_columns"/>
@@ -367,7 +367,7 @@
         order by d.orderMonth,d.orderXun asc, d.company desc nulls last, d.type
     </select>
     <!-- 按月计算数据 -->
-    <select id="queryMonthList" resultType="map">
+    <select id="queryMonthList" resultType="cn.hbis.erp.modular.system.entity.ReportSpotPriceBreakdown">
         SELECT d.* FROM (
         SELECT c.order_month as orderMonth,c.erp_system company,c.type,
         <include refid="query_columns"/>
@@ -380,7 +380,7 @@
         order by d.orderMonth asc,d.company desc nulls last,d.type
     </select>
     <!-- 按年计算数据 -->
-    <select id="queryYearList" resultType="map">
+    <select id="queryYearList" resultType="cn.hbis.erp.modular.system.entity.ReportSpotPriceBreakdown">
         SELECT d.* FROM (
         SELECT c.order_year orderYear,c.erp_system company,c.type,
         <include refid="query_columns"/>
