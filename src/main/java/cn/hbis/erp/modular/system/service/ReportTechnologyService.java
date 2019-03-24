@@ -2,6 +2,7 @@ package cn.hbis.erp.modular.system.service;
 
 import cn.hbis.erp.core.util.BigDecimalUtil;
 import cn.hbis.erp.modular.system.entity.ReportVarietySteelBean;
+import cn.hbis.erp.modular.system.entity.ReportVarietySteelItemBean;
 import cn.hbis.erp.modular.system.mapper.ReportTechnologyMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,21 @@ public class ReportTechnologyService extends ServiceImpl<ReportTechnologyMapper,
         List list = reportTechnologyMapper.item_subsidiaryVarietySteel_count(companyId, startDate, endDate);
         List list1 = reportTechnologyMapper.item_subsidiaryVarietySteel_data(companyId, startDate, endDate);
         list.addAll(list1);
-        return list;
+        return list1;
+    }
+    /**
+     * @Title subsidiaryVarietySteelItem
+     * @Description 1.子公司品种钢完成情况 明细
+     * @param
+     * @return List<ReportVarietySteelBean>
+     * @throws
+     */
+    public List exportsubsidiaryVarietySteelItemPage(String companyId, String startDate, String endDate) {
+//        Page page = PageFactory.defaultPage();
+        //List list = reportTechnologyMapper.item_subsidiaryVarietySteel_count(companyId, startDate, endDate);
+        List list1 = reportTechnologyMapper.item_subsidiaryVarietySteel_data(companyId, startDate, endDate);
+        //list.addAll(list1);
+        return list1;
     }
 
     /**
