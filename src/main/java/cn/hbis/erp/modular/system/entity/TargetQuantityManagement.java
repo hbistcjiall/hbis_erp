@@ -8,7 +8,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@TableName("SYS_TARGET_QUANTITY_MANAGEMENT")
+@TableName("SCM_TARGET_QUANTITY_MANAGEMENT")
 @Data
 public class TargetQuantityManagement implements Serializable {
     private static final long serialVersionUID = 1L;

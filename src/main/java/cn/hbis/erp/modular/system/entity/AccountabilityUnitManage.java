@@ -15,7 +15,7 @@ import java.io.Serializable;
  *
  *
  */
-@TableName("sys_accountability_unit_manage")
+@TableName("scm_accountability_unit_manage")
 @Data
 public class AccountabilityUnitManage implements Serializable {
 
