@@ -14,6 +14,7 @@ import java.util.Date;
  *
  *
  */
+@Data
 @TableName("scm_protocol_account_details")
 public class ProtocolAccountDetails implements Serializable {
 
@@ -74,6 +75,12 @@ public class ProtocolAccountDetails implements Serializable {
      */
     @TableField("ANNUAL_AGREEMENT_VOLUME")
     private String annualAgreementVolume;
+    /**
+     * 删除状态
+     */
+    @TableField("DELETESTATUS")
+    private String deleteStatus;
+
 
     public String getProtocolAccountId() {
         return protocolAccountId;
@@ -163,6 +170,14 @@ public class ProtocolAccountDetails implements Serializable {
         this.annualAgreementVolume = annualAgreementVolume;
     }
 
+    public String getDeleteStatus() {
+        return deleteStatus;
+    }
+
+    public void setDeleteStatus(String deleteStatus) {
+        this.deleteStatus = deleteStatus;
+    }
+
     @Override
     public String toString() {
         return "ProtocolAccountDetails{" +
@@ -177,6 +192,7 @@ public class ProtocolAccountDetails implements Serializable {
                 ", aidedSalesRegionalTwo='" + aidedSalesRegionalTwo + '\'' +
                 ", steelMills='" + steelMills + '\'' +
                 ", annualAgreementVolume='" + annualAgreementVolume + '\'' +
+                ", deleteStatus='" + deleteStatus + '\'' +
                 '}';
     }
 }

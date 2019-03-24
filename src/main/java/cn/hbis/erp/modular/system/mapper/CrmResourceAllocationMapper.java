@@ -18,5 +18,5 @@ import java.util.List;
 public interface CrmResourceAllocationMapper extends BaseMapper<CrmResourceAllocation> {
      List<Allocation> selSchedule(@Param("date") String date, @Param("month") String month, @Param("year") String year,@Param("flName")String flName);
 
-     List<Allocation> selScheduleByCx(@Param("date") String date, @Param("month") String month, @Param("year") String year,@Param("sort")String sort);
+     List<Allocation> selScheduleByCx(@Param("date") String date, @Param("month") String month, @Param("year") String year,@Param("sort")String sort,@Param("flName")String flName);
 }

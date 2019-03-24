@@ -2,6 +2,7 @@ package cn.hbis.erp.modular.system.controller;
 
 
 import cn.hbis.erp.core.common.page.PageFactory;
+import cn.hbis.erp.modular.system.entity.TargetQuantityManagement;
 import cn.hbis.erp.modular.system.service.TargetQuantityManagementService;
 import cn.hbis.erp.modular.system.warpper.TargetQuantityManagementWrapper;
 import cn.stylefeng.roses.core.base.controller.BaseController;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -81,4 +84,12 @@ public class TargetQuantityManagementController extends BaseController {
         }
         return map;
     }
+    @ApiOperation(value = "目标量明细无条件查询")
+    @PostMapping("/selectlist")
+    public List<Map> selectList(){
+        List<Map> map = new ArrayList<>();
+        map = targetService.getlist();
+        return map;
+    }
 }
+

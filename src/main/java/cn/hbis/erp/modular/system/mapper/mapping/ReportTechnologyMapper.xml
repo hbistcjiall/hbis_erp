@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hbis.erp.modular.system.mapper.ReportTechnologyMapper">
+    <!--<typeAlias alias="reportVarietySteelBean" type="com.hundsun.network.report.core.domain.ReportVarietySteelBean"/>
+    <typeAlias alias="reportVarietySteelItemBean" type="com.hundsun.network.report.core.domain.ReportVarietySteelItemBean"/>
+    <typeAlias alias="reportVarietySteelProductsBean" type="com.hundsun.network.report.core.domain.ReportVarietySteelProductsBean"/>-->
+    <sql id="common_sql">
+        SELECT sdd.id,
+        sdd.actual_date,
+        sdd.company_id,
+        sdd.ext product_line,
+        sdd.deliv_numb,
+        sdd.deliv_item,
+        sso.order_no,
+        sso.order_row,
+        rpcl.product_line_class,
+        rpcl.product_class_fine,
+        rpcl.PRODUCT_CLASS_CRUDE,
+        clc.product_class,
+        rpcl.product_grade,
+        sso.product_type,
+        sso.order_type_describe,
+        sso.saler_name,
+        sdd.total_weight,
+        svtp.variety,
+        sso.attribute1,
+        sso.attribute2,
+        sso.material_info,
+        sso.product_code,
+        sso.sale_group,
+        sso.attribute9
+        FROM scm_delivery_detail sdd
+        left join crm_line_class_relation clc
+        on sdd.company_id = clc.company_id
+        and sdd.ext = clc.product_line
+        left join scm_sale_order sso
+        on sdd.company_id = sso.company_id
+        and sdd.order_no = sso.order_no
+        and sdd.order_item = sso.order_row
+        left join (SELECT a.company_id,
+        a.product_class,
+        a.product_line_class,
+        a.product_class_crude,
+        a.product_class_fine,
+        a.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL a where a.status='0'
+        union all
+        SELECT b.company_id,
+        b.second_code,
+        b.product_line_class,
+        b.product_class_crude,
+        b.product_class_fine,
+        b.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL b where b.status='0') rpcl
+        on sso.company_id = rpcl.company_id
+        and clc.product_class = rpcl.product_line_class
+        and rpcl.product_class = sso.product_type
+        inner join scm_variety_to_pt_gp svtp
+        on sso.company_id = svtp.company_id
+        and sso.product_code = svtp.product_group
+        where
+        <!--<choose>
+            <when test="companyId != null and companyId !=''">
+                <if test="companyId != null and 9727 == company">
+                    sdd.company_id in (9727,7778)
+                </if>
+                <if test="companyId != null and companyId != 9727">
+                    sdd.company_id = #{companyId}
+                </if>
+            </when>
+            <otherwise>-->
+                    sdd.company_id in (9580, 9727, 9193, 9196, 1932, 8110, 8493, 7778)
+            <!--</otherwise>
+        </choose>-->
+        <if test="startDate != null and startDate !=''">
+          and sdd.ACTUAL_DATE <![CDATA[ >= ]]>  to_date(#{startDate}, 'yyyy-mm-dd')
+        </if>
+        <if test="endDate != null and endDate !=''">
+            and sdd.ACTUAL_DATE <![CDATA[ <= ]]>  to_date(#{endDate}, 'yyyy-mm-dd')
+        </if>
+        and (sdd.delivery_delete != 'X' or sdd.delivery_delete is null)
+        and sdd.ext is not null
+        and (sso.deleted != 'X' or sso.deleted is null)
+        and sso.order_type_describe not in
+        (select distinct cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '2'
+        and cfd.status = '0'
+        and cfd.company_id = sso.company_id)
+        and sso.saler_name not in
+        (select cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '1'
+        and cfd.status = '0'
+        and cfd.company_id = sdd.company_id
+        and instr(concat(sdd.ext, sdd.company_id),concat(cfd.product_line, cfd.company_id)) > 0)
+        AND sso.sale_group NOT IN
+        (SELECT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 9
+        AND cfd.status = 0)
+
+    </sql>
+    <sql id="common_sq2">
+        SELECT sdd.id,
+        sdd.actual_date,
+        sdd.company_id,
+        sdd.ext product_line,
+        sdd.deliv_numb,
+        sdd.deliv_item,
+        sso.order_no,
+        sso.order_row,
+        rpcl.product_line_class,
+        rpcl.product_class_fine,
+        rpcl.PRODUCT_CLASS_CRUDE,
+        clc.product_class,
+        rpcl.product_grade,
+        sso.product_type,
+        sso.order_type_describe,
+        sso.saler_name,
+        sdd.total_weight,
+        svtp.variety,
+        sso.attribute1,
+        sso.attribute2,
+        sso.material_info,
+        sso.product_code,
+        sso.sale_group,
+        sso.attribute9
+        FROM scm_delivery_detail sdd
+        left join crm_line_class_relation clc
+        on sdd.company_id = clc.company_id
+        and sdd.ext = clc.product_line
+        left join scm_sale_order sso
+        on sdd.company_id = sso.company_id
+        and sdd.order_no = sso.order_no
+        and sdd.order_item = sso.order_row
+        left join (SELECT a.company_id,
+        a.product_class,
+        a.product_line_class,
+        a.product_class_crude,
+        a.product_class_fine,
+        a.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL a where a.status='0'
+        union all
+        SELECT b.company_id,
+        b.second_code,
+        b.product_line_class,
+        b.product_class_crude,
+        b.product_class_fine,
+        b.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL b where b.status='0') rpcl
+        on sso.company_id = rpcl.company_id
+        and clc.product_class = rpcl.product_line_class
+        and rpcl.product_class = sso.product_type
+        inner join scm_variety_to_pt_gp svtp
+        on sso.company_id = svtp.company_id
+        and sso.product_code = svtp.product_group
+        where
+        <choose>
+            <when test="companyId != null and companyId !=''">
+                <if test="companyId != null and 9727 == companyId">
+                    sdd.company_id in (9727,7778)
+                </if>
+                <if test="companyId != null and companyId != 9727">
+                    sdd.company_id = #{companyId}
+                </if>
+            </when>
+            <otherwise>
+              sdd.company_id in (9580, 9727, 9193, 9196, 1932, 8110, 8493, 7778)
+            </otherwise>
+        </choose>
+        <if test="startDate != null and startDate !=''">
+            and sdd.ACTUAL_DATE <![CDATA[ >= ]]>  to_date(#{startDate}, 'yyyy-mm-dd')
+        </if>
+        <if test="endDate != null and endDate !=''">
+            and sdd.ACTUAL_DATE <![CDATA[ <= ]]>  to_date(#{endDate}, 'yyyy-mm-dd')
+        </if>
+        and (sdd.delivery_delete != 'X' or sdd.delivery_delete is null)
+        and sdd.ext is not null
+        and (sso.deleted != 'X' or sso.deleted is null)
+        and sso.order_type_describe not in
+        (select distinct cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '2'
+        and cfd.status = '0'
+        and cfd.company_id = sso.company_id)
+        and sso.saler_name not in
+        (select cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '1'
+        and cfd.status = '0'
+        and cfd.company_id = sdd.company_id
+        and instr(concat(sdd.ext, sdd.company_id),concat(cfd.product_line, cfd.company_id)) > 0)
+        AND sso.sale_group NOT IN
+        (SELECT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 9
+        AND cfd.status = 0)
+
+    </sql>
+    <!-- 1.子公司品种钢完成情况 -->
+    <select id="subsidiaryVarietySteel" resultType="cn.hbis.erp.modular.system.entity.ReportVarietySteelBean">
+        select companyName,
+        sum(totalWeight) as totalSteel,
+        sum(case when (paiHaoClass is not null and paiHaoClass !='普材') then totalWeight else 0 end) as totalSteelVarieties,
+        sum(case when (paiHaoClass = '特色战略产品') then totalWeight else 0 end) featuresProducts,
+        sum(case when (paiHaoClass = '高端产品') then totalWeight else 0 end) highProducts,
+        sum(case when (paiHaoClass = '品种钢') then totalWeight else 0 end) steelVarieties
+        from (select sum(t.total_weight) as totalWeight,
+        decode(t.product_grade, '', '普材', t.product_grade) as paiHaoClass,
+        decode(t.company_id,9580,'河钢唐钢',9727,'河钢邯钢',9193,'河钢宣钢',9196,'河钢承钢',1932,'河钢舞钢',8110,'河钢石钢',8493,'河钢衡板',7778,'河钢邯钢') companyName
+        from (
+        <include refid="common_sql"/>
+        ) t where t.product_line is not null and t.variety is not null group by t.product_grade, t.company_id
+        union all (
+        select 0, '', companyName
+        from (select '河钢唐钢' as companyName from dual
+        union all
+        select '河钢邯钢' as companyName from dual
+        union all
+        select '河钢宣钢' as companyName from dual
+        union all
+        select '河钢承钢' as companyName from dual
+        union all
+        select '河钢舞钢' as companyName from dual
+        union all
+        select '河钢石钢' as companyName from dual
+        union all
+        select '河钢衡板' as companyName from dual
+        )
+        )
+        )
+        group by rollup(companyName)
+        order by decode(companyName,'河钢唐钢',1,'河钢邯钢',2,'河钢宣钢',3,'河钢承钢',4,'河钢舞钢',5,'河钢石钢',6,'河钢衡板',7)
+    </select>
+    <sql id="item_common_sql">
+        select t.company_id as companyId
+        ,decode(t.company_id,9580,'河钢唐钢',9727,'河钢邯钢',9193,'河钢宣钢',9196,'河钢承钢',1932,'河钢舞钢',8110,'河钢石钢',8493,'河钢衡板',7778,'河钢邯钢') companyName
+        ,t.sale_group as saleGroup
+        ,t.actual_date as actualDate
+        ,t.product_line as productLine
+        ,t.deliv_numb as delivNum
+        ,t.deliv_item as delivItem
+        ,t.order_no as orderNo
+        ,t.order_row as orderRow
+        ,t.product_line_class as productLineClass
+        ,t.product_class as productClass
+        ,t.product_class_fine as productClassFine
+        ,t.PRODUCT_CLASS_CRUDE as productClassCrude
+        ,decode(t.product_grade, '', '普材', t.product_grade) as productGrade
+        ,t.product_type as productType
+        ,t.order_type_describe as orderTypeDescribe
+        ,t.saler_name as salerName
+        ,sum(t.total_weight) as totalWeight
+        ,t.variety
+        ,t.attribute1 as material
+        ,t.attribute2 as specification
+        ,t.material_info as materialInfo
+        ,t.product_code as productCode
+        ,t.attribute9
+        from (
+        <include refid="common_sq2"/>
+        ) t where t.product_line is not null and t.variety is not null
+    </sql>
+    <sql id="item_common_sql_group_order_by">
+		group by t.company_id,t.sale_group,t.actual_date,t.product_line,t.deliv_numb,t.deliv_item,
+			     t.order_no,t.order_row,t.product_line_class,t.product_class,t.product_class_fine,
+				 t.PRODUCT_CLASS_CRUDE,t.product_grade,t.product_type,t.order_type_describe,
+				 t.saler_name,t.variety,t.attribute1,t.attribute2,t.material_info,t.product_code,t.attribute9
+		order by t.actual_date,t.deliv_numb,t.deliv_item desc
+	</sql>
+
+    <!-- 子公司品种钢情况明细  start  -->
+    <select id="item_subsidiaryVarietySteel_data" resultType="cn.hbis.erp.modular.system.entity.ReportVarietySteelItemBean">
+        SELECT * FROM (SELECT p.* from   (
+        <include refid="item_common_sql"/>
+        <include refid="item_common_sql_group_order_by"/>
+        ) p
+        )
+    </select>
+
+    <select id="item_subsidiaryVarietySteel_count" resultType="java.lang.Integer">
+        select count(1) from (<include refid="item_common_sql"/><include refid="item_common_sql_group_order_by"/>) a
+    </select>
+    <select id="item_subsidiaryVarietySteel">
+        <include refid="item_common_sql"/>
+        <include refid="item_common_sql_group_order_by"/>
+    </select>
+    <!-- 子公司品种钢情况明细  end  -->
+</mapper>

@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hbis.erp.modular.system.mapper.ReportSpotPriceBreakdownMapper">
+    <!--<typeAlias alias="reportSpotPriceBreakdown" type="com.hundsun.network.report.core.domain.ReportSpotPriceBreakdown" />-->
+    <!-- 查询宣钢信息 -->
+    <sql id = "query_xuangang_sql">
+       SELECT tcg.weight as pick_weight,
+                   nvl(tcg.unit_price, 0) / 100 unit_price,
+                   to_char(tc.TRANS_DATETIME, 'yyyy') order_year,
+                   to_char(tc.TRANS_DATETIME, 'mm') order_month,
+                   to_char(tc.TRANS_DATETIME, 'yyyy-mm-dd') order_day,
+                   case when to_char(tc.TRANS_DATETIME, 'dd') <![CDATA[ <= ]]>10 then 0
+                    when to_char(tc.TRANS_DATETIME, 'dd') <![CDATA[ > ]]> 10 and to_char(tc.TRANS_DATETIME, 'dd') <![CDATA[ <= ]]> 20 then 1
+                    else
+                    2
+                   end order_xun,
+                  tcg.thickness,
+				  decode(tc.SELLER_COMPANY_ID, 10310, 'XUANGANG', 'XUANGANG') as erp_system,
+                  case
+                    when tc.SELLER_COMPANY_ID = 10310 and
+                       tcg.material = 'HPB300' and
+                       tcg.variety_name in
+                       ('热轧光圆钢筋', '钢筋混凝土用热轧光圆钢筋') then
+                     '高线'
+                    when tc.SELLER_COMPANY_ID = 10310 and
+                       tcg.material in
+                       ('HRB400', 'HRB400E', 'HRB500', 'HRB500E') and
+                       tcg.variety_name in ('盘螺', '钢筋混凝土用热轧带肋钢筋')
+                       and tcg.thickness in ('∮8','∮10','Φ8','Φ10','8','10')
+                      then
+                     '盘螺'
+                    when tc.SELLER_COMPANY_ID = 10310 and
+                       tcg.material in
+                       ('HRB400', 'HRB400E', 'HRB500', 'HRB500E') and
+                       tcg.variety_name in
+                       ('螺纹钢', '钢筋混凝土用热轧带肋钢筋', '铬合金螺纹钢') then
+                     '螺纹钢'
+                    else
+                     'except'
+                  end variety_name,
+                  tcg.material,
+                  case when tcg.thickness like '%40%' then 40
+                     when tcg.thickness like '%36%' then 36
+                     when tcg.thickness like '%32%' then 32
+                     when tcg.thickness like '%28%' then 28
+                     when tcg.thickness like '%25%' then 25
+                     when tcg.thickness like '%22%' then 22
+                     when tcg.thickness like '%20%' then 20
+                     when tcg.thickness like '%18%' then 18
+                     when tcg.thickness like '%16%' then 16
+                     when tcg.thickness like '%14%' then 14
+                     when tcg.thickness like '%12%' then 12
+                     when tcg.thickness like '%10%' then 10
+                     when tcg.thickness like '%8%' then  8
+                     when tcg.thickness like '%6.5%' then 6.5
+                     else
+                     9999
+                     end as specification
+                 FROM
+                  trade_contract_goods    tcg,
+                  trade_contract          tc,
+                  trade_contract_delivery tcd
+                WHERE
+                tc.TRANS_DATETIME <![CDATA[ >= ]]> to_date(#{startMonth},'yyyy-mm-dd')
+                and to_date(to_char(tc.TRANS_DATETIME,'yyyy-mm-dd'), 'yyyy-mm-dd') <![CDATA[ <= ]]> to_date(#{endMonth}, 'yyyy-mm-dd')
+                and tcd.warehouse_cmp_id in (10234,10162,10091,10097)
+                and tcg.variety_code in ('104002','10400302','104004',
+                             '10400312',
+                             '100301',
+                             '10400210',
+                             '10400211')
+                and tcg.material in ('HPB300', 'HRB400', 'HRB400E', 'HRB500', 'HRB500E')
+                and tc.SELLER_COMPANY_ID = 10310
+                and tcg.contract_id = tc.id
+                and tcd.contract_id = tc.id
+                and tc.trade_type = '1'
+    </sql>
+    <!-- 查询承钢数据 -->
+    <sql id = "query_chenggang_sql">
+        select tfoi.weight as pick_weight,
+                nvl(tfoi.unit_price, 0) / 100 unit_price,
+                to_char(tfo.order_date, 'yyyy') order_year,
+                to_char(tfo.order_date, 'mm') order_month,
+                to_char(tfo.order_date, 'yyyy-mm-dd') order_day,
+                case when to_char(tfo.order_date, 'dd') <![CDATA[ <= ]]> 10 then 0
+                     when to_char(tfo.order_date, 'dd') <![CDATA[ > ]]> 10 and to_char(tfo.order_date, 'dd') <![CDATA[ <=]]> 20 then 1
+                     else
+                      2
+                     end order_xun,
+                tfoi.thickness,
+                tfoi.erp_system,
+                case when tfoi.variety_name in ('热轧光圆钢筋') then '高线'
+                     when tfoi.variety_name in ('盘螺', '铬合金螺纹钢') then '盘螺'
+                     else tfoi.variety_name
+                    end variety_name,
+                case
+                  when tfoi.erp_system = 'CHENGGANG' and  tfoi.material in ('HRB400', 'HRB400EX1', 'HRB400X1') then
+                   'HRB400'
+                  else
+                   tfoi.material
+                end material,
+                case when tfoi.specification like '%40%' then 40
+                     when tfoi.specification like '%36%' then 36
+                     when tfoi.specification like '%32%' then 32
+                     when tfoi.specification like '%28%' then 28
+                     when tfoi.specification like '%25%' then 25
+                     when tfoi.specification like '%22%' then 22
+                     when tfoi.specification like '%20%' then 20
+                     when tfoi.specification like '%18%' then 18
+                     when tfoi.specification like '%16%' then 16
+                     when tfoi.specification like '%14%' then 14
+                     when tfoi.specification like '%12%' then 12
+                     when tfoi.specification like '%10%' then 10
+                     when tfoi.specification like '%8%' then  8
+                     when tfoi.specification like '%6.5%' then 6.5
+                     else  9999
+                end as specification
+           from trade_futures_order_item tfoi, trade_futures_order tfo
+          where tfoi.order_id = tfo.id
+            and tfo.is_delete = '0'
+            and tfoi.is_delete = '0'
+            and tfoi.status in ('03', '04', '05')
+            and tfo.status in ('03', '04', '05')
+            and tfo.sales_organization = '01'
+            and tfo.order_type in ('02', '05')
+            and tfo.order_date <![CDATA[ >= ]]> to_date(#{startMonth},'yyyy-mm-dd')
+            and tfo.order_date <![CDATA[ <= ]]> to_date(#{endMonth},'yyyy-mm-dd')
+            and tfoi.erp_system = 'CHENGGANG'
+    </sql>
+    <!-- 查询结算量 -->
+    <sql id="query_settlement_weight">
+        select b.order_year,
+        b.order_month,
+        b.order_xun,
+        b.order_day,
+        b.erp_system,
+        1 type,
+        case when  b.variety_name = '高线' and b.material = 'HPB300' and b.specification = '6.5' then b.pick_weight else 0 end gxWeight1,
+        case when  b.variety_name = '高线' and b.material = 'HPB300' and b.specification = '8' then b.pick_weight else 0 end gxWeight2,
+        case when  b.variety_name = '高线' and b.material = 'HPB300' and b.specification = '10' then b.pick_weight else 0 end gxWeight3,
+        case when  b.variety_name = '高线' and b.material = 'HPB300' and b.specification = '12' then b.pick_weight else 0 end gxWeight4,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB400','HRB400E') and b.specification = '6' then b.pick_weight else 0 end plWeight1,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB400','HRB400E') and b.specification = '8' then b.pick_weight else 0 end plWeight2,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB400','HRB400E') and b.specification = '10' then b.pick_weight else 0 end plWeight3,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB400','HRB400E') and b.specification = '12' then b.pick_weight else 0 end plWeight4,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB500','HRB500E') and b.specification = '6' then b.pick_weight else 0 end plWeight5,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB500','HRB500E') and b.specification = '8' then b.pick_weight else 0 end plWeight6,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB500','HRB500E') and b.specification = '10' then b.pick_weight else 0 end plWeight7,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB500','HRB500E') and b.specification = '12' then b.pick_weight else 0 end plWeight8,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '10' then b.pick_weight else 0 end lwWeight1,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '12' then b.pick_weight else 0 end lwWeight2,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '14' then b.pick_weight else 0 end lwWeight3,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '16' then b.pick_weight else 0 end lwWeight4,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '18' then b.pick_weight else 0 end lwWeight5,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '20' then b.pick_weight else 0 end lwWeight6,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '22' then b.pick_weight else 0 end lwWeight7,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '25' then b.pick_weight else 0 end lwWeight8,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '28' then b.pick_weight else 0 end lwWeight9,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '32' then b.pick_weight else 0 end lwWeight10,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '36' then b.pick_weight else 0 end lwWeight11,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '40' then b.pick_weight else 0 end lwWeight12,
+        <![CDATA[case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification >= '18' and b.specification <= '25' then b.pick_weight else 0 end lwWeight13]]>,
+
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '10' then b.pick_weight else 0 end lwWeight14,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '12' then b.pick_weight else 0 end lwWeight15,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '14' then b.pick_weight else 0 end lwWeight16,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '16' then b.pick_weight else 0 end lwWeight17,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '18' then b.pick_weight else 0 end lwWeight18,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '20' then b.pick_weight else 0 end lwWeight19,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '22' then b.pick_weight else 0 end lwWeight20,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '25' then b.pick_weight else 0 end lwWeight21,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '28' then b.pick_weight else 0 end lwWeight22,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '32' then b.pick_weight else 0 end lwWeight23,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '36' then b.pick_weight else 0 end lwWeight24,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '40' then b.pick_weight else 0 end lwWeight25,
+        <![CDATA[case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification >= '18' and b.specification <= '25' then b.pick_weight else 0 end lwWeight26]]>,
+
+        0 gxPrice1,0 gxPrice2,0 gxPrice3,0 gxPrice4,
+        0 plPrice1,0 plPrice2,0 plPrice3,0 plPrice4,0 plPrice5,0 plPrice6,0 plPrice7,0 plPrice8,
+        0 lwPrice1,0 lwPrice2,0 lwPrice3,0 lwPrice4,0 lwPrice5,0 lwPrice6,0 lwPrice7,0 lwPrice8,0 lwPrice9,0 lwPrice10,0 lwPrice11,0 lwPrice12,
+        0 lwPrice13,0 lwPrice14,0 lwPrice15,0 lwPrice16,0 lwPrice17,0 lwPrice18,0 lwPrice19,0 lwPrice20,0 lwPrice21,0 lwPrice22,0 lwPrice23,0 lwPrice24,0 lwPrice25,0 lwPrice26
+        from(
+            <if test="company != null and 1 == company">
+                (<include refid="query_xuangang_sql"/>)
+            </if>
+            <if test="company != null and 2 == company">
+                (<include refid="query_chenggang_sql"/>)
+            </if>
+            <if test="company != null and 0 == company">
+                (<include refid="query_xuangang_sql"/>)
+                union all
+                (<include refid="query_chenggang_sql"/>)
+            </if>
+        ) b
+        where b.pick_weight!= 0
+        and b.variety_name != 'except'
+        and b.specification != 9999
+    </sql>
+    <!-- 查询结算价 -->
+    <sql id="query_settlement_price">
+        select b.order_year,
+        b.order_month,
+        b.order_xun,
+        b.order_day,
+        b.erp_system,
+        2 type,
+        case when  b.variety_name = '高线' and b.material = 'HPB300' and b.specification = '6.5' then b.pick_weight else 0 end gxWeight1,
+        case when  b.variety_name = '高线' and b.material = 'HPB300' and b.specification = '8' then b.pick_weight else 0 end gxWeight2,
+        case when  b.variety_name = '高线' and b.material = 'HPB300' and b.specification = '10' then b.pick_weight else 0 end gxWeight3,
+        case when  b.variety_name = '高线' and b.material = 'HPB300' and b.specification = '12' then b.pick_weight else 0 end gxWeight4,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB400','HRB400E') and b.specification = '6' then b.pick_weight else 0 end plWeight1,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB400','HRB400E') and b.specification = '8' then b.pick_weight else 0 end plWeight2,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB400','HRB400E') and b.specification = '10' then b.pick_weight else 0 end plWeight3,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB400','HRB400E') and b.specification = '12' then b.pick_weight else 0 end plWeight4,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB500','HRB500E') and b.specification = '6' then b.pick_weight else 0 end plWeight5,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB500','HRB500E') and b.specification = '8' then b.pick_weight else 0 end plWeight6,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB500','HRB500E') and b.specification = '10' then b.pick_weight else 0 end plWeight7,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB500','HRB500E') and b.specification = '12' then b.pick_weight else 0 end plWeight8,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '10' then b.pick_weight else 0 end lwWeight1,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '12' then b.pick_weight else 0 end lwWeight2,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '14' then b.pick_weight else 0 end lwWeight3,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '16' then b.pick_weight else 0 end lwWeight4,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '18' then b.pick_weight else 0 end lwWeight5,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '20' then b.pick_weight else 0 end lwWeight6,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '22' then b.pick_weight else 0 end lwWeight7,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '25' then b.pick_weight else 0 end lwWeight8,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '28' then b.pick_weight else 0 end lwWeight9,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '32' then b.pick_weight else 0 end lwWeight10,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '36' then b.pick_weight else 0 end lwWeight11,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '40' then b.pick_weight else 0 end lwWeight12,
+        <![CDATA[case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification >= '18' and b.specification <= '25' then b.pick_weight else 0 end lwWeight13]]>,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '10' then b.pick_weight else 0 end lwWeight14,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '12' then b.pick_weight else 0 end lwWeight15,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '14' then b.pick_weight else 0 end lwWeight16,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '16' then b.pick_weight else 0 end lwWeight17,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '18' then b.pick_weight else 0 end lwWeight18,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '20' then b.pick_weight else 0 end lwWeight19,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '22' then b.pick_weight else 0 end lwWeight20,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '25' then b.pick_weight else 0 end lwWeight21,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '28' then b.pick_weight else 0 end lwWeight22,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '32' then b.pick_weight else 0 end lwWeight23,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '36' then b.pick_weight else 0 end lwWeight24,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '40' then b.pick_weight else 0 end lwWeight25,
+        <![CDATA[case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification >= '18' and b.specification <= '25' then b.pick_weight else 0 end lwWeight26]]>,
+
+        case when  b.variety_name = '高线' and b.material = 'HPB300' and b.specification = '6.5' then b.unit_price*b.pick_weight else 0 end gxPrice1,
+        case when  b.variety_name = '高线' and b.material = 'HPB300' and b.specification = '8' then b.unit_price*b.pick_weight else 0 end gxPrice2,
+        case when  b.variety_name = '高线' and b.material = 'HPB300' and b.specification = '10' then b.unit_price*b.pick_weight else 0 end gxPrice3,
+        case when  b.variety_name = '高线' and b.material = 'HPB300' and b.specification = '12' then b.unit_price*b.pick_weight else 0 end gxPrice4,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB400','HRB400E') and b.specification = '6' then b.unit_price*b.pick_weight else 0 end plPrice1,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB400','HRB400E') and b.specification = '8' then b.unit_price*b.pick_weight else 0 end plPrice2,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB400','HRB400E') and b.specification = '10' then b.unit_price*b.pick_weight else 0 end plPrice3,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB400','HRB400E') and b.specification = '12' then b.unit_price*b.pick_weight else 0 end plPrice4,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB500','HRB500E') and b.specification = '6' then b.unit_price*b.pick_weight else 0 end plPrice5,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB500','HRB500E') and b.specification = '8' then b.unit_price*b.pick_weight else 0 end plPrice6,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB500','HRB500E') and b.specification = '10' then b.unit_price*b.pick_weight else 0 end plPrice7,
+        case when  b.variety_name = '盘螺' and b.material in ('HRB500','HRB500E') and b.specification = '12' then b.unit_price*b.pick_weight else 0 end plPrice8,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '10' then b.unit_price*b.pick_weight else 0 end lwPrice1,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '12' then b.unit_price*b.pick_weight else 0 end lwPrice2,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '14' then b.unit_price*b.pick_weight else 0 end lwPrice3,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '16' then b.unit_price*b.pick_weight else 0 end lwPrice4,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '18' then b.unit_price*b.pick_weight else 0 end lwPrice5,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '20' then b.unit_price*b.pick_weight else 0 end lwPrice6,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '22' then b.unit_price*b.pick_weight else 0 end lwPrice7,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '25' then b.unit_price*b.pick_weight else 0 end lwPrice8,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '28' then b.unit_price*b.pick_weight else 0 end lwPrice9,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '32' then b.unit_price*b.pick_weight else 0 end lwPrice10,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '36' then b.unit_price*b.pick_weight else 0 end lwPrice11,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification = '40' then b.unit_price*b.pick_weight else 0 end lwPrice12,
+        <![CDATA[case when  b.variety_name = '螺纹钢' and b.material in ('HRB400','HRB400E') and b.specification >= '18' and b.specification <= '25' then b.unit_price*b.pick_weight else 0 end lwPrice13]]>,
+
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '10' then b.unit_price*b.pick_weight else 0 end lwPrice14,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '12' then b.unit_price*b.pick_weight else 0 end lwPrice15,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '14' then b.unit_price*b.pick_weight else 0 end lwPrice16,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '16' then b.unit_price*b.pick_weight else 0 end lwPrice17,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '18' then b.unit_price*b.pick_weight else 0 end lwPrice18,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '20' then b.unit_price*b.pick_weight else 0 end lwPrice19,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '22' then b.unit_price*b.pick_weight else 0 end lwPrice20,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '25' then b.unit_price*b.pick_weight else 0 end lwPrice21,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '28' then b.unit_price*b.pick_weight else 0 end lwPrice22,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '32' then b.unit_price*b.pick_weight else 0 end lwPrice23,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '36' then b.unit_price*b.pick_weight else 0 end lwPrice24,
+        case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification = '40' then b.unit_price*b.pick_weight else 0 end lwPrice25,
+        <![CDATA[case when  b.variety_name = '螺纹钢' and b.material in ('HRB500','HRB500E') and b.specification >= '18' and b.specification <= '25' then b.unit_price*b.pick_weight else 0 end lwPrice26]]>
+
+        from (
+            <if test="company != null and 1 == company">
+                (<include refid="query_xuangang_sql"/>)
+            </if>
+            <if test="company != null and 2 == company">
+                (<include refid="query_chenggang_sql"/>)
+            </if>
+            <if test="company != null and 0 == company">
+                (<include refid="query_xuangang_sql"/>)
+                union all
+                (<include refid="query_chenggang_sql"/>)
+            </if>
+        ) b
+        where b.pick_weight!= 0
+        and b.variety_name != 'except'
+        and b.specification != 9999
+    </sql>
+    <sql id="query_columns">
+        decode(c.type,1,sum(c.gxWeight1),decode(sum(c.gxWeight1),0,0,sum(c.gxPrice1)/sum(c.gxWeight1))) gxData1,
+        decode(c.type,1,sum(c.gxWeight2),decode(sum(c.gxWeight2),0,0,sum(c.gxPrice2)/sum(c.gxWeight2))) gxData2,
+        decode(c.type,1,sum(c.gxWeight3),decode(sum(c.gxWeight3),0,0,sum(c.gxPrice3)/sum(c.gxWeight3))) gxData3,
+        decode(c.type,1,sum(c.gxWeight4),decode(sum(c.gxWeight4),0,0,sum(c.gxPrice4)/sum(c.gxWeight4))) gxData4,
+        decode(c.type,1,sum(c.plWeight1),decode(sum(c.plWeight1),0,0,sum(c.plPrice1)/sum(c.plWeight1))) plData1,
+        decode(c.type,1,sum(c.plWeight2),decode(sum(c.plWeight2),0,0,sum(c.plPrice2)/sum(c.plWeight2))) plData2,
+        decode(c.type,1,sum(c.plWeight3),decode(sum(c.plWeight3),0,0,sum(c.plPrice3)/sum(c.plWeight3))) plData3,
+        decode(c.type,1,sum(c.plWeight4),decode(sum(c.plWeight4),0,0,sum(c.plPrice4)/sum(c.plWeight4))) plData4,
+        decode(c.type,1,sum(c.plWeight5),decode(sum(c.plWeight5),0,0,sum(c.plPrice5)/sum(c.plWeight5))) plData5,
+        decode(c.type,1,sum(c.plWeight6),decode(sum(c.plWeight6),0,0,sum(c.plPrice6)/sum(c.plWeight6))) plData6,
+        decode(c.type,1,sum(c.plWeight7),decode(sum(c.plWeight7),0,0,sum(c.plPrice7)/sum(c.plWeight7))) plData7,
+        decode(c.type,1,sum(c.plWeight8),decode(sum(c.plWeight8),0,0,sum(c.plPrice8)/sum(c.plWeight8))) plData8,
+        decode(c.type,1,sum(c.lwWeight1),decode(sum(c.lwWeight1),0,0,sum(c.lwPrice1)/sum(c.lwWeight1))) lwData1,
+        decode(c.type,1,sum(c.lwWeight2),decode(sum(c.lwWeight2),0,0,sum(c.lwPrice2)/sum(c.lwWeight2))) lwData2,
+        decode(c.type,1,sum(c.lwWeight3),decode(sum(c.lwWeight3),0,0,sum(c.lwPrice3)/sum(c.lwWeight3))) lwData3,
+        decode(c.type,1,sum(c.lwWeight4),decode(sum(c.lwWeight4),0,0,sum(c.lwPrice4)/sum(c.lwWeight4))) lwData4,
+        decode(c.type,1,sum(c.lwWeight5),decode(sum(c.lwWeight5),0,0,sum(c.lwPrice5)/sum(c.lwWeight5))) lwData5,
+        decode(c.type,1,sum(c.lwWeight6),decode(sum(c.lwWeight6),0,0,sum(c.lwPrice6)/sum(c.lwWeight6))) lwData6,
+        decode(c.type,1,sum(c.lwWeight7),decode(sum(c.lwWeight7),0,0,sum(c.lwPrice7)/sum(c.lwWeight7))) lwData7,
+        decode(c.type,1,sum(c.lwWeight8),decode(sum(c.lwWeight8),0,0,sum(c.lwPrice8)/sum(c.lwWeight8))) lwData8,
+        decode(c.type,1,sum(c.lwWeight9),decode(sum(c.lwWeight9),0,0,sum(c.lwPrice9)/sum(c.lwWeight9))) lwData9,
+        decode(c.type,1,sum(c.lwWeight10),decode(sum(c.lwWeight10),0,0,sum(c.lwPrice10)/sum(c.lwWeight10))) lwData10,
+        decode(c.type,1,sum(c.lwWeight11),decode(sum(c.lwWeight11),0,0,sum(c.lwPrice11)/sum(c.lwWeight11))) lwData11,
+        decode(c.type,1,sum(c.lwWeight12),decode(sum(c.lwWeight12),0,0,sum(c.lwPrice12)/sum(c.lwWeight12))) lwData12,
+        decode(c.type,1,sum(c.lwWeight13),decode(sum(c.lwWeight13),0,0,sum(c.lwPrice13)/sum(c.lwWeight13))) lwData13,
+        decode(c.type,1,sum(c.lwWeight14),decode(sum(c.lwWeight14),0,0,sum(c.lwPrice14)/sum(c.lwWeight14))) lwData14,
+        decode(c.type,1,sum(c.lwWeight15),decode(sum(c.lwWeight15),0,0,sum(c.lwPrice15)/sum(c.lwWeight15))) lwData15,
+        decode(c.type,1,sum(c.lwWeight16),decode(sum(c.lwWeight16),0,0,sum(c.lwPrice16)/sum(c.lwWeight16))) lwData16,
+        decode(c.type,1,sum(c.lwWeight17),decode(sum(c.lwWeight17),0,0,sum(c.lwPrice17)/sum(c.lwWeight17))) lwData17,
+        decode(c.type,1,sum(c.lwWeight18),decode(sum(c.lwWeight18),0,0,sum(c.lwPrice18)/sum(c.lwWeight18))) lwData18,
+        decode(c.type,1,sum(c.lwWeight19),decode(sum(c.lwWeight19),0,0,sum(c.lwPrice19)/sum(c.lwWeight19))) lwData19,
+        decode(c.type,1,sum(c.lwWeight20),decode(sum(c.lwWeight20),0,0,sum(c.lwPrice20)/sum(c.lwWeight20))) lwData20,
+        decode(c.type,1,sum(c.lwWeight21),decode(sum(c.lwWeight21),0,0,sum(c.lwPrice21)/sum(c.lwWeight21))) lwData21,
+        decode(c.type,1,sum(c.lwWeight22),decode(sum(c.lwWeight22),0,0,sum(c.lwPrice22)/sum(c.lwWeight22))) lwData22,
+        decode(c.type,1,sum(c.lwWeight23),decode(sum(c.lwWeight23),0,0,sum(c.lwPrice23)/sum(c.lwWeight23))) lwData23,
+        decode(c.type,1,sum(c.lwWeight24),decode(sum(c.lwWeight24),0,0,sum(c.lwPrice24)/sum(c.lwWeight24))) lwData24,
+        decode(c.type,1,sum(c.lwWeight25),decode(sum(c.lwWeight25),0,0,sum(c.lwPrice25)/sum(c.lwWeight25))) lwData25,
+        decode(c.type,1,sum(c.lwWeight26),decode(sum(c.lwWeight26),0,0,sum(c.lwPrice26)/sum(c.lwWeight26))) lwData26
+    </sql>
+    <!-- 按年月日计算数据 -->
+    <select id="queryDayList" resultType="cn.hbis.erp.modular.system.entity.ReportSpotPriceBreakdown">
+        SELECT d.* FROM (
+        SELECT c.order_day orderDay,c.erp_system company,c.type,
+        <include refid="query_columns"/>
+        FROM (
+            (<include refid="query_settlement_weight"/>)
+            union all
+            (<include refid="query_settlement_price"/>)
+        ) c group by rollup ((c.order_day),(c.type),c.erp_system)
+        ) d where d.orderDay is not null  and d.type is not null
+        order by d.orderDay asc,d.company desc nulls last,d.type
+    </select>
+    <!-- 按旬计算数据 -->
+    <select id="queryXunList" resultType="cn.hbis.erp.modular.system.entity.ReportSpotPriceBreakdown">
+        SELECT d.* FROM (
+        SELECT c.order_month orderMonth,c.order_xun orderXun,c.erp_system company,c.type,
+        <include refid="query_columns"/>
+        FROM (
+            (<include refid="query_settlement_weight"/>)
+            union all
+            (<include refid="query_settlement_price"/>)
+        ) c group by rollup ((c.order_month,c.order_xun),(c.type),c.erp_system)
+        ) d where d.orderMonth is not null  and d.type is not null
+        order by d.orderMonth,d.orderXun asc, d.company desc nulls last, d.type
+    </select>
+    <!-- 按月计算数据 -->
+    <select id="queryMonthList" resultType="cn.hbis.erp.modular.system.entity.ReportSpotPriceBreakdown">
+        SELECT d.* FROM (
+        SELECT c.order_month as orderMonth,c.erp_system company,c.type,
+        <include refid="query_columns"/>
+        FROM (
+            (<include refid="query_settlement_weight"/>)
+            union all
+            (<include refid="query_settlement_price"/>)
+        ) c group by rollup ((c.order_month),(c.type),c.erp_system)
+        ) d where d.orderMonth is not null  and d.type is not null
+        order by d.orderMonth asc,d.company desc nulls last,d.type
+    </select>
+    <!-- 按年计算数据 -->
+    <select id="queryYearList" resultType="cn.hbis.erp.modular.system.entity.ReportSpotPriceBreakdown">
+        SELECT d.* FROM (
+        SELECT c.order_year orderYear,c.erp_system company,c.type,
+        <include refid="query_columns"/>
+        FROM (
+            (<include refid="query_settlement_weight"/>)
+            union all
+            (<include refid="query_settlement_price"/>)
+        ) c group by rollup ((c.order_year),(c.type),c.erp_system)
+        ) d where d.orderYear is not null and d.type is not null
+        order by d.orderYear asc,d.company desc nulls last,d.type
+    </select>
+
+    <select id="query_day_data_test" resultType="java.lang.String">
+        select * from REPORT_SPOTPRICE_BREAKDOWN where
+            orderday <![CDATA[>= ]]>#{startMonth} and
+            orderday <![CDATA[<= ]]>#{endMonth}
+            order by orderDay ,company asc nulls last,type
+    </select>
+
+    <select id="query_xun_data_test" resultType="java.lang.String">
+        select * from REPORT_SPOTPRICE_BREAKDOWN  where orderMonth = SUBSTR(#{endMonth},6,2) and orderXun is not null  order by orderMonth,orderXun asc, company desc nulls last, type
+    </select>
+
+    <select id="query_month_data_test" resultType="java.lang.String">
+        select * from REPORT_SPOTPRICE_BREAKDOWN where orderMonth = SUBSTR(#{endMonth},6,2) and orderXun is null order by orderMonth,company desc nulls last, type
+    </select>
+
+    <select id="query_year_data_test" resultType="java.lang.String">
+        select * from REPORT_SPOTPRICE_BREAKDOWN where  orderYear is not null order by company desc nulls last, type
+    </select>
+
+
+
+</mapper>

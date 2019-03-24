@@ -162,9 +162,16 @@ public class ShiroConfig {
         for (String nonePermissionRe : Const.NONE_PERMISSION_RES) {
             hashMap.put(nonePermissionRe, "anon");
         }
+        hashMap.put("/index.html", "anon");
+        hashMap.put("/css/**", "anon");
+        hashMap.put("/druid/**", "anon");
+        hashMap.put("/js/**", "anon");
+        hashMap.put("/fonts/**", "anon");
+        hashMap.put("/img/**", "anon");
         hashMap.put("/webjars/**", "anon");
         hashMap.put("/v2/**", "anon");
         hashMap.put("/**", "user");
+
         shiroFilter.setFilterChainDefinitionMap(hashMap);
         return shiroFilter;
     }

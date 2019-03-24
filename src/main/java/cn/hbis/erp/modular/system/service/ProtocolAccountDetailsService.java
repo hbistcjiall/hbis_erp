@@ -5,24 +5,9 @@ import cn.hbis.erp.modular.system.entity.ProtocolAccountDetails;
 import cn.hbis.erp.modular.system.mapper.ProtocolAccountDetailsMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.stereotype.Service;
 
-
 import javax.annotation.Resource;
-
-
-
-import javax.annotation.Resource;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -49,9 +34,67 @@ public class ProtocolAccountDetailsService extends ServiceImpl<ProtocolAccountDe
         Page page = PageFactory.defaultPage();
         return this.baseMapper.searchProtocolAccountDetailList(page, varieties, beginTime, endTime, protocolYear, steelMills);
     }
+    /**
+     * 修改协议户明细
+     *
+     *
+     */
+    public boolean update(String protocolAccountId, String protocolYear, String accountName, String varieties, String mainSalesRegional, String aidedSalesRegionalOne, String aidedSalesRegionalTwo, String steelMills, String annualAgreementVolume){
+        boolean flag =false;
+        ProtocolAccountDetails protocolAccountDetails = protocolAccountDetailsMapper.selectById(protocolAccountId);
+        protocolAccountDetails.setProtocolYear(protocolYear);
+        protocolAccountDetails.setAccountName(accountName);
+        protocolAccountDetails.setVarieties(varieties);
+        protocolAccountDetails.setMainSalesRegional(mainSalesRegional);
+        protocolAccountDetails.setAidedSalesRegionalOne(aidedSalesRegionalOne);
+        protocolAccountDetails.setAidedSalesRegionalTwo(aidedSalesRegionalTwo);
+        protocolAccountDetails.setSteelMills(steelMills);
+        protocolAccountDetails.setAnnualAgreementVolume(annualAgreementVolume);
+        int num = protocolAccountDetailsMapper.updateById(protocolAccountDetails);
+        if(num == 1){
+            flag = true;
+            return flag;
+        }else{
+            return flag;
+        }
+    }
+    /**
+     * 协议户明细删除
+     *
+     *
+     */
+    public  boolean delete(String protocolAccountId){
+        boolean flag = false;
+        ProtocolAccountDetails protocolAccountDetails = protocolAccountDetailsMapper.selectById(protocolAccountId);
+        protocolAccountDetails.setDeleteStatus("1");
+        int num = protocolAccountDetailsMapper.updateById(protocolAccountDetails);
+        if(num ==1){
+            flag=true;
+            return  flag;
+        }
+        return flag;
+    }
+    /**
+     * 协议户明细批量删除
+     *
+     *
+     */
+    public  boolean deleteList(List list){
+        boolean flag = false;
+        for(int i = 0 ; i < list.size(); i++) {
+            String id = list.get(i).toString();
+            ProtocolAccountDetails protocolAccountDetails = protocolAccountDetailsMapper.selectById(id);
+            protocolAccountDetails.setDeleteStatus("1");
+            int num = protocolAccountDetailsMapper.updateById(protocolAccountDetails);
+            if(num ==1){
+                flag = true;
+            }
+        }
+        return flag;
+    }
 
 
-    public List<ProtocolAccountDetails> excleIn(String filepath, String years) {//year 协议年份
+    /*public List<ProtocolAccountDetails> excleIn(String filepath, String years) {//year 协议年份
         List list = new ArrayList<>();
         ProtocolAccountDetails pad = null;
         int rowNum= 0;
@@ -115,6 +158,6 @@ public class ProtocolAccountDetailsService extends ServiceImpl<ProtocolAccountDe
             e.printStackTrace();
         }
         return list;
-    }
+    }*/
 }
 

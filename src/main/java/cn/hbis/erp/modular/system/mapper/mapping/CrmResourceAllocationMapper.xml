@@ -13,7 +13,7 @@
         TO_CHAR (
         ROUND (
             SUM (ss.fkimg) / SUM (A.planNum),
-            2
+            4
         )
         )
         END AS schedule
@@ -57,6 +57,9 @@
         <if test="year != null and year != ''">
             and YEAR = #{year}
         </if>
+        <if test="flName != null and flName != ''">
+            and FL = #{flName}
+        </if>
         ) A
         LEFT JOIN (
         SELECT
@@ -74,11 +77,6 @@
         TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
         ) ss ON A.CX_NAME = ss.dName
         OR A.CX_NAME = ss.fName
-        where
-        1=1
-        <if test="flName != null and flName != ''">
-            and FL_NAME = #{flName}
-        </if>
         GROUP BY
         ROLLUP (A.PZ_NAME)
     </select>
@@ -140,6 +138,9 @@
         1=1
         <if test="year != null and year != ''">
             and YEAR = #{year}
+        </if>
+        <if test="flName != null and flName != ''">
+            and FL = #{flName}
         </if>
         ) A
         LEFT JOIN (
