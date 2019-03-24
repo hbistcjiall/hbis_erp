@@ -38,7 +38,7 @@
 		"NAME",
 		jsl,
 		pzgl,
-		ROUND(nmb / jsl,4) bili
+		ROUND(nmb / jsl,4)*100  bili
 		FROM
 		(
 		SELECT
@@ -139,7 +139,7 @@
 
 	<select id="Steelmillsplan" resultType="map">
 		select
-		cb.companyname,cb.jh,NVL(jk.xh, 0) xh
+		cb.companyname,cb.jh,NVL(jk.xh, 0)*100 xh
 		from   (SELECT
 		cx.companyname,
 		SUM(cr.MBL_YEAR) jh
@@ -398,7 +398,7 @@
 
 	<select id="Steellist" resultType="map">
 		select
-		a.companyname,a.pzgl,a.jsl, ROUND(b.jh/a.jsl,4) bili
+		a.companyname,a.pzgl,a.jsl, ROUND(b.jh/a.jsl,4)*100  bili
 		from
 		(
 		SELECT
@@ -996,7 +996,7 @@
 	<select id="salesmain" resultType="map">
 		SELECT
 		settle.company_id,
-		xsztdzb.sale_body,
+		xsztdzb.sale_body companyname,
 		SUM(settle.fkimg) AS zyfkimg
 
 		FROM scm_steel_settle settle

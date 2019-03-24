@@ -19,9 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,7 +32,7 @@ import java.util.stream.Collectors;
 public class ProtocolAccountDetailsController extends BaseController {
 
     private static String PREFIX = "/modular/system/protocolAccountDetails";
-
+    private static String EXPORT_XLSX_FILE_SUFFIX = ".xlsx";
     @Autowired
     private ProtocolAccountDetailsService protocolAccountDetailsService;
     @Autowired
@@ -143,16 +141,14 @@ public class ProtocolAccountDetailsController extends BaseController {
         return map;
     }
 
-    @ApiOperation(value = "协议上传")
-    @PostMapping(value = "/importexcel",headers = "content-type=multipart/form-data",consumes = "MultipartFile/*")
-    @ResponseBody
     @ApiImplicitParams({
             @ApiImplicitParam(name = "year" ,value = "年份",dataType ="String" ),
-            @ApiImplicitParam(name = "file" ,value = "文件",dataType ="form_data" )
     })
-    public Map execlimport(@RequestPart("file") MultipartFile file, String year) {
-        Map map = new HashMap();
-        if (!ToolUtil.isEmpty(file)) {
+    @ApiOperation(value = "协议上传", notes = "协议上传")
+    @PostMapping(value = "/importexcel",headers = "content-type=multipart/form-data",consumes = "MultipartFile/*")
+    public Map<String, ProtocolAccountDetails> execlimport(@RequestPart("file") MultipartFile file, String year) {
+        Map<String, ProtocolAccountDetails> map = new HashMap<String, ProtocolAccountDetails>();
+          if (!ToolUtil.isEmpty(file)) {
             try {
                 List<ProtocolAccountDetails> excelBeans = ExcelUtil.readExcel(file,ProtocolAccountDetails.class);
                 System.out.println(excelBeans.size());
@@ -162,7 +158,8 @@ public class ProtocolAccountDetailsController extends BaseController {
                 for (ProtocolAccountDetails ep : excelBeans){
                     protocolAccountDetailsService.save(ep);
                 }
-                map = excelBeans.stream().collect(Collectors.toMap(ProtocolAccountDetails::getProtocolAccountId, a -> a,(k1, k2)->k1));
+
+                //map = excelBeans.stream().collect(Collectors.toMap(ProtocolAccountDetails::getProtocolAccountId, a -> a,(k1, k2)->k1));
             } catch (Exception e) {
                 e.printStackTrace();
 
