@@ -2,7 +2,9 @@ package cn.hbis.erp.modular.system.controller;
 
 import cn.hbis.erp.config.properties.HbisProperties;
 import cn.hbis.erp.core.common.page.PageFactory;
+import cn.hbis.erp.core.util.ExcelUtil;
 import cn.hbis.erp.modular.system.entity.ProtocolAccountDetails;
+import cn.hbis.erp.modular.system.entity.RefPartExcel;
 import cn.hbis.erp.modular.system.model.ProtocolAccountDetailsDto;
 import cn.hbis.erp.modular.system.service.ProtocolAccountDetailsService;
 import cn.hbis.erp.modular.system.warpper.ProtocolAccountDetailsWrapper;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 协议户明细控制器
@@ -140,30 +143,32 @@ public class ProtocolAccountDetailsController extends BaseController {
         return map;
     }
 
-    /*@ApiOperation(value = "协议上传")
-    @RequestMapping(value = "/importexcel" ,method = RequestMethod.POST)
+    @ApiOperation(value = "协议上传")
+    @PostMapping(value = "/importexcel",headers = "content-type=multipart/form-data",consumes = "MultipartFile/*")
     @ResponseBody
     @ApiImplicitParams({
             @ApiImplicitParam(name = "year" ,value = "年份",dataType ="String" ),
-            @ApiImplicitParam(name = "filepath" ,value = "文件路径",dataType ="String" )
-    })*/
-    /*public Map execlimport( String  filepath, String year){
+            @ApiImplicitParam(name = "file" ,value = "文件",dataType ="form_data" )
     })
-    public Map execlimport(@RequestPart("file") MultipartFile picture, String year){
-        Map map= new HashMap();
-        String pictureName =  "." + ToolUtil.getFileSuffix(picture.getOriginalFilename());
-        String fileSavePath = hbisProperties.getFileUploadPath();
-        String filepath = fileSavePath+pictureName;
-        try{
-            List<ProtocolAccountDetails> list = protocolAccountDetailsService.excleIn(filepath,year);
-            for (int i=0;i<list.size();i++){
-                protocolAccountDetailsService.save(list.get(i));
+    public Map execlimport(@RequestPart("file") MultipartFile file, String year) {
+        Map map = new HashMap();
+        if (!ToolUtil.isEmpty(file)) {
+            try {
+                List<ProtocolAccountDetails> excelBeans = ExcelUtil.readExcel(file,ProtocolAccountDetails.class);
+                System.out.println(excelBeans.size());
+                for(ProtocolAccountDetails ep : excelBeans){
+                   ep.setProtocolYear(year);
+                }
+                for (ProtocolAccountDetails ep : excelBeans){
+                    protocolAccountDetailsService.save(ep);
+                }
+                map = excelBeans.stream().collect(Collectors.toMap(ProtocolAccountDetails::getProtocolAccountId, a -> a,(k1, k2)->k1));
+            } catch (Exception e) {
+                e.printStackTrace();
+
             }
-            map.put("massage","导入成功");
-        }catch (Exception e){
-            e.printStackTrace();
-            map.put("massage","导入失败");
+
         }
         return map;
-    }*/
+    }
 }
