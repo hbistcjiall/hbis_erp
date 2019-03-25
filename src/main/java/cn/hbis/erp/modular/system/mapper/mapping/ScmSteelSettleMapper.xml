@@ -867,9 +867,9 @@
             JOIN report_product_class_level pzg
             ON sso.company_id = pzg.company_id
             AND sso.product_type = pzg.product_class
-            WHERE pzg.product_grade = '品种钢'
+            WHERE (pzg.product_grade = '品种钢'
             OR pzg.product_grade = '高端产品'
-            OR pzg.product_grade = '特色战略产品'
+            OR pzg.product_grade = '特色战略产品')
             AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
             AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
             AND pzg.status = '0') pz
