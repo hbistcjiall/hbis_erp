@@ -62,10 +62,71 @@ public class ReportCashRateService extends ServiceImpl<ReportCashRateMapper, Rep
             }else if (rcrs.getCompanyId() == 8493){
                 rcrs.setCompanyName("衡板（新区）");
             }
-            String cashRate = df.format(list.get(i).getDeliveryWeight().doubleValue()/list.get(i).getContractWeight().doubleValue()*100);
-            BigDecimal decimalC=new BigDecimal(cashRate);
-            rcrs.setCashRate(decimalC);
-
+            if(list.get(i).getContractWeight().compareTo(BigDecimal.ZERO)!=0){
+                String cashRate = df.format(list.get(i).getDeliveryWeight().doubleValue()/list.get(i).getContractWeight().doubleValue()*100);
+                BigDecimal decimalC=new BigDecimal(cashRate);
+                rcrs.setCashRate(decimalC);
+            }
+            if(list.get(i).getContractWeightJan().compareTo(BigDecimal.ZERO)!=0) {
+                String cashRateJan = df.format(list.get(i).getDeliveryWeightJan().doubleValue() / list.get(i).getContractWeightJan().doubleValue() * 100);
+                BigDecimal decimalJan = new BigDecimal(cashRateJan);
+                rcrs.setCashRateJan(decimalJan);
+            }
+            if(list.get(i).getContractWeightFeb().compareTo(BigDecimal.ZERO)!=0) {
+                String cashRateFeb = df.format(list.get(i).getDeliveryWeightFeb().doubleValue() / list.get(i).getContractWeightFeb().doubleValue() * 100);
+                BigDecimal decimalFeb = new BigDecimal(cashRateFeb);
+                rcrs.setCashRateFeb(decimalFeb);
+            }
+            if(list.get(i).getContractWeightMar().compareTo(BigDecimal.ZERO)!=0) {
+                String cashRateMar = df.format(list.get(i).getDeliveryWeightMar().doubleValue() / list.get(i).getContractWeightMar().doubleValue() * 100);
+                BigDecimal decimalMar = new BigDecimal(cashRateMar);
+                rcrs.setCashRateMar(decimalMar);
+            }
+            if(list.get(i).getContractWeightApr().compareTo(BigDecimal.ZERO)!=0) {
+                String cashRateApr = df.format(list.get(i).getDeliveryWeightApr().doubleValue() / list.get(i).getContractWeightApr().doubleValue() * 100);
+                BigDecimal decimalApr = new BigDecimal(cashRateApr);
+                rcrs.setCashRateApr(decimalApr);
+            }
+            if(list.get(i).getContractWeightMay().compareTo(BigDecimal.ZERO)!=0) {
+                String cashRateMay = df.format(list.get(i).getDeliveryWeightMay().doubleValue() / list.get(i).getContractWeightMay().doubleValue() * 100);
+                BigDecimal decimalMay = new BigDecimal(cashRateMay);
+                rcrs.setCashRateMay(decimalMay);
+            }
+            if(list.get(i).getContractWeightJun().compareTo(BigDecimal.ZERO)!=0) {
+                String cashRateJun = df.format(list.get(i).getDeliveryWeightJun().doubleValue() / list.get(i).getContractWeightJun().doubleValue() * 100);
+                BigDecimal decimalJun = new BigDecimal(cashRateJun);
+                rcrs.setCashRateJun(decimalJun);
+            }
+            if(list.get(i).getContractWeightJul().compareTo(BigDecimal.ZERO)!=0) {
+                String cashRateJul = df.format(list.get(i).getDeliveryWeightJul().doubleValue() / list.get(i).getContractWeightJul().doubleValue() * 100);
+                BigDecimal decimalJul = new BigDecimal(cashRateJul);
+                rcrs.setCashRateJul(decimalJul);
+            }
+            if(list.get(i).getContractWeightAug().compareTo(BigDecimal.ZERO)!=0) {
+                String cashRateAug = df.format(list.get(i).getDeliveryWeightAug().doubleValue() / list.get(i).getContractWeightAug().doubleValue() * 100);
+                BigDecimal decimalAug = new BigDecimal(cashRateAug);
+                rcrs.setCashRateAug(decimalAug);
+            }
+            if(list.get(i).getContractWeightSept().compareTo(BigDecimal.ZERO)!=0) {
+                String cashRateSept = df.format(list.get(i).getDeliveryWeightSept().doubleValue() / list.get(i).getContractWeightSept().doubleValue() * 100);
+                BigDecimal decimalSept = new BigDecimal(cashRateSept);
+                rcrs.setCashRateSept(decimalSept);
+            }
+            if(list.get(i).getContractWeightOct().compareTo(BigDecimal.ZERO)!=0) {
+                String cashRateOct = df.format(list.get(i).getDeliveryWeightOct().doubleValue() / list.get(i).getContractWeightOct().doubleValue() * 100);
+                BigDecimal decimalOct = new BigDecimal(cashRateOct);
+                rcrs.setCashRateOct(decimalOct);
+            }
+            if(list.get(i).getContractWeightNov().compareTo(BigDecimal.ZERO)!=0) {
+                String cashRateNov = df.format(list.get(i).getDeliveryWeightNov().doubleValue() / list.get(i).getContractWeightNov().doubleValue() * 100);
+                BigDecimal decimalNov = new BigDecimal(cashRateNov);
+                rcrs.setCashRateNov(decimalNov);
+            }
+            if(list.get(i).getContractWeightDec().compareTo(BigDecimal.ZERO)!=0) {
+                String cashRateDec = df.format(list.get(i).getDeliveryWeightDec().doubleValue()/list.get(i).getContractWeightDec().doubleValue()*100);
+                BigDecimal decimalDec=new BigDecimal(cashRateDec);
+                rcrs.setCashRateDec(decimalDec);
+            }
         }
         return list;
     }

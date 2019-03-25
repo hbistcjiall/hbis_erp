@@ -1,7 +1,7 @@
 package cn.hbis.erp.modular.system.controller;
 
 import cn.hbis.erp.core.util.DateUtil;
-import cn.hbis.erp.core.util.ExportExcel;
+//import cn.hbis.erp.core.util.ExportExcel;
 import cn.hbis.erp.modular.system.entity.ReportSpotPriceBreakdown;
 import cn.hbis.erp.modular.system.service.ReportSpotPriceBreakdownService;
 import cn.stylefeng.roses.core.util.ToolUtil;
@@ -70,7 +70,7 @@ public class ReportSpotPriceBreakdownController {
         //map.put("query", query);
         return map;
     }
-    @ApiOperation(value = "导出建材北京市场现货价格列表")
+    /*@ApiOperation(value = "导出建材北京市场现货价格列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "endMonth" ,value = "记录日期",dataType ="String" ),
             @ApiImplicitParam(name = "company" ,value = "钢厂",dataType ="String" )
@@ -333,5 +333,5 @@ public class ReportSpotPriceBreakdownController {
                     list, out ,null);
         } catch (IOException e) {
         }
-    }
+    }*/
 }
