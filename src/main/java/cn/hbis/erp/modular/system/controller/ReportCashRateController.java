@@ -2,7 +2,7 @@ package cn.hbis.erp.modular.system.controller;
 
 import cn.hbis.erp.core.common.constant.state.EnumSummaryType;
 import cn.hbis.erp.core.util.DateUtil;
-import cn.hbis.erp.core.util.ExportExcel;
+//import cn.hbis.erp.core.util.ExportExcel;
 import cn.hbis.erp.modular.system.entity.ReportCashRate;
 import cn.hbis.erp.modular.system.entity.ReportCashRateSummary;
 import cn.hbis.erp.modular.system.service.ReportCashRateService;
@@ -85,7 +85,7 @@ public class ReportCashRateController {
      * @param
      * @return: void
      */
-    @ApiOperation(value = "导出  客户兑现率汇总")
+    /*@ApiOperation(value = "导出  客户兑现率汇总")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "companyId" ,value = "子公司",dataType ="String" ),
             @ApiImplicitParam(name = "orderStopDateS" ,value = "交货截至日期开始",dataType ="String" ),
@@ -108,14 +108,14 @@ public class ReportCashRateController {
         List<ReportCashRateSummary> resultList = reportCashRateService.getCashRateSummary(companyId, orderStopDateS, orderStopDateE, recordDate, summaryType);
         List<Map<String, Object>> list = new ArrayList<>();
         for(int i = 0; i < resultList.size(); i++) { //数据库为空,遍历了100000个
-            /*Map<String, Object> temp_ = new HashMap<>();
+            *//*Map<String, Object> temp_ = new HashMap<>();
             temp_.put("", resultList.get(i).());
             temp_.put("", resultList.get(i).());
             temp_.put("", resultList.get(i).());
             temp_.put("", resultList.get(i).());
             temp_.put("", resultList.get(i).());
             temp_.put("", resultList.get(i).());
-            temp_.put("", resultList.get(i).());*/
+            temp_.put("", resultList.get(i).());*//*
             //list.add(temp_);
         }
         ExportExcel<List<Map<String, Object>>> exportExcel = new ExportExcel<>();
@@ -140,7 +140,7 @@ public class ReportCashRateController {
                     list, out ,null);
         } catch (IOException e) {
         }
-    }
+    }*/
     /**
      * @Title ReportCashRateAction.cashRateCurve
      * @Description 兑现率曲线

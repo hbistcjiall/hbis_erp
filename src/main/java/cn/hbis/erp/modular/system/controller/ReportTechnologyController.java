@@ -1,7 +1,7 @@
 package cn.hbis.erp.modular.system.controller;
 
 import cn.hbis.erp.core.util.DateUtil;
-import cn.hbis.erp.core.util.ExportExcel;
+//import cn.hbis.erp.core.util.ExportExcel;
 import cn.hbis.erp.modular.system.entity.ReportVarietySteelBean;
 import cn.hbis.erp.modular.system.entity.ReportVarietySteelItemBean;
 import cn.hbis.erp.modular.system.service.ReportTechnologyService;
@@ -70,7 +70,7 @@ public class ReportTechnologyController {
      * @param
      * @return: void
      */
-    @ApiOperation(value = "导出  河钢集团各子分公司品种钢完成情况")
+    /*@ApiOperation(value = "导出  河钢集团各子分公司品种钢完成情况")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "queryDate" ,value = "月份",dataType ="String" )
     })
@@ -115,7 +115,7 @@ public class ReportTechnologyController {
                     list, out ,null);
         } catch (IOException e) {
         }
-    }
+    }*/
     /**
      * @Title subsidiaryVarietySteelItem
      * @Description 子分公司品种钢情况明细
@@ -153,7 +153,7 @@ public class ReportTechnologyController {
      * @param
      * @return: void
      */
-    @ApiOperation(value = "导出子分公司品种钢情况明细")
+    /*@ApiOperation(value = "导出子分公司品种钢情况明细")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "companyId" ,value = "子公司",dataType ="String" ),
             @ApiImplicitParam(name = "queryDate" ,value = "月份",dataType ="String" )
@@ -217,7 +217,7 @@ public class ReportTechnologyController {
                     list, out ,null);
         } catch (IOException e) {
         }
-    }
+    }*/
     /**
      * @Title exportItemSubsidiaryVarietySteel
      * @Description  导出子分公司品种钢情况明细

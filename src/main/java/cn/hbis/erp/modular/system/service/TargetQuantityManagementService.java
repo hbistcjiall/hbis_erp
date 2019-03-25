@@ -30,22 +30,75 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         }
         public boolean addORUpadte(String id,String targetname,String year,String jan,String feb,String mar,String apr,String may,String jun,String jul,String aug,String sep,String oct,String nov,String dec){
             boolean flag =false;
+            List<Map> list = targetManagementMapper.theList();
+            for(int i=0;i<list.size();i++){
+                String names = list.get(i).get("CODE").toString();
+                if(targetname.equals(names)){
+                    return false;
+                }
+            }
             if(id != null && !id.equals("")){
                 TargetQuantityManagement targetManagement = targetManagementMapper.selectById(id);
+                if(!year.equals("")&&year!=null){
                     targetManagement.setYaer(year);
+                }
+                if(!targetname.equals("")&&targetname!=null){
+
                     targetManagement.setResponsibilityunit(targetname);
+                }
+
+                if(jan==null||jan.equals("")){
+                    targetManagement.setJanuary("0");
+                }else{
                     targetManagement.setJanuary(jan);
+                }
+                if(feb==null||feb.equals("")){
+                    targetManagement.setFebruary("0");
+                }else{
                     targetManagement.setFebruary(feb);
-                    targetManagement.setMarch(mar);
-                    targetManagement.setApril(apr);
-                    targetManagement.setMay(may);
+                }
+
+                if(mar==null||mar.equals("")){
+                    targetManagement.setMarch("0");
+                }else{
+                    targetManagement.setMarch(mar);}
+                if(apr==null||apr.equals("")){
+                    targetManagement.setApril("0");
+                }else{
+                    targetManagement.setApril(apr);}
+                if(may==null||may.equals("")){
+                    targetManagement.setMay("0");
+                }else{
+                    targetManagement.setMay(may);}
+                if(jun==null||jun.equals("")){
+                    targetManagement.setJune("0");
+                }else {
                     targetManagement.setJune(jun);
-                    targetManagement.setJuly(jul);
-                    targetManagement.setAugust(aug);
-                    targetManagement.setSeptember(sep);
-                    targetManagement.setOctober(oct);
-                    targetManagement.setNovember(nov);
-                    targetManagement.setDecember(dec);
+                }
+                if(jul==null||jul.equals("")){
+                    targetManagement.setJuly("0");
+                }else{
+                    targetManagement.setJuly(jul);}
+                if(aug==null||aug.equals("")){
+                    targetManagement.setAugust("0");
+                }else{
+                    targetManagement.setAugust(aug);}
+                if(sep==null||sep.equals("")){
+                    targetManagement.setSeptember("0");
+                }else{
+                    targetManagement.setSeptember(sep);}
+                if(oct==null||oct.equals("")){
+                    targetManagement.setOctober("0");
+                }else{
+                    targetManagement.setOctober(oct);}
+                if(nov==null||nov.equals("")){
+                    targetManagement.setNovember("0");
+                }else{
+                    targetManagement.setNovember(nov);}
+                if(dec==null||dec.equals("")){
+                    targetManagement.setDecember("0");
+                }else{
+                    targetManagement.setDecember(dec);}
                 int num = targetManagementMapper.updateById(targetManagement);
                 if(num == 1){
                     flag = true;
@@ -55,20 +108,64 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 }
             }else{
                 TargetQuantityManagement targetManagement = new TargetQuantityManagement();
-                targetManagement.setYaer(year);
-                targetManagement.setResponsibilityunit(targetname);
-                targetManagement.setJanuary(jan);
-                targetManagement.setFebruary(feb);
-                targetManagement.setMarch(mar);
-                targetManagement.setApril(apr);
-                targetManagement.setMay(may);
-                targetManagement.setJune(jun);
-                targetManagement.setJuly(jul);
-                targetManagement.setAugust(aug);
-                targetManagement.setSeptember(sep);
-                targetManagement.setOctober(oct);
-                targetManagement.setNovember(nov);
-                targetManagement.setDecember(dec);
+                if(!year.equals("")&&year!=null){
+                    targetManagement.setYaer(year);
+                }
+                if(!targetname.equals("")&&targetname!=null){
+
+                    targetManagement.setResponsibilityunit(targetname);
+                }
+                if(jan==null||jan.equals("")){
+                    targetManagement.setJanuary("0");
+                }else{
+                    targetManagement.setJanuary(jan);
+                }
+                if(feb==null||feb.equals("")){
+                    targetManagement.setFebruary("0");
+                }else{
+                    targetManagement.setFebruary(feb);
+                }
+                if(mar==null||mar.equals("")){
+                    targetManagement.setMarch("0");
+                }else{
+                    targetManagement.setMarch(mar);}
+                if(apr==null||apr.equals("")){
+                    targetManagement.setApril("0");
+                }else{
+                    targetManagement.setApril(apr);}
+                if(may==null||may.equals("")){
+                    targetManagement.setMay("0");
+                }else{
+                    targetManagement.setMay(may);}
+                if(jun==null||jun.equals("")){
+                    targetManagement.setJune("0");
+                }else {
+                    targetManagement.setJune(jun);
+                }
+                if(jul==null||jul.equals("")){
+                    targetManagement.setJuly("0");
+                }else{
+                    targetManagement.setJuly(jul);}
+                if(aug==null||aug.equals("")){
+                    targetManagement.setAugust("0");
+                }else{
+                    targetManagement.setAugust(aug);}
+                if(sep==null||sep.equals("")){
+                    targetManagement.setSeptember("0");
+                }else{
+                    targetManagement.setSeptember(sep);}
+                if(oct==null||oct.equals("")){
+                    targetManagement.setOctober("0");
+                }else{
+                    targetManagement.setOctober(oct);}
+                if(nov==null||nov.equals("")){
+                    targetManagement.setNovember("0");
+                }else{
+                    targetManagement.setNovember(nov);}
+                if(dec==null||dec.equals("")){
+                    targetManagement.setDecember("0");
+                }else{
+                    targetManagement.setDecember(dec);}
                 targetManagement.setDeletestatus("0");
                 int num = targetManagementMapper.insert(targetManagement);
                 if(num == 1){
@@ -185,9 +282,17 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             String  jh ="";
             String jsl ="";
             String   pzgl ="";
-            jh = map.get("JH").toString();
-            jsl=map.get("JSL").toString();
-            pzgl =  map.get("PZGL").toString();
+            if(!map.get("JH").equals("null")){
+                jh = map.get("JH").toString();
+            }
+            if(!map.get("JSL").equals("null")){
+                jsl=map.get("JSL").toString();
+            }
+            if(!map.get("PZGL").equals("null")&&map.get("PZGL")!=null){
+                pzgl =  map.get("PZGL").toString();
+            }else {
+                pzgl="0";
+            }
             if(jh!=null&&!jh.equals("null")&&!jh.equals("")){
                   jh =  map.get("JH").toString();
             }
