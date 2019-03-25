@@ -26,13 +26,21 @@
 
         </if>
     </select>
-
 	<select id="getlist" resultType="map">
 		select sa.ACCOUNTABILITY_UNIT_CODE code,sa.ACCOUNTABILITY_UNIT_NAME NAME
 		from SCM_ACCOUNTABILITY_UNIT_MANAGE  sa
 		WHERE sa.DELETESTATUS = '0'
 	</select>
-
+	<select id="selectList" resultType="map">
+        select ACCOUNTABILITY_UNIT_ID AS ID,ACCOUNTABILITY_UNIT_CODE AS CODE,ACCOUNTABILITY_UNIT_NAME AS "NAME"
+        from SCM_ACCOUNTABILITY_UNIT_MANAGE
+        where DELETESTATUS = '0'
+    </select>
+	<select id="theList" resultType="map">
+        select RESPONSIBILITY_UNIT AS CODE
+        from SCM_TARGET_QUANTITY_MANAGEMENT
+        where DELETESTATUS = '0' ORDER BY RESPONSIBILITY_UNIT
+    </select>
 	<select id="typeselect" resultType="map">
 		SELECT
 		"NAME",
@@ -268,7 +276,7 @@
 	</select>
 	<select id="Steelmillssum" resultType="map">
 		select
-		SUM(cb.jh) jh,sum(jk.xh) xh
+		NVL(SUM(cb.jh), 0)  jh,NVL( sum(jk.xh), 0) xh
 		from   (SELECT
 		cx.companyname,
 		SUM(cr.MBL_YEAR) jh
@@ -664,7 +672,7 @@
 	</select>
 	<select id="Steelsum" resultType="map">
 		select
-		SUM(a.pzgl) pzgl,SUM(a.jsl) jsl, SUM(b.jh) jh
+		NVL(SUM(a.pzgl), 0) pzgl,NVL(SUM(a.jsl), 0) jsl,NVL(SUM(b.jh), 0)  jh
 		from
 		(
 		SELECT
