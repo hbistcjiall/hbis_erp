@@ -71,14 +71,6 @@ public class ReportCashRateController {
             summaryType = EnumSummaryType.WITHOUT_ZERO.getCode();
         }
         List<ReportCashRateSummary> list = reportCashRateService.getCashRateSummary(companyId, orderStopDateS, orderStopDateE, recordDate, summaryType);
-        /*for(int i = 0; i < list.size(); i++ ){
-            System.out.println(list.get(i).getDeliveryWeight());
-            System.out.println(list.get(i).getContractWeight());
-            BigDecimal a =  list.get(i).getDeliveryWeight();
-            BigDecimal b =  list.get(i).getContractWeight();
-            System.out.println(list.get(i).getCashRate());
-        }
-        System.out.println("^^^^^^^^^");*/
         map.put("list", list);
 //        model.addAttribute("query", query);
 //        model.addAttribute("company", EnumCompany.toMap());
