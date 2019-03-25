@@ -1,10 +1,9 @@
 /**
  * FileName: ExcelUtil
  * Author:   zhangb
- * Date:     2019/3/23 10:40
+ * Date:     2019/3/24 17:26
  */
 package cn.hbis.erp.core.util;
-
 import cn.hutool.core.date.format.FastDateFormat;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import org.apache.commons.io.IOUtils;
@@ -18,7 +17,6 @@ import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.regex.Pattern;
-
 public class ExcelUtil {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0");// 格式化 number为整
 
@@ -182,7 +180,7 @@ public class ExcelUtil {
      * @param cell
      * @return
      */
-    private static Object getCellValue(Cell cell) {
+    public static Object getCellValue(Cell cell) {
         Object value = null;
         switch (cell.getCellTypeEnum()) {
             case _NONE:

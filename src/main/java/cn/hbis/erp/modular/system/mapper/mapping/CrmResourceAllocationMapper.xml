@@ -4,11 +4,19 @@
     <select id="selSchedule" resultType="map">
         SELECT
         NVL (A .PZ_NAME, '合计') pzName,
-        SUM(ss.fkimg) yield,
-        SUM(A.planNum) planNum,
+        case
+        when SUM(ss.fkimg) is null then
+        0
+        else
+        SUM(ss.fkimg) end as yield,
+        case
+        when SUM(A.planNum) is null then
+        0
+        else
+        SUM(A.planNum) end as planNum,
         CASE
         WHEN SUM (ss.fkimg) / SUM (A.planNum) IS NULL THEN
-        '--'
+        '0'
         ELSE
         TO_CHAR (
         ROUND (
@@ -86,11 +94,19 @@
         from (
         SELECT
         NVL (A .CX_NAME, '合计') cxName,
-        SUM(ss.fkimg) yield,
-        SUM(A.planNum) planNum,
+        case
+        when SUM(ss.fkimg) is null then
+        0
+        else
+        SUM(ss.fkimg) end as yield,
+        case
+        when SUM(A.planNum) is null then
+        0
+        else
+        SUM(A.planNum) end as planNum,
         CASE
         WHEN SUM (ss.fkimg) / SUM (A.planNum) IS NULL THEN
-        '--'
+        '0'
         ELSE
         TO_CHAR (
         ROUND (

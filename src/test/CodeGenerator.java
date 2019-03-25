@@ -47,7 +47,7 @@ public class CodeGenerator {
         strategy.setSkipView(true);
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-        strategy.setInclude("SCM_STEEL_SETTLE");//在这里改表名
+        strategy.setInclude("CRM_RESOURCE_ALLOCATION");//在这里改表名
         strategy.setEntityColumnConstant(false);
         strategy.setEntityLombokModel(true);
         strategy.setRestControllerStyle(true);
