@@ -127,7 +127,7 @@ public class ShiroConfig {
         /**
          * 默认的登陆访问url
          */
-        shiroFilter.setLoginUrl("/index.html");
+        shiroFilter.setLoginUrl("/docs.html");
         /**
          * 登陆成功后跳转的url
          */

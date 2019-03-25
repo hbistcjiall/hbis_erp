@@ -30,6 +30,11 @@ public class CodeGenerator {
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setDbType(DbType.ORACLE);
         dsc.setDriverName("oracle.jdbc.driver.OracleDriver");
+        //正式服务器
+//        dsc.setUrl("jdbc:oracle:thin:@18.0.126.1:1521:coredb1");
+//        dsc.setUsername("hbistc_ol");
+//        dsc.setPassword("hbistc_ol2012");
+        //测试服务器
         dsc.setUrl("jdbc:oracle:thin:@221.192.142.22:1521:orcl");
         dsc.setUsername("hbistc_test");
         dsc.setPassword("hbistc_test");

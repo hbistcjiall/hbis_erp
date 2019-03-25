@@ -14,6 +14,7 @@ import java.util.Date;
  *
  *
  */
+@Data
 @TableName("scm_protocol_account_details")
 public class ProtocolAccountDetails implements Serializable {
 

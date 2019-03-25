@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,34 @@ public class ReportCashRateService extends ServiceImpl<ReportCashRateMapper, Rep
      * @throws
      */
     public List<ReportCashRateSummary> getCashRateSummary(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
-        return reportCashRateMapper.getCashRateSummary(companyId, orderStopDateS, orderStopDateE, recordDate, summaryType);
+        DecimalFormat df = new DecimalFormat("#.00");
+        List<ReportCashRateSummary> list = null;
+        list = reportCashRateMapper.getCashRateSummary(companyId, orderStopDateS, orderStopDateE, recordDate, summaryType);
+        for (int i = 0 ; i < list.size() ;i++){
+            ReportCashRateSummary rcrs = list.get(i);
+            if(rcrs.getCompanyId() == null){
+                rcrs.setCompanyName("集团");
+            }else if (rcrs.getCompanyId() == 9580){
+                rcrs.setCompanyName("唐钢");
+            }else if (rcrs.getCompanyId() == 9727){
+                rcrs.setCompanyName("邯钢（老区）");
+            }else if (rcrs.getCompanyId() == 9193){
+                rcrs.setCompanyName("宣钢");
+            }else if (rcrs.getCompanyId() == 9196){
+                rcrs.setCompanyName("承钢");
+            }else if (rcrs.getCompanyId() == 1932){
+                rcrs.setCompanyName("舞钢");
+            }else if (rcrs.getCompanyId() == 9110){
+                rcrs.setCompanyName("石钢");
+            }else if (rcrs.getCompanyId() == 8493){
+                rcrs.setCompanyName("衡板（新区）");
+            }
+            String cashRate = df.format(list.get(i).getDeliveryWeight().doubleValue()/list.get(i).getContractWeight().doubleValue()*100);
+            BigDecimal decimalC=new BigDecimal(cashRate);
+            rcrs.setCashRate(decimalC);
+
+        }
+        return list;
     }
     /**
      * @Description 兑现率曲线

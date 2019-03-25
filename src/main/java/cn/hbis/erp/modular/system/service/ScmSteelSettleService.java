@@ -66,4 +66,50 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     }
 
 
+    /*
+资源计划报表
+*/
+    public List<ScmSteelSettle> getzyjh(String nf,String yf,String pz,String cx,String xszt) {
+        return scmSteelSettleMapper.getzyjh(nf,yf,pz,cx,xszt);
+    }
+
+    /*
+品种查询条件
+*/
+    public List<ScmSteelSettle> getzyjhcxtjpz() {
+        return scmSteelSettleMapper.getzyjhcxtjpz();
+    }
+
+    /*
+产线查询条件
+*/
+    public List<ScmSteelSettle> getzyjhcxtjcx(String pz) {
+        return scmSteelSettleMapper.getzyjhcxtjcx(pz);
+    }
+
+    /*
+销售计划 查询条件
+*/
+    public List<ScmSteelSettle> getzyjhcxtjxszt() {
+        return scmSteelSettleMapper.getzyjhcxtjxszt();
+    }
+
+
+    /*
+产险合同进度报表1
+*/
+    public List<ScmSteelSettle> getcxhtjd(String startTime,String endTime,String cx) {
+        return scmSteelSettleMapper.getcxhtjd(startTime,endTime,cx);
+    }
+
+    /*
+品种合同进度报表1
+*/
+    public List<ScmSteelSettle> getpzhtjd(String startTime,String endTime,String pz) {
+        return scmSteelSettleMapper.getpzhtjd(startTime,endTime,pz);
+    }
+
+
+
+
 }

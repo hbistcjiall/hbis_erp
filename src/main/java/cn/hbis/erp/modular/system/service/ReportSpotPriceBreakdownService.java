@@ -25,22 +25,22 @@ public class ReportSpotPriceBreakdownService extends ServiceImpl<ReportSpotPrice
     @Resource
     private ReportSpotPriceBreakdownMapper reportSpotPriceBreakdownMapper;
 
-    public List<Map> queryDayList(String startMonth, String endMonth, String company) {
+    public List<ReportSpotPriceBreakdown> queryDayList(String startMonth, String endMonth, String company) {
         //log.info("== query days list ==");
         System.out.println(reportSpotPriceBreakdownMapper.queryDayList(startMonth, endMonth, company));
         return reportSpotPriceBreakdownMapper.queryDayList(startMonth, endMonth, company);
     }
-    public List<Map> queryXunList(String startMonth, String endMonth,String company) {
+    public List<ReportSpotPriceBreakdown> queryXunList(String startMonth, String endMonth,String company) {
         //log.info("== query xun list ==");
         System.out.println(reportSpotPriceBreakdownMapper.queryXunList(startMonth, endMonth, company));
         return reportSpotPriceBreakdownMapper.queryXunList(startMonth, endMonth, company);
     }
-    public List<Map> queryMonthList(String startMonth, String endMonth,String company) {
+    public List<ReportSpotPriceBreakdown> queryMonthList(String startMonth, String endMonth,String company) {
         //log.info("== query month list ==");
         System.out.println(reportSpotPriceBreakdownMapper.queryMonthList(startMonth, endMonth, company));
         return reportSpotPriceBreakdownMapper.queryMonthList(startMonth, endMonth, company);
     }
-    public List<Map> queryYearList(String startMonth, String endMonth,String company) {
+    public List<ReportSpotPriceBreakdown> queryYearList(String startMonth, String endMonth,String company) {
         //log.info("== query year list ==");
         System.out.println(reportSpotPriceBreakdownMapper.queryYearList(startMonth, endMonth, company));
         return reportSpotPriceBreakdownMapper.queryYearList(startMonth, endMonth, company);

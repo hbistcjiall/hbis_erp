@@ -19,11 +19,11 @@ public interface ReportSpotPriceBreakdownMapper extends BaseMapper<ReportSpotPri
 
     //private final static String NAME_SPACE="REPORT_SPOT_PRICE_BREAKDOWN.";
 
-    List<Map> queryDayList(@Param("startMonth") String startMonth, @Param("endMonth") String endMonth, @Param("company") String company);
+    List<ReportSpotPriceBreakdown> queryDayList(@Param("startMonth") String startMonth, @Param("endMonth") String endMonth, @Param("company") String company);
 
-    List<Map> queryXunList(@Param("startMonth") String startMonth, @Param("endMonth") String endMonth, @Param("company") String company);
+    List<ReportSpotPriceBreakdown> queryXunList(@Param("startMonth") String startMonth, @Param("endMonth") String endMonth, @Param("company") String company);
 
-    List<Map> queryMonthList(@Param("startMonth") String startMonth, @Param("endMonth") String endMonth, @Param("company") String company);
+    List<ReportSpotPriceBreakdown> queryMonthList(@Param("startMonth") String startMonth, @Param("endMonth") String endMonth, @Param("company") String company);
 
-    List<Map> queryYearList(@Param("startMonth") String startMonth, @Param("endMonth") String endMonth, @Param("company") String company);
+    List<ReportSpotPriceBreakdown> queryYearList(@Param("startMonth") String startMonth, @Param("endMonth") String endMonth, @Param("company") String company);
 }

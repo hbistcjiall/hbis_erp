@@ -1,6 +1,7 @@
 package cn.hbis.erp.modular.system.mapper;
 
 import cn.hbis.erp.modular.system.entity.ReportVarietySteelBean;
+import cn.hbis.erp.modular.system.entity.ReportVarietySteelItemBean;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
@@ -22,5 +23,5 @@ public interface ReportTechnologyMapper extends BaseMapper<ReportVarietySteelBea
     List<ReportVarietySteelBean> subsidiaryVarietySteel(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     List item_subsidiaryVarietySteel_count(@Param("companyId") String companyId, @Param("startDate") String startDate, @Param("endDate") String endDate);
-    List item_subsidiaryVarietySteel_data(@Param("companyId") String companyId, @Param("startDate") String startDate, @Param("endDate") String endDate);
+    List<ReportVarietySteelItemBean> item_subsidiaryVarietySteel_data(@Param("companyId") String companyId, @Param("startDate") String startDate, @Param("endDate") String endDate);
 }
