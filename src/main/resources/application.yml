@@ -25,17 +25,44 @@ spring:
       max-file-size: 100MB
   datasource:
 #正式服务器 非必要勿连
-#    url: jdbc:oracle:thin:@18.0.126.1:1521:coredb1
-#    driver-class-name: oracle.jdbc.OracleDriver
-#    username: hbistc_ol
-#    password: hbistc_ol2012
-#    filters: wall,mergeStat
-#测试服务器 随便连
-    url: jdbc:oracle:thin:@221.192.142.22:1521:orcl
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:oracle:thin:@18.0.126.1:1521:coredb1
     driver-class-name: oracle.jdbc.OracleDriver
-    username: hbistc_test
-    password: hbistc_test
+    username: hbistc_ol
+    password: hbistc_ol2012
     filters: wall,mergeStat
+      # 初始化连接池个数
+    initialSize: 5
+      # 最大连接池个数
+    maxActive: 20
+      # 配置获取连接等待超时的时间，单位毫秒，缺省启用公平锁，并发效率会有所下降
+    maxWait: 5000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 5000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 300000
+      # 用来检测连接是否有效的sql，要求是一个查询语句。
+      # 如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会起作用
+    validationQuery: SELECT 1 FROM DUAL
+      # 建议配置为true，不影响性能，并且保证安全性。
+      # 申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+    testWhileIdle: true
+      # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+    testOnBorrow: false
+      # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+    testOnReturn: false
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+  mvc:
+    servlet:
+      load-on-startup: 1
+#测试服务器 随便连
+#    url: jdbc:oracle:thin:@221.192.142.22:1521:orcl
+#    driver-class-name: oracle.jdbc.OracleDriver
+#    username: hbistc_test
+#    password: hbistc_test
+#    filters: wall,mergeStat
 mybatis-plus:
   #xml文件位置
   mapper-locations: classpath:cn/hbis/erp/modular/system/mapper/mapping/*Mapper.xml
