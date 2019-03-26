@@ -25,7 +25,7 @@ spring:
       max-file-size: 100MB
   datasource:
 #正式服务器 非必要勿连
-#    type: com.alibaba.druid.pool.DruidDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
 #    url: jdbc:oracle:thin:@18.0.126.1:1521:coredb1
 #    driver-class-name: oracle.jdbc.OracleDriver
 #    username: hbistc_ol
