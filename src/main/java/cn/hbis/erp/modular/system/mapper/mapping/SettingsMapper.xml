@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hbis.erp.modular.system.mapper.SettingsMapper">
+
+    <select id="selthesets" resultType="map">
+        SELECT
+        b.SETTING_ID,b."NAME" AS menuname,b.URL,SSU."NAME",b.UPLOAD_TIME
+        FROM(
+        select
+        ss.SETTING_ID,SS.CREATE_USERID AS userid,SSM."NAME",SSM.URL,ss.UPLOAD_TIME
+        from SYS_SETTINGS ss
+        LEFT JOIN
+        SYS_MENU ssm on SSM.MENU_ID = SS.MENU_ID) b
+        LEFT JOIN SYS_USER ssu on SSU.USER_ID = b.USERID
+
+
+            <if test="menuname != null and menuname !=''">
+                where  b."NAME" = #{menuname}
+            </if>
+
+    </select>
+    <delete id="del" >
+        DELETE from  SYS_SETTINGS
+         where MENU_ID = #{id} and SETTING_ID = #{menuid}
+    </delete>
+</mapper>

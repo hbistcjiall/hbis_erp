@@ -1,20 +1,23 @@
 package cn.hbis.erp.modular.system.controller;
 
 import cn.hbis.erp.core.util.DateUtil;
-//import cn.hbis.erp.core.util.ExportExcel;
+import cn.hbis.erp.core.util.ExcelNewUtil;
 import cn.hbis.erp.modular.system.entity.ReportVarietySteelBean;
-import cn.hbis.erp.modular.system.entity.ReportVarietySteelItemBean;
 import cn.hbis.erp.modular.system.service.ReportTechnologyService;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.io.IOUtils;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -70,52 +73,63 @@ public class ReportTechnologyController {
      * @param
      * @return: void
      */
-    /*@ApiOperation(value = "导出  河钢集团各子分公司品种钢完成情况")
+    @ApiOperation(value = "导出河钢集团各子分公司品种钢完成情况")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "queryDate" ,value = "月份",dataType ="String" )
     })
     @PostMapping(value = "exportSubsidiaryVarietySteel")
-    public void exportVarietySteelState(Map<String, Object> map, String queryDate, HttpServletResponse response) {
+    public void exportVarietySteelState(String queryDate, HttpServletResponse response) {
         String startDate = DateUtil.getFirstDayOfMonth(queryDate);
         String endDate = DateUtil.getLastDayOfMonth(queryDate);
         List<ReportVarietySteelBean> resultList = reportTechnologyService.subsidiaryVarietySteel(startDate, endDate);
-
-        List<Map<String, Object>> list = new ArrayList<>();
-        for(int i = 0; i < resultList.size(); i++) { //数据库为空,遍历了100000个
-            Map<String, Object> temp_ = new HashMap<>();
-            temp_.put("companyName", resultList.get(i).getCompanyName());
-            temp_.put("totalSteel", resultList.get(i).getTotalSteel());
-            temp_.put("totalSteelVarieties", resultList.get(i).getTotalSteelVarieties());
-            temp_.put("scaleSteel", resultList.get(i).getScaleSteel());
-            temp_.put("featuresProducts", resultList.get(i).getFeaturesProducts());
-            temp_.put("highProducts", resultList.get(i).getHighProducts());
-            temp_.put("steelVarieties", resultList.get(i).getSteelVarieties());
-            list.add(temp_);
+        List<Map<String, Object>> list=new ArrayList<>();//表内容集合，从数据库查，需要合并的列要进行分组，否则需要做合并的时候可能达不到理想结果
+        for(int i = 0; i < resultList.size(); i++) { //数据库为空,遍历了100个
+            Map<String, Object> temp = new HashMap<>();
+            temp.put("companyName", resultList.get(i).getCompanyName());
+            temp.put("totalSteel", resultList.get(i).getTotalSteel());
+            temp.put("totalSteelVarieties", resultList.get(i).getTotalSteelVarieties());
+            temp.put("scaleSteel", resultList.get(i).getScaleSteel());
+            temp.put("featuresProducts", resultList.get(i).getFeaturesProducts());
+            temp.put("highProducts", resultList.get(i).getHighProducts());
+            temp.put("steelVarieties", resultList.get(i).getSteelVarieties());
+            list.add(temp);
         }
-        ExportExcel<List<Map<String, Object>>> exportExcel = new ExportExcel<>();
-        DateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+        List<Map<String, Object>> listmap=new ArrayList<Map<String, Object>>();
+        Map<String,Object> map=new LinkedHashMap<String,Object>();
+        //标题
+        map.put("head_C7", "子公司品种钢情况");
+        listmap.add(map);
+        map=new LinkedHashMap<String,Object>();
+        map.put("column0_C7", "发货日期" + queryDate);
+        listmap.add(map);
+        //第一行列头（_*表示表头从第几列开始，默认0，_C*表示合并*列，_R*表示合并*行）
+        map=new LinkedHashMap<String,Object>();
+        map.put("column1", "单位");
+        map.put("column2", "钢材总量(吨)");
+        map.put("column3", "品种钢总量(吨)");
+        map.put("column4", "品种钢比例(%)");
+        map.put("column5", "特色战略产品(吨)");
+        map.put("column6", "高端产品(吨)");
+        map.put("column7", "一般品种钢(吨)");
+        listmap.add(map);
+        //sql语句查询的顺序
+        String[] colOrder={"companyName", "totalSteel", "totalSteelVarieties","scaleSteel","featuresProducts", "highProducts", "steelVarieties"};
+        //可能需要做跨行合并的行，将某一列中相同内容的行进行合并
+        String[] mergeCols= {};
+        /*- 文件名 -*/
+        DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
         StringBuffer filename = null;
-        if(ToolUtil.isEmpty(map.get("fileName"))) {
-            filename = new StringBuffer();
-            filename.append("子公司品种钢情况");
-            filename.append(format.format(new Date()));
-        } else {
-            filename = ((StringBuffer)map.get("fileName")).insert(0,format.format(new Date()).substring(0,7));
-        }
-        if(ToolUtil.isEmpty(map.get("excel_type"))) {
-            filename.append(EXPORT_XLSX_FILE_SUFFIX);
-        } else {
-            filename.append(map.get("excel_type"));
-        }
-
+        filename = new StringBuffer();
+        filename.append("子公司品种钢情况");
+        filename.append(format1.format(new Date()));
+        filename.append(EXPORT_XLSX_FILE_SUFFIX);
         try {
             FileOutputStream out = new FileOutputStream("D:/"+filename.toString());
-            exportExcel.exportXSExcelByColumn(filename.toString(), new String[] {"单位", "钢材总量(吨)", "品种钢总量(吨)","品种钢比例(%)","特色战略产品(吨)", "高端产品(吨)", "一般品种钢(吨)"},
-                    new String[] {"companyName", "totalSteel", "totalSteelVarieties","scaleSteel","featuresProducts", "highProducts", "steelVarieties"},
-                    list, out ,null);
-        } catch (IOException e) {
+            exportXlsx(out,filename.toString(),listmap,list,mergeCols,colOrder);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-    }*/
+    }
     /**
      * @Title subsidiaryVarietySteelItem
      * @Description 子分公司品种钢情况明细
@@ -221,9 +235,9 @@ public class ReportTechnologyController {
     /**
      * @Title exportItemSubsidiaryVarietySteel
      * @Description  导出子分公司品种钢情况明细
-     * @param query
-     * @param request
-     * @param response
+     * @param
+     * @param
+     * @param
      * @return void
      * @throws
      */
@@ -238,4 +252,25 @@ public class ReportTechnologyController {
         //开始导出
         reportTechnologyManager.exportItemSubsidiaryVarietySteel(query, request, response);
     }*/
+    private void exportXlsx(FileOutputStream out,String fileName,List<Map<String, Object>> headListMap,List<Map<String, Object>> dataListMap,String[] mergeCols,String[] colOrder) {
+        XSSFWorkbook wb = new XSSFWorkbook();
+        try {
+            Map<String,Object> map=new HashMap<String,Object>();
+            XSSFSheet sheet1 = wb.createSheet(fileName);
+
+            //创建表头
+            ExcelNewUtil.createExcelHeader(wb, sheet1, headListMap);
+            //填入表内容
+            ExcelNewUtil.fillExcel(headListMap.size(),mergeCols,colOrder,wb,sheet1,dataListMap);
+            //导出
+            wb.write(out);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            IOUtils.closeQuietly(wb);
+            IOUtils.closeQuietly(out);
+        }
+    }
 }

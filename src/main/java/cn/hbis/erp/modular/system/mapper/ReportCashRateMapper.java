@@ -31,8 +31,4 @@ public interface ReportCashRateMapper extends BaseMapper<ReportCashRateSummary> 
                                 @Param("summaryType") String summaryType);
 
     List<ReportCashRateSummary> getCashRateCurve(@Param("companyId") String companyId, @Param("recordDate") String recordDate, @Param("summaryType") String summaryType);
-
-    void insert(@Param("insert") String summaryType);
-
-    void insertSummary(@Param("summaryType") String summaryType);
 }
