@@ -206,7 +206,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 double  mis = Double.parseDouble(mi);
                 double bi = mis/sums;
                 String result = String.valueOf(bi*100).substring(0,4);
-                ma.put("BILI",result+"%");
+                ma.put("BILI",result);
                 newlist.add(ma);
 
             }
