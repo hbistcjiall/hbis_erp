@@ -181,44 +181,4 @@ public class ReportCashRateService extends ServiceImpl<ReportCashRateMapper, Rep
     public List<Map> getCashRateDetail(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
         return reportCashRateMapper.getCashRateDetail(companyId, orderStopDateS, orderStopDateE, recordDate, summaryType);
     }
-    /**
-     * @Title ReportCashRateManager.timeTask
-     * @Description 每个月1-10日凌晨12点执行定时任务，将客户兑现率明细信息保存到数据库中
-     * @author zhangry12988
-     * @time 2017-09-19 11:18
-     * @return String
-     * @throws
-     */
-    public String timeTaskDetail() {
-        String msg="兑现率明细处理成功！";
-        try {
-            //log.info("<---------------定时任务启动,开始处理兑现率明细--------------->");
-            //log.info("<---------------兑现率明细不去0统计--------------->");
-            reportCashRateMapper.insert(EnumSummaryType.WITH_ZERO.getCode());
-            Thread.sleep(15000);
-            //log.info("<---------------兑现率明细去0统计--------------->");
-            reportCashRateMapper.insert(EnumSummaryType.WITHOUT_ZERO.getCode());
-        } catch (Exception e) {
-            e.printStackTrace();
-            msg = "兑现率明细处理失败！";
-        }
-        //log.info("<---结果："+msg+"--->");
-        return msg;
-    }
-    public String timeTaskSummary() {
-        String msg="兑现率汇总处理成功！";
-        try {
-            //log.info("<---------------定时任务启动,开始处理兑现率汇总--------------->");
-            //log.info("<---------------兑现率汇总不去0统计--------------->");
-            reportCashRateMapper.insertSummary(EnumSummaryType.WITH_ZERO.getCode());
-            Thread.sleep(10000);
-            //log.info("<---------------兑现率汇总去0统计--------------->");
-            reportCashRateMapper.insertSummary(EnumSummaryType.WITHOUT_ZERO.getCode());
-        } catch (Exception e) {
-            e.printStackTrace();
-            msg = "兑现率汇总处理失败！";
-        }
-        //log.info("<---结果："+msg+"--->");
-        return msg;
-    }
 }
