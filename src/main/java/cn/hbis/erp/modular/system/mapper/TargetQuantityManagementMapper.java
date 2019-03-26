@@ -15,7 +15,7 @@ public interface TargetQuantityManagementMapper extends BaseMapper<TargetQuantit
 
     Page<Map<String, Object>> selTargetManagement(@Param("page") Page page, @Param("targetname") String targetname, @Param("year") String year);
      List<Map> getlist();
-    List<Map> selectList();
+    List<Map> selectscaaccnuitList();
     List<Map>theList();
     List<Map> typeselect(@Param("name") String name);
     List<Map> typessum(@Param("name") String name);
