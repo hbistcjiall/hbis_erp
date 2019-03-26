@@ -46,10 +46,10 @@ public class ApiController extends BaseController {
         User user = userMapper.getByAccount(username);
 
         String credentials = user.getPassword();
-        String salt = user.getSalt();
-        ByteSource credentialsSalt = new Md5Hash(salt);
+//        String salt = user.getSalt();
+//        ByteSource credentialsSalt = new Md5Hash(salt);
         SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(
-                new ShiroUser(), credentials, credentialsSalt, "");
+                new ShiroUser(), credentials, null, "");
 
         //校验用户账号密码
         HashedCredentialsMatcher md5CredentialsMatcher = new HashedCredentialsMatcher();
