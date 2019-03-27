@@ -43,7 +43,6 @@ public class ReportSpotPriceBreakdownController {
             @ApiImplicitParam(name = "company" ,value = "钢厂",dataType ="String" )
     })
     @PostMapping(value = "list")
-    @Async
     public Map list(String endMonth, String company) {
         Map map = new HashMap();
         // 默认查询当日

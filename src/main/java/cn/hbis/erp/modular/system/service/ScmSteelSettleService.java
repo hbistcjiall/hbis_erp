@@ -4,6 +4,7 @@ import cn.hbis.erp.modular.system.entity.ScmSteelSettle;
 import cn.hbis.erp.modular.system.mapper.ScmSteelSettleMapper;
 import cn.hbis.erp.modular.system.warpper.ScmSteelSettleWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,12 +26,14 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     /*
      月度产线报表
      */
+    @Async
     public List<ScmSteelSettle> getcx(String dw,String cx,String startTime,String endTime) {
         return scmSteelSettleMapper.getcx(dw,cx,startTime,endTime);
     }
     /*
     月度品种报表
      */
+    @Async
     public List<ScmSteelSettle> getpz(String pz,String startTime,String endTime) {
         return scmSteelSettleMapper.getpz(pz,startTime,endTime);
     }
@@ -39,6 +42,7 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     /*
  报表责任部门
 */
+    @Async
     public List<ScmSteelSettle> getzrbm(String zrbm,String startTime,String endTime) {
         return scmSteelSettleMapper.getzrbm(zrbm,startTime,endTime);
     }
@@ -46,6 +50,7 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     /*
 结算量报表
 */
+    @Async
     public List<ScmSteelSettle> getpzjszl(String startTime,String endTime) {
         return scmSteelSettleMapper.getpzjszl(startTime,endTime);
     }
@@ -53,6 +58,7 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     /*
 品种钢结算量报表
 */
+    @Async
     public List<ScmSteelSettle> getpzgjswc(String startTime,String endTime) {
         return scmSteelSettleMapper.getpzgjswc(startTime,endTime);
     }
@@ -61,6 +67,7 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     /*
 子公司结算量报表
 */
+    @Async
     public List<ScmSteelSettle> getzgsjswc(String startTime,String endTime) {
         return scmSteelSettleMapper.getzgsjswc(startTime,endTime);
     }
@@ -69,6 +76,7 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     /*
 资源计划报表
 */
+    @Async
     public List<ScmSteelSettle> getzyjh(String nf,String yf,String pz,String cx,String xszt) {
         return scmSteelSettleMapper.getzyjh(nf,yf,pz,cx,xszt);
     }
@@ -76,6 +84,7 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     /*
 品种查询条件
 */
+    @Async
     public List<ScmSteelSettle> getzyjhcxtjpz() {
         return scmSteelSettleMapper.getzyjhcxtjpz();
     }
@@ -83,6 +92,7 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     /*
 产线查询条件
 */
+    @Async
     public List<ScmSteelSettle> getzyjhcxtjcx(String pz) {
         return scmSteelSettleMapper.getzyjhcxtjcx(pz);
     }
@@ -90,6 +100,7 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     /*
 销售计划 查询条件
 */
+    @Async
     public List<ScmSteelSettle> getzyjhcxtjxszt() {
         return scmSteelSettleMapper.getzyjhcxtjxszt();
     }
@@ -98,6 +109,7 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     /*
 产险合同进度报表1
 */
+    @Async
     public List<ScmSteelSettle> getcxhtjd(String startTime,String endTime,String cx) {
         return scmSteelSettleMapper.getcxhtjd(startTime,endTime,cx);
     }
@@ -105,6 +117,7 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     /*
 品种合同进度报表1
 */
+    @Async
     public List<ScmSteelSettle> getpzhtjd(String startTime,String endTime,String pz) {
         return scmSteelSettleMapper.getpzhtjd(startTime,endTime,pz);
     }

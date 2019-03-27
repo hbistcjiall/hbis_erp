@@ -6,6 +6,7 @@ import cn.hbis.erp.modular.system.mapper.CrmResourceAllocationMapper;
 import cn.hbis.erp.modular.system.warpper.CrmResourceAllocationWrapper;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,6 +33,7 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
      * @param date
      * @return
      */
+    @Async
     public List<Allocation> selSchedule(String date,String flName){
         String month = "";
         String year = "";
@@ -71,6 +73,7 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
      * @param date
      * @return
      */
+    @Async
     public List<Allocation> selScheduleByCx(String date,String sort,String flName){
         String month = "";
         String year = "";
@@ -114,6 +117,7 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
      * @param date
      * @return
      */
+    @Async
     public List<Allocation> selCompany(String date){
         String month = "";
         String year = "";
@@ -154,6 +158,7 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
      * @param date
      * @return
      */
+    @Async
     public List<Allocation> selByCompany(String date,String companyName){
         String month = "";
         String year = "";

@@ -5,6 +5,7 @@ import cn.hbis.erp.modular.system.entity.ProtocolAccountDetails;
 import cn.hbis.erp.modular.system.mapper.ProtocolAccountDetailsMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,6 +31,7 @@ public class ProtocolAccountDetailsService extends ServiceImpl<ProtocolAccountDe
      *
      *
      */
+    @Async
     public Page<Map<String, Object>> searchList(String varieties, String beginTime, String endTime, String protocolYear, String steelMills) {
         Page page = PageFactory.defaultPage();
         return this.baseMapper.searchProtocolAccountDetailList(page, varieties, beginTime, endTime, protocolYear, steelMills);

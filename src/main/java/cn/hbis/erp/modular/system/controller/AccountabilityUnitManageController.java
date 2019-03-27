@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +30,6 @@ public class AccountabilityUnitManageController extends BaseController {
                     @ApiImplicitParam(name = "limit" ,value = "每页多少条数据",dataType ="String" ),
                     @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
             })
-            @Async
             public Object selaccountmanager(String companyname,String limit, String page){
                 Page<Map<String, Object>> objcet = accManageService.selectAccountManeg(companyname);
                 Page wrapped = new AccountabilityUnitManageWrapper(objcet).wrap();

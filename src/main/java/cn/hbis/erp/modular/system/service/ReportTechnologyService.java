@@ -2,9 +2,9 @@ package cn.hbis.erp.modular.system.service;
 
 import cn.hbis.erp.core.util.BigDecimalUtil;
 import cn.hbis.erp.modular.system.entity.ReportVarietySteelBean;
-import cn.hbis.erp.modular.system.entity.ReportVarietySteelItemBean;
 import cn.hbis.erp.modular.system.mapper.ReportTechnologyMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -33,6 +33,7 @@ public class ReportTechnologyService extends ServiceImpl<ReportTechnologyMapper,
      * @return
      * @return: List<ReportVarietySteelBen>
      */
+    @Async
     public List<ReportVarietySteelBean> subsidiaryVarietySteel(String startDate, String endDate) {
         List<ReportVarietySteelBean> list = reportTechnologyMapper.subsidiaryVarietySteel(startDate, endDate);
         return this.dealVarietySteel(list);
@@ -44,6 +45,7 @@ public class ReportTechnologyService extends ServiceImpl<ReportTechnologyMapper,
      * @return List<ReportVarietySteelBean>
      * @throws
      */
+    @Async
     public List subsidiaryVarietySteelItemPage(String companyId, String startDate, String endDate) {
 //        Page page = PageFactory.defaultPage();
         List list = reportTechnologyMapper.item_subsidiaryVarietySteel_count(companyId, startDate, endDate);
@@ -58,6 +60,7 @@ public class ReportTechnologyService extends ServiceImpl<ReportTechnologyMapper,
      * @return List<ReportVarietySteelBean>
      * @throws
      */
+    @Async
     public List exportsubsidiaryVarietySteelItemPage(String companyId, String startDate, String endDate) {
 //        Page page = PageFactory.defaultPage();
         //List list = reportTechnologyMapper.item_subsidiaryVarietySteel_count(companyId, startDate, endDate);
@@ -74,6 +77,7 @@ public class ReportTechnologyService extends ServiceImpl<ReportTechnologyMapper,
      * @param list
      * @return: List<ReportVarietySteelBen>
      */
+    @Async
     private List<ReportVarietySteelBean> dealVarietySteel(List<ReportVarietySteelBean> list) {
         List<ReportVarietySteelBean> returnList = new ArrayList<ReportVarietySteelBean>();
         if (null != list && list.size() > 0) {

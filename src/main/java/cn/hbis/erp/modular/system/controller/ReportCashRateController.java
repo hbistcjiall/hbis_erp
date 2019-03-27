@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,7 +51,6 @@ public class ReportCashRateController {
             @ApiImplicitParam(name = "summaryType" ,value = "发货量汇总方式",dataType ="String" )
     })
     @PostMapping(value = "cashRateSummary")
-    @Async
     public Map cashRateSummary(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
         Map map = new HashMap();
         if (null == orderStopDateS || "".equals(orderStopDateS)) {
@@ -90,7 +88,6 @@ public class ReportCashRateController {
             @ApiImplicitParam(name = "summaryType" ,value = "发货量汇总方式",dataType ="String" )
     })
     @PostMapping(value = "cashRateCurve")
-    @Async
     public Map cashRateCurve(String companyId, String recordDate, String summaryType) {
         Map map = new HashMap();
         if (null == companyId) {
@@ -125,7 +122,6 @@ public class ReportCashRateController {
             @ApiImplicitParam(name = "summaryType" ,value = "发货量汇总方式",dataType ="String" )
     })
     @PostMapping(value = "cashRateSummaryGrade")
-    @Async
     public Map cashRateSummaryGrade(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
         Map map = new HashMap();
         if (null == orderStopDateS || "".equals(orderStopDateS)) {
@@ -164,7 +160,6 @@ public class ReportCashRateController {
             @ApiImplicitParam(name = "summaryType" ,value = "发货量汇总方式",dataType ="String" )
     })
     @PostMapping(value = "cashRateDetail")
-    @Async
     public Map cashRateDetail(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
         Map map = new HashMap();
         if (null == orderStopDateS || "".equals(orderStopDateS)) {
