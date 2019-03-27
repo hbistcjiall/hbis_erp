@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,7 +42,6 @@ public class ReportSpotPriceBreakdownController {
             @ApiImplicitParam(name = "endMonth" ,value = "记录日期",dataType ="String" ),
             @ApiImplicitParam(name = "company" ,value = "钢厂",dataType ="String" )
     })
-    @Async
     @PostMapping(value = "list")
     @Async
     public Map list(String endMonth, String company) {
