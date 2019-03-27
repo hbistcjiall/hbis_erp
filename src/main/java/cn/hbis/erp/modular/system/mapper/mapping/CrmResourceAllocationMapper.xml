@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.hbis.erp.modular.system.mapper.CrmResourceAllocationMapper">
     <select id="selSchedule" resultType="cn.hbis.erp.modular.system.entity.Allocation">
+        select * from (
         SELECT
         NVL (A .PZ_NAME, '合计') pzName,
         SUM(ss.fkimg) as yield,
@@ -73,7 +74,8 @@
         ) ss ON A.CX_NAME = ss.dName
         OR A.CX_NAME = ss.fName
         GROUP BY
-        ROLLUP (A.PZ_NAME)
+        ROLLUP (A.PZ_NAME))
+        order by decode(pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线',5,'型带',6)
     </select>
 
     <select id="selScheduleByCx" resultType="cn.hbis.erp.modular.system.entity.Allocation">
@@ -234,7 +236,8 @@
      GROUP BY ROLLUP(A.companyName)
     </select>
     <select id="selByCompany" resultType="cn.hbis.erp.modular.system.entity.Allocation">
-      SELECT a.flName,
+      select * from (
+        SELECT a.flName flName,
        SUM(ss.fkimg) as yield,
        SUM(A.planNum) as planNum
       FROM (SELECT cra.PZ_NAME,
@@ -299,6 +302,7 @@
                   GROUP BY DATA . NAME, DATA.full_name) ss
         ON A.CX_NAME = ss.dName
         OR A.CX_NAME = ss.fName
-     GROUP BY a.flName
+     GROUP BY a.flName)
+        order by decode(pzName,'销售总公司',1,'技术中心、事业部',2,'出口',3,'现货',4,'子公司其他',5,'品种钢',6)
     </select>
 </mapper>

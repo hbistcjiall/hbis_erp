@@ -44,7 +44,6 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         List<Allocation> lists = new ArrayList<>();
         List<Allocation> list = crmResourceAllocationMapper.selSchedule(date,month,year,flName);
         Allocation allocation = null;
-        int i = 1;
         for (Allocation model : list){
             allocation = new Allocation();
             if (model.getPlanNum()==null){
@@ -62,10 +61,8 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
             if (model.getPlanNum()!=null && model.getYield()!=null){
                 allocation.setSchedule(new BigDecimal((float)model.getYield()/model.getPlanNum()).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue());
             }
-            allocation.setSort(i);
             allocation.setPzName(model.getPzName());
             lists.add(allocation);
-            i++;
         }
         return lists;
     }
@@ -91,7 +88,6 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         List<Allocation> lists = new ArrayList<>();
         List<Allocation> list = crmResourceAllocationMapper.selScheduleByCx(date,month,year,sort,flName);
         Allocation allocation = null;
-        int i = 1;
         for (Allocation model : list){
             allocation = new Allocation();
             if (model.getPlanNum()==null){
@@ -108,9 +104,7 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
             }
             allocation.setSchedule(model.getSchedule());
             allocation.setCxName(model.getCxName());
-            allocation.setSort(i);
             lists.add(allocation);
-            i++;
         }
         return lists;
     }
@@ -133,7 +127,6 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         List<Allocation> lists = new ArrayList<>();
         List<Allocation> list = crmResourceAllocationMapper.selCompany(date,month,year);
         Allocation allocation = null;
-        int i = 1;
         for (Allocation model : list){
             allocation = new Allocation();
             if (model.getPlanNum()==null){
@@ -152,9 +145,7 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
                 allocation.setSchedule(new BigDecimal((float)model.getYield()/model.getPlanNum()).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue());
             }
             allocation.setCompanyName(model.getCompanyName());
-            allocation.setSort(i);
             lists.add(allocation);
-            i++;
         }
         return lists;
     }
@@ -176,7 +167,6 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         List<Allocation> lists = new ArrayList<>();
         List<Allocation> list = crmResourceAllocationMapper.selByCompany(date,month,year,companyName);
         Allocation allocation = null;
-        int i = 1;
         for (Allocation model : list){
             allocation = new Allocation();
             if (model.getPlanNum()==null){
@@ -195,9 +185,7 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
                 allocation.setSchedule(new BigDecimal((float)model.getYield()/model.getPlanNum()).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue());
             }
             allocation.setFlName(model.getFlName());
-            allocation.setSort(i);
             lists.add(allocation);
-            i++;
         }
         return lists;
     }
