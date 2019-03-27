@@ -19,6 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -61,6 +62,7 @@ public class ProtocolAccountDetailsController extends BaseController {
             @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
     })
     @PostMapping(value = "list")
+    @Async
      public Object list(String varieties, String beginTime, String endTime, String protocolYear, String steelMills, String limit, String page) {
         Page<Map<String, Object>> protocolAccounts = protocolAccountDetailsService.searchList(varieties, beginTime, endTime, protocolYear, steelMills);
         Page wrapped = new ProtocolAccountDetailsWrapper(protocolAccounts).wrap();
@@ -76,6 +78,7 @@ public class ProtocolAccountDetailsController extends BaseController {
             @ApiImplicitParam(name = "protocolAccountId", value = "协议户明细ID", dataType = "String")
     })
     @PostMapping("detail")
+    @Async
     public Object detail(String protocolAccountId) {
         ProtocolAccountDetails protocolAccountDetails = protocolAccountDetailsService.getById(protocolAccountId);
         ProtocolAccountDetailsDto protocolAccountDetailsDto = new ProtocolAccountDetailsDto();

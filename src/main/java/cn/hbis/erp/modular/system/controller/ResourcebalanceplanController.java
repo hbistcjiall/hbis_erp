@@ -1,13 +1,13 @@
 package cn.hbis.erp.modular.system.controller;
 
 
-
 import cn.hbis.erp.modular.system.service.TargetQuantityManagementService;
 import cn.stylefeng.roses.core.base.controller.BaseController;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +27,7 @@ public class ResourcebalanceplanController extends BaseController {
 
     })
     @PostMapping(value = "resourceplanone")
+    @Async
     public List<Map> resourceplanone(String type){
         List<Map> list = tqService.salesmain(type);
         return list;
@@ -37,6 +38,7 @@ public class ResourcebalanceplanController extends BaseController {
 
     })
     @PostMapping(value = "resourceplantwo")
+    @Async
     public List<Map> resourceplantwo(String type){
         List<Map> list = tqService.mills(type);
         return list;
@@ -47,6 +49,7 @@ public class ResourcebalanceplanController extends BaseController {
 
     })
     @PostMapping(value = "resourceplanthrid")
+    @Async
     public List<Map> resourceplanthrid(String type){
         List<Map> list = tqService.typesa(type);
         return list;
@@ -57,6 +60,7 @@ public class ResourcebalanceplanController extends BaseController {
 
     })
     @PostMapping(value = "resourceplanfour")
+    @Async
     public List<Map> resourceplanfour(String type){
         List<Map> list = tqService.settl(type);
         return list;

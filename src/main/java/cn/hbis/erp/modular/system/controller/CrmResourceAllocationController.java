@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +35,7 @@ public class CrmResourceAllocationController {
             @ApiImplicitParam(name = "flName", value = "分类名称", dataType = "String")
     })
     @RequestMapping(value = "/selAllocation",method = RequestMethod.POST)
+    @Async
     public List<Allocation> selAllocation(String date,String flName){
         return this.crmResourceAllocationService.selSchedule(date,flName);
     }
@@ -45,6 +47,7 @@ public class CrmResourceAllocationController {
             @ApiImplicitParam(name = "flName", value = "分类名称", dataType = "String")
     })
     @RequestMapping(value = "/selScheduleByCx",method = RequestMethod.POST)
+    @Async
     public List<Allocation> selScheduleByCx(String date,String sort,String flName){
         return this.crmResourceAllocationService.selScheduleByCx(date,sort,flName);
     }
@@ -54,6 +57,7 @@ public class CrmResourceAllocationController {
             @ApiImplicitParam(name = "date", value = "日期", dataType = "String"),
     })
     @RequestMapping(value = "/selScheduleByCompany",method = RequestMethod.POST)
+    @Async
     public List<Allocation> selScheduleByCompany(String date){
         return this.crmResourceAllocationService.selCompany(date);
     }
@@ -64,6 +68,7 @@ public class CrmResourceAllocationController {
             @ApiImplicitParam(name = "companyName", value = "公司名", dataType = "String")
     })
     @RequestMapping(value = "/selDetail",method = RequestMethod.POST)
+    @Async
     public List<Allocation> selDetail(String date,String companyName){
         return this.crmResourceAllocationService.selByCompany(date,companyName);
     }

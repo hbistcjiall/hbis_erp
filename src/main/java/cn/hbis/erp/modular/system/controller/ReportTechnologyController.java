@@ -4,7 +4,6 @@ import cn.hbis.erp.core.util.DateUtil;
 import cn.hbis.erp.core.util.ExcelNewUtil;
 import cn.hbis.erp.modular.system.entity.ReportVarietySteelBean;
 import cn.hbis.erp.modular.system.service.ReportTechnologyService;
-import cn.stylefeng.roses.core.util.ToolUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -12,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,6 +49,7 @@ public class ReportTechnologyController {
             @ApiImplicitParam(name = "queryDate" ,value = "月份",dataType ="String" )
     })
     @PostMapping(value = "subsidiaryVarietySteel")
+    @Async
     public Map subsidiaryVarietySteel(String queryDate){
         Map map = new HashMap();
         if(null == queryDate ||"".equals(queryDate)){
@@ -144,6 +145,7 @@ public class ReportTechnologyController {
             @ApiImplicitParam(name = "queryDate" ,value = "月份",dataType ="String" )
     })
     @PostMapping(value = "itemSubsidiaryVarietySteel")
+    @Async
     public Map subsidiaryVarietySteelItem(String companyId, String queryDate){
         Map map = new HashMap();
         if(null==queryDate||"".equals(queryDate)){

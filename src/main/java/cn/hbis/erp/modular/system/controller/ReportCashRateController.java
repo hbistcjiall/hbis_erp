@@ -2,28 +2,22 @@ package cn.hbis.erp.modular.system.controller;
 
 import cn.hbis.erp.core.common.constant.state.EnumSummaryType;
 import cn.hbis.erp.core.util.DateUtil;
-//import cn.hbis.erp.core.util.ExportExcel;
-import cn.hbis.erp.modular.system.entity.ReportCashRate;
 import cn.hbis.erp.modular.system.entity.ReportCashRateSummary;
 import cn.hbis.erp.modular.system.service.ReportCashRateService;
-import cn.stylefeng.roses.core.util.ToolUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+//import cn.hbis.erp.core.util.ExportExcel;
 
 /**
  * 客户兑现率
@@ -58,6 +52,7 @@ public class ReportCashRateController {
             @ApiImplicitParam(name = "summaryType" ,value = "发货量汇总方式",dataType ="String" )
     })
     @PostMapping(value = "cashRateSummary")
+    @Async
     public Map cashRateSummary(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
         Map map = new HashMap();
         if (null == orderStopDateS || "".equals(orderStopDateS)) {
@@ -77,70 +72,7 @@ public class ReportCashRateController {
 //        model.addAttribute("summaryType", EnumSummaryType.toMap());
         return map;
     }
-    /**
-     * @Title: exportCashRateSummary
-     * @Description: 导出  客户兑现率汇总
-     * @author:
-     * @date: 2
-     * @param
-     * @return: void
-     */
-    /*@ApiOperation(value = "导出  客户兑现率汇总")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "companyId" ,value = "子公司",dataType ="String" ),
-            @ApiImplicitParam(name = "orderStopDateS" ,value = "交货截至日期开始",dataType ="String" ),
-            @ApiImplicitParam(name = "orderStopDateE" ,value = "交货截至日期结束",dataType ="String" ),
-            @ApiImplicitParam(name = "recordDate" ,value = "记录日期",dataType ="String" ),
-            @ApiImplicitParam(name = "summaryType" ,value = "发货量汇总方式",dataType ="String" )
-    })
-    @PostMapping(value = "exportCashRateSummary")
-    public void exportCashRateSummary(Map<String, Object> map ,String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType, HttpServletResponse response) {
-        if (null == orderStopDateS || "".equals(orderStopDateS)) {
-            orderStopDateS = DateUtil.getLastMonth();
-            orderStopDateE = DateUtil.getLastMonth();
-        }
-        if(null==recordDate || "".equals(recordDate)) {
-            recordDate = DateUtil.getTenthDayOfMonth(10);
-        }
-        if(null==summaryType || "".equals(summaryType)) {
-            summaryType = EnumSummaryType.WITHOUT_ZERO.getCode();
-        }
-        List<ReportCashRateSummary> resultList = reportCashRateService.getCashRateSummary(companyId, orderStopDateS, orderStopDateE, recordDate, summaryType);
-        List<Map<String, Object>> list = new ArrayList<>();
-        for(int i = 0; i < resultList.size(); i++) { //数据库为空,遍历了100000个
-            *//*Map<String, Object> temp_ = new HashMap<>();
-            temp_.put("", resultList.get(i).());
-            temp_.put("", resultList.get(i).());
-            temp_.put("", resultList.get(i).());
-            temp_.put("", resultList.get(i).());
-            temp_.put("", resultList.get(i).());
-            temp_.put("", resultList.get(i).());
-            temp_.put("", resultList.get(i).());*//*
-            //list.add(temp_);
-        }
-        ExportExcel<List<Map<String, Object>>> exportExcel = new ExportExcel<>();
-        DateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-        StringBuffer filename = null;
-        if(ToolUtil.isEmpty(map.get("fileName"))) {
-            filename = new StringBuffer();
-            filename.append("子公司品种钢情况");
-            filename.append(format.format(new Date()));
-        } else {
-            filename = ((StringBuffer)map.get("fileName")).insert(0,format.format(new Date()).substring(0,7));
-        }
-        if(ToolUtil.isEmpty(map.get("excel_type"))) {
-            filename.append(EXPORT_XLSX_FILE_SUFFIX);
-        } else {
-            filename.append(map.get("excel_type"));
-        }
-        try {
-            FileOutputStream out = new FileOutputStream("D:/"+filename.toString());
-            exportExcel.exportXSExcelByColumn(filename.toString(), new String[] {"单位", "钢材总量(吨)", "品种钢总量(吨)","品种钢比例(%)","特色战略产品(吨)", "高端产品(吨)", "一般品种钢(吨)"},
-                    new String[] {"companyName", "totalSteel", "totalSteelVarieties","scaleSteel","featuresProducts", "highProducts", "steelVarieties"},
-                    list, out ,null);
-        } catch (IOException e) {
-        }
-    }*/
+
     /**
      * @Title ReportCashRateAction.cashRateCurve
      * @Description 兑现率曲线
@@ -158,6 +90,7 @@ public class ReportCashRateController {
             @ApiImplicitParam(name = "summaryType" ,value = "发货量汇总方式",dataType ="String" )
     })
     @PostMapping(value = "cashRateCurve")
+    @Async
     public Map cashRateCurve(String companyId, String recordDate, String summaryType) {
         Map map = new HashMap();
         if (null == companyId) {
@@ -192,6 +125,7 @@ public class ReportCashRateController {
             @ApiImplicitParam(name = "summaryType" ,value = "发货量汇总方式",dataType ="String" )
     })
     @PostMapping(value = "cashRateSummaryGrade")
+    @Async
     public Map cashRateSummaryGrade(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
         Map map = new HashMap();
         if (null == orderStopDateS || "".equals(orderStopDateS)) {
@@ -230,6 +164,7 @@ public class ReportCashRateController {
             @ApiImplicitParam(name = "summaryType" ,value = "发货量汇总方式",dataType ="String" )
     })
     @PostMapping(value = "cashRateDetail")
+    @Async
     public Map cashRateDetail(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
         Map map = new HashMap();
         if (null == orderStopDateS || "".equals(orderStopDateS)) {

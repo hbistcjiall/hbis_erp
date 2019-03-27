@@ -2,7 +2,6 @@ package cn.hbis.erp.modular.system.controller;
 
 
 import cn.hbis.erp.core.common.page.PageFactory;
-import cn.hbis.erp.modular.system.entity.TargetQuantityManagement;
 import cn.hbis.erp.modular.system.service.TargetQuantityManagementService;
 import cn.hbis.erp.modular.system.warpper.TargetQuantityManagementWrapper;
 import cn.stylefeng.roses.core.base.controller.BaseController;
@@ -11,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +33,7 @@ public class TargetQuantityManagementController extends BaseController {
             @ApiImplicitParam(name = "limit" ,value = "每页多少条数据",dataType ="String" ),
             @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
     })
+    @Async
     public Object selaccountmanager(String companyname,String year,String limit, String page){
         Page<Map<String, Object>> objcet = targetService.selectTargetManeg(companyname,year);
         Page wrapped = new TargetQuantityManagementWrapper(objcet).wrap();

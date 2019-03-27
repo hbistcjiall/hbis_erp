@@ -1,25 +1,24 @@
 package cn.hbis.erp.modular.system.controller;
 
 import cn.hbis.erp.core.util.DateUtil;
-//import cn.hbis.erp.core.util.ExportExcel;
 import cn.hbis.erp.modular.system.entity.ReportSpotPriceBreakdown;
 import cn.hbis.erp.modular.system.service.ReportSpotPriceBreakdownService;
-import cn.stylefeng.roses.core.util.ToolUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+//import cn.hbis.erp.core.util.ExportExcel;
 
 /**
  * 建材北京市场现货价格
@@ -45,6 +44,7 @@ public class ReportSpotPriceBreakdownController {
             @ApiImplicitParam(name = "company" ,value = "钢厂",dataType ="String" )
     })
     @PostMapping(value = "list")
+    @Async
     public Map list(String endMonth, String company) {
         Map map = new HashMap();
         // 默认查询当日
