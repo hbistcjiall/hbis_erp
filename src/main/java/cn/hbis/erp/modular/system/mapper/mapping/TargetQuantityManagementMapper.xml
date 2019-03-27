@@ -31,7 +31,7 @@
 		from SCM_ACCOUNTABILITY_UNIT_MANAGE  sa
 		WHERE sa.DELETESTATUS = '0'
 	</select>
-	<select id="selectList" resultType="map">
+	<select id="selectscaaccnuitList" resultType="map">
         select ACCOUNTABILITY_UNIT_ID AS ID,ACCOUNTABILITY_UNIT_CODE AS CODE,ACCOUNTABILITY_UNIT_NAME AS "NAME"
         from SCM_ACCOUNTABILITY_UNIT_MANAGE
         where DELETESTATUS = '0'

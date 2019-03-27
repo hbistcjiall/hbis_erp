@@ -2,6 +2,7 @@ package cn.hbis.erp.modular.system.controller;
 
 import cn.hbis.erp.config.properties.HbisProperties;
 import cn.hbis.erp.core.common.page.PageFactory;
+import cn.hbis.erp.core.util.ExcelNewUtil;
 import cn.hbis.erp.core.util.ExcelUtil;
 import cn.hbis.erp.modular.system.entity.ProtocolAccountDetails;
 import cn.hbis.erp.modular.system.model.ProtocolAccountDetailsDto;
@@ -14,10 +15,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.io.IOUtils;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -138,6 +147,81 @@ public class ProtocolAccountDetailsController extends BaseController {
         }
         return map;
     }
+    /**
+     * 导出协议户明细列表
+     *
+     *
+     */
+    @ApiOperation(value = "导出协议户明细列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "varieties", value = "产品类别", dataType = "String"),
+            @ApiImplicitParam(name = "beginTime", value = "开始时间", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间", dataType = "String"),
+            @ApiImplicitParam(name = "protocolYear", value = "协议年份", dataType = "String"),
+            @ApiImplicitParam(name = "steelMills", value = "钢厂", dataType = "String"),
+            @ApiImplicitParam(name = "limit" ,value = "每页条数",dataType ="String" ),
+            @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
+    })
+    @PostMapping(value = "exportlist")
+    public void exportlist(String varieties, String beginTime, String endTime, String protocolYear, String steelMills, String limit, String page) {
+        Page<Map<String, Object>> protocolAccounts = protocolAccountDetailsService.searchList(varieties, beginTime, endTime, protocolYear, steelMills);
+        List<Map<String, Object>> list=new ArrayList<>();
+        List<Map<String,Object>> resultList = protocolAccounts.getRecords();
+        DateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for(int i = 0; i < protocolAccounts.getSize(); i++) {
+            Map<String,Object> map = resultList.get(i);
+            Map<String, Object> temp = new HashMap<>();
+            temp.put("uploadTime", format2.format(map.get("UPLOADTIME")));
+            temp.put("protocolYear", map.get("PROTOCOLYEAR"));
+            temp.put("accountName", map.get("ACCOUNTNAME"));
+            temp.put("supplyMode", map.get("SUPPLYMODE"));
+            temp.put("varieties", map.get("VARIETIES"));
+            temp.put("mainSalesRegional", map.get("MAINSALESREGIONAL"));
+            if (map.get("AIDEDSALESREGIONALONE") == null){
+                temp.put("aidedSalesRegionalOne", "-");
+            }else{
+                temp.put("aidedSalesRegionalOne", map.get("AIDEDSALESREGIONALONE"));
+            }
+            if (map.get("AIDEDSALESREGIONALTWO") == null){
+                temp.put("aidedSalesRegionalTwo", "-");
+            }else{
+                temp.put("aidedSalesRegionalTwo", map.get("AIDEDSALESREGIONALTWO"));
+            }
+            temp.put("steelMills", map.get("STEELMILLS"));
+            temp.put("annualAgreementVolume", map.get("ANNUALAGREEMENTVOLUME"));
+            list.add(temp);
+        }
+        List<Map<String, Object>> listmap=new ArrayList<Map<String, Object>>();
+        Map<String,Object> map=new LinkedHashMap<String,Object>();
+        map.put("head_C10", "协议户明细列表");
+        listmap.add(map);
+        map=new LinkedHashMap<String,Object>();
+        map.put("column1", "上传时间");
+        map.put("column2", "协议年份");
+        map.put("column3", "用户名称（全称）");
+        map.put("column4", "供货方式");
+        map.put("column5", "品种");
+        map.put("column6", "主销售区域");
+        map.put("column7", "辅助销售区域一");
+        map.put("column8", "辅助销售区域二");
+        map.put("column9", "钢厂");
+        map.put("column10", "年协议量（吨）");
+        listmap.add(map);
+        String[] colOrder={"uploadTime","protocolYear","accountName","supplyMode","varieties","mainSalesRegional","aidedSalesRegionalOne","aidedSalesRegionalTwo","steelMills","annualAgreementVolume"};
+        String[] mergeCols= {};
+        DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
+        StringBuffer filename = null;
+        filename = new StringBuffer();
+        filename.append("协议户明细列表");
+        filename.append(format1.format(new Date()));
+        filename.append(EXPORT_XLSX_FILE_SUFFIX);
+        try {
+            FileOutputStream out = new FileOutputStream("D:/"+filename.toString());
+            exportXlsx(out,filename.toString(),listmap,list,mergeCols,colOrder);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "year" ,value = "年份",dataType ="String" ),
@@ -156,14 +240,32 @@ public class ProtocolAccountDetailsController extends BaseController {
                 for (ProtocolAccountDetails ep : excelBeans){
                     protocolAccountDetailsService.save(ep);
                 }
-
                 //map = excelBeans.stream().collect(Collectors.toMap(ProtocolAccountDetails::getProtocolAccountId, a -> a,(k1, k2)->k1));
             } catch (Exception e) {
                 e.printStackTrace();
-
             }
-
         }
         return map;
+    }
+
+    private void exportXlsx(FileOutputStream out,String fileName,List<Map<String, Object>> headListMap,List<Map<String, Object>> dataListMap,String[] mergeCols,String[] colOrder) {
+        XSSFWorkbook wb = new XSSFWorkbook();
+        try {
+            Map<String,Object> map=new HashMap<String,Object>();
+            XSSFSheet sheet1 = wb.createSheet(fileName);
+            //创建表头
+            ExcelNewUtil.createExcelHeader(wb, sheet1, headListMap);
+            //填入表内容
+            ExcelNewUtil.fillExcel(headListMap.size(),mergeCols,colOrder,wb,sheet1,dataListMap);
+            //导出
+            wb.write(out);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            IOUtils.closeQuietly(wb);
+            IOUtils.closeQuietly(out);
+        }
     }
 }

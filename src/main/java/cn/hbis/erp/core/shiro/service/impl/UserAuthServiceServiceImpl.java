@@ -95,9 +95,9 @@ public class UserAuthServiceServiceImpl implements UserAuthService {
         String credentials = user.getPassword();
 
         // 密码加盐处理
-        String source = user.getSalt();
-        ByteSource credentialsSalt = new Md5Hash(source);
-        return new SimpleAuthenticationInfo(shiroUser, credentials, credentialsSalt, realmName);
+//        String source = user.getSalt();
+//        ByteSource credentialsSalt = new Md5Hash(source);
+        return new SimpleAuthenticationInfo(shiroUser, credentials, null, realmName);
     }
 
 }

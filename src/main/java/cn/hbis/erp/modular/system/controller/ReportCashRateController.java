@@ -250,24 +250,6 @@ public class ReportCashRateController {
         return map;
     }
     /**
-     * @Title ReportCashRateAction.timeTask
-     * @Description 每个月1-10日凌晨12点执行定时任务，将客户兑现率明细信息保存到数据库中
-     * @author zhangry12988
-     * @time 2017-09-19 11:07
-     * @return String
-     * @throws
-     */
-    @RequestMapping(value="/timeTaskDetail")
-    @ResponseBody
-    public String  timeTaskDetail() {
-        return reportCashRateService.timeTaskDetail();
-    }
-    @RequestMapping(value="/timeTaskSummary")
-    @ResponseBody
-    public String  timeTaskSummary() {
-        return reportCashRateService.timeTaskSummary();
-    }
-    /**
      * @Title ReportCashRateAction.cashRateDistribution
      * @Description 客户兑现率分布
      * @author zhangry12988

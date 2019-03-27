@@ -47,14 +47,13 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
         /**
          * 责任公司添加和更新
           * @param id
-         * @param code
          * @param name
          * @return
          */
         @Transactional(rollbackFor = Exception.class)
         public boolean AddORUpdate(String id,String name){
             boolean flag = false;
-            List<Map> list = taManagementMapper.selectList();
+            List<Map> list = taManagementMapper.selectscaaccnuitList();
             for(int i=0;i<list.size();i++){
                 String names = list.get(i).get("NAME").toString();
                 if(name.equals(names)) {
