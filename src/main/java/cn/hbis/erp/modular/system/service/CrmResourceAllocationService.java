@@ -9,7 +9,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +27,11 @@ import java.util.List;
 public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocationMapper, CrmResourceAllocation> implements CrmResourceAllocationWrapper {
     @Resource
     private CrmResourceAllocationMapper crmResourceAllocationMapper;
+    /**
+     * 查询合同进度（品种）
+     * @param date
+     * @return
+     */
     public List<Allocation> selSchedule(String date,String flName){
         String month = "";
         String year = "";
@@ -34,9 +41,36 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         }
         month = date.substring(5,7);
         year = date.substring(0,4);
-        return crmResourceAllocationMapper.selSchedule(date,month,year,flName);
+        List<Allocation> lists = new ArrayList<>();
+        List<Allocation> list = crmResourceAllocationMapper.selSchedule(date,month,year,flName);
+        Allocation allocation = null;
+        for (Allocation model : list){
+            allocation = new Allocation();
+            if (model.getPlanNum()==null){
+                allocation.setPlanNum(0);
+                allocation.setSchedule(0.00);
+            }else {
+                allocation.setPlanNum(model.getPlanNum());
+            }
+            if (model.getYield()==null){
+                allocation.setYield(0);
+                allocation.setSchedule(0.00);
+            }else {
+                allocation.setYield(model.getYield());
+            }
+            if (model.getPlanNum()!=null && model.getYield()!=null){
+                allocation.setSchedule(new BigDecimal((float)model.getYield()/model.getPlanNum()).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue());
+            }
+            allocation.setPzName(model.getPzName());
+            lists.add(allocation);
+        }
+        return lists;
     }
-
+    /**
+     * 查询合同进度（产线）
+     * @param date
+     * @return
+     */
     public List<Allocation> selScheduleByCx(String date,String sort,String flName){
         String month = "";
         String year = "";
@@ -51,6 +85,108 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         }else {
             sort = "ASC";
         }
-        return crmResourceAllocationMapper.selScheduleByCx(date,month,year,sort,flName);
+        List<Allocation> lists = new ArrayList<>();
+        List<Allocation> list = crmResourceAllocationMapper.selScheduleByCx(date,month,year,sort,flName);
+        Allocation allocation = null;
+        for (Allocation model : list){
+            allocation = new Allocation();
+            if (model.getPlanNum()==null){
+                allocation.setPlanNum(0);
+                allocation.setSchedule(0.00);
+            }else {
+                allocation.setPlanNum(model.getPlanNum());
+            }
+            if (model.getYield()==null){
+                allocation.setYield(0);
+                allocation.setSchedule(0.00);
+            }else {
+                allocation.setYield(model.getYield());
+            }
+            allocation.setSchedule(model.getSchedule());
+            allocation.setCxName(model.getCxName());
+            lists.add(allocation);
+        }
+        return lists;
+    }
+
+    /**
+     * 查询合同进度（公司）
+     * @param date
+     * @return
+     */
+    public List<Allocation> selCompany(String date){
+        String month = "";
+        String year = "";
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
+        if (ToolUtil.isEmpty(date)){
+            date = df.format(new Date()).toString();
+        }
+        month = date.substring(5,7);
+        year = date.substring(0,4);
+
+        List<Allocation> lists = new ArrayList<>();
+        List<Allocation> list = crmResourceAllocationMapper.selCompany(date,month,year);
+        Allocation allocation = null;
+        for (Allocation model : list){
+            allocation = new Allocation();
+            if (model.getPlanNum()==null){
+                allocation.setPlanNum(0);
+                allocation.setSchedule(0.00);
+            }else {
+                allocation.setPlanNum(model.getPlanNum());
+            }
+            if (model.getYield()==null){
+                allocation.setYield(0);
+                allocation.setSchedule(0.00);
+            }else {
+                allocation.setYield(model.getYield());
+            }
+            if (model.getPlanNum()!=null && model.getYield()!=null){
+                allocation.setSchedule(new BigDecimal((float)model.getYield()/model.getPlanNum()).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue());
+            }
+            allocation.setCompanyName(model.getCompanyName());
+            lists.add(allocation);
+        }
+        return lists;
+    }
+    /**
+     * 查询合同进度详细（公司）
+     * @param date
+     * @return
+     */
+    public List<Allocation> selByCompany(String date,String companyName){
+        String month = "";
+        String year = "";
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
+        if (ToolUtil.isEmpty(date)){
+            date = df.format(new Date()).toString();
+        }
+        month = date.substring(5,7);
+        year = date.substring(0,4);
+
+        List<Allocation> lists = new ArrayList<>();
+        List<Allocation> list = crmResourceAllocationMapper.selByCompany(date,month,year,companyName);
+        Allocation allocation = null;
+        for (Allocation model : list){
+            allocation = new Allocation();
+            if (model.getPlanNum()==null){
+                allocation.setPlanNum(0);
+                allocation.setSchedule(0.00);
+            }else {
+                allocation.setPlanNum(model.getPlanNum());
+            }
+            if (model.getYield()==null){
+                allocation.setYield(0);
+                allocation.setSchedule(0.00);
+            }else {
+                allocation.setYield(model.getYield());
+            }
+            if (model.getPlanNum()!=null && model.getYield()!=null){
+                allocation.setSchedule(new BigDecimal((float)model.getYield()/model.getPlanNum()).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue());
+            }
+            allocation.setFlName(model.getFlName());
+            lists.add(allocation);
+        }
+        return lists;
     }
 }
