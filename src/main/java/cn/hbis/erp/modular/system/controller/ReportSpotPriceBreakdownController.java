@@ -43,6 +43,7 @@ public class ReportSpotPriceBreakdownController {
             @ApiImplicitParam(name = "endMonth" ,value = "记录日期",dataType ="String" ),
             @ApiImplicitParam(name = "company" ,value = "钢厂",dataType ="String" )
     })
+    @Async
     @PostMapping(value = "list")
     @Async
     public Map list(String endMonth, String company) {
