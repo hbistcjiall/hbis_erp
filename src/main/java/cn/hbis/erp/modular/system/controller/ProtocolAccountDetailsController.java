@@ -1,6 +1,5 @@
 package cn.hbis.erp.modular.system.controller;
 
-import cn.hbis.erp.config.properties.HbisProperties;
 import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.util.ExcelNewUtil;
 import cn.hbis.erp.core.util.ExcelUtil;
@@ -22,9 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -38,15 +36,12 @@ import java.util.*;
 @RequestMapping("/protocolAccountDetails")
 public class ProtocolAccountDetailsController extends BaseController {
 
-    private static String PREFIX = "/modular/system/protocolAccountDetails";
     private static String EXPORT_XLSX_FILE_SUFFIX = ".xlsx";
     @Autowired
     private ProtocolAccountDetailsService protocolAccountDetailsService;
-    @Autowired
-    private HbisProperties hbisProperties;
 
     /**
-     * 获取所有部门列表
+     * 查询协议户明细列表
      *
      *
      */
@@ -163,12 +158,12 @@ public class ProtocolAccountDetailsController extends BaseController {
             @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
     })
     @PostMapping(value = "exportlist")
-    public void exportlist(String varieties, String beginTime, String endTime, String protocolYear, String steelMills, String limit, String page) {
+    public void exportlist(String varieties, String beginTime, String endTime, String protocolYear, String steelMills, String limit, String page, HttpServletResponse response) {
         Page<Map<String, Object>> protocolAccounts = protocolAccountDetailsService.searchList(varieties, beginTime, endTime, protocolYear, steelMills);
         List<Map<String, Object>> list=new ArrayList<>();
         List<Map<String,Object>> resultList = protocolAccounts.getRecords();
         DateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        for(int i = 0; i < protocolAccounts.getSize(); i++) {
+        for(int i = 0; i < resultList.size(); i++) {
             Map<String,Object> map = resultList.get(i);
             Map<String, Object> temp = new HashMap<>();
             temp.put("uploadTime", format2.format(map.get("UPLOADTIME")));
@@ -215,10 +210,18 @@ public class ProtocolAccountDetailsController extends BaseController {
         filename.append("协议户明细列表");
         filename.append(format1.format(new Date()));
         filename.append(EXPORT_XLSX_FILE_SUFFIX);
+        OutputStream out = null;
         try {
-            FileOutputStream out = new FileOutputStream("D:/"+filename.toString());
-            exportXlsx(out,filename.toString(),listmap,list,mergeCols,colOrder);
+            //web浏览通过MIME类型判断文件是excel类型
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-disposition", "attachment;filename=" + new String(filename.toString().getBytes("UTF-8"), "ISO8859-1"));
+            out = response.getOutputStream();
+            exportXlsx(out,filename.toString(),listmap,list,mergeCols,colOrder,response);
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -248,7 +251,7 @@ public class ProtocolAccountDetailsController extends BaseController {
         return map;
     }
 
-    private void exportXlsx(FileOutputStream out,String fileName,List<Map<String, Object>> headListMap,List<Map<String, Object>> dataListMap,String[] mergeCols,String[] colOrder) {
+    private void exportXlsx(OutputStream out,String fileName,List<Map<String, Object>> headListMap,List<Map<String, Object>> dataListMap,String[] mergeCols,String[] colOrder, HttpServletResponse response) {
         XSSFWorkbook wb = new XSSFWorkbook();
         try {
             Map<String,Object> map=new HashMap<String,Object>();
