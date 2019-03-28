@@ -145,13 +145,15 @@ public class ExcelUtil {
                 }
                 Row row = null;
                 Cell cell = null;
+                Object cellValue = null;
                 for (int i = sheet.getFirstRowNum() + 1; i < sheet.getPhysicalNumberOfRows(); i++) {
                     row = sheet.getRow(i);
                     T t = cls.newInstance();
                     for (int j = row.getFirstCellNum(); j < row.getLastCellNum(); j++) {
                         cell = row.getCell(j);
+                     if (cell!=null){
                         if (reflectionMap.containsKey(j)) {
-                            Object cellValue = getCellValue(cell);
+                            cellValue = getCellValue(cell);
                             List<Field> fieldList = reflectionMap.get(j);
                             for (Field field : fieldList) {
                                 try {
@@ -161,7 +163,8 @@ public class ExcelUtil {
                                 }
                             }
                         }
-                    }
+                        }
+                     }
                     dataList.add(t);
                 }
             }

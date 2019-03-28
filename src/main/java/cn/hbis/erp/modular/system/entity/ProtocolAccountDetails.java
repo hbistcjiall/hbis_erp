@@ -1,5 +1,6 @@
 package cn.hbis.erp.modular.system.entity;
 
+import cn.hbis.erp.core.util.ExcelColumn;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
@@ -35,44 +36,55 @@ public class ProtocolAccountDetails implements Serializable {
      */
     @TableField("PROTOCOL_YEAR")
     private String protocolYear;
+
+    @ExcelColumn("序号")
+    private String sort;
     /**
      * 用户名称（全称）
      */
+    @ExcelColumn("用户名称（全称）")
     @TableField("ACCOUNT_NAME")
     private String accountName;
     /**
      * 供货方式
      */
+    @ExcelColumn("供货方式")
     @TableField("SUPPLY_MODE")
     private String supplyMode;
     /**
      * 品种
      */
+    @ExcelColumn("品种")
     @TableField("VARIETIES")
     private String varieties;
     /**
      * 主销售区域
      */
+    @ExcelColumn("主销售区域")
     @TableField("MAIN_SALES_REGIONAL")
     private String mainSalesRegional;
     /**
      * 辅助销售区域一
      */
+    @ExcelColumn("辅助销售区域一")
     @TableField("AIDED_SALES_REGIONAL_ONE")
     private String aidedSalesRegionalOne;
     /**
      * 辅助销售区域二
      */
+    @ExcelColumn("辅助销售区域二")
     @TableField("AIDED_SALES_REGIONAL_TWO")
     private String aidedSalesRegionalTwo;
     /**
      * 钢厂
      */
+    @ExcelColumn("钢厂")
     @TableField("STEEL_MILLS")
     private String steelMills;
     /**
      * 年协议量（吨）
      */
+    @ExcelColumn("年协议量")
     @TableField("ANNUAL_AGREEMENT_VOLUME")
     private String annualAgreementVolume;
     /**
