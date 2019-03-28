@@ -5765,3 +5765,81 @@ java.lang.NullPointerException: null
 2019-03-26 23:52:27.294  INFO 661 --- [Thread-35] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
 2019-03-26 23:52:27.296  INFO 661 --- [Thread-35] a.s.s.m.AbstractValidatingSessionManager : Disabled session validation scheduler.
 2019-03-26 23:52:27.297  INFO 661 --- [Thread-35] o.s.c.ehcache.EhCacheManagerFactoryBean  : Shutting down EhCache CacheManager
+2019-03-28 20:35:57.663  INFO 927 --- [restartedMain] cn.hbis.erp.HbisApplication              : Starting HbisApplication on localhost with PID 927 (/Users/jiarsi/Documents/GitHub/hbis_erp/target/classes started by jiarsi in /Users/jiarsi/Documents/GitHub/hbis_erp)
+2019-03-28 20:35:57.667  INFO 927 --- [restartedMain] cn.hbis.erp.HbisApplication              : The following profiles are active: dev
+2019-03-28 20:35:57.840  INFO 927 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2019-03-28 20:35:57.841  INFO 927 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2019-03-28 20:36:00.158  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'shiroConfig' of type [cn.hbis.erp.config.web.ShiroConfig$$EnhancerBySpringCGLIB$$c03ba6f] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.208  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'rememberMeCookie' of type [org.apache.shiro.web.servlet.SimpleCookie] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.355  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'rememberMeManager' of type [org.apache.shiro.web.mgt.CookieRememberMeManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.359  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'ehCacheConfig' of type [cn.hbis.erp.config.EhCacheConfig$$EnhancerBySpringCGLIB$$3a3db0b7] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.364  INFO 927 --- [restartedMain] o.s.c.ehcache.EhCacheManagerFactoryBean  : Initializing EhCache CacheManager
+2019-03-28 20:36:00.539  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'ehcache' of type [org.springframework.cache.ehcache.EhCacheManagerFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.542  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'getCacheShiroManager' of type [org.apache.shiro.cache.ehcache.EhCacheManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.569  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'hbisProperties' of type [cn.hbis.erp.config.properties.HbisProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.583  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'defaultWebSessionManager' of type [org.apache.shiro.web.session.mgt.DefaultWebSessionManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.609  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'shiroDbRealm' of type [cn.hbis.erp.core.shiro.ShiroDbRealm] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.610  INFO 927 --- [restartedMain] o.a.shiro.cache.ehcache.EhCacheManager   : Cache with name 'cn.hbis.erp.core.shiro.ShiroDbRealm.authorizationCache' does not yet exist.  Creating now.
+2019-03-28 20:36:00.624  INFO 927 --- [restartedMain] o.a.shiro.cache.ehcache.EhCacheManager   : Added EhCache named [cn.hbis.erp.core.shiro.ShiroDbRealm.authorizationCache]
+2019-03-28 20:36:00.626  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'securityManager' of type [org.apache.shiro.web.mgt.DefaultWebSecurityManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.629  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'methodInvokingFactoryBean' of type [org.springframework.beans.factory.config.MethodInvokingFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.644  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'webConfig' of type [cn.hbis.erp.config.web.WebConfig$$EnhancerBySpringCGLIB$$c912c1f2] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.688  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'authorizationAttributeSourceAdvisor' of type [org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.691  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'druidStatPointcut' of type [org.springframework.aop.support.JdkRegexpMethodPointcut] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.698  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'druidStatInterceptor' of type [com.alibaba.druid.support.spring.stat.DruidStatInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.700  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'druidStatAdvisor' of type [org.springframework.aop.support.DefaultPointcutAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:00.773  INFO 927 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$ffd2080b] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-03-28 20:36:01.715  INFO 927 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8081 (http)
+2019-03-28 20:36:01.743  INFO 927 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-03-28 20:36:01.744  INFO 927 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/9.0.13
+2019-03-28 20:36:01.754  INFO 927 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/jiarsi/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2019-03-28 20:36:01.850  INFO 927 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-03-28 20:36:01.851  INFO 927 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 4010 ms
+2019-03-28 20:36:02.376  INFO 927 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-03-28 20:36:02.604  INFO 927 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2019-03-28 20:36:04.987  INFO 927 --- [restartedMain] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2019-03-28 20:36:07.937  INFO 927 --- [restartedMain] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2019-03-28 20:36:08.112  INFO 927 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2019-03-28 20:36:08.341  INFO 927 --- [restartedMain] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2019-03-28 20:36:08.359  INFO 927 --- [restartedMain] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2019-03-28 20:36:08.396  INFO 927 --- [restartedMain] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2019-03-28 20:36:08.888  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: deleteUsingPOST_1
+2019-03-28 20:36:08.919  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: addUsingPOST_1
+2019-03-28 20:36:08.922  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: deleteUsingPOST_2
+2019-03-28 20:36:08.925  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: listUsingPOST_1
+2019-03-28 20:36:08.930  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: detailUsingPOST_1
+2019-03-28 20:36:08.933  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: listUsingPOST_2
+2019-03-28 20:36:08.945  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: listUsingPOST_3
+2019-03-28 20:36:08.951  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: addUsingPOST_2
+2019-03-28 20:36:08.958  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: listUsingPOST_4
+2019-03-28 20:36:08.974  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: deleteUsingPOST_3
+2019-03-28 20:36:08.979  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: listUsingPOST_5
+2019-03-28 20:36:08.982  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: updateUsingPOST_1
+2019-03-28 20:36:08.987  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: deleteUsingPOST_4
+2019-03-28 20:36:08.989  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: deleteUsingPOST_5
+2019-03-28 20:36:08.990  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: detailUsingPOST_2
+2019-03-28 20:36:09.022  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: listUsingPOST_6
+2019-03-28 20:36:09.026  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: deleteUsingPOST_6
+2019-03-28 20:36:09.035  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: insertUsingPOST_1
+2019-03-28 20:36:09.045  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: listUsingPOST_7
+2019-03-28 20:36:09.051  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: updateUsingPOST_2
+2019-03-28 20:36:09.096  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: listUsingPOST_8
+2019-03-28 20:36:09.213  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: deleteUsingPOST_7
+2019-03-28 20:36:09.216  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: insertUsingPOST_2
+2019-03-28 20:36:09.219  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: listUsingPOST_9
+2019-03-28 20:36:09.220  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: updateUsingPOST_3
+2019-03-28 20:36:09.265  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: deleteUsingPOST_8
+2019-03-28 20:36:09.267  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: selaccountmanagerUsingPOST_1
+2019-03-28 20:36:09.276  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: addUsingPOST_3
+2019-03-28 20:36:09.279  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: deleteUsingPOST_9
+2019-03-28 20:36:09.281  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: editUsingPOST_1
+2019-03-28 20:36:09.286  INFO 927 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: listUsingPOST_10
+2019-03-28 20:36:09.354  INFO 927 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-03-28 20:36:09.354  INFO 927 --- [restartedMain] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2019-03-28 20:36:09.377  INFO 927 --- [restartedMain] o.s.web.servlet.DispatcherServlet        : Completed initialization in 22 ms
+2019-03-28 20:36:09.378  INFO 927 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8081 (http) with context path ''
+2019-03-28 20:36:09.383  INFO 927 --- [restartedMain] cn.hbis.erp.HbisApplication              : Started HbisApplication in 12.942 seconds (JVM running for 14.835)
+2019-03-28 20:36:09.389  INFO 927 --- [restartedMain] cn.hbis.erp.HbisApplication              : HbisApplication is success!
+2019-03-28 20:39:27.576  INFO 927 --- [Thread-35] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed
+2019-03-28 20:39:27.578  INFO 927 --- [Thread-35] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2019-03-28 20:39:27.580  INFO 927 --- [Thread-35] o.s.c.ehcache.EhCacheManagerFactoryBean  : Shutting down EhCache CacheManager
