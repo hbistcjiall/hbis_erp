@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hbis.erp.modular.system.mapper.OrderTypePriceTypeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.hbis.erp.modular.system.entity.OrderTypePriceTypeControl">
+        <id column="ORDERPRICEID" property="orderPriceId"/>
+        <result column="VARIETIES" property="varieties"/>
+        <result column="COMPANYID" property="companyId"/>
+        <result column="CONPANYNAME" property="companyName"/>
+        <result column="ORDERTYPE" property="orderType"/>
+        <result column="PRICETYPE" property="priceType"/>
+        <result column="NOTE" property="note"/>
+        <result column="DELETESTATE" property="deleteState"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ORDERPRICEID as orderPriceId, VARIETIES as varieties, COMPANYID as companyId, COMPANYNAME as companyName, ORDERTYPE as orderType, PRICETYPE as priceType, NOTE as note, DELETESTATE as deleteState
+    </sql>
+
+    <select id="List" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from SCM_ORDERTYPE_PRICETYPE where DELETESTATE = '0'
+        <if test="companyId != null and '9727' == companyId">
+            and COMPANYID = '9727' or COMPANYID = '7778'
+        </if>
+        <if test="companyId != null and companyId !=''">
+            and COMPANYID = #{companyId}
+        </if>
+        <if test="varieties != null and '热板' == varieties">
+            and VARIETIES = '热板' or VARIETIES = '酸洗'
+        </if>
+        <if test="varieties != null and '冷板' == varieties">
+            and VARIETIES = '彩涂' or VARIETIES = '冷板' or VARIETIES = '镀锌'
+        </if>
+        <if test="varieties != null and '宽厚板' == varieties">
+            and VARIETIES = '宽厚板'
+        </if>
+        <if test="varieties != null and '棒线' == varieties">
+            and VARIETIES = '钢筋' or VARIETIES = '普线' or VARIETIES = '品种线' or VARIETIES = '优钢' or VARIETIES = '锚杆钢'
+        </if>
+        <if test="varieties != null and'型带' == varieties">
+            and VARIETIES = '角钢' or VARIETIES = '矿用钢'
+        </if>
+        <if test="orderType != null and orderType !=''">
+            and ORDERTYPE like CONCAT(CONCAT('%',#{orderType}),'%')
+        </if>
+        <if test="priceType != null and priceType !=''">
+            and PRICETYPE like CONCAT(CONCAT('%',#{priceType}),'%')
+        </if>
+    </select>
+
+</mapper>

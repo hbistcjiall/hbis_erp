@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hbis.erp.modular.system.mapper.ProtocolNameContractUnitMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.hbis.erp.modular.system.entity.ProtocolNameContractUnit">
+        <id column="NAME_CONTRACT_UNIT_ID" property="nameContractUnitId"/>
+        <result column="ACCOUNTNAME" property="accontName"/>
+        <result column="CONTRACTUNIT" property="contractUnit"/>
+        <result column="NOTE" property="note"/>
+        <result column="DELETESTATE" property="deleteState"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        NAME_CONTRACT_UNIT_ID as nameContractUnitId, ACCOUNTNAME as accontName, CONTRACTUNIT as contractUnit, NOTE as note, DELETESTATE as deleteState
+    </sql>
+
+    <select id="List" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from SCM_PROTOCOLNAME_CONTRACTUNIT where DELETESTATE = '0'
+        <if test="accontName != null and accontName !=''">
+            and ACCOUNTNAME like CONCAT(CONCAT('%',#{accontName}),'%')
+        </if>
+        <if test="contractUnit != null and contractUnit !=''">
+            and CONTRACTUNIT like CONCAT(CONCAT('%',#{contractUnit}),'%')
+        </if>
+    </select>
+
+</mapper>

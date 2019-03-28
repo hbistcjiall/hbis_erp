@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hbis.erp.modular.system.mapper.SalesSubjectMeetingSubjectMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.hbis.erp.modular.system.entity.SalesSubjectMeetingSubjectControl">
+        <id column="ID" property="Id"/>
+        <result column="COMPANY_ID" property="companyId"/>
+        <result column="COMPANY_NAME" property="companyName"/>
+        <result column="SALE_BODY_DES" property="saleBodyDes"/>
+        <result column="SALE_BODY" property="saleBody"/>
+        <result column="IS_DELETE" property="isDelete"/>
+        <result column="GMT_CREATE" property="gmtCrate"/>
+        <result column="GMT_MODIFY" property="gmtModify"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID AS Id, COMPANY_ID AS companyId, COMPANY_NAME AS companyName, SALE_BODY_DES AS saleBodyDes, SALE_BODY AS saleBody, IS_DELETE AS isDelete, GMT_CREATE AS gmtCrate, GMT_MODIFY AS gmtModify
+    </sql>
+
+    <select id="List" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from PRICE_SALEBODY_RELATION where IS_DELETE = '0'
+        <if test="companyId != null and '9727' == companyId">
+            and COMPANY_ID = '9727' or COMPANY_ID = '7778'
+        </if>
+        <if test="companyId != null and companyId !=''">
+            and COMPANY_ID = #{companyId}
+        </if>
+    </select>
+
+    <select id="select" resultType="cn.hbis.erp.modular.system.entity.SalesSubjectMeetingSubjectControl">
+        select
+        <include refid="Base_Column_List"/>
+        from PRICE_SALEBODY_RELATION where Id = #{Id}
+    </select>
+
+
+
+
+</mapper>
