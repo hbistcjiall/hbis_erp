@@ -57,13 +57,14 @@
         data.NAME dName,
         data.full_name fName,
         sum (settle.fkimg) fkimg
-        FROM
-        scm_steel_settle settle
-        LEFT JOIN scm_delivery_detail detail ON settle.aubel = detail.order_no
+        FROM scm_steel_settle settle
+        JOIN scm_delivery_detail detail
+        ON settle.aubel = detail.order_no
         AND settle.aupos = detail.order_item
-        LEFT JOIN crm_resource_data data ON data.name = detail.ext
-        OR data.full_name = detail.ext
-        AND data.TYPE = 3
+        JOIN crm_resource_data data
+        on DATA.TYPE = 3
+        AND DATA.parent_name IS NOT NULL
+        and data.full_name = detail.ext
         WHERE
         1=1
         <if test="date != null and date != ''">
@@ -99,7 +100,6 @@
         FROM
         (
         SELECT
-        PZ_NAME,
         sum (
         CASE
         WHEN #{month} = '01' THEN
@@ -139,20 +139,21 @@
         <if test="flName != null and flName != ''">
             and FL = #{flName}
         </if>
-        group by PZ_NAME,CX_NAME
+        group by CX_NAME
         ) A
         LEFT JOIN (
         SELECT
         data.NAME dName,
         data.full_name fName,
         sum (settle.fkimg) fkimg
-        FROM
-        scm_steel_settle settle
-        LEFT JOIN scm_delivery_detail detail ON settle.aubel = detail.order_no
+        FROM scm_steel_settle settle
+        JOIN scm_delivery_detail detail
+        ON settle.aubel = detail.order_no
         AND settle.aupos = detail.order_item
-        LEFT JOIN crm_resource_data data ON data.name = detail.ext
-        OR data.full_name = detail.ext
-        AND data.TYPE = 3
+        JOIN crm_resource_data data
+        on DATA.TYPE = 3
+        AND DATA.parent_name IS NOT NULL
+        and data.full_name = detail.ext
         WHERE
         1=1
         <if test="date != null and date != ''">
@@ -171,10 +172,10 @@
     </select>
 
     <select id="selCompany" resultType="cn.hbis.erp.modular.system.entity.Allocation">
-      SELECT NVL(A.companyName, '合计') companyName,
+      select * from (SELECT NVL(A.companyName, '合计') companyName,
        SUM(ss.fkimg) as yield,
        SUM(A.planNum) as planNum
-      FROM (SELECT cra.PZ_NAME,
+      FROM (SELECT
                    sum (
                 CASE
                 WHEN #{month} = '01' THEN
@@ -213,18 +214,18 @@
                 </if>
                 and clcr.product_line in
                    (select DISTINCT cx_name from crm_resource_allocation)
-             group by cra.PZ_NAME, cra.CX_NAME,clcr.company_name) A
+             group by cra.CX_NAME,clcr.company_name) A
       LEFT JOIN (SELECT data.NAME dName,
                         data.full_name fName,
                         SUM(settle.fkimg) fkimg
-                   FROM scm_steel_settle settle
-                   LEFT JOIN scm_delivery_detail detail
-                     ON settle.aubel = detail.order_no
-                    AND settle.aupos = detail.order_item
-                   LEFT JOIN crm_resource_data data
-                     ON data.name = detail.ext
-                     OR data.full_name = detail.ext
-                    AND data.TYPE = 3
+                FROM scm_steel_settle settle
+                JOIN scm_delivery_detail detail
+                ON settle.aubel = detail.order_no
+                AND settle.aupos = detail.order_item
+                JOIN crm_resource_data data
+                on DATA.TYPE = 3
+                AND DATA.parent_name IS NOT NULL
+                and data.full_name = detail.ext
                   WHERE 1 = 1
                     <if test="date != null and date != ''">
                         and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
@@ -233,14 +234,15 @@
                   GROUP BY DATA . NAME, DATA.full_name) ss
         ON A.CX_NAME = ss.dName
         OR A.CX_NAME = ss.fName
-     GROUP BY ROLLUP(A.companyName)
+     GROUP BY ROLLUP(A.companyName))
+        order by decode(companyName,'合计',1,'唐钢',2,'邯钢',3,'宣钢',4,'承钢',5,'舞钢',6)
     </select>
     <select id="selByCompany" resultType="cn.hbis.erp.modular.system.entity.Allocation">
       select * from (
         SELECT a.flName flName,
        SUM(ss.fkimg) as yield,
        SUM(A.planNum) as planNum
-      FROM (SELECT cra.PZ_NAME,
+      FROM (SELECT
                    sum (
             CASE
             WHEN #{month} = '01' THEN
@@ -269,8 +271,8 @@
             DEC_MONTH
             END
             ) planNum,
-                   cra.CX_NAME,
-                   cra.fl_name flName
+               cra.CX_NAME,
+               cra.fl_name flName
               FROM crm_resource_allocation cra,
               crm_line_class_relation clcr
               WHERE 1 = 1
@@ -282,18 +284,18 @@
             <if test="companyName != null and companyName != ''">
                 and clcr.company_name = #{companyName}
             </if>
-             group by cra.PZ_NAME, cra.CX_NAME,clcr.company_name，cra.fl_name) A
+             group by cra.CX_NAME,cra.fl_name) A
       LEFT JOIN (SELECT data.NAME dName,
                         data.full_name fName,
                         SUM(settle.fkimg) fkimg
-                   FROM scm_steel_settle settle
-                   LEFT JOIN scm_delivery_detail detail
-                     ON settle.aubel = detail.order_no
-                    AND settle.aupos = detail.order_item
-                   LEFT JOIN crm_resource_data data
-                     ON data.name = detail.ext
-                     OR data.full_name = detail.ext
-                    AND data.TYPE = 3
+                FROM scm_steel_settle settle
+                JOIN scm_delivery_detail detail
+                ON settle.aubel = detail.order_no
+                AND settle.aupos = detail.order_item
+                JOIN crm_resource_data data
+                on DATA.TYPE = 3
+                AND DATA.parent_name IS NOT NULL
+                and data.full_name = detail.ext
                   WHERE 1 = 1
                     <if test="date != null and date != ''">
                         and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
@@ -302,7 +304,7 @@
                   GROUP BY DATA . NAME, DATA.full_name) ss
         ON A.CX_NAME = ss.dName
         OR A.CX_NAME = ss.fName
-     GROUP BY a.flName)
-        order by decode(pzName,'销售总公司',1,'技术中心、事业部',2,'出口',3,'现货',4,'子公司其他',5,'品种钢',6)
+        GROUP BY a.flName)
+        order by decode(flName,'销售总公司',1,'技术中心、事业部',2,'出口',3,'现货',4,'子公司其他',5,'品种钢',6)
     </select>
 </mapper>
