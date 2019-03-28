@@ -195,23 +195,54 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         public List<Map> salesmain( String name){
             List<Map> list = targetManagementMapper.salesmain(name);
             List<Map> su = targetManagementMapper.salesmainsum(name);
+            String  sum = "0";
+            if(su.size()>0){
             Map map = su.get(0);
-            String  sum =String.valueOf( map.get("ZYFKIMG"));
+            if(map!=null){
+                sum = String.valueOf( map.get("ZYFKIMG"));
+            }
+            }
             double  sums = Double.parseDouble(sum);
             Map type = new HashMap();
             type.put("COMPANYNAME","集团产销资源总量");
             type.put("ZYFKIMG",sums);
             List<Map> newlist = new ArrayList<>();
             newlist.add(type);
-            for(int i=0;i<list.size();i++){
-                Map ma = list.get(i);
-                String mi =String.valueOf( ma.get("ZYFKIMG"));
-                double  mis = Double.parseDouble(mi);
-                double bi = mis/sums;
-                String result = String.valueOf(bi*100).substring(0,4);
-                ma.put("BILI",result);
-                newlist.add(ma);
-
+            if(list.size()>0) {
+                for (int i = 0; i < list.size(); i++) {
+                    Map ma = list.get(i);
+                    String mi = String.valueOf(ma.get("ZYFKIMG"));
+                    double mis = Double.parseDouble(mi);
+                    double bi = mis / sums;
+                    if(bi>0){
+                        String result = String.valueOf(bi * 100).substring(0, 4);
+                        ma.put("BILI", result);
+                        newlist.add(ma);
+                    }else{
+                        ma.put("BILI", "0");
+                        newlist.add(ma);
+                    }
+                }
+            }else{
+                Map m = new HashMap();
+                m.put("COMPANYNAME","技术中心");
+                m.put("ZYFKIMG",0);
+                m.put("BILI","0");
+                Map m1 = new HashMap();
+                m1.put("COMPANYNAME","出口");
+                m1.put("ZYFKIMG",0);
+                m1.put("BILI","0");
+                Map m2 = new HashMap();
+                m2.put("COMPANYNAME","子公司");
+                m2.put("ZYFKIMG",0);
+                m2.put("BILI","0");
+                Map m3 = new HashMap();
+                m3.put("COMPANYNAME","销售公司资");
+                m3.put("ZYFKIMG",0);
+                m3.put("BILI","0");
+                newlist.add(m1);
+                newlist.add(m2);
+                newlist.add(m3);
             }
             return  newlist;
         }
@@ -219,6 +250,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         @Async
         public List<Map> mills(String name) {
             List<Map> sum = targetManagementMapper.Steelmillssum(name);
+            List<Map> newlist =  new ArrayList<Map>();
             Map map = sum.get(0);
             double jhs = 0;
             double xhs = 0;
@@ -233,28 +265,75 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 xhs = 0;
             }
             Map mills = new HashMap();
-            mills.put("companyname", "集团");
+            mills.put("COMPANYNAME", "集团");
             mills.put("JH", jhs);
             mills.put("XH", xhs);
+            newlist.add(mills);
             List<Map> list = targetManagementMapper.Steelmillsplan(name);
-            list.add(mills);
-            return list;
+            if(list().size()>0){
+
+                for(int i=0;i<list.size();i++){
+                    newlist.add(list.get(i));
+                }
+            }else{
+                Map m = new HashMap();
+                m.put("XH",0);
+                m.put("COMPANYNAME", "唐钢");
+                m.put("JH", 0);
+                Map m1 = new HashMap();
+                m1.put("XH",0);
+                m1.put("COMPANYNAME", "邯钢");
+                m1.put("JH", 0);
+                Map m2 = new HashMap();
+                m2.put("XH",0);
+                m2.put("COMPANYNAME", "宣钢");
+                m2.put("JH", 0);
+                Map m3 = new HashMap();
+                m3.put("XH",0);
+                m3.put("COMPANYNAME", "承钢");
+                m3.put("JH", 0);
+                Map m4 = new HashMap();
+                m4.put("XH",0);
+                m4.put("COMPANYNAME", "舞钢");
+                m4.put("JH", 0);
+                Map m5 = new HashMap();
+                m5.put("XH",0);
+                m5.put("COMPANYNAME", "石钢");
+                m5.put("JH", 0);
+                Map m6 = new HashMap();
+                m6.put("XH",0);
+                m6.put("COMPANYNAME", "衡板");
+                m6.put("JH", 0);
+                newlist.add(m);
+                newlist.add(m1);
+                newlist.add(m2);
+                newlist.add(m3);
+                newlist.add(m4);
+                newlist.add(m5);
+                newlist.add(m6);
+            }
+
+            return newlist;
         }
         //第三个
         @Async
         public List<Map> typesa(String name){
             List<Map> sum = targetManagementMapper.typessum(name);
             Map map = sum.get(0);
-            String  jsl = "";
-            String pzgl = "";
-            String  nmb = "";
-            if(map.get("JSL")!=null){
-                jsl = map.get("JSL").toString();
+            String  jsl = "0";
+            String pzgl = "0";
+            String  nmb = "0";
+            if(map!=null) {
+                if (map.get("JSL") != null) {
+                    jsl = map.get("JSL").toString();
+                }
+                if (map.get("PZGL") != null) {
+                    pzgl = map.get("PZGL").toString();
+                }
+                if (map.get("NMB") != null) {
+                    nmb = map.get("NMB").toString();
+                }
             }
-            if(map.get("PZGL")!=null){
-                pzgl = map.get("PZGL").toString();}
-            if(map.get("NMB")!=null){
-                nmb = map.get("NMB").toString();}
             double a = Double.parseDouble(nmb);
             double b=Double.parseDouble(jsl);
             double c=Double.parseDouble(pzgl);
@@ -265,25 +344,60 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             type.put("JSL",b);
             type.put("PZGL",c);
             type.put("BILI",result+"%");
+            List<Map> newlist = new ArrayList<>();
+            newlist.add(type);
             List<Map> list = targetManagementMapper.typeselect(name);
-            for (int i=0;i<list.size();i++){
-                Map m1=list.get(i);
-                String bili = m1.get("BILI").toString();
-                m1.put("BILI",bili+"%");
+            if(list.size()>0) {
+                for (int i = 0; i < list.size(); i++) {
+                    Map m1 = list.get(i);
+                    String bili = m1.get("BILI").toString();
+                    m1.put("BILI", bili + "%");
+                    newlist.add(m1);
+                }
+            }else{
+                Map ma = new HashMap();
+                ma.put("NAME","热板");
+                ma.put("JSL",0);
+                ma.put("PZGL",0);
+                ma.put("BILI","0%");
+                Map ma1 = new HashMap();
+                ma1.put("NAME","冷板");
+                ma1.put("JSL",0);
+                ma1.put("PZGL",0);
+                ma1.put("BILI","0%");
+                Map ma2 = new HashMap();
+                ma2.put("NAME","宽厚板");
+                ma2.put("JSL",0);
+                ma2.put("PZGL",0);
+                ma2.put("BILI","0%");
+                Map ma3 = new HashMap();
+                ma3.put("NAME","棒线");
+                ma3.put("JSL",0);
+                ma3.put("PZGL",0);
+                ma3.put("BILI","0%");
+                Map ma4 = new HashMap();
+                ma4.put("NAME","型带");
+                ma4.put("JSL",0);
+                ma4.put("PZGL",0);
+                ma4.put("BILI","0%");
+                newlist.add(ma);
+                newlist.add(ma1);
+                newlist.add(ma2);
+                newlist.add(ma3);
+                newlist.add(ma4);
             }
-            list.add(type);
-            return list;
 
+            return newlist;
 
-        }
+            }
         //第四个
         @Async
         public List<Map> settl(String name){
             List<Map> sum = targetManagementMapper.Steelsum(name);
             Map map = sum.get(0);
-            double jhs = 0;
-            double jsls = 0;
-            double pzgls=0;
+            double jhs = 0.0;
+            double jsls = 0.0;
+            double pzgls=0.0;
             double bi = 0;
             String  jh ="";
             String jsl ="";
@@ -300,13 +414,13 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 pzgl="0";
             }
             if(jh!=null&&!jh.equals("null")&&!jh.equals("")){
-                  jh =  map.get("JH").toString();
+                jh =  map.get("JH").toString();
             }
             if(jsl!=null&&!jsl.equals("null")&&!jsl.equals("")){
-                 jsl =  map.get("JSL").toString();
+                jsl =  map.get("JSL").toString();
             }
             if(pzgl!=null&&!pzgl.equals("null")&&!pzgl.equals("")){
-                   pzgl =  map.get("PZGL").toString();
+                pzgl =  map.get("PZGL").toString();
             }
             if (jh != null && !jh.equals("") &&!jh.equals("null")) {
                 jhs = Double.parseDouble(jh);
@@ -333,13 +447,59 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             type.put("JSL",jsls);
             type.put("BILI",result+"%");
             List<Map> list = targetManagementMapper.Steellist(name);
-            for (int i=0;i<list.size();i++){
-                String m1= list.get(i).get("BILI").toString();
-                list.get(i).put("BILI",m1+"%");
+            List<Map> newlist =new ArrayList<>();
+            newlist.add(type);
+            if(list.size()>0){
+                for (int i=0;i<list.size();i++){
+                    String m1= list.get(i).get("BILI").toString();
+                    list.get(i).put("BILI",m1+"%");
+                    newlist.add(list.get(i));
+                }
+            }else{
+                Map m =  new HashMap();
+                m.put("COMPANYNAME","唐钢");
+                m.put("PZGL",0);
+                m.put("JSL",0);
+                m.put("BILI","0%");
+                Map m11 =  new HashMap();
+                m11.put("COMPANYNAME","邯钢");
+                m11.put("PZGL",0);
+                m11.put("JSL",0);
+                m11.put("BILI","0%");
+                Map m1 =  new HashMap();
+                m1.put("COMPANYNAME","宣钢");
+                m1.put("PZGL",0);
+                m1.put("JSL",0);
+                m1.put("BILI","0%");
+                Map m2 =  new HashMap();
+                m2.put("COMPANYNAME","承钢");
+                m2.put("PZGL",0);
+                m2.put("JSL",0);
+                m2.put("BILI","0%");
+                Map m3 =  new HashMap();
+                m3.put("COMPANYNAME","舞钢");
+                m3.put("PZGL",0);
+                m3.put("JSL",0);
+                m3.put("BILI","0%");
+                Map m4 =  new HashMap();
+                m4.put("COMPANYNAME","石钢");
+                m4.put("PZGL",0);
+                m4.put("JSL",0);
+                m4.put("BILI","0%");
+                Map m5 =  new HashMap();
+                m5.put("COMPANYNAME","衡板");
+                m5.put("PZGL",0);
+                m5.put("JSL",0);
+                m5.put("BILI","0%");
+                newlist.add(m);
+                newlist.add(m11);
+                newlist.add(m1);
+                newlist.add(m2);
+                newlist.add(m3);
+                newlist.add(m4);
+                newlist.add(m5);
             }
-            list.add(type);
-            return list;
-
+            return newlist;
         }
 
 

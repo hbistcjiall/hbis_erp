@@ -4,6 +4,7 @@ import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.modular.system.service.AccountabilityUnitManageService;
 import cn.hbis.erp.modular.system.warpper.AccountabilityUnitManageWrapper;
 import cn.stylefeng.roses.core.base.controller.BaseController;
+import cn.stylefeng.roses.core.reqres.response.ResponseData;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -41,29 +42,17 @@ public class AccountabilityUnitManageController extends BaseController {
                     @ApiImplicitParam(name = "companyname" ,value = "责任公司名称",dataType ="String" ),
                     @ApiImplicitParam(name = "id" ,value = "责任公司Id",dataType ="String" )
             })
-            public Map addORUpdate(String companyname,String id){
-                Map map = new HashMap();
+            public ResponseData addORUpdate(String companyname, String id){
                 boolean flag = accManageService.AddORUpdate(id,companyname);
-                if(flag){
-                    map.put("massage","添加或修改成功");
-                }else{
-                    map.put("massage","添加或修改失败");
-                }
-                return map;
+                return SUCCESS_TIP;
             }
             @ApiOperation(value = "责任公司逻辑删除")
             @PostMapping("/delmanager")
             @ApiImplicitParams({
                     @ApiImplicitParam(name = "id" ,value = "责任公司Id",dataType ="String" )
             })
-            public Map delete(String id){
-                Map map = new HashMap();
+            public ResponseData delete(String id){
                 boolean flag = accManageService.delete(id);
-                if(flag){
-                    map.put("massage","删除成功");
-                }else{
-                    map.put("massage","删除失败");
-                }
-                return map;
+                return SUCCESS_TIP;
             }
 }

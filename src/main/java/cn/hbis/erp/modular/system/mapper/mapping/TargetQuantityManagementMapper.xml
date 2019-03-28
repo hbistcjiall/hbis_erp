@@ -41,6 +41,7 @@
         from SCM_TARGET_QUANTITY_MANAGEMENT
         where DELETESTATUS = '0' ORDER BY RESPONSIBILITY_UNIT
     </select>
+
 	<select id="typeselect" resultType="map">
 		SELECT
 		"NAME",
@@ -275,20 +276,12 @@
 		on jk.CX_NAME = cb.companyname
 		ORDER BY  decode(cb.companyname,
 		'唐钢',
-		'唐钢',
-		'邯钢',
 		'邯钢',
 		'宣钢',
-		'宣钢',
-		'承钢',
 		'承钢',
 		'舞钢',
-		'舞钢',
-		'石钢',
 		'石钢',
 		'衡板',
-		'衡板',
-		'邯宝',
 		'邯宝')
 	</select>
 	<select id="Steelmillssum" resultType="map">
@@ -956,7 +949,7 @@
 
 	<select id="salesmainsum" resultType="map">
 		select
-		"SUM"(zyfkimg) zyfkimg
+		NVL("SUM"(zyfkimg),0) zyfkimg
 		from
 		(SELECT settle.company_id,
 		xsztdzb.sale_body,
@@ -1011,7 +1004,7 @@
 		or xsztdzb.sale_body = '出口'
 		or xsztdzb.sale_body = '技术中心/市场部'
 		<if test="name != null and name !=''">
-			AND  cra.PZ_NAME = #{name}
+			AND cra.PZ_NAME = #{name}
 		</if>
 
 		GROUP BY settle.company_id, xsztdzb.sale_body

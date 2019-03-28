@@ -4,6 +4,7 @@ import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.modular.system.service.SettingService;
 import cn.hbis.erp.modular.system.warpper.SettingsWrapper;
 import cn.stylefeng.roses.core.base.controller.BaseController;
+import cn.stylefeng.roses.core.reqres.response.ResponseData;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -40,16 +41,10 @@ public class SettingsController extends BaseController {
             @ApiImplicitParam(name = "id" ,value = "设置id",dataType ="String" )
 
     })
-    public Map addOrUpdate(String menuid,String id){
+    public ResponseData addOrUpdate(String menuid, String id){
         boolean flag =false;
-        Map map = new HashMap();
         flag = settingService.AdddORupdate(id,menuid);
-        if(flag){
-            map.put("massage","添加或更新成功");
-            return map;
-        }
-       map.put("","添加或更新失败");
-        return map;
+        return SUCCESS_TIP;
     }
     @ApiOperation(value = "删除个人设置")
     @PostMapping("/delsettings")
@@ -57,15 +52,9 @@ public class SettingsController extends BaseController {
             @ApiImplicitParam(name = "id" ,value = "设置id",dataType ="String" )
 
     })
-    public Map del(String id){
+    public ResponseData del(String id){
         boolean flag =false;
-        Map map = new HashMap();
         flag = settingService.delSetting(id);
-        if(flag){
-            map.put("massage","添加或更新成功");
-            return map;
-        }
-        map.put("massage","添加或更新失败");
-        return map;
+        return SUCCESS_TIP;
     }
 }

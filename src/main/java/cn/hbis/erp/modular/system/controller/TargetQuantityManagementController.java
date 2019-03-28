@@ -5,6 +5,7 @@ import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.modular.system.service.TargetQuantityManagementService;
 import cn.hbis.erp.modular.system.warpper.TargetQuantityManagementWrapper;
 import cn.stylefeng.roses.core.base.controller.BaseController;
+import cn.stylefeng.roses.core.reqres.response.ResponseData;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -44,15 +45,10 @@ public class TargetQuantityManagementController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id" ,value = "责任公司Id",dataType ="String" )
     })
-    public Map delete(String id){
-        Map map = new HashMap();
+    public ResponseData delete(String id){
         boolean flag = targetService.delete(id);
-        if(flag){
-            map.put("massage","删除成功");
-        }else{
-            map.put("massage","删除失败");
-        }
-        return map;
+
+        return SUCCESS_TIP;
     }
 
 
@@ -75,15 +71,10 @@ public class TargetQuantityManagementController extends BaseController {
             @ApiImplicitParam(name = "dec" ,value = "十二月",dataType ="String" ),
             @ApiImplicitParam(name = "id" ,value = "责任公司Id",dataType ="String" )
     })
-    public Map addORUpadte(String id,String targetname,String year,String jan,String feb,String mar,String apr,String may,String jun,String jul,String aug,String sep,String oct,String nov,String dec){
-        Map map = new HashMap();
+    public ResponseData addORUpadte(String id, String targetname, String year, String jan, String feb, String mar, String apr, String may, String jun, String jul, String aug, String sep, String oct, String nov, String dec){
         boolean flag = targetService.addORUpadte(id,targetname,year,jan,feb,mar,apr,may,jun,jul,aug,sep,oct,nov,dec);
-        if(flag){
-            map.put("massage","添加或修改成功");
-        }else{
-            map.put("massage","添加或修改失败");
-        }
-        return map;
+
+        return SUCCESS_TIP;
     }
     @ApiOperation(value = "目标量明细无条件查询")
     @PostMapping("/selectlist")
