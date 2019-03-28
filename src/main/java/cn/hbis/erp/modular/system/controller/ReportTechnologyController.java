@@ -4,7 +4,6 @@ import cn.hbis.erp.core.util.DateUtil;
 import cn.hbis.erp.core.util.ExcelNewUtil;
 import cn.hbis.erp.modular.system.entity.ReportVarietySteelBean;
 import cn.hbis.erp.modular.system.service.ReportTechnologyService;
-import cn.stylefeng.roses.core.util.ToolUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -12,14 +11,13 @@ import org.apache.commons.io.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -49,6 +47,7 @@ public class ReportTechnologyController {
             @ApiImplicitParam(name = "queryDate" ,value = "月份",dataType ="String" )
     })
     @PostMapping(value = "subsidiaryVarietySteel")
+    @Async
     public Map subsidiaryVarietySteel(String queryDate){
         Map map = new HashMap();
         if(null == queryDate ||"".equals(queryDate)){
@@ -123,10 +122,19 @@ public class ReportTechnologyController {
         filename.append("子公司品种钢情况");
         filename.append(format1.format(new Date()));
         filename.append(EXPORT_XLSX_FILE_SUFFIX);
+
+        OutputStream out = null;
         try {
-            FileOutputStream out = new FileOutputStream("D:/"+filename.toString());
-            exportXlsx(out,filename.toString(),listmap,list,mergeCols,colOrder);
+            //web浏览通过MIME类型判断文件是excel类型
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-disposition", "attachment;filename=" + new String(filename.toString().getBytes("UTF-8"), "ISO8859-1"));
+            out = response.getOutputStream();
+            exportXlsx(out,filename.toString(),listmap,list,mergeCols,colOrder,response);
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -144,6 +152,7 @@ public class ReportTechnologyController {
             @ApiImplicitParam(name = "queryDate" ,value = "月份",dataType ="String" )
     })
     @PostMapping(value = "itemSubsidiaryVarietySteel")
+    @Async
     public Map subsidiaryVarietySteelItem(String companyId, String queryDate){
         Map map = new HashMap();
         if(null==queryDate||"".equals(queryDate)){
@@ -252,7 +261,7 @@ public class ReportTechnologyController {
         //开始导出
         reportTechnologyManager.exportItemSubsidiaryVarietySteel(query, request, response);
     }*/
-    private void exportXlsx(FileOutputStream out,String fileName,List<Map<String, Object>> headListMap,List<Map<String, Object>> dataListMap,String[] mergeCols,String[] colOrder) {
+    private void exportXlsx(OutputStream out,String fileName,List<Map<String, Object>> headListMap,List<Map<String, Object>> dataListMap,String[] mergeCols,String[] colOrder, HttpServletResponse response) {
         XSSFWorkbook wb = new XSSFWorkbook();
         try {
             Map<String,Object> map=new HashMap<String,Object>();

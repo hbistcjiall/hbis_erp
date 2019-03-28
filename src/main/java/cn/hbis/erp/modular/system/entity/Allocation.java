@@ -6,11 +6,14 @@
 package cn.hbis.erp.modular.system.entity;
 
 public class Allocation {
+    private Integer sort;
     private String pzName;
     private Integer yield;
     private Integer planNum;
     private Double schedule;
     private String cxName;
+    private String companyName;
+    private String flName;
 
     public String getPzName() {
         return pzName;
@@ -50,6 +53,30 @@ public class Allocation {
 
     public void setCxName(String cxName) {
         this.cxName = cxName;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getFlName() {
+        return flName;
+    }
+
+    public void setFlName(String flName) {
+        this.flName = flName;
     }
 }
 

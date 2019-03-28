@@ -273,6 +273,23 @@
 		where FL_NAME = '现货'
 		GROUP BY CX_NAME) jk
 		on jk.CX_NAME = cb.companyname
+		ORDER BY  decode(cb.companyname,
+		'唐钢',
+		'唐钢',
+		'邯钢',
+		'邯钢',
+		'宣钢',
+		'宣钢',
+		'承钢',
+		'承钢',
+		'舞钢',
+		'舞钢',
+		'石钢',
+		'石钢',
+		'衡板',
+		'衡板',
+		'邯宝',
+		'邯宝')
 	</select>
 	<select id="Steelmillssum" resultType="map">
 		select

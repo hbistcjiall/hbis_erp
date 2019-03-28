@@ -1,12 +1,11 @@
 package cn.hbis.erp.modular.system.service;
 
 import cn.hbis.erp.core.common.constant.state.EnumCompany;
-import cn.hbis.erp.core.common.constant.state.EnumSummaryType;
 import cn.hbis.erp.core.util.BigDecimalUtil;
-import cn.hbis.erp.modular.system.entity.ReportCashRate;
 import cn.hbis.erp.modular.system.entity.ReportCashRateSummary;
 import cn.hbis.erp.modular.system.mapper.ReportCashRateMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,6 +38,7 @@ public class ReportCashRateService extends ServiceImpl<ReportCashRateMapper, Rep
      * @return List<ReportCashRateSummary>
      * @throws
      */
+    @Async
     public List<ReportCashRateSummary> getCashRateSummary(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
         DecimalFormat df = new DecimalFormat("#.00");
         List<ReportCashRateSummary> list = null;
@@ -133,6 +133,7 @@ public class ReportCashRateService extends ServiceImpl<ReportCashRateMapper, Rep
     /**
      * @Description 兑现率曲线
      */
+    @Async
     public List<ReportCashRateSummary> getCashRateCurve(String companyId,String recordDate, String summaryType) {
         List<ReportCashRateSummary> list = reportCashRateMapper.getCashRateCurve(companyId, recordDate, summaryType);
         List<ReportCashRateSummary> result = new ArrayList<ReportCashRateSummary>();
@@ -166,6 +167,7 @@ public class ReportCashRateService extends ServiceImpl<ReportCashRateMapper, Rep
      * @return List<ReportCashRateSummary>
      * @throws
      */
+    @Async
     public List<ReportCashRateSummary> getCashRateSummaryGrade(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
         return reportCashRateMapper.getCashRateSummaryGrade(companyId, orderStopDateS, orderStopDateE, recordDate, summaryType);
     }
@@ -178,6 +180,7 @@ public class ReportCashRateService extends ServiceImpl<ReportCashRateMapper, Rep
      * @return List<ReportCustomerCashRate>
      * @throws
      */
+    @Async
     public List<Map> getCashRateDetail(String companyId, String orderStopDateS, String orderStopDateE, String recordDate, String summaryType) {
         return reportCashRateMapper.getCashRateDetail(companyId, orderStopDateS, orderStopDateE, recordDate, summaryType);
     }

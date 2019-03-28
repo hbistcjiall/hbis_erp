@@ -48,5 +48,24 @@ public class CrmResourceAllocationController {
     public List<Allocation> selScheduleByCx(String date,String sort,String flName){
         return this.crmResourceAllocationService.selScheduleByCx(date,sort,flName);
     }
+
+    @ApiOperation(value = "通过公司获取合同进度")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", dataType = "String"),
+    })
+    @RequestMapping(value = "/selScheduleByCompany",method = RequestMethod.POST)
+    public List<Allocation> selScheduleByCompany(String date){
+        return this.crmResourceAllocationService.selCompany(date);
+    }
+
+    @ApiOperation(value = "获取合同进度详细")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", dataType = "String"),
+            @ApiImplicitParam(name = "companyName", value = "公司名", dataType = "String")
+    })
+    @RequestMapping(value = "/selDetail",method = RequestMethod.POST)
+    public List<Allocation> selDetail(String date,String companyName){
+        return this.crmResourceAllocationService.selByCompany(date,companyName);
+    }
 }
 

@@ -1,35 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.hbis.erp.modular.system.mapper.CrmResourceAllocationMapper">
-    <select id="selSchedule" resultType="map">
+    <select id="selSchedule" resultType="cn.hbis.erp.modular.system.entity.Allocation">
+        select * from (
         SELECT
         NVL (A .PZ_NAME, '合计') pzName,
-        case
-        when SUM(ss.fkimg) is null then
-        0
-        else
-        SUM(ss.fkimg) end as yield,
-        case
-        when SUM(A.planNum) is null then
-        0
-        else
-        SUM(A.planNum) end as planNum,
-        CASE
-        WHEN SUM (ss.fkimg) / SUM (A.planNum) IS NULL THEN
-        '0'
-        ELSE
-        TO_CHAR (
-        ROUND (
-            SUM (ss.fkimg) / SUM (A.planNum),
-            4
-        )
-        )
-        END AS schedule
+        SUM(ss.fkimg) as yield,
+        SUM(A.planNum) as planNum
         FROM
         (
-        SELECT DISTINCT
+        SELECT
             PZ_NAME,
-            (
+            sum (
                 CASE
                 WHEN #{month} = '01' THEN
                     JAN_MONTH
@@ -68,12 +50,13 @@
         <if test="flName != null and flName != ''">
             and FL = #{flName}
         </if>
+        group by PZ_NAME,CX_NAME
         ) A
         LEFT JOIN (
         SELECT
         data.NAME dName,
         data.full_name fName,
-        settle.fkimg fkimg
+        sum (settle.fkimg) fkimg
         FROM
         scm_steel_settle settle
         LEFT JOIN scm_delivery_detail detail ON settle.aubel = detail.order_no
@@ -82,28 +65,26 @@
         OR data.full_name = detail.ext
         AND data.TYPE = 3
         WHERE
-        TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
+        1=1
+        <if test="date != null and date != ''">
+            and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
+        </if>
+        AND (settle.PREY1 != 'X' or settle.PREY1 is null)
+        group by data.NAME,data.full_name
         ) ss ON A.CX_NAME = ss.dName
         OR A.CX_NAME = ss.fName
         GROUP BY
-        ROLLUP (A.PZ_NAME)
+        ROLLUP (A.PZ_NAME))
+        order by decode(pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线',5,'型带',6)
     </select>
 
-    <select id="selScheduleByCx" resultType="map">
+    <select id="selScheduleByCx" resultType="cn.hbis.erp.modular.system.entity.Allocation">
         select *
         from (
         SELECT
         NVL (A .CX_NAME, '合计') cxName,
-        case
-        when SUM(ss.fkimg) is null then
-        0
-        else
-        SUM(ss.fkimg) end as yield,
-        case
-        when SUM(A.planNum) is null then
-        0
-        else
-        SUM(A.planNum) end as planNum,
+        SUM(ss.fkimg) as yield,
+        SUM(A.planNum) as planNum,
         CASE
         WHEN SUM (ss.fkimg) / SUM (A.planNum) IS NULL THEN
         '0'
@@ -111,15 +92,15 @@
         TO_CHAR (
         ROUND (
         SUM (ss.fkimg) / SUM (A.planNum),
-        2
+        4
         )
         )
         END AS schedule
         FROM
         (
-        SELECT DISTINCT
+        SELECT
         PZ_NAME,
-        (
+        sum (
         CASE
         WHEN #{month} = '01' THEN
         JAN_MONTH
@@ -158,12 +139,13 @@
         <if test="flName != null and flName != ''">
             and FL = #{flName}
         </if>
+        group by PZ_NAME,CX_NAME
         ) A
         LEFT JOIN (
         SELECT
         data.NAME dName,
         data.full_name fName,
-        settle.fkimg fkimg
+        sum (settle.fkimg) fkimg
         FROM
         scm_steel_settle settle
         LEFT JOIN scm_delivery_detail detail ON settle.aubel = detail.order_no
@@ -172,7 +154,12 @@
         OR data.full_name = detail.ext
         AND data.TYPE = 3
         WHERE
-        TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
+        1=1
+        <if test="date != null and date != ''">
+            and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
+        </if>
+        AND (settle.PREY1 != 'X' or settle.PREY1 is null)
+        group by data.NAME,data.full_name
         ) ss ON A.CX_NAME = ss.dName
         OR A.CX_NAME = ss.fName
         GROUP BY
@@ -181,5 +168,141 @@
         )
         where
         rownum <![CDATA[   <=  ]]> 10
+    </select>
+
+    <select id="selCompany" resultType="cn.hbis.erp.modular.system.entity.Allocation">
+      SELECT NVL(A.companyName, '合计') companyName,
+       SUM(ss.fkimg) as yield,
+       SUM(A.planNum) as planNum
+      FROM (SELECT cra.PZ_NAME,
+                   sum (
+                CASE
+                WHEN #{month} = '01' THEN
+                JAN_MONTH
+                WHEN #{month} = '02' THEN
+                FEB_MONTH
+                WHEN #{month} = '03' THEN
+                MAR_MONTH
+                WHEN #{month} = '04' THEN
+                APR_MONTH
+                WHEN #{month} = '05' THEN
+                MAY_MONTH
+                WHEN #{month} = '06' THEN
+                JUN_MONTH
+                WHEN #{month} = '07' THEN
+                JUL_MONTH
+                WHEN #{month} = '08' THEN
+                AUG_MONTH
+                WHEN #{month} = '09' THEN
+                SEP_MONTH
+                WHEN #{month} = '10' THEN
+                OCT_MONTH
+                WHEN #{month} = '11' THEN
+                NOV_MONTH
+                WHEN #{month} = '12' THEN
+                DEC_MONTH
+                END
+                ) planNum,
+                   cra.CX_NAME,
+                   clcr.company_name companyName
+              FROM crm_resource_allocation cra,
+              crm_line_class_relation clcr
+              WHERE 1=1
+                <if test="year != null and year != ''">
+                    and YEAR = #{year}
+                </if>
+                and clcr.product_line in
+                   (select DISTINCT cx_name from crm_resource_allocation)
+             group by cra.PZ_NAME, cra.CX_NAME,clcr.company_name) A
+      LEFT JOIN (SELECT data.NAME dName,
+                        data.full_name fName,
+                        SUM(settle.fkimg) fkimg
+                   FROM scm_steel_settle settle
+                   LEFT JOIN scm_delivery_detail detail
+                     ON settle.aubel = detail.order_no
+                    AND settle.aupos = detail.order_item
+                   LEFT JOIN crm_resource_data data
+                     ON data.name = detail.ext
+                     OR data.full_name = detail.ext
+                    AND data.TYPE = 3
+                  WHERE 1 = 1
+                    <if test="date != null and date != ''">
+                        and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
+                    </if>
+                    AND (settle.PREY1 != 'X' or settle.PREY1 is null)
+                  GROUP BY DATA . NAME, DATA.full_name) ss
+        ON A.CX_NAME = ss.dName
+        OR A.CX_NAME = ss.fName
+     GROUP BY ROLLUP(A.companyName)
+    </select>
+    <select id="selByCompany" resultType="cn.hbis.erp.modular.system.entity.Allocation">
+      select * from (
+        SELECT a.flName flName,
+       SUM(ss.fkimg) as yield,
+       SUM(A.planNum) as planNum
+      FROM (SELECT cra.PZ_NAME,
+                   sum (
+            CASE
+            WHEN #{month} = '01' THEN
+            JAN_MONTH
+            WHEN #{month} = '02' THEN
+            FEB_MONTH
+            WHEN #{month} = '03' THEN
+            MAR_MONTH
+            WHEN #{month} = '04' THEN
+            APR_MONTH
+            WHEN #{month} = '05' THEN
+            MAY_MONTH
+            WHEN #{month} = '06' THEN
+            JUN_MONTH
+            WHEN #{month} = '07' THEN
+            JUL_MONTH
+            WHEN #{month} = '08' THEN
+            AUG_MONTH
+            WHEN #{month} = '09' THEN
+            SEP_MONTH
+            WHEN #{month} = '10' THEN
+            OCT_MONTH
+            WHEN #{month} = '11' THEN
+            NOV_MONTH
+            WHEN #{month} = '12' THEN
+            DEC_MONTH
+            END
+            ) planNum,
+                   cra.CX_NAME,
+                   cra.fl_name flName
+              FROM crm_resource_allocation cra,
+              crm_line_class_relation clcr
+              WHERE 1 = 1
+                    <if test="year != null and year != ''">
+                        and cra.YEAR = #{year}
+                    </if>
+                     and clcr.product_line in
+                               (select DISTINCT cx_name from crm_resource_allocation)
+            <if test="companyName != null and companyName != ''">
+                and clcr.company_name = #{companyName}
+            </if>
+             group by cra.PZ_NAME, cra.CX_NAME,clcr.company_name，cra.fl_name) A
+      LEFT JOIN (SELECT data.NAME dName,
+                        data.full_name fName,
+                        SUM(settle.fkimg) fkimg
+                   FROM scm_steel_settle settle
+                   LEFT JOIN scm_delivery_detail detail
+                     ON settle.aubel = detail.order_no
+                    AND settle.aupos = detail.order_item
+                   LEFT JOIN crm_resource_data data
+                     ON data.name = detail.ext
+                     OR data.full_name = detail.ext
+                    AND data.TYPE = 3
+                  WHERE 1 = 1
+                    <if test="date != null and date != ''">
+                        and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
+                    </if>
+                    AND (settle.PREY1 != 'X' or settle.PREY1 is null)
+                  GROUP BY DATA . NAME, DATA.full_name) ss
+        ON A.CX_NAME = ss.dName
+        OR A.CX_NAME = ss.fName
+     GROUP BY a.flName)
+        order by decode(pzName,'销售总公司',1,'技术中心、事业部',2,'出口',3,'现货',4,'子公司其他',5,'品种钢',6)
     </select>
 </mapper>

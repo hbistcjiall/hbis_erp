@@ -7,11 +7,11 @@ import cn.hbis.erp.modular.system.mapper.AccountabilityUnitManageMapper;
 import cn.hbis.erp.modular.system.mapper.TargetQuantityManagementMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -38,7 +38,7 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
          * @param accountname
          * @return
          */
-
+        @Async
         public Page<Map<String, Object>> selectAccountManeg(String accountname){
                 Page page = PageFactory.defaultPage();
                 return this.accounUnitManageMapper.selectaccunitname(page,accountname);

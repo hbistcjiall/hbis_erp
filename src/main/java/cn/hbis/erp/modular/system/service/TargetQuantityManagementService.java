@@ -5,6 +5,7 @@ import cn.hbis.erp.modular.system.entity.TargetQuantityManagement;
 import cn.hbis.erp.modular.system.mapper.TargetQuantityManagementMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,11 +20,12 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         @Resource
         private  TargetQuantityManagementMapper targetManagementMapper;
 
-
+        @Async
         public Page<Map<String, Object>> selectTargetManeg( String targetname,String year){
             Page page = PageFactory.defaultPage();
             return this.targetManagementMapper.selTargetManagement(page,targetname,year);
         }
+        @Async
         public List<Map> getlist(){
             List<Map> list = targetManagementMapper.getlist();
             return list;
@@ -189,6 +191,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                     return flag;
         }
         //第一个
+        @Async
         public List<Map> salesmain( String name){
             List<Map> list = targetManagementMapper.salesmain(name);
             List<Map> su = targetManagementMapper.salesmainsum(name);
@@ -213,6 +216,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             return  newlist;
         }
         //第二个
+        @Async
         public List<Map> mills(String name) {
             List<Map> sum = targetManagementMapper.Steelmillssum(name);
             Map map = sum.get(0);
@@ -237,6 +241,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             return list;
         }
         //第三个
+        @Async
         public List<Map> typesa(String name){
             List<Map> sum = targetManagementMapper.typessum(name);
             Map map = sum.get(0);
@@ -272,6 +277,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
 
         }
         //第四个
+        @Async
         public List<Map> settl(String name){
             List<Map> sum = targetManagementMapper.Steelsum(name);
             Map map = sum.get(0);
