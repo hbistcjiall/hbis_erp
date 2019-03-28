@@ -9,6 +9,7 @@ import cn.hbis.erp.modular.system.service.ProtocolAccountDetailsService;
 import cn.hbis.erp.modular.system.warpper.ProtocolAccountDetailsWrapper;
 import cn.hutool.core.bean.BeanUtil;
 import cn.stylefeng.roses.core.base.controller.BaseController;
+import cn.stylefeng.roses.core.reqres.response.ResponseData;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiImplicitParam;
@@ -231,7 +232,7 @@ public class ProtocolAccountDetailsController extends BaseController {
     })
     @ApiOperation(value = "协议上传", notes = "协议上传")
     @PostMapping(value = "/importexcel",headers = "content-type=multipart/form-data",consumes = "MultipartFile/*")
-    public Map<String, ProtocolAccountDetails> execlimport(@RequestPart("file") MultipartFile file, String year) {
+    public ResponseData execlimport(@RequestPart("file") MultipartFile file, String year) {
         Map<String, ProtocolAccountDetails> map = new HashMap<String, ProtocolAccountDetails>();
           if (!ToolUtil.isEmpty(file)) {
             try {
@@ -239,16 +240,17 @@ public class ProtocolAccountDetailsController extends BaseController {
                 System.out.println(excelBeans.size());
                 for(ProtocolAccountDetails ep : excelBeans){
                    ep.setProtocolYear(year);
+                   ep.setUploadTime(new Date());
+                   ep.setDeleteStatus("0");
                 }
                 for (ProtocolAccountDetails ep : excelBeans){
                     protocolAccountDetailsService.save(ep);
                 }
-                //map = excelBeans.stream().collect(Collectors.toMap(ProtocolAccountDetails::getProtocolAccountId, a -> a,(k1, k2)->k1));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return map;
+        return SUCCESS_TIP;
     }
 
     private void exportXlsx(OutputStream out,String fileName,List<Map<String, Object>> headListMap,List<Map<String, Object>> dataListMap,String[] mergeCols,String[] colOrder, HttpServletResponse response) {

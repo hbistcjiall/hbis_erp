@@ -38,11 +38,12 @@ public class ProtocolAccountDetails implements Serializable {
     private String protocolYear;
 
     @ExcelColumn("序号")
+    @TableField(exist = false)
     private String sort;
     /**
      * 用户名称（全称）
      */
-    @ExcelColumn("用户名称（全称）")
+    @ExcelColumn("用户名称(全称)")
     @TableField("ACCOUNT_NAME")
     private String accountName;
     /**
