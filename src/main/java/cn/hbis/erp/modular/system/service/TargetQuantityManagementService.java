@@ -32,23 +32,11 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         }
         public boolean addORUpadte(String id,String targetname,String year,String jan,String feb,String mar,String apr,String may,String jun,String jul,String aug,String sep,String oct,String nov,String dec){
             boolean flag =false;
-            List<Map> list = targetManagementMapper.theList();
-            for(int i=0;i<list.size();i++){
-                String names = list.get(i).get("CODE").toString();
-                if(targetname.equals(names)){
-                    return false;
-                }
-            }
             if(id != null && !id.equals("")){
                 TargetQuantityManagement targetManagement = targetManagementMapper.selectById(id);
                 if(!year.equals("")&&year!=null){
                     targetManagement.setYaer(year);
                 }
-                if(!targetname.equals("")&&targetname!=null){
-
-                    targetManagement.setResponsibilityunit(targetname);
-                }
-
                 if(jan==null||jan.equals("")){
                     targetManagement.setJanuary("0");
                 }else{
@@ -109,6 +97,13 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                     return flag;
                 }
             }else{
+                List<Map> list = targetManagementMapper.theList();
+                for(int i=0;i<list.size();i++){
+                    String names = list.get(i).get("CODE").toString();
+                    if(targetname.equals(names)){
+                        return false;
+                    }
+                }
                 TargetQuantityManagement targetManagement = new TargetQuantityManagement();
                 if(!year.equals("")&&year!=null){
                     targetManagement.setYaer(year);

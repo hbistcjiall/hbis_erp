@@ -55,7 +55,7 @@ public class TargetQuantityManagementController extends BaseController {
     @ApiOperation(value = "责任公司添加和更新")
     @PostMapping("/addorupTargetManage")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "targetname" ,value = "责任公司名称",dataType ="String" ),
+            @ApiImplicitParam(name = "targetname" ,value = "责任公司code",dataType ="String" ),
             @ApiImplicitParam(name = "year" ,value = "年限",dataType ="String" ),
             @ApiImplicitParam(name = "jan" ,value = "一月",dataType ="String" ),
             @ApiImplicitParam(name = "feb" ,value = "二月",dataType ="String" ),
