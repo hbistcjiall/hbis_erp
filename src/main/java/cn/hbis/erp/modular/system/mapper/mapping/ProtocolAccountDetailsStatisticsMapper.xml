@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hbis.erp.modular.system.mapper.ProtocolAccountDetailsStatisticsMapper">
+
+    <select id="List" resultType="map">
+        select CONCAT(CONCAT(#{beginTime},'-'),#{endTime}) as statisticsTime,d.ACCOUNT_NAME as accountName, d.SUPPLY_MODE as supplyMode,
+        d.VARIETIES as varieties, d.MAIN_SALES_REGIONAL as mainSalesRegional, d.AIDED_SALES_REGIONAL_ONE as
+        aidedSalesRegionalOne, d.AIDED_SALES_REGIONAL_TWO as aidedSalesRegionalTwo, d.STEEL_MILLS as
+        steelMills,d.ANNUAL_AGREEMENT_VOLUME as annualAgreementVolume,
+        o.order_mount as orderMount, （select so.order_mount from SCM_PROTOCOL_ACCOUNT_DETAILS pad join SCM_SALE_ORDER so
+        on pad.account_name = so.saler_name
+        join SCM_ORDERTYPE_PRICETYPE op on so.ORDER_TYPE_DESCRIBE = op.ORDERTYPE where op.pricetype = '协议价'）as
+        protocolOrderMount
+        from
+        SCM_PROTOCOL_ACCOUNT_DETAILS d
+        join
+        SCM_SALE_ORDER o
+        on
+        d.account_name = o.saler_name
+        where 1 = 1
+        <if test="varieties != null and '热板' == varieties">
+            and d.VARIETIES = '热板' or d.VARIETIES = '酸洗'
+        </if>
+        <if test="varieties != null and '冷板' == varieties">
+            and d.VARIETIES = '彩涂' or d.VARIETIES = '冷板' or d.VARIETIES = '镀锌'
+        </if>
+        <if test="varieties != null and '宽厚板' == varieties">
+            and d.VARIETIES = '宽厚板'
+        </if>
+        <if test="varieties != null and '棒线' == varieties">
+            and d.VARIETIES = '钢筋' or d.VARIETIES = '普线' or d.VARIETIES = '品种线' or d.VARIETIES = '优钢' or d.VARIETIES =
+            '锚杆钢'
+        </if>
+        <if test="varieties != null and'型带' == varieties">
+            and d.VARIETIES = '角钢' or d.VARIETIES = '矿用钢'
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and o.dj_date <![CDATA[ < ]]> #{endTime}
+        </if>
+        <if test="beginTime != null and endTime != ''">
+            and o.dj_date <![CDATA[ > ]]> #{beginTime}
+        </if>
+        <if test="supplyMode != null and supplyMode != ''">
+            and d.supply_mode = #{supplyMode}
+        </if>
+        <if test="companyIdList.size() > 0">
+            and d.steel_mills in
+            <foreach item="item" index="index" collection="companyIdList" open="(" separator="," close=")">
+                　　　　#{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="sumList" resultType="map">
+        SELECT SUM(CFSL),SUM(annualAgreementVolume),SUM(orderMount),SUM(protocolOrderMount) FROM (
+        select '' as statisticsTime,'' as accountName,sum(1)-1 CFSL,'' as supplyMode, '' as varieties, '' as mainSalesRegional, '' as aidedSalesRegionalOne, '' as aidedSalesRegionalTwo, '' as steelMills,sum(d.ANNUAL_AGREEMENT_VOLUME) as annualAgreementVolume,
+        sum(o.order_mount) as orderMount, sum(（select so.order_mount from SCM_PROTOCOL_ACCOUNT_DETAILS pad join SCM_SALE_ORDER so on pad.account_name = so.saler_name
+        join SCM_ORDERTYPE_PRICETYPE op on so.ORDER_TYPE_DESCRIBE = op.ORDERTYPE where op.pricetype = '协议价'）) as protocolOrderMount
+        from
+        SCM_PROTOCOL_ACCOUNT_DETAILS d
+        join
+        SCM_SALE_ORDER o
+        on
+        d.account_name = o.saler_name
+        where 1 = 1
+        <if test="varieties != null and '热板' == varieties">
+            and d.VARIETIES = '热板' or d.VARIETIES = '酸洗'
+        </if>
+        <if test="varieties != null and '冷板' == varieties">
+            and d.VARIETIES = '彩涂' or d.VARIETIES = '冷板' or d.VARIETIES = '镀锌'
+        </if>
+        <if test="varieties != null and '宽厚板' == varieties">
+            and d.VARIETIES = '宽厚板'
+        </if>
+        <if test="varieties != null and '棒线' == varieties">
+            and d.VARIETIES = '钢筋' or d.VARIETIES = '普线' or d.VARIETIES = '品种线' or d.VARIETIES = '优钢' or d.VARIETIES = '锚杆钢'
+        </if>
+        <if test="varieties != null and'型带' == varieties">
+            and d.VARIETIES = '角钢' or d.VARIETIES = '矿用钢'
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and o.dj_date <![CDATA[ < ]]> #{endTime}
+        </if>
+        <if test="beginTime != null and endTime != ''">
+            and o.dj_date <![CDATA[ > ]]> #{beginTime}
+        </if>
+        <if test="supplyMode != null and supplyMode != ''">
+            and d.supply_mode = #{supplyMode}
+        </if>
+        <if test="companyIdList.size() > 0">
+            and d.steel_mills in
+            <foreach item="item" index="index" collection="companyIdList" open="(" separator="," close=")">
+                　　　　#{item}
+            </foreach>
+        </if>
+        group by d.ACCOUNT_NAME
+        )
+    </select>
+
+</mapper>

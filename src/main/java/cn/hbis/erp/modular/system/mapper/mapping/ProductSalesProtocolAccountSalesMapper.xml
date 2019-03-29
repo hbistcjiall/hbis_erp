@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hbis.erp.modular.system.mapper.ProductSalesProtocolAccountSalesMapper">
+
+    <select id="list" resultType="map">
+        select sso.company_id as companyId,spad.varieties as varieties,
+        sum(sso.order_mount) as totalSales,sum(1)-count(distinct spad.account_name) as protocolAccountNum,sum(spad.annual_agreement_volume) as protocolSalesYear,
+        sum(case when psr.sale_body_des = '销售总公司' then sso.order_mount else 0 end) as totalProtocolSales,
+        round (sum(case when psr.sale_body_des = '销售总公司' then sso.order_mount else 0 end) / sum(spad.annual_agreement_volume),4)*100 as totalProtocolSalesOfYear,
+        round (sum(case when psr.sale_body_des = '销售总公司' then sso.order_mount else 0 end) / sum(sso.order_mount),4)*100 as totalProtocolSalesOfProduct,
+        sum(case when spad.supply_mode = '自办' then sso.order_mount else 0 end) as zibanProtocolSales,
+        round (sum(case when spad.supply_mode = '自办' then sso.order_mount else 0 end) / sum(sso.order_mount),4)*100 as zibanProtocolSalesOfTotal,
+        sum(case when sop.pricetype = '协议价' then sso.order_mount else 0 end) as xieyiProtocolSales,
+        round (sum(case when sop.pricetype = '协议价' then sso.order_mount else 0 end) / sum(sso.order_mount),4)*100 as xieyiProtocolSalesOfTotal
+        from SCM_SALE_ORDER sso
+        join SCM_PROTOCOL_ACCOUNT_DETAILS spad
+        on sso.saler_name = spad.account_name
+        join price_salebody_relation psr
+        on sso.company_id = psr.company_id
+        join SCM_ORDERTYPE_PRICETYPE sop
+        on sso.company_id = sop.companyid
+        where spad.deletestatus = '0'
+        and psr.is_delete = '0'
+        and sop.deletestate = '0'
+        <if test="varieties != null and '热板' == varieties">
+            and spad.VARIETIES = '热板' or spad.VARIETIES = '酸洗'
+        </if>
+        <if test="varieties != null and '冷板' == varieties">
+            and spad.VARIETIES = '彩涂' or spad.VARIETIES = '冷板' or spad.VARIETIES = '镀锌'
+        </if>
+        <if test="varieties != null and '宽厚板' == varieties">
+            and spad.VARIETIES = '宽厚板'
+        </if>
+        <if test="varieties != null and '棒线' == varieties">
+            and spad.VARIETIES = '钢筋' or spad.VARIETIES = '普线' or spad.VARIETIES = '品种线' or spad.VARIETIES = '优钢' or spad.VARIETIES = '锚杆钢'
+        </if>
+        <if test="varieties != null and'型带' == varieties">
+            and spad.VARIETIES = '角钢' or spad.VARIETIES = '矿用钢'
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and sso.dj_date <![CDATA[ < ]]> #{endTime}
+        </if>
+        <if test="beginTime != null and endTime != ''">
+            and sso.dj_date <![CDATA[ > ]]> #{beginTime}
+        </if>
+        group by rollup(sso.company_id,spad.varieties)
+        order by decode(sso.company_id,
+        9580,
+        1,
+        9727,
+        2,
+        7778,
+        3,
+        9193,
+        4,
+        9196,
+        5,
+        1932,
+        6,
+        8110,
+        7,
+        8493,
+        8,
+        null,
+        9) asc, spad.varieties asc
+    </select>
+
+</mapper>
