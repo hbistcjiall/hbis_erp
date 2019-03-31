@@ -626,91 +626,104 @@
 
     <select id="getzyjh" resultType="map">
             select *
-  from (select '1' yf，year || '1月' rq，PZ_NAME pz,
+  from (select '1' yf,year || '1月' rq,PZ_NAME pz,
                cx_name cx,
                fl_name,
                sum(JAN_MONTH) jhl
           from crm_resource_allocation
+           where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name
         union all
-        select '2' yf，year || '2月' rq，PZ_NAME pz,
+        select '2' yf,year || '2月' rq,PZ_NAME pz,
                cx_name cx,
                fl_name,
                sum(FEB_MONTH) jhl
           from crm_resource_allocation
+            where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name
         union all
-        select '3' yf，year || '3月' rq，PZ_NAME pz,
+        select '3' yf,year || '3月' rq,PZ_NAME pz,
                cx_name cx,
                fl_name,
                sum(MAR_MONTH) jhl
           from crm_resource_allocation
+            where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name
         union all
-        select '4' yf，year || '4月' rq，PZ_NAME pz,
+        select '4' yf,year || '4月' rq,PZ_NAME pz,
                cx_name cx,
                fl_name,
                sum(APR_MONTH) jhl
           from crm_resource_allocation
+           where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name
         union all
-        select '5' yf，year || '5月' rq，PZ_NAME pz,
+        select '5' yf,year || '5月' rq,PZ_NAME pz,
                cx_name cx,
                fl_name,
                sum(MAY_MONTH) jhl
           from crm_resource_allocation
+              where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name
         union all
-        select '6' yf，year || '6月' rq，PZ_NAME pz,
+        select '6' yf,year || '6月' rq,PZ_NAME pz,
                cx_name cx,
                fl_name,
                sum(JUN_MONTH) jhl
           from crm_resource_allocation
+            where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name
         union all
-        select '7' yf，year || '7月' rq，PZ_NAME pz,
+        select '7' yf,year || '7月' rq,PZ_NAME pz,
                cx_name cx,
                fl_name,
                sum(JUL_MONTH) jhl
           from crm_resource_allocation
+            where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name
         union all
-        select '8' yf，year || '8月' rq，PZ_NAME pz,
+        select '8' yf,year || '8月' rq,PZ_NAME pz,
                cx_name cx,
                fl_name,
                sum(AUG_MONTH) jhl
           from crm_resource_allocation
+           where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name
         union all
-        select '9' yf，year || '9月' rq，PZ_NAME pz,
+        select '9' yf,year || '9月' rq,PZ_NAME pz,
                cx_name cx,
                fl_name,
                sum(SEP_MONTH) jhl
           from crm_resource_allocation
+            where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name
         union all
-        select '10' yf，year || '10月' rq，PZ_NAME pz,
+        select '10' yf,year || '10月' rq,PZ_NAME pz,
                cx_name cx,
                fl_name,
                sum(OCT_MONTH) jhl
           from crm_resource_allocation
+            where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name
         union all
-        select '11' yf，year || '11月' rq，PZ_NAME pz,
+        select '11' yf,year || '11月' rq,PZ_NAME pz,
                cx_name cx,
                fl_name,
                sum(NOV_MONTH) jhl
           from crm_resource_allocation
+          where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name
         union all
-        select '12' yf，year || '12月' rq，PZ_NAME pz,
+        select '12' yf,year || '12月' rq,PZ_NAME pz,
                cx_name cx,
                fl_name,
                sum(DEC_MONTH) jhl
           from crm_resource_allocation
+            where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name) a
 
- where rq like  '%'||#{nf}||'%'
+ where
+        rq like  '%'||#{nf}||'%'
         <if test="yf != ''">
            and yf = #{yf}
          </if>
@@ -723,6 +736,8 @@
         <if test="xszt != ''">
         and fl_name = #{xszt}
         </if>
+        ORDER BY    fl_name , cx ,
+        "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材')
     </select>
 
 
@@ -878,7 +893,7 @@
         group by pz.VARIETY )c on a.VARIETY=c.VARIETY) b on a.VARIETY = b.VARIETY
 
 
-        left join (select a.VARIETY,zgshtl,zgsjhl,zgshtl/zgsjhl zgswcbl，zgshtl- zgsjhl as zgsjd from (SELECT
+        left join (select a.VARIETY,zgshtl,zgsjhl,zgshtl/zgsjhl zgswcbl,zgshtl- zgsjhl as zgsjd from (SELECT
         pz.VARIETY,
         sum(sso.ORDER_MOUNT) zgshtl
         from  scm_steel_settle_main zb
@@ -925,7 +940,7 @@
         from crm_resource_allocation
         where fl_name='子公司' or fl_name='技术公司' or fl_name ='事业部' group by pz_name) b
         on b.pz_name=a.VARIETY) c on a.VARIETY=c.VARIETY
-        left join ( select a.VARIETY,ckhtl,ckjhl,ckhtl/ckjhl ckwcbl，ckhtl- ckjhl as ckjd from (SELECT
+        left join ( select a.VARIETY,ckhtl,ckjhl,ckhtl/ckjhl ckwcb,khtl- ckjhl as ckjd from (SELECT
         pz.VARIETY,
         sum(sso.ORDER_MOUNT) ckhtl
         from  scm_steel_settle_main zb
