@@ -677,7 +677,7 @@
     </select>
 
     <select id="getpzgjswc" resultType="map">
-    select * from (select name ,jsl,round(nmb/jsl*100,2) || '%' wcl from (
+   select * from (select name ,jsl,round(nmb/jsl*100,2) || '%' wcl from (
             SELECT
             B.VARIETY name,
 
@@ -716,29 +716,29 @@
             AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
             AND pzg.status = '0'  group by  B.VARIETY) pz
             ON a.name = pz.VARIETY
-
+            
    </select>
 
     <select id="getzgsjswc" resultType="map">
-       select companyname name ,sum(fkimg) jsl,sum(mb) mb£¬sum(fkimg)/sum(mb) wcl from (
+       select companyname name ,sum(fkimg) jsl,sum(mb) mb，sum(fkimg)/sum(mb) wcl from (
         select* from
         (SELECT decode(zb.company_id,
         9580,
-        'ÌÆ¸Ö',
+        '唐钢',
         9727,
-        'ºª¸Ö',
+        '邯钢',
         9193,
-        'Ðû¸Ö',
+        '宣钢',
         9196,
-        '³Ð¸Ö',
+        '承钢',
         1932,
-        'Îè¸Ö',
+        '舞钢',
         8110,
-        'Ê¯¸Ö',
+        '石钢',
         8493,
-        'ºâ°å',
+        '衡板',
         7778,
-        'ºª±¦') AS companyname,
+        '邯宝') AS companyname,
         cx.NAME,
         zb.company_id,
         sum(mx.fkimg) AS fkimg
