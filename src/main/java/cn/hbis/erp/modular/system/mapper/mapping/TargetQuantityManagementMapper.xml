@@ -42,96 +42,134 @@
         where DELETESTATUS = '0' ORDER BY RESPONSIBILITY_UNIT
     </select>
 
+	<!--三-->
 	<select id="typeselect" resultType="map">
-		SELECT
+		select
 		"NAME",
-		jsl,
-		pzgl,
-		ROUND(nmb / jsl,4)*100  bili
-		FROM
-		(
-		SELECT
-		B.VARIETY NAME,
-		SUM (pz.fkimg) pzgl,
-		ROUND (SUM(settle.fkimg), 2) jsl
-		FROM
-		Scm_Steel_Settle settle
-		JOIN Scm_Sale_Order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		JOIN SCM_VARIETY_TO_PT_GP B ON sso.product_code = B.Product_Group
-		AND sso.company_id = B.COMPANY_ID
-		LEFT JOIN (
-		SELECT
-		settle. ID,
-		settle.fkimg
-		FROM
-		scm_steel_settle settle
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		JOIN report_product_class_level pzg ON sso.company_id = pzg.company_id
-		AND sso.product_type = pzg.product_class
-		WHERE
-		pzg.product_grade = '品种钢'
-		OR pzg.product_grade = '高端产品'
-		OR pzg.product_grade = '特色战略产品'
-		AND pzg.status = '0'
-		) pz ON settle. ID = pz. ID
-		GROUP BY
-		B.Variety
-		) A
-		JOIN (
-		SELECT
+		NVL(jsl,0) jsl,
+		NVL(pzgl,0) pzgl,
+		NVL(ROUND(nmb / jsl,4)*100,0)  bili
+		from  (SELECT PZ.VARIETY NAME,
+		SUM (mx.fkimg) pzgl,
+		ROUND (SUM(mx.fkimg), 2) jsl
+		FROM scm_steel_settle_main zb
+		left join
+		SCM_SETTLEMENT_DETAILS mx
+		on zb.vbeln = mx.VBELN
+		LEFT JOIN price_salebody_relation xszt
+		on mx.XSZT_ID = xszt.ID
+		LEFT JOIN scm_variety_to_pt_gp pz
+		on mx.pz_id = pz.id
+		LEFT JOIN crm_resource_data cx
+		on mx.cx_id = cx.code
+		JOIN scm_sale_order sso
+		ON sso.order_no = zb.aubel
+		AND sso.company_id = zb.company_id
+
+		INNER JOIN scm_variety_to_pt_gp svtpg
+		ON sso.product_code = svtpg.product_group
+		AND sso.company_id = svtpg.company_id
+		AND sso.order_type_describe NOT IN
+		(SELECT DISTINCT cfd.data_name
+		FROM crm_filter_data cfd
+		WHERE cfd.data_type = '2'
+		AND cfd.company_id = sso.company_id
+		AND cfd.status = '0')
+		AND (sso.deleted IS NULL OR sso.deleted != 'X')
+		AND sso.sale_group NOT IN
+		(SELECT sso.sale_group
+		FROM crm_filter_data cfd
+		WHERE cfd.company_id = sso.company_id
+		AND cfd.data_type = 8
+		AND cfd.status = 0)
+		AND sso.saler_name NOT IN
+		(SELECT t.data_name
+		FROM crm_filter_data t
+		WHERE t.data_type = '1'
+		AND t.status = '0'
+		AND t.company_id = sso.company_id)
+
+		where
+		<if test="name != null and name !=''">
+			pz.VARIETY = #{name} and
+		</if>
+		<!--zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
+		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
+		  cx.name is not null
+
+		GROUP BY PZ.VARIETY) a
+		LEFT JOIN
+		(SELECT
 		pz_name,
 		SUM (MBL_YEAR) nmb
 		FROM
 		Crm_Resource_Allocation zyjh
 		WHERE
-		1 = 1
-		GROUP BY
-		pz_name
-		) jh ON jh.pz_name = A.NAME
+		1 = 1 and
 		<if test="name != null and name !=''">
-			where name = #{name}
+			pz_NAME = #{name}
 		</if>
+		GROUP BY
+		pz_name) b
+		on b.pz_name =  a.NAME
+
 	</select>
 	<select id="typessum" resultType="map">
-		SELECT
-		SUM(jsl) jsl,
-		SUM(pzgl) pzgl,
-		sum(nmb) nmb
-		FROM
-		(
-		SELECT
-		B.VARIETY NAME,
-		SUM (pz.fkimg) pzgl,
-		ROUND (SUM(settle.fkimg), 2) jsl
-		FROM
-		Scm_Steel_Settle settle
-		JOIN Scm_Sale_Order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		JOIN SCM_VARIETY_TO_PT_GP B ON sso.product_code = B.Product_Group
-		AND sso.company_id = B.COMPANY_ID
-		LEFT JOIN (
-		SELECT
-		settle. ID,
-		settle.fkimg
-		FROM
-		scm_steel_settle settle
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		JOIN report_product_class_level pzg ON sso.company_id = pzg.company_id
-		AND sso.product_type = pzg.product_class
-		WHERE
-		pzg.product_grade = '品种钢'
-		OR pzg.product_grade = '高端产品'
-		OR pzg.product_grade = '特色战略产品'
-		AND pzg.status = '0'
-		) pz ON settle. ID = pz. ID
-		GROUP BY
-		B.Variety
-		) A
-		JOIN (
-		SELECT
+		select
+		NVL(sum(jsl),0) jsl,
+		NVL(SUM(pzgl),0) pzgl
+		from  (SELECT PZ.VARIETY NAME,
+		SUM (mx.fkimg) pzgl,
+		ROUND (SUM(mx.fkimg), 2) jsl
+		FROM scm_steel_settle_main zb
+		left join
+		SCM_SETTLEMENT_DETAILS mx
+		on zb.vbeln = mx.VBELN
+		LEFT JOIN price_salebody_relation xszt
+		on mx.XSZT_ID = xszt.ID
+		LEFT JOIN scm_variety_to_pt_gp pz
+		on mx.pz_id = pz.id
+		LEFT JOIN crm_resource_data cx
+		on mx.cx_id = cx.code
+		JOIN scm_sale_order sso
+		ON sso.order_no = zb.aubel
+		AND sso.company_id = zb.company_id
+
+		INNER JOIN scm_variety_to_pt_gp svtpg
+		ON sso.product_code = svtpg.product_group
+		AND sso.company_id = svtpg.company_id
+		AND sso.order_type_describe NOT IN
+		(SELECT DISTINCT cfd.data_name
+		FROM crm_filter_data cfd
+		WHERE cfd.data_type = '2'
+		AND cfd.company_id = sso.company_id
+		AND cfd.status = '0')
+		AND (sso.deleted IS NULL OR sso.deleted != 'X')
+		AND sso.sale_group NOT IN
+		(SELECT sso.sale_group
+		FROM crm_filter_data cfd
+		WHERE cfd.company_id = sso.company_id
+		AND cfd.data_type = 8
+		AND cfd.status = 0)
+		AND sso.saler_name NOT IN
+		(SELECT t.data_name
+		FROM crm_filter_data t
+		WHERE t.data_type = '1'
+		AND t.status = '0'
+		AND t.company_id = sso.company_id)
+
+		where
+
+		<if test="name != null and name !=''">
+			pz.VARIETY = #{name} and
+		</if>
+		<!--zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
+		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
+		  cx.name is not null
+
+		GROUP BY PZ.VARIETY) a
+		LEFT JOIN
+		(SELECT
 		pz_name,
 		SUM (MBL_YEAR) nmb
 		FROM
@@ -139,26 +177,14 @@
 		WHERE
 		1 = 1
 		GROUP BY
-		pz_name
-		) jh ON jh.pz_name = A.NAME
-		<if test="name != null and name !=''">
-			where name = #{name}
-		</if>
+		pz_name) b
+		on b.pz_name =  a.NAME
+
 	</select>
 
 	<select id="Steelmillsplan" resultType="map">
-		select
-		cb.companyname,cb.jh,NVL(jk.xh, 0)*100 xh
-		from   (SELECT
-		cx.companyname,
-		SUM(cr.MBL_YEAR) jh
-		FROM
-		CRM_RESOURCE_ALLOCATION cr
-		RIGHT  JOIN
-		(
-		SELECT
-		DECODE (
-		settle.company_id,
+		SELECT d.COMPANYNAME,NVL(SUM(D.XH),0) xh,NVL("SUM"(d.jh),0) jh  from  (select * from (
+		SELECT decode(zb.company_id,
 		9580,
 		'唐钢',
 		9727,
@@ -174,107 +200,69 @@
 		8493,
 		'衡板',
 		7778,
-		'邯宝'
-		) AS companyname,
-		DATA . NAME,
-		settle.company_id,
-		SUM (settle.fkimg) AS fkimg,
-		SUM (A .fkimg) AS pzgl,
-		CASE
-		WHEN SUM (settle.fkimg) / SUM (A .fkimg) IS NULL THEN
-		'--'
-		ELSE
-		TO_CHAR (
-		ROUND (
-		SUM (settle.fkimg) / SUM (A .fkimg),
-		2
-		)
-		)
-		END AS bz
-		FROM
-		scm_steel_settle settle
-		JOIN scm_delivery_detail detail ON settle.aubel = detail.order_no
-		AND settle.aupos = detail.order_item
-		JOIN crm_resource_data DATA ON DATA .full_name = detail.ext
-		AND DATA . TYPE = 3
-		AND DATA .parent_name IS NOT NULL
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		LEFT JOIN (
-		SELECT
-		settle. ID,
-		settle.fkimg
-		FROM
-		scm_steel_settle settle
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		JOIN report_product_class_level pzg ON sso.company_id = pzg.company_id
-		AND sso.product_type = pzg.product_class
-		WHERE
-		pzg.product_grade = '品种钢'
-		OR pzg.product_grade = '高端产品'
-		OR pzg.product_grade = '特色战略产品'
-		AND pzg.status = '0'
-		) A ON settle. ID = A . ID
-		INNER JOIN scm_variety_to_pt_gp svtpg ON sso.product_code = svtpg.product_group
+		'邯宝') AS companyname,
+		cx.name,
+		"SUM"(cr.MBL_YEAR) jh,
+		SUM(mx.fkimg) AS fkimg
+		FROM scm_steel_settle_main zb
+		left join
+
+		SCM_SETTLEMENT_DETAILS mx
+		on zb.vbeln = mx.VBELN
+
+		LEFT JOIN price_salebody_relation xszt
+		on mx.XSZT_ID = xszt.ID
+		LEFT JOIN scm_variety_to_pt_gp pz
+		on mx.pz_id = pz.id
+		LEFT JOIN crm_resource_data cx
+		on mx.cx_id = cx.code
+		JOIN scm_sale_order sso
+		ON sso.order_no = zb.aubel
+		AND sso.company_id = zb.company_id
+		LEFT JOIN CRM_RESOURCE_ALLOCATION cr
+		on cr.CX_NAME  = cx.name
+		INNER JOIN scm_variety_to_pt_gp svtpg
+		ON sso.product_code = svtpg.product_group
 		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN (
-		SELECT DISTINCT
-		cfd.data_name
-		FROM
-		crm_filter_data cfd
-		WHERE
-		cfd.data_type = '2'
+		AND sso.order_type_describe NOT IN
+		(SELECT DISTINCT cfd.data_name
+		FROM crm_filter_data cfd
+		WHERE cfd.data_type = '2'
 		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0'
-		)
-		AND (
-		sso.deleted IS NULL
-		OR sso.deleted != 'X'
-		)
-		AND sso.sale_group NOT IN (
-		SELECT
-		sso.sale_group
-		FROM
-		crm_filter_data cfd
-		WHERE
-		cfd.company_id = sso.company_id
+		AND cfd.status = '0')
+		AND (sso.deleted IS NULL OR sso.deleted != 'X')
+		AND sso.sale_group NOT IN
+		(SELECT sso.sale_group
+		FROM crm_filter_data cfd
+		WHERE cfd.company_id = sso.company_id
 		AND cfd.data_type = 8
-		AND cfd.status = 0
-		)
-		AND sso.saler_name NOT IN (
-		SELECT
-		T .data_name
-		FROM
-		crm_filter_data T
-		WHERE
-		T .data_type = '1'
-		AND T .status = '0'
-		AND T .company_id = sso.company_id
-		)
-		LEFT JOIN price_salebody_relation xsztdzb ON sso.company_id = xsztdzb.company_id
-		AND sso.sale_group = xsztdzb.sale_body_des
-		WHERE
-		1 = 1
-		GROUP BY
-		settle.company_id,
-		DATA . NAME
-		ORDER BY
-		company_id
-		) cx
-		ON cx.NAME = cr.CX_NAME
+		AND cfd.status = 0)
+		AND sso.saler_name NOT IN
+		(SELECT t.data_name
+		FROM crm_filter_data t
+		WHERE t.data_type = '1'
+		AND t.status = '0'
+		AND t.company_id = sso.company_id)
+		where
+		<!-- zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
+		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
 		<if test="name != null and name !=''">
-			where cr.PZ_NAME = #{name}
+			 pz.VARIETY = #{name} and
 		</if>
-		GROUP BY  cx.companyname) cb
-		LEFT JOIN (
-		select
+
+		 cx.name is not null
+		GROUP BY zb.company_id,cx.name
+		ORDER BY zb.company_id )a
+		LEFT JOIN (select
 		CX_NAME,"SUM"(MBL_YEAR) xh
 		from CRM_RESOURCE_ALLOCATION
 		where FL_NAME = '现货'
-		GROUP BY CX_NAME) jk
-		on jk.CX_NAME = cb.companyname
-		ORDER BY  decode(cb.companyname,
+		GROUP BY CX_NAME) b
+		on b.CX_NAME = a.NAME) d
+
+		GROUP BY d.COMPanyName
+
+		ORDER BY  decode(d.companyname,
 		'唐钢',
 		'邯钢',
 		'宣钢',
@@ -285,18 +273,10 @@
 		'邯宝')
 	</select>
 	<select id="Steelmillssum" resultType="map">
-		select
-		NVL(SUM(cb.jh), 0)  jh,NVL( sum(jk.xh), 0) xh
-		from   (SELECT
-		cx.companyname,
-		SUM(cr.MBL_YEAR) jh
-		FROM
-		CRM_RESOURCE_ALLOCATION cr
-		RIGHT  JOIN
+		select NVL(SUM(z.xh),0),NVL("SUM"(z.JH),0) jh from
 		(
-		SELECT
-		DECODE (
-		settle.company_id,
+		SELECT d.COMPANYNAME,NVL(SUM(D.XH),0) xh,NVL("SUM"(d.jh),0) jh  from  (select * from (
+		SELECT decode(zb.company_id,
 		9580,
 		'唐钢',
 		9727,
@@ -312,125 +292,85 @@
 		8493,
 		'衡板',
 		7778,
-		'邯宝'
-		) AS companyname,
-		DATA . NAME,
-		settle.company_id,
-		SUM (settle.fkimg) AS fkimg,
-		SUM (A .fkimg) AS pzgl,
-		CASE
-		WHEN SUM (settle.fkimg) / SUM (A .fkimg) IS NULL THEN
-		'--'
-		ELSE
-		TO_CHAR (
-		ROUND (
-		SUM (settle.fkimg) / SUM (A .fkimg),
-		2
-		)
-		)
-		END AS bz
-		FROM
-		scm_steel_settle settle
-		JOIN scm_delivery_detail detail ON settle.aubel = detail.order_no
-		AND settle.aupos = detail.order_item
-		JOIN crm_resource_data DATA ON DATA .full_name = detail.ext
-		AND DATA . TYPE = 3
-		AND DATA .parent_name IS NOT NULL
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		LEFT JOIN (
-		SELECT
-		settle. ID,
-		settle.fkimg
-		FROM
-		scm_steel_settle settle
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		JOIN report_product_class_level pzg ON sso.company_id = pzg.company_id
-		AND sso.product_type = pzg.product_class
-		WHERE
-		pzg.product_grade = '品种钢'
-		OR pzg.product_grade = '高端产品'
-		OR pzg.product_grade = '特色战略产品'
-		AND pzg.status = '0'
-		) A ON settle. ID = A . ID
-		INNER JOIN scm_variety_to_pt_gp svtpg ON sso.product_code = svtpg.product_group
+		'邯宝') AS companyname,
+		cx.name,
+		"SUM"(cr.MBL_YEAR) jh,
+		SUM(mx.fkimg) AS fkimg
+		FROM scm_steel_settle_main zb
+		left join
+
+		SCM_SETTLEMENT_DETAILS mx
+		on zb.vbeln = mx.VBELN
+
+		LEFT JOIN price_salebody_relation xszt
+		on mx.XSZT_ID = xszt.ID
+		LEFT JOIN scm_variety_to_pt_gp pz
+		on mx.pz_id = pz.id
+		LEFT JOIN crm_resource_data cx
+		on mx.cx_id = cx.code
+		JOIN scm_sale_order sso
+		ON sso.order_no = zb.aubel
+		AND sso.company_id = zb.company_id
+		LEFT JOIN CRM_RESOURCE_ALLOCATION cr
+		on cr.CX_NAME  = cx.name
+		INNER JOIN scm_variety_to_pt_gp svtpg
+		ON sso.product_code = svtpg.product_group
 		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN (
-		SELECT DISTINCT
-		cfd.data_name
-		FROM
-		crm_filter_data cfd
-		WHERE
-		cfd.data_type = '2'
+		AND sso.order_type_describe NOT IN
+		(SELECT DISTINCT cfd.data_name
+		FROM crm_filter_data cfd
+		WHERE cfd.data_type = '2'
 		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0'
-		)
-		AND (
-		sso.deleted IS NULL
-		OR sso.deleted != 'X'
-		)
-		AND sso.sale_group NOT IN (
-		SELECT
-		sso.sale_group
-		FROM
-		crm_filter_data cfd
-		WHERE
-		cfd.company_id = sso.company_id
+		AND cfd.status = '0')
+		AND (sso.deleted IS NULL OR sso.deleted != 'X')
+		AND sso.sale_group NOT IN
+		(SELECT sso.sale_group
+		FROM crm_filter_data cfd
+		WHERE cfd.company_id = sso.company_id
 		AND cfd.data_type = 8
-		AND cfd.status = 0
-		)
-		AND sso.saler_name NOT IN (
-		SELECT
-		T .data_name
-		FROM
-		crm_filter_data T
-		WHERE
-		T .data_type = '1'
-		AND T .status = '0'
-		AND T .company_id = sso.company_id
-		)
-		LEFT JOIN price_salebody_relation xsztdzb ON sso.company_id = xsztdzb.company_id
-		AND sso.sale_group = xsztdzb.sale_body_des
-		WHERE
-		1 = 1
-		GROUP BY
-		settle.company_id,
-		DATA . NAME
-		ORDER BY
-		company_id
-		) cx
-		ON cx.NAME = cr.CX_NAME
+		AND cfd.status = 0)
+		AND sso.saler_name NOT IN
+		(SELECT t.data_name
+		FROM crm_filter_data t
+		WHERE t.data_type = '1'
+		AND t.status = '0'
+		AND t.company_id = sso.company_id)
+		where
+		<!-- zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
+		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
 		<if test="name != null and name !=''">
-			where cr.PZ_NAME = #{name}
+			 pz.VARIETY = #{name} and
 		</if>
-		GROUP BY  cx.companyname) cb
-		LEFT JOIN (
-		select
+
+		  cx.name is not null
+		GROUP BY zb.company_id,cx.name
+		ORDER BY zb.company_id )a
+		LEFT JOIN (select
 		CX_NAME,"SUM"(MBL_YEAR) xh
 		from CRM_RESOURCE_ALLOCATION
 		where FL_NAME = '现货'
-		GROUP BY CX_NAME) jk
-		on jk.CX_NAME = cb.companyname
-	</select>
+		GROUP BY CX_NAME) b
+		on b.CX_NAME = a.NAME) d
 
+		GROUP BY d.COMPanyName
+
+		ORDER BY  decode(d.companyname,
+		'唐钢',
+		'邯钢',
+		'宣钢',
+		'承钢',
+		'舞钢',
+		'石钢',
+		'衡板',
+		'邯宝')
+		)z
+	</select>
+	<!--四-->
 	<select id="Steellist" resultType="map">
-		select
-		a.companyname,a.pzgl,a.jsl, ROUND(b.jh/a.jsl,4)*100  bili
-		from
-		(
-		SELECT
-		fg.companyname,
-		SUM (pz.fkimg) pzgl,
-		ROUND (SUM(settle.fkimg), 2) jsl
-		FROM
-		Scm_Steel_Settle settle
-		JOIN Scm_Sale_Order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		join
-		(SELECT
-		DECODE (
-		settle.company_id,
+		select c.COMPANYName,NVL(c.pzg,0) pzg,NVL(c.jsl,0) jsl,NVl(ROUND(b.jh/c.jsl,4)*100,0)  bili
+		from (
+		SELECT a.COMPANYName,"SUM"(a.fkimg) pzg,SUM(a.jsl) jsl from
+		(SELECT decode(zb.company_id,
 		9580,
 		'唐钢',
 		9727,
@@ -446,123 +386,67 @@
 		8493,
 		'衡板',
 		7778,
-		'邯宝'
-		) AS companyname,
-		DATA . NAME,
-		settle.company_id,
-		SUM (settle.fkimg) AS fkimg,
-		SUM (A .fkimg) AS pzgl,
-		CASE
-		WHEN SUM (settle.fkimg) / SUM (A .fkimg) IS NULL THEN
-		'--'
-		ELSE
-		TO_CHAR (
-		ROUND (
-		SUM (settle.fkimg) / SUM (A .fkimg),
-		2
-		)
-		)
-		END AS bz
-		FROM
-		scm_steel_settle settle
+		'邯宝') AS companyname,
+		zb.company_id,
+		"ROUND"(SUM(mx.fkimg), 4) jsl,
+		SUM(mx.fkimg) AS fkimg
+		FROM scm_steel_settle_main zb
+		left join
 
-		JOIN scm_delivery_detail detail ON settle.aubel = detail.order_no
-		AND settle.aupos = detail.order_item
-		JOIN crm_resource_data DATA ON DATA .full_name = detail.ext
-		AND DATA . TYPE = 3
-		AND DATA .parent_name IS NOT NULL
+		SCM_SETTLEMENT_DETAILS mx
+		on zb.vbeln = mx.VBELN
 
-		join CRM_RESOURCE_ALLOCATION cra
-		on cra.CX_NAME = DATA.NAME
-
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		LEFT JOIN (
-		SELECT
-		settle. ID,
-		settle.fkimg
-		FROM
-		scm_steel_settle settle
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		JOIN report_product_class_level pzg ON sso.company_id = pzg.company_id
-		AND sso.product_type = pzg.product_class
-		WHERE
-		pzg.product_grade = '品种钢'
-		OR pzg.product_grade = '高端产品'
-		OR pzg.product_grade = '特色战略产品'
-		AND pzg.status = '0'
-		) A ON settle. ID = A . ID
-		INNER JOIN scm_variety_to_pt_gp svtpg ON sso.product_code = svtpg.product_group
+		LEFT JOIN price_salebody_relation xszt
+		on mx.XSZT_ID = xszt.ID
+		LEFT JOIN scm_variety_to_pt_gp pz
+		on mx.pz_id = pz.id
+		LEFT JOIN crm_resource_data cx
+		on mx.cx_id = cx.code
+		JOIN scm_sale_order sso
+		ON sso.order_no = zb.aubel
+		AND sso.company_id = zb.company_id
+		INNER JOIN scm_variety_to_pt_gp svtpg
+		ON sso.product_code = svtpg.product_group
 		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN (
-		SELECT DISTINCT
-		cfd.data_name
-		FROM
-		crm_filter_data cfd
-		WHERE
-		cfd.data_type = '2'
+		AND sso.order_type_describe NOT IN
+		(SELECT DISTINCT cfd.data_name
+		FROM crm_filter_data cfd
+		WHERE cfd.data_type = '2'
 		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0'
-		)
-		AND (
-		sso.deleted IS NULL
-		OR sso.deleted != 'X'
-		)
-		AND sso.sale_group NOT IN (
-		SELECT
-		sso.sale_group
-		FROM
-		crm_filter_data cfd
-		WHERE
-		cfd.company_id = sso.company_id
+		AND cfd.status = '0')
+		AND (sso.deleted IS NULL OR sso.deleted != 'X')
+		AND sso.sale_group NOT IN
+		(SELECT sso.sale_group
+		FROM crm_filter_data cfd
+		WHERE cfd.company_id = sso.company_id
 		AND cfd.data_type = 8
-		AND cfd.status = 0
-		)
-		AND sso.saler_name NOT IN (
-		SELECT
-		T .data_name
-		FROM
-		crm_filter_data T
-		WHERE
-		T .data_type = '1'
-		AND T .status = '0'
-		AND T .company_id = sso.company_id
-		)
-		LEFT JOIN price_salebody_relation xsztdzb
-		ON sso.company_id = xsztdzb.company_id
-		AND sso.sale_group = xsztdzb.sale_body_des
-		WHERE
-		1=1
+		AND cfd.status = 0)
+		AND sso.saler_name NOT IN
+		(SELECT t.data_name
+		FROM crm_filter_data t
+		WHERE t.data_type = '1'
+		AND t.status = '0'
+		AND t.company_id = sso.company_id)
+		where
+		<!--zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
+		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
 		<if test="name != null and name !=''">
-			and cra.PZ_NAME = #{name}
+			pz.VARIETY = #{name} and
 		</if>
-		GROUP BY
-		settle.company_id,
-		DATA . NAME
-		ORDER BY
-		company_id) fg
-		on sso.company_id = fg.COMPANY_ID
-		LEFT JOIN (
-		SELECT
-		settle. ID,
-		settle.fkimg
-		FROM
-		scm_steel_settle settle
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		JOIN report_product_class_level pzg ON sso.company_id = pzg.company_id
-		AND sso.product_type = pzg.product_class
-		WHERE
-		pzg.product_grade = '品种钢'
-		OR pzg.product_grade = '高端产品'
-		OR pzg.product_grade = '特色战略产品'
-		AND pzg.status = '0'
-		) pz ON settle. ID = pz. ID
-		GROUP BY
-		fg.companyname
-		)  a
-		join (SELECT
+		  cx.name is not null
+		GROUP BY zb.company_id,cx.name
+		ORDER BY zb.company_id) a
+		GROUP BY a.companyName
+		ORDER BY decode(a.companyName,
+		'唐钢',
+		'邯钢',
+		'宣钢',
+		'承钢',
+		'舞钢',
+		'石钢',
+		'衡板',
+		'邯宝'))c
+		LEFT JOIN (SELECT
 		cx.companyname,
 		SUM(cr.MBL_YEAR) jh
 		FROM
@@ -676,27 +560,15 @@
 		company_id
 		) cx
 		ON cx.NAME = cr.CX_NAME
-		GROUP BY  cx.companyname) b
-
-		on b.companyname = a.companyname
+		GROUP BY  cx.companyname)b
+		on c.companyname = b.companyname
 	</select>
 	<select id="Steelsum" resultType="map">
-		select
-		NVL(SUM(a.pzgl), 0) pzgl,NVL(SUM(a.jsl), 0) jsl,NVL(SUM(b.jh), 0)  jh
-		from
-		(
-		SELECT
-		fg.companyname,
-		SUM (pz.fkimg) pzgl,
-		ROUND (SUM(settle.fkimg), 2) jsl
-		FROM
-		Scm_Steel_Settle settle
-		JOIN Scm_Sale_Order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		join
-		(SELECT
-		DECODE (
-		settle.company_id,
+		select NVL("SUM"(p.pzgl),0) pzgl,NVL("SUM"(p.jsl),0) jsl,NVL("SUM"(p.jh),0) jh   from
+		(select c.COMPANYName,c.pzg pzgl,c.jsl,b.jh ,NVl(ROUND(b.jh/c.jsl,4)*100,0)  bili
+		from (
+		SELECT a.COMPANYName,"SUM"(a.fkimg) pzg,SUM(a.jsl) jsl from
+		(SELECT decode(zb.company_id,
 		9580,
 		'唐钢',
 		9727,
@@ -712,123 +584,67 @@
 		8493,
 		'衡板',
 		7778,
-		'邯宝'
-		) AS companyname,
-		DATA . NAME,
-		settle.company_id,
-		SUM (settle.fkimg) AS fkimg,
-		SUM (A .fkimg) AS pzgl,
-		CASE
-		WHEN SUM (settle.fkimg) / SUM (A .fkimg) IS NULL THEN
-		'--'
-		ELSE
-		TO_CHAR (
-		ROUND (
-		SUM (settle.fkimg) / SUM (A .fkimg),
-		2
-		)
-		)
-		END AS bz
-		FROM
-		scm_steel_settle settle
+		'邯宝') AS companyname,
+		zb.company_id,
+		"ROUND"(SUM(mx.fkimg), 4) jsl,
+		SUM(mx.fkimg) AS fkimg
+		FROM scm_steel_settle_main zb
+		left join
 
-		JOIN scm_delivery_detail detail ON settle.aubel = detail.order_no
-		AND settle.aupos = detail.order_item
-		JOIN crm_resource_data DATA ON DATA .full_name = detail.ext
-		AND DATA . TYPE = 3
-		AND DATA .parent_name IS NOT NULL
+		SCM_SETTLEMENT_DETAILS mx
+		on zb.vbeln = mx.VBELN
 
-		join CRM_RESOURCE_ALLOCATION cra
-		on cra.CX_NAME = DATA.NAME
-
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		LEFT JOIN (
-		SELECT
-		settle. ID,
-		settle.fkimg
-		FROM
-		scm_steel_settle settle
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		JOIN report_product_class_level pzg ON sso.company_id = pzg.company_id
-		AND sso.product_type = pzg.product_class
-		WHERE
-		pzg.product_grade = '品种钢'
-		OR pzg.product_grade = '高端产品'
-		OR pzg.product_grade = '特色战略产品'
-		AND pzg.status = '0'
-		) A ON settle. ID = A . ID
-		INNER JOIN scm_variety_to_pt_gp svtpg ON sso.product_code = svtpg.product_group
+		LEFT JOIN price_salebody_relation xszt
+		on mx.XSZT_ID = xszt.ID
+		LEFT JOIN scm_variety_to_pt_gp pz
+		on mx.pz_id = pz.id
+		LEFT JOIN crm_resource_data cx
+		on mx.cx_id = cx.code
+		JOIN scm_sale_order sso
+		ON sso.order_no = zb.aubel
+		AND sso.company_id = zb.company_id
+		INNER JOIN scm_variety_to_pt_gp svtpg
+		ON sso.product_code = svtpg.product_group
 		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN (
-		SELECT DISTINCT
-		cfd.data_name
-		FROM
-		crm_filter_data cfd
-		WHERE
-		cfd.data_type = '2'
+		AND sso.order_type_describe NOT IN
+		(SELECT DISTINCT cfd.data_name
+		FROM crm_filter_data cfd
+		WHERE cfd.data_type = '2'
 		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0'
-		)
-		AND (
-		sso.deleted IS NULL
-		OR sso.deleted != 'X'
-		)
-		AND sso.sale_group NOT IN (
-		SELECT
-		sso.sale_group
-		FROM
-		crm_filter_data cfd
-		WHERE
-		cfd.company_id = sso.company_id
+		AND cfd.status = '0')
+		AND (sso.deleted IS NULL OR sso.deleted != 'X')
+		AND sso.sale_group NOT IN
+		(SELECT sso.sale_group
+		FROM crm_filter_data cfd
+		WHERE cfd.company_id = sso.company_id
 		AND cfd.data_type = 8
-		AND cfd.status = 0
-		)
-		AND sso.saler_name NOT IN (
-		SELECT
-		T .data_name
-		FROM
-		crm_filter_data T
-		WHERE
-		T .data_type = '1'
-		AND T .status = '0'
-		AND T .company_id = sso.company_id
-		)
-		LEFT JOIN price_salebody_relation xsztdzb
-		ON sso.company_id = xsztdzb.company_id
-		AND sso.sale_group = xsztdzb.sale_body_des
-		WHERE
-		1=1
+		AND cfd.status = 0)
+		AND sso.saler_name NOT IN
+		(SELECT t.data_name
+		FROM crm_filter_data t
+		WHERE t.data_type = '1'
+		AND t.status = '0'
+		AND t.company_id = sso.company_id)
+		where
+		<!--zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
+		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
 		<if test="name != null and name !=''">
-			and cra.PZ_NAME = #{name}
+			pz.VARIETY = #{name} and
 		</if>
-		GROUP BY
-		settle.company_id,
-		DATA . NAME
-		ORDER BY
-		company_id) fg
-		on sso.company_id = fg.COMPANY_ID
-		LEFT JOIN (
-		SELECT
-		settle. ID,
-		settle.fkimg
-		FROM
-		scm_steel_settle settle
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		JOIN report_product_class_level pzg ON sso.company_id = pzg.company_id
-		AND sso.product_type = pzg.product_class
-		WHERE
-		pzg.product_grade = '品种钢'
-		OR pzg.product_grade = '高端产品'
-		OR pzg.product_grade = '特色战略产品'
-		AND pzg.status = '0'
-		) pz ON settle. ID = pz. ID
-		GROUP BY
-		fg.companyname
-		)  a
-		join (SELECT
+		  cx.name is not null
+		GROUP BY zb.company_id,cx.name
+		ORDER BY zb.company_id) a
+		GROUP BY a.companyName
+		ORDER BY decode(a.companyName,
+		'唐钢',
+		'邯钢',
+		'宣钢',
+		'承钢',
+		'舞钢',
+		'石钢',
+		'衡板',
+		'邯宝'))c
+		LEFT JOIN (SELECT
 		cx.companyname,
 		SUM(cr.MBL_YEAR) jh
 		FROM
@@ -942,42 +758,31 @@
 		company_id
 		) cx
 		ON cx.NAME = cr.CX_NAME
-		GROUP BY  cx.companyname) b
-
-		on b.companyname = a.companyname
+		GROUP BY  cx.companyname)b
+		on c.companyname = b.companyname) p
 	</select>
 
 	<select id="salesmainsum" resultType="map">
-		select
-		NVL("SUM"(zyfkimg),0) zyfkimg
-		from
-		(SELECT settle.company_id,
-		xsztdzb.sale_body,
-		SUM(settle.fkimg) AS zyfkimg
+		select NVL(Sum( zyfkimg ),0)zyfkimg from   (SELECT
+		psr.sale_body,
+		SUM(mx.fkimg) AS zyfkimg
+		FROM scm_steel_settle_main zb
+		left join
 
-		FROM scm_steel_settle settle
+		SCM_SETTLEMENT_DETAILS mx
+		on zb.vbeln = mx.VBELN
+		LEFT JOIN scm_variety_to_pt_gp pz
+		on mx.pz_id = pz.id
+		JOIN price_salebody_relation psr
+		on psr.company_Id = zb.company_id
 
-		LEFT JOIN scm_delivery_detail detail
-		ON settle.aubel = detail.order_no
-		AND settle.aupos = detail.order_item
-
-		LEFT JOIN crm_resource_data DATA
-		ON DATA.full_name = detail.ext
-		AND DATA.TYPE = 3
-		AND DATA.parent_name IS NOT NULL
-
-		JOIN CRM_RESOURCE_ALLOCATION cra
-		ON data.NAME = cra.CX_NAME
-
-		LEFT JOIN scm_sale_order sso
-		ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-
-		LEFT JOIN scm_variety_to_pt_gp svtpg
+		JOIN scm_sale_order sso
+		ON sso.order_no = zb.aubel
+		AND sso.company_id = zb.company_id
+		INNER JOIN scm_variety_to_pt_gp svtpg
 		ON sso.product_code = svtpg.product_group
 		AND sso.company_id = svtpg.company_id
 		AND sso.order_type_describe NOT IN
-
 		(SELECT DISTINCT cfd.data_name
 		FROM crm_filter_data cfd
 		WHERE cfd.data_type = '2'
@@ -996,50 +801,39 @@
 		WHERE t.data_type = '1'
 		AND t.status = '0'
 		AND t.company_id = sso.company_id)
-		JOIN price_salebody_relation xsztdzb
-		ON sso.company_id = xsztdzb.company_id
-		AND sso.sale_group = xsztdzb.sale_body_des
-		WHERE xsztdzb.sale_body = '分公司'
-		or xsztdzb.sale_body = '销售公司资'
-		or xsztdzb.sale_body = '出口'
-		or xsztdzb.sale_body = '技术中心/市场部'
+		where<!-- zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
+		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
 		<if test="name != null and name !=''">
-			AND cra.PZ_NAME = #{name}
+			  pz.VARIETY = #{name} AND
 		</if>
+			psr.sale_body = '分公司'
+		or psr.sale_body = '销售公司资'
+		or psr.sale_body = '出口'
+		or psr.sale_body = '技术中心/市场部'
 
-		GROUP BY settle.company_id, xsztdzb.sale_body
-		ORDER BY company_id
-		)
+		GROUP BY psr.sale_body)
 	</select>
 	<select id="salesmain" resultType="map">
 		SELECT
-		settle.company_id,
-		xsztdzb.sale_body companyname,
-		SUM(settle.fkimg) AS zyfkimg
+		psr.sale_body,
+		NVL(SUM(mx.fkimg),0) AS zyfkimg
+		FROM scm_steel_settle_main zb
+		left join
 
-		FROM scm_steel_settle settle
+		SCM_SETTLEMENT_DETAILS mx
+		on zb.vbeln = mx.VBELN
+		LEFT JOIN scm_variety_to_pt_gp pz
+		on mx.pz_id = pz.id
+		JOIN price_salebody_relation psr
+		on psr.company_Id = zb.company_id
 
-		LEFT JOIN scm_delivery_detail detail
-		ON settle.aubel = detail.order_no
-		AND settle.aupos = detail.order_item
-
-		LEFT JOIN crm_resource_data DATA
-		ON DATA.full_name = detail.ext
-		AND DATA.TYPE = 3
-		AND DATA.parent_name IS NOT NULL
-
-		JOIN CRM_RESOURCE_ALLOCATION cra
-		ON data.NAME = cra.CX_NAME
-
-		LEFT JOIN scm_sale_order sso
-		ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-
-		LEFT JOIN scm_variety_to_pt_gp svtpg
+		JOIN scm_sale_order sso
+		ON sso.order_no = zb.aubel
+		AND sso.company_id = zb.company_id
+		INNER JOIN scm_variety_to_pt_gp svtpg
 		ON sso.product_code = svtpg.product_group
 		AND sso.company_id = svtpg.company_id
 		AND sso.order_type_describe NOT IN
-
 		(SELECT DISTINCT cfd.data_name
 		FROM crm_filter_data cfd
 		WHERE cfd.data_type = '2'
@@ -1058,19 +852,17 @@
 		WHERE t.data_type = '1'
 		AND t.status = '0'
 		AND t.company_id = sso.company_id)
-		JOIN price_salebody_relation xsztdzb
-		ON sso.company_id = xsztdzb.company_id
-		AND sso.sale_group = xsztdzb.sale_body_des
-		WHERE xsztdzb.sale_body = '分公司'
-		or xsztdzb.sale_body = '销售公司资'
-		or xsztdzb.sale_body = '出口'
-		or xsztdzb.sale_body = '技术中心/市场部'
-
+		where <!--zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
+		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
 		<if test="name != null and name !=''">
-			AND  cra.PZ_NAME = #{name}
+			  pz.VARIETY = #{name} 	AND
 		</if>
-		GROUP BY settle.company_id, xsztdzb.sale_body
-		ORDER BY company_id
+			psr.sale_body = '分公司'
+		or psr.sale_body = '销售公司资'
+		or psr.sale_body = '出口'
+		or psr.sale_body = '技术中心/市场部'
+
+		GROUP BY psr.sale_body
 	</select>
 
 </mapper>

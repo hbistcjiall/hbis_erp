@@ -332,8 +332,11 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             double a = Double.parseDouble(nmb);
             double b=Double.parseDouble(jsl);
             double c=Double.parseDouble(pzgl);
+            String result = "0";
             double bi = a/b*100;
-            String result = String.valueOf(bi).substring(0,4);
+            if(bi>0){
+            result = String.valueOf(bi).substring(0,4);}
+
             Map type = new HashMap();
             type.put("NAME","总量");
             type.put("JSL",b);
