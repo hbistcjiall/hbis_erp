@@ -6,7 +6,18 @@
         SELECT
         NVL (A .PZ_NAME, '合计') pzName,
         SUM(ss.fkimg) as yield,
-        SUM(A.planNum) as planNum
+        SUM(A.planNum) as planNum,
+        CASE
+        WHEN SUM (ss.fkimg) / SUM (A.planNum) IS NULL THEN
+        '0'
+        ELSE
+        TO_CHAR (
+        ROUND (
+        SUM (ss.fkimg) / SUM (A.planNum),
+        4
+        )
+        )
+        END AS schedule
         FROM
         (
         SELECT
@@ -39,7 +50,7 @@
                     DEC_MONTH
                 END
             ) planNum,
-            CX_NAME
+            PZ_CODE
         FROM
             crm_resource_allocation
         WHERE
@@ -50,30 +61,27 @@
         <if test="flName != null and flName != ''">
             and FL = #{flName}
         </if>
-        group by PZ_NAME,CX_NAME
+        group by PZ_NAME,PZ_CODE
         ) A
         LEFT JOIN (
         SELECT
-        data.NAME dName,
-        data.full_name fName,
-        sum (settle.fkimg) fkimg
-        FROM scm_steel_settle settle
-        JOIN scm_delivery_detail detail
-        ON settle.aubel = detail.order_no
-        AND settle.aupos = detail.order_item
-        JOIN crm_resource_data data
-        on DATA.TYPE = 3
-        AND DATA.parent_name IS NOT NULL
-        and data.full_name = detail.ext
+        svtpg.PRODUCT_GROUP pGroup,
+        svtpg.VARIETY pz,
+        sum(ssm.sl) fkimg
+        FROM SCM_STEEL_SETTLE_MAIN ssm
+        join SCM_SETTLEMENT_DETAILS ssd
+        ON ssm.vbeln = ssd.vbeln
+        JOIN scm_variety_to_pt_gp svtpg
+        on ssd.pz_id = svtpg.id
         WHERE
         1=1
         <if test="date != null and date != ''">
-            and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
+            and TO_CHAR (ssm.FKDAT, 'YYYY-MM') = #{date}
         </if>
-        AND (settle.PREY1 != 'X' or settle.PREY1 is null)
+        AND (ssd.PREY1 != 'X' or ssd.PREY1 is null)
         group by data.NAME,data.full_name
-        ) ss ON A.CX_NAME = ss.dName
-        OR A.CX_NAME = ss.fName
+        ) ss ON A.PZ_CODE = ss.pGroup
+        and A.PZ_NAME = ss.pz
         GROUP BY
         ROLLUP (A.PZ_NAME))
         order by decode(pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线',5,'型带',6)
@@ -83,7 +91,7 @@
         select *
         from (
         SELECT
-        NVL (A .CX_NAME, '合计') cxName,
+        CX_NAME cxName,
         SUM(ss.fkimg) as yield,
         SUM(A.planNum) as planNum,
         CASE
@@ -143,28 +151,25 @@
         ) A
         LEFT JOIN (
         SELECT
-        data.NAME dName,
-        data.full_name fName,
-        sum (settle.fkimg) fkimg
-        FROM scm_steel_settle settle
-        JOIN scm_delivery_detail detail
-        ON settle.aubel = detail.order_no
-        AND settle.aupos = detail.order_item
-        JOIN crm_resource_data data
-        on DATA.TYPE = 3
-        AND DATA.parent_name IS NOT NULL
-        and data.full_name = detail.ext
+        crd.full_name fName,
+        sum(ssm.sl) fkimg
+        FROM SCM_STEEL_SETTLE_MAIN ssm
+        join SCM_SETTLEMENT_DETAILS ssd
+        ON ssm.vbeln = ssd.vbeln
+        JOIN CRM_RESOURCE_DATA crd
+        on ssd.cx_id = crd.code
+        and crd.TYPE = 3
+        AND crd.parent_name IS NOT NULL
         WHERE
         1=1
         <if test="date != null and date != ''">
-            and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
+            and TO_CHAR (ssm.FKDAT, 'YYYY-MM') = #{date}
         </if>
-        AND (settle.PREY1 != 'X' or settle.PREY1 is null)
-        group by data.NAME,data.full_name
-        ) ss ON A.CX_NAME = ss.dName
-        OR A.CX_NAME = ss.fName
+        AND (ssd.PREY1 != 'X' or ssd.PREY1 is null)
+        group by crd.full_name
+        ) ss ON A.CX_NAME = ss.fName
         GROUP BY
-        ROLLUP (A.CX_NAME)
+        A.CX_NAME
         ORDER BY schedule ${sort}
         )
         where
