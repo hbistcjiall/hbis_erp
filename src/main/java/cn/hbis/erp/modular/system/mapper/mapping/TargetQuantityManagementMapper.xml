@@ -105,9 +105,9 @@
 		FROM
 		Crm_Resource_Allocation zyjh
 		WHERE
-		1 = 1 and
+		1 = 1
 		<if test="name != null and name !=''">
-			pz_NAME = #{name}
+			and	pz_NAME = #{name}
 		</if>
 		GROUP BY
 		pz_name) b
@@ -176,6 +176,9 @@
 		Crm_Resource_Allocation zyjh
 		WHERE
 		1 = 1
+		<if test="name != null and name !=''">
+			and	pz_NAME = #{name}
+		</if>
 		GROUP BY
 		pz_name) b
 		on b.pz_name =  a.NAME
