@@ -5,8 +5,8 @@
         select * from (
         SELECT
         NVL (A .PZ_NAME, '合计') pzName,
-        SUM(ss.fkimg) as yield,
-        SUM(A.planNum) as planNum,
+        SUM(ss.fkimg) / 1000 as yield,
+        SUM(A.planNum) / 1000 as planNum,
         CASE
         WHEN SUM (ss.fkimg) / SUM (A.planNum) IS NULL THEN
         '0'
@@ -92,8 +92,8 @@
         from (
         SELECT
         CX_NAME cxName,
-        SUM(ss.fkimg) as yield,
-        SUM(A.planNum) as planNum,
+        SUM(ss.fkimg) / 1000 as yield,
+        SUM(A.planNum) / 1000 as planNum,
         CASE
         WHEN SUM (ss.fkimg) / SUM (A.planNum) IS NULL THEN
         '0'
