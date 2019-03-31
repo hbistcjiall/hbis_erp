@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,20 +48,18 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         for (Allocation model : list){
             allocation = new Allocation();
             if (model.getPlanNum()==null){
-                allocation.setPlanNum(0);
+                allocation.setPlanNum(0.00);
                 allocation.setSchedule(0.00);
             }else {
                 allocation.setPlanNum(model.getPlanNum());
             }
             if (model.getYield()==null){
-                allocation.setYield(0);
+                allocation.setYield(0.00);
                 allocation.setSchedule(0.00);
             }else {
                 allocation.setYield(model.getYield());
             }
-            if (model.getPlanNum()!=null && model.getYield()!=null){
-                allocation.setSchedule(new BigDecimal((float)model.getYield()/model.getPlanNum()).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue());
-            }
+            allocation.setSchedule(model.getSchedule());
             allocation.setPzName(model.getPzName());
             lists.add(allocation);
         }
@@ -94,13 +91,13 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         for (Allocation model : list){
             allocation = new Allocation();
             if (model.getPlanNum()==null){
-                allocation.setPlanNum(0);
+                allocation.setPlanNum(0.00);
                 allocation.setSchedule(0.00);
             }else {
                 allocation.setPlanNum(model.getPlanNum());
             }
             if (model.getYield()==null){
-                allocation.setYield(0);
+                allocation.setYield(0.00);
                 allocation.setSchedule(0.00);
             }else {
                 allocation.setYield(model.getYield());
@@ -134,20 +131,18 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         for (Allocation model : list){
             allocation = new Allocation();
             if (model.getPlanNum()==null){
-                allocation.setPlanNum(0);
+                allocation.setPlanNum(0.00);
                 allocation.setSchedule(0.00);
             }else {
                 allocation.setPlanNum(model.getPlanNum());
             }
             if (model.getYield()==null){
-                allocation.setYield(0);
+                allocation.setYield(0.00);
                 allocation.setSchedule(0.00);
             }else {
                 allocation.setYield(model.getYield());
             }
-            if (model.getPlanNum()!=null && model.getYield()!=null){
-                allocation.setSchedule(new BigDecimal((float)model.getYield()/model.getPlanNum()).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue());
-            }
+            allocation.setSchedule(model.getSchedule());
             allocation.setCompanyName(model.getCompanyName());
             lists.add(allocation);
         }
@@ -175,20 +170,18 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         for (Allocation model : list){
             allocation = new Allocation();
             if (model.getPlanNum()==null){
-                allocation.setPlanNum(0);
+                allocation.setPlanNum(0.00);
                 allocation.setSchedule(0.00);
             }else {
                 allocation.setPlanNum(model.getPlanNum());
             }
             if (model.getYield()==null){
-                allocation.setYield(0);
+                allocation.setYield(0.00);
                 allocation.setSchedule(0.00);
             }else {
                 allocation.setYield(model.getYield());
             }
-            if (model.getPlanNum()!=null && model.getYield()!=null){
-                allocation.setSchedule(new BigDecimal((float)model.getYield()/model.getPlanNum()).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue());
-            }
+            allocation.setSchedule(model.getSchedule());
             allocation.setFlName(model.getFlName());
             lists.add(allocation);
         }
