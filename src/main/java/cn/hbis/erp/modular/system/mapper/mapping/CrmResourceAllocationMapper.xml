@@ -79,7 +79,7 @@
             and TO_CHAR (ssm.FKDAT, 'YYYY-MM') = #{date}
         </if>
         AND (ssd.PREY1 != 'X' or ssd.PREY1 is null)
-        group by data.NAME,data.full_name
+        group by svtpg.PRODUCT_GROUP,svtpg.VARIETY
         ) ss ON A.PZ_CODE = ss.pGroup
         and A.PZ_NAME = ss.pz
         GROUP BY
