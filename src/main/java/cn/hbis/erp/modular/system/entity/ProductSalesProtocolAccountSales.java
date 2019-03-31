@@ -12,6 +12,7 @@ public class ProductSalesProtocolAccountSales implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private String companyName;//子公司名
     private String companyId;//子公司id
     private String varieties;//产品类别
     private Double totalSales;//总销量
@@ -24,6 +25,14 @@ public class ProductSalesProtocolAccountSales implements Serializable {
     private Double zibanProtocolSalesOfTotal;//协议户中自办公司销量 占协议总销量比
     private Double xieyiProtocolSales;//协议户中执行协议政策销量 销售量
     private Double xieyiProtocolSalesOfTotal;//协议户中执行协议政策销量 占协议总销量比
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 
     public String getCompanyId() {
         return companyId;
@@ -124,7 +133,8 @@ public class ProductSalesProtocolAccountSales implements Serializable {
     @Override
     public String toString() {
         return "ProductSalesProtocolAccountSales{" +
-                "companyId='" + companyId + '\'' +
+                "companyName='" + companyName + '\'' +
+                ", companyId='" + companyId + '\'' +
                 ", varieties='" + varieties + '\'' +
                 ", totalSales=" + totalSales +
                 ", protocolAccountNum=" + protocolAccountNum +
