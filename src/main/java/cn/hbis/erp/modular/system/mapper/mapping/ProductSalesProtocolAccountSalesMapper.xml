@@ -3,7 +3,25 @@
 <mapper namespace="cn.hbis.erp.modular.system.mapper.ProductSalesProtocolAccountSalesMapper">
 
     <select id="list" resultType="map">
-        select sso.company_id as companyId,spad.varieties as varieties,
+        select
+        decode(sso.company_id,
+        9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') as companyName,
+        sso.company_id as companyId,spad.varieties as varieties,
         sum(sso.order_mount) as totalSales,sum(1)-count(distinct spad.account_name) as protocolAccountNum,sum(spad.annual_agreement_volume) as protocolSalesYear,
         sum(case when psr.sale_body_des = '销售总公司' then sso.order_mount else 0 end) as totalProtocolSales,
         round (sum(case when psr.sale_body_des = '销售总公司' then sso.order_mount else 0 end) / sum(spad.annual_agreement_volume),4)*100 as totalProtocolSalesOfYear,
