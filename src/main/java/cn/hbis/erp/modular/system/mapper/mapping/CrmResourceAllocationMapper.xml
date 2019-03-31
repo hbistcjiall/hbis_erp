@@ -5,16 +5,16 @@
         select * from (
         SELECT
         NVL (A .PZ_NAME, '合计') pzName,
-        SUM(ss.fkimg) / 1000 as yield,
-        SUM(A.planNum) / 1000 as planNum,
+        SUM(ss.fkimg) as yield,
+        SUM(A.planNum) as planNum,
         CASE
         WHEN SUM (ss.fkimg) / SUM (A.planNum) IS NULL THEN
         '0'
         ELSE
         TO_CHAR (
         ROUND (
-        SUM (ss.fkimg) / SUM (A.planNum),
-        4
+        SUM (ss.fkimg) / SUM (A.planNum) * 100,
+        2
         )
         )
         END AS schedule
@@ -92,16 +92,16 @@
         from (
         SELECT
         CX_NAME cxName,
-        SUM(ss.fkimg) / 1000 as yield,
-        SUM(A.planNum) / 1000 as planNum,
+        SUM(ss.fkimg) as yield,
+        SUM(A.planNum) as planNum,
         CASE
         WHEN SUM (ss.fkimg) / SUM (A.planNum) IS NULL THEN
         '0'
         ELSE
         TO_CHAR (
         ROUND (
-        SUM (ss.fkimg) / SUM (A.planNum),
-        4
+        SUM (ss.fkimg) / SUM (A.planNum) * 100,
+        2
         )
         )
         END AS schedule
@@ -152,6 +152,7 @@
         LEFT JOIN (
         SELECT
         crd.full_name fName,
+        crd.name dName,
         sum(ssm.sl) fkimg
         FROM SCM_STEEL_SETTLE_MAIN ssm
         join SCM_SETTLEMENT_DETAILS ssd
@@ -165,9 +166,8 @@
         <if test="date != null and date != ''">
             and TO_CHAR (ssm.FKDAT, 'YYYY-MM') = #{date}
         </if>
-        AND (ssd.PREY1 != 'X' or ssd.PREY1 is null)
-        group by crd.full_name
-        ) ss ON A.CX_NAME = ss.fName
+        group by crd.full_name,crd.name
+        ) ss ON A.CX_NAME = ss.dName
         GROUP BY
         A.CX_NAME
         ORDER BY schedule ${sort}
