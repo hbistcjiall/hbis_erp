@@ -57,23 +57,26 @@ public class SalesSubjectMeetingSubjectService extends ServiceImpl<SalesSubjectM
      *
      *
      */
-    public boolean update(Long Id, String companyId, String saleBodyDes, String saleBody) {
-        SalesSubjectMeetingSubjectControl ssmsc = salesSubjectMeetingSubjectMapper.select(Id);
-        ssmsc.setCompanyId(companyId);
-        if ("9580".equals(companyId)){
-            ssmsc.setCompanyName("唐钢");
-        }else if ("9727".equals(companyId)){
-            ssmsc.setCompanyName("邯钢");
-        }else if ("9193".equals(companyId)){
-            ssmsc.setCompanyName("宣钢");
-        }else if ("9196".equals(companyId)){
-            ssmsc.setCompanyName("承钢");
-        }else if ("1932".equals(companyId)){
-            ssmsc.setCompanyName("舞钢");
+    public boolean update(String Id, String companyId, String saleBodyDes, String saleBody) {
+        Long l = Long.parseLong(Id);
+        SalesSubjectMeetingSubjectControl ssmsc = salesSubjectMeetingSubjectMapper.select(l);
+        ssmsc.setId(l);
+        ssmsc.setCompanyName(companyId);
+        if ("唐钢".equals(companyId)){
+            ssmsc.setCompanyId("9580");
+        }else if ("邯钢".equals(companyId)){
+            ssmsc.setCompanyId("9727");
+        }else if ("宣钢".equals(companyId)){
+            ssmsc.setCompanyId("9193");
+        }else if ("承钢".equals(companyId)){
+            ssmsc.setCompanyId("9196");
+        }else if ("舞钢".equals(companyId)){
+            ssmsc.setCompanyId("1932");
         }
         ssmsc.setSaleBodyDes(saleBodyDes);
         ssmsc.setSaleBody(saleBody);
         ssmsc.setGmtModify(new Date());
+        System.out.println(ssmsc.toString());
         int a = this.baseMapper.updateById(ssmsc);
         boolean state = false;
         if (a == 1){
@@ -88,8 +91,10 @@ public class SalesSubjectMeetingSubjectService extends ServiceImpl<SalesSubjectM
      *
      *
      */
-    public boolean delete(Long Id) {
-        SalesSubjectMeetingSubjectControl ssmsc = salesSubjectMeetingSubjectMapper.select(Id);
+    public boolean delete(String Id) {
+        Long l = Long.parseLong(Id);
+        SalesSubjectMeetingSubjectControl ssmsc = salesSubjectMeetingSubjectMapper.select(l);
+        ssmsc.setId(l);
         ssmsc.setIsDelete("1");
         int a = this.baseMapper.updateById(ssmsc);
         boolean state = false;

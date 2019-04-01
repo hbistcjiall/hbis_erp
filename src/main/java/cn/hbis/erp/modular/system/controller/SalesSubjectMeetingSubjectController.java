@@ -94,25 +94,14 @@ public class SalesSubjectMeetingSubjectController {
      */
     @ApiOperation(value = "修改销售主体例会主体对照")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Id", value = "ID", dataType = "Lang"),
+            @ApiImplicitParam(name = "Id", value = "ID", dataType = "String"),
             @ApiImplicitParam(name = "companyId", value = "钢厂", dataType = "String"),
             @ApiImplicitParam(name = "saleBodyDes" ,value = "销售主体",dataType ="String" ),
             @ApiImplicitParam(name = "saleBody" ,value = "例会主体",dataType ="String" )
     })
     @PostMapping(value = "update")
-    public Map update(Long Id, String companyId, String saleBodyDes, String saleBody) {
+    public Map update(String Id, String companyId, String saleBodyDes, String saleBody) {
         Map map = new HashMap();
-        if ("唐钢".equals(companyId)){
-            companyId = "9580";
-        }else if ("邯钢".equals(companyId)){
-            companyId = "9727";
-        }else if ("宣钢".equals(companyId)){
-            companyId = "9193";
-        }else if ("承钢".equals(companyId)){
-            companyId = "9196";
-        }else if ("舞钢".equals(companyId)){
-            companyId = "1932";
-        }
         boolean state = salesSubjectMeetingSubjectService.update(Id, companyId, saleBodyDes, saleBody);
         if (state){
             map.put("message","成功");
@@ -127,10 +116,10 @@ public class SalesSubjectMeetingSubjectController {
      */
     @ApiOperation(value = "删除销售主体例会主体对照")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Id", value = "ID", dataType = "Lang")
+            @ApiImplicitParam(name = "Id", value = "ID", dataType = "String")
     })
     @PostMapping(value = "delete")
-    public Map delete(Long Id) {
+    public Map delete(String Id) {
         Map map = new HashMap();
         boolean state = salesSubjectMeetingSubjectService.delete(Id);
         if (state){
