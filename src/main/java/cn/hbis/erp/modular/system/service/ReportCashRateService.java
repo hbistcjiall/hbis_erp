@@ -49,15 +49,17 @@ public class ReportCashRateService extends ServiceImpl<ReportCashRateMapper, Rep
                 rcrs.setCompanyName("集团");
             }else if (rcrs.getCompanyId() == 9580){
                 rcrs.setCompanyName("唐钢");
-            }else if (rcrs.getCompanyId() == 9727){
+            }else if (rcrs.getCompanyId() == 9727) {
                 rcrs.setCompanyName("邯钢（老区）");
+            }else if (rcrs.getCompanyId() == 7778){
+                rcrs.setCompanyName("邯宝");
             }else if (rcrs.getCompanyId() == 9193){
                 rcrs.setCompanyName("宣钢");
             }else if (rcrs.getCompanyId() == 9196){
                 rcrs.setCompanyName("承钢");
             }else if (rcrs.getCompanyId() == 1932){
                 rcrs.setCompanyName("舞钢");
-            }else if (rcrs.getCompanyId() == 9110){
+            }else if (rcrs.getCompanyId() == 8110){
                 rcrs.setCompanyName("石钢");
             }else if (rcrs.getCompanyId() == 8493){
                 rcrs.setCompanyName("衡板（新区）");
