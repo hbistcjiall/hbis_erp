@@ -24,18 +24,18 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     private ScmSteelSettleMapper scmSteelSettleMapper;
 
     /*
-     月度产线报表
-     */
+      月度产线报表
+      */
     @Async
-    public List<ScmSteelSettle> getcx(String dw,String cx,String startTime,String endTime) {
-        return scmSteelSettleMapper.getcx(dw,cx,startTime,endTime);
+    public List<ScmSteelSettle> getcx(String dw,String cx,String startTime,String endTime,String startagainTime,String endagainTime) {
+        return scmSteelSettleMapper.getcx(dw,cx,startTime,endTime,startagainTime,endagainTime);
     }
     /*
     月度品种报表
      */
     @Async
-    public List<ScmSteelSettle> getpz(String pz,String startTime,String endTime) {
-        return scmSteelSettleMapper.getpz(pz,startTime,endTime);
+    public List<ScmSteelSettle> getpz(String pz,String startTime,String endTime,String startagainTime,String endagainTime) {
+        return scmSteelSettleMapper.getpz(pz,startTime,endTime,startagainTime,endagainTime);
     }
 
 
@@ -46,7 +46,6 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     public List<ScmSteelSettle> getzrbm(String zrbm,String startTime,String endTime) {
         return scmSteelSettleMapper.getzrbm(zrbm,startTime,endTime);
     }
-
     /*
 结算量报表
 */

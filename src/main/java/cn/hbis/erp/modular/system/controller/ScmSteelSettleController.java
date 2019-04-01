@@ -37,11 +37,14 @@ public class ScmSteelSettleController {
     @PostMapping("getcx")
     @Async
     public  List<ScmSteelSettle>  getcx(String dw,String cx,String startTime,String endTime) {
-        List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx,startTime,endTime);
+        String startagainTime="2019-01-01";
+        String endagainTime="2019-02-01";
+        List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx,startTime,endTime,startagainTime,endagainTime);
         return getcx ;
     }
     @ApiOperation(value = "月度品种报表")
     @ApiImplicitParams({
+
             @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
             @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
             @ApiImplicitParam(name = "pz", value = "品种", dataType = "String"),
@@ -49,13 +52,16 @@ public class ScmSteelSettleController {
     @PostMapping("getpz")
     @Async
     public  List<ScmSteelSettle>  getpz(String pz,String startTime,String endTime) {
-        List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz,startTime,endTime);
+        String startagainTime="2019-01-01";
+        String endagainTime="2019-02-01";
+        List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz,startTime,endTime,startagainTime,endagainTime);
         return getpz;
     }
     @ApiOperation(value = "责任部门报表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "zrbm", value = "责任部门", dataType = "String"),
-            @ApiImplicitParam(name = "rq", value = "日期", dataType = "String"),
+            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
     })
     @PostMapping("getzrbm")
     @Async
@@ -63,6 +69,7 @@ public class ScmSteelSettleController {
         List<ScmSteelSettle> getzrbm=scmSteelSettleService.getzrbm(zrbm,startTime,endTime);
         return getzrbm;
     }
+
 
     @ApiOperation(value = "结算完成情况报表")
     @ApiImplicitParams({
