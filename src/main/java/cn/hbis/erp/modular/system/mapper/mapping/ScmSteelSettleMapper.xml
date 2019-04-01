@@ -527,70 +527,55 @@
     </select>
 
     <select id="getpzjszl" resultType="map">
-         SELECT
+        SELECT
             B.VARIETY,
             round(SUM(settle.fkimg),2) jsl,
             SUM(KZWI6) AS jsjg,
             round(SUM(KZWI6)/SUM(settle.fkimg),2) jsjj
             FROM scm_steel_settle settle
             JOIN scm_sale_order sso
-            ON sso.order_no = settle.aubel
+            on sso.order_no = settle.aubel
+            and sso.ORDER_ROW = settle.AUPOS
             AND sso.company_id = settle.company_id
             JOIN scm_variety_to_pt_gp B
             ON sso.product_code = B.product_group
             and sso.company_id = B.company_id
             where settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
             AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+
             group by  B.VARIETY
     </select>
 
     <select id="getpzgjswc" resultType="map">
-   select * from (select name ,jsl,round(nmb/jsl*100,2) || '%' wcl from (
-            SELECT
-            B.VARIETY name,
-
-            round(SUM(mx.fkimg),2) jsl
-            from scm_steel_settle_main zb
-
-            left join
-
-            SCM_SETTLEMENT_DETAILS mx
-            on zb.vbeln = mx.VBELN
-             LEFT JOIN scm_variety_to_pt_gp B
-            on mx.pz_id = B.id
-
-            group by  B.VARIETY ) a
-
-
-            left join (select pz_name,sum(MBL_YEAR) nmb from crm_resource_allocation zyjh where 1=1 group by pz_name) jh
-            on jh.pz_name= a.name
-            )a
-
-             LEFT JOIN (SELECT  B.VARIETY, sum(settle.fkimg) pzgl
-            FROM scm_steel_settle settle
-            JOIN scm_sale_order sso
-            ON sso.order_no = settle.aubel
-            AND sso.company_id = settle.company_id
-            JOIN scm_variety_to_pt_gp B
-            ON sso.product_code = B.product_group
-            and sso.company_id = B.company_id
-            JOIN report_product_class_level pzg
-            ON sso.company_id = pzg.company_id
-            AND sso.product_type = pzg.product_class
-            WHERE (pzg.product_grade = '品种钢'
-            OR pzg.product_grade = '高端产品'
-            OR pzg.product_grade = '特色战略产品' )
-            AND settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
-            AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
-            AND pzg.status = '0'  group by  B.VARIETY) pz
-            ON a.name = pz.VARIETY
-
+        select name ,jsl,pzgl,round(nmb/jsl*100,2) wcl from (
+        SELECT
+        B.VARIETY name,
+        SUM(case when pzg.product_grade = '品种钢'
+        OR pzg.product_grade = '高端产品'
+        OR pzg.product_grade = '特色战略产品' then fkimg end) pzgl,
+        round(SUM(settle.fkimg),2) jsl
+        FROM scm_steel_settle settle
+        JOIN scm_sale_order sso
+        on sso.order_no = settle.aubel
+        and sso.ORDER_ROW = settle.AUPOS
+        AND sso.company_id = settle.company_id
+        JOIN scm_variety_to_pt_gp B
+        ON sso.product_code = B.product_group
+        and sso.company_id = B.company_id
+        JOIN report_product_class_level pzg
+        ON sso.company_id = pzg.company_id
+        AND sso.product_type = pzg.product_class
+        where settle.fkdat &gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat &lt;=  to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+        group by  B.VARIETY ) a
+        join (select pz_name,sum(MBL_YEAR) nmb from crm_resource_allocation zyjh where 1=1 group by pz_name) jh
+        on jh.pz_name= a.name
    </select>
 
     <select id="getzgsjswc" resultType="map">
-       select companyname name ,sum(fkimg) jsl,sum(mb) mb,sum(fkimg)/sum(mb) wcl from (
+        select companyname name ,sum(fkimg) jsl,sum(mb) mb,sum(fkimg)/sum(mb) wcl from (
         select* from
-        (SELECT decode(zb.company_id,
+        (SELECT decode(settle.company_id,
         9580,
         '唐钢',
         9727,
@@ -607,19 +592,23 @@
         '衡板',
         7778,
         '邯宝') AS companyname,
-        cx.NAME,
-        zb.company_id,
-        sum(mx.fkimg) AS fkimg
-        from scm_steel_settle_main zb
-
-        left join
-        SCM_SETTLEMENT_DETAILS mx
-        on zb.vbeln = mx.VBELN
-        LEFT JOIN crm_resource_data cx
-        on mx.cx_id = cx.code
-        where zb.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
-        AND zb.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
-        group by zb.company_id,cx.NAME
+        DATA.NAME,
+        settle.company_id,
+        sum(settle.fkimg) AS fkimg
+        FROM scm_steel_settle settle
+        JOIN scm_delivery_detail detail
+        on settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and (detail.delivery_delete != 'X' or
+        detail.delivery_delete is null)
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.TYPE = 3
+        AND DATA.parent_name IS NOT NULL
+        where settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+        group by settle.company_id,DATA.NAME
        )a
         left join (select cx_name, sum(MBL_YEAR) mb from crm_resource_allocation group by cx_name) b on b.cx_name=a.NAME ) group by  companyname
 </select>
@@ -798,8 +787,8 @@
         LEFT JOIN price_salebody_relation xsztdzb
         ON sso.company_id = xsztdzb.company_id
         AND sso.sale_group = xsztdzb.sale_body_des
-        where settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
-        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+        where zb.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        AND zb.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         <if test="pz != ''">
             and pz.VARIETY =#{pz}
         </if>
@@ -940,7 +929,7 @@
         from crm_resource_allocation
         where fl_name='子公司' or fl_name='技术公司' or fl_name ='事业部' group by pz_name) b
         on b.pz_name=a.VARIETY) c on a.VARIETY=c.VARIETY
-        left join ( select a.VARIETY,ckhtl,ckjhl,ckhtl/ckjhl ckwcb,khtl- ckjhl as ckjd from (SELECT
+        left join ( select a.VARIETY,ckhtl,ckjhl,ckhtl/ckjhl ckwcb,ckhtl- ckjhl as ckjd from (SELECT
         pz.VARIETY,
         sum(sso.ORDER_MOUNT) ckhtl
         from  scm_steel_settle_main zb
