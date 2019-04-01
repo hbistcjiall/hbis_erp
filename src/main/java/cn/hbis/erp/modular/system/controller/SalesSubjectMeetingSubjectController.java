@@ -102,6 +102,17 @@ public class SalesSubjectMeetingSubjectController {
     @PostMapping(value = "update")
     public Map update(Long Id, String companyId, String saleBodyDes, String saleBody) {
         Map map = new HashMap();
+        if ("唐钢".equals(companyId)){
+            companyId = "9580";
+        }else if ("邯钢".equals(companyId)){
+            companyId = "9727";
+        }else if ("宣钢".equals(companyId)){
+            companyId = "9193";
+        }else if ("承钢".equals(companyId)){
+            companyId = "9196";
+        }else if ("舞钢".equals(companyId)){
+            companyId = "1932";
+        }
         boolean state = salesSubjectMeetingSubjectService.update(Id, companyId, saleBodyDes, saleBody);
         if (state){
             map.put("message","成功");
