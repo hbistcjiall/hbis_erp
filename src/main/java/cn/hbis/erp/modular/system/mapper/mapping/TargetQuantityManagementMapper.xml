@@ -44,157 +44,330 @@
 
 	<!--三-->
 	<select id="typeselect" resultType="map">
-		select
-		"NAME",
-		NVL(jsl/1000,0) jsl,
-		NVL(pzgl/1000,0) pzgl,
-		NVL(ROUND(nmb / jsl,4)*100,0)  bili
-		from  (SELECT PZ.VARIETY NAME,
-		SUM (mx.fkimg) pzgl,
-		ROUND (SUM(mx.fkimg), 2) jsl
-		FROM scm_steel_settle_main zb
-		left join
-		SCM_SETTLEMENT_DETAILS mx
-		on zb.vbeln = mx.VBELN
-		LEFT JOIN price_salebody_relation xszt
-		on mx.XSZT_ID = xszt.ID
-		LEFT JOIN scm_variety_to_pt_gp pz
-		on mx.pz_id = pz.id
-		LEFT JOIN crm_resource_data cx
-		on mx.cx_id = cx.code
-		JOIN scm_sale_order sso
-		ON sso.order_no = zb.aubel
-		AND sso.company_id = zb.company_id
-		left join report_product_class_level pzg
-		on mx.cpdj_id = pzg.id
-		INNER JOIN scm_variety_to_pt_gp svtpg
-		ON sso.product_code = svtpg.product_group
-		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN
-		(SELECT DISTINCT cfd.data_name
-		FROM crm_filter_data cfd
-		WHERE cfd.data_type = '2'
-		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0')
-		AND (sso.deleted IS NULL OR sso.deleted != 'X')
-		AND sso.sale_group NOT IN
-		(SELECT sso.sale_group
-		FROM crm_filter_data cfd
-		WHERE cfd.company_id = sso.company_id
-		AND cfd.data_type = 8
-		AND cfd.status = 0)
-		AND sso.saler_name NOT IN
-		(SELECT t.data_name
-		FROM crm_filter_data t
-		WHERE t.data_type = '1'
-		AND t.status = '0'
-		AND t.company_id = sso.company_id)
-
-		where
-		<if test="name != null and name !=''">
-			pz.VARIETY = #{name} and
-		</if>
-		<!--zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
-		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
-		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
-		pzg.product_grade = '特色战略产品'
-		 and cx.name is not null
-
-		GROUP BY PZ.VARIETY) a
+		SELECT  a.pz_name name,a.jsl,"NVL"(b.pzgl, 0) pzgl,"ROUND"(a.nmb/jsl, 4)*100  bili from
+		(SELECT pz_NAme,"SUM"(jh)/1000 jsl ,"SUM"(nmb)/1000 nmb  from
+		(SELECT CRA.pz_NAme ,"SUM"(CRA.JAN_MONTH) jh,"SUM"(CRA.MBL_YEAR) nmb  from CRM_RESOURCE_ALLOCATION cra
+		where cra.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRA.pz_NAme = #{name}
+	</if>  GROUP BY CRA.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.feb_MONTH) jh ,"SUM"(CRAs.MBL_YEAR) nmb   from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0'  <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>   GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.MAR_MONTH) jh ,"SUM"(CRAs.MBL_YEAR) nmb  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>   GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.APR_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>  GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.MAY_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>   GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.JUN_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>   GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.JUL_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>  GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.AUG_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>   GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.SEP_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>  GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.OCT_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0'  <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>  GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.NOV_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>  GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.DEC_MONTH) jh ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>   GROUP BY CRAs.pz_NAme )
+		GROUP BY pz_NAme ) a
 		LEFT JOIN
-		(SELECT
-		pz_name,
-		SUM (MBL_YEAR) nmb
-		FROM
-		Crm_Resource_Allocation zyjh
-		WHERE
-		1 = 1
-		<if test="name != null and name !=''">
-			and	pz_NAME = #{name}
-		</if>
+		(SELECT variety , "SUM"(pzgl) pzgl from
+		(select
+		decode(sss.COMPANY_ID,
+		9580,
+		'唐钢',
+		9727,
+		'邯钢',
+		9193,
+		'宣钢',
+		9196,
+		'承钢',
+		1932,
+		'舞钢',
+		8110,
+		'石钢',
+		8493,
+		'衡板',
+		7778,
+		'邯宝') AS companyname,svtp.variety,"SUM"(sss.FKIMG) pzgl from
+		SCM_STEEL_SETTLE sss
+		left join scm_sale_order sso
+		on SSS.company_id = sso.company_id
+		and sss.aubel = sso.order_no
+		and sss.aupos = sso.order_row
+		left join (select a.* from price_salebody_relation a where a.is_delete = 0 ) xsztdzb
+		ON sso.company_id = xsztdzb.company_id
+		AND sso.sale_body = xsztdzb.sale_body_des
+		inner join scm_variety_to_pt_gp svtp
+		on sso.company_id = svtp.company_id
+		and sso.product_code = svtp.product_group
 
-		GROUP BY
-		pz_name) b
-		on b.pz_name =  a.NAME
-		ORDER BY "DECODE" (name,'热板','冷板','宽厚板','棒线','型材')
+		left join
+		(SELECT a.company_id,
+		a.product_class,
+		a.product_line_class,
+		a.product_class_crude,
+		a.product_class_fine,
+		a.product_grade
+		FROM REPORT_PRODUCT_CLASS_LEVEL a
+		where a.status = '0'
+		union all
+		SELECT b.company_id,
+		b.second_code,
+		b.product_line_class,
+		b.product_class_crude,
+		b.product_class_fine,
+		b.product_grade
+		FROM REPORT_PRODUCT_CLASS_LEVEL b
+		where b.status = '0') rpcl
+		on sso.company_id = rpcl.company_id
+		and sso.product_type = rpcl.product_class
+		where
+		rpcl.product_grade = '品种钢' OR rpcl.product_grade = '高端产品' OR
+		rpcl.product_grade = '特色战略产品'
+
+		GROUP BY sss.company_id ,svtp.variety)
+		GROUP BY variety) b
+		on  b.variety = a.pz_name
+
 	</select>
 	<select id="typessum" resultType="map">
 		select
-		NVL(sum(jsl)/1000,0) jsl,
+		NVL(sum(jsl),0) jsl,
 		NVL(SUM(pzgl)/1000,0) pzgl
-		from  (SELECT PZ.VARIETY NAME,
-		SUM (mx.fkimg) pzgl,
-		ROUND (SUM(mx.fkimg), 2) jsl
-		FROM scm_steel_settle_main zb
-		left join
-		SCM_SETTLEMENT_DETAILS mx
-		on zb.vbeln = mx.VBELN
-		LEFT JOIN price_salebody_relation xszt
-		on mx.XSZT_ID = xszt.ID
-		LEFT JOIN scm_variety_to_pt_gp pz
-		on mx.pz_id = pz.id
-		LEFT JOIN crm_resource_data cx
-		on mx.cx_id = cx.code
-		JOIN scm_sale_order sso
-		ON sso.order_no = zb.aubel
-		AND sso.company_id = zb.company_id
-		left join report_product_class_level pzg
-		on mx.cpdj_id = pzg.id
-		INNER JOIN scm_variety_to_pt_gp svtpg
-		ON sso.product_code = svtpg.product_group
-		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN
-		(SELECT DISTINCT cfd.data_name
-		FROM crm_filter_data cfd
-		WHERE cfd.data_type = '2'
-		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0')
-		AND (sso.deleted IS NULL OR sso.deleted != 'X')
-		AND sso.sale_group NOT IN
-		(SELECT sso.sale_group
-		FROM crm_filter_data cfd
-		WHERE cfd.company_id = sso.company_id
-		AND cfd.data_type = 8
-		AND cfd.status = 0)
-		AND sso.saler_name NOT IN
-		(SELECT t.data_name
-		FROM crm_filter_data t
-		WHERE t.data_type = '1'
-		AND t.status = '0'
-		AND t.company_id = sso.company_id)
-
-		where
-
-		<if test="name != null and name !=''">
-			pz.VARIETY = #{name} and
-		</if>
-		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
-		pzg.product_grade = '特色战略产品'
-		<!--zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
-		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
-		and  cx.name is not null
-
-		GROUP BY PZ.VARIETY) a
+		from  (SELECT  a.pz_name name,a.jsl,"NVL"(b.pzgl, 0) pzgl,"ROUND"(a.nmb/jsl, 4)*100  bili from
+		(SELECT pz_NAme,"SUM"(jh)/1000 jsl ,"SUM"(nmb)/1000 nmb  from
+		(SELECT CRA.pz_NAme ,"SUM"(CRA.JAN_MONTH) jh,"SUM"(CRA.MBL_YEAR) nmb  from CRM_RESOURCE_ALLOCATION cra
+		where cra.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRA.pz_NAme = #{name}
+	</if>  GROUP BY CRA.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.feb_MONTH) jh ,"SUM"(CRAs.MBL_YEAR) nmb   from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0'  <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>   GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.MAR_MONTH) jh ,"SUM"(CRAs.MBL_YEAR) nmb  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>   GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.APR_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>  GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.MAY_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>   GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.JUN_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>   GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.JUL_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>  GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.AUG_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>   GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.SEP_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>  GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.OCT_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0'  <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>  GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.NOV_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>  GROUP BY CRAs.pz_NAme
+		UNION ALL
+		SELECT CRAs.pz_NAme ,"SUM"(cras.DEC_MONTH) jh ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and	 CRAs.pz_NAme = #{name}
+	</if>   GROUP BY CRAs.pz_NAme )
+		GROUP BY pz_NAme ) a
 		LEFT JOIN
-		(SELECT
-		pz_name,
-		SUM (MBL_YEAR) nmb
-		FROM
-		Crm_Resource_Allocation zyjh
-		WHERE
-		1 = 1
-		<if test="name != null and name !=''">
-			and	pz_NAME = #{name}
-		</if>
-		GROUP BY
-		pz_name) b
-		on b.pz_name =  a.NAME
+		(SELECT variety , "SUM"(pzgl) pzgl from
+		(select
+		decode(sss.COMPANY_ID,
+		9580,
+		'唐钢',
+		9727,
+		'邯钢',
+		9193,
+		'宣钢',
+		9196,
+		'承钢',
+		1932,
+		'舞钢',
+		8110,
+		'石钢',
+		8493,
+		'衡板',
+		7778,
+		'邯宝') AS companyname,svtp.variety,"SUM"(sss.FKIMG) pzgl from
+		SCM_STEEL_SETTLE sss
+		left join scm_sale_order sso
+		on SSS.company_id = sso.company_id
+		and sss.aubel = sso.order_no
+		and sss.aupos = sso.order_row
+		left join (select a.* from price_salebody_relation a where a.is_delete = 0 ) xsztdzb
+		ON sso.company_id = xsztdzb.company_id
+		AND sso.sale_body = xsztdzb.sale_body_des
+		inner join scm_variety_to_pt_gp svtp
+		on sso.company_id = svtp.company_id
+		and sso.product_code = svtp.product_group
+
+		left join
+		(SELECT a.company_id,
+		a.product_class,
+		a.product_line_class,
+		a.product_class_crude,
+		a.product_class_fine,
+		a.product_grade
+		FROM REPORT_PRODUCT_CLASS_LEVEL a
+		where a.status = '0'
+		union all
+		SELECT b.company_id,
+		b.second_code,
+		b.product_line_class,
+		b.product_class_crude,
+		b.product_class_fine,
+		b.product_grade
+		FROM REPORT_PRODUCT_CLASS_LEVEL b
+		where b.status = '0') rpcl
+		on sso.company_id = rpcl.company_id
+		and sso.product_type = rpcl.product_class
+		where
+		rpcl.product_grade = '品种钢' OR rpcl.product_grade = '高端产品' OR
+		rpcl.product_grade = '特色战略产品'
+
+		GROUP BY sss.company_id ,svtp.variety)
+		GROUP BY variety) b
+		on  b.variety = a.pz_name)
 
 	</select>
 
 	<select id="Steelmillsplan" resultType="map">
-		SELECT d.COMPANYNAME,NVL(SUM(D.XH)/1000,0) xh,NVL("SUM"(d.jh)/1000,0) jh  from  (select * from (
-		SELECT decode(zb.company_id,
+		select * from (
+		SELECT NVL(b.companyname,'') companyname,"NVL"("SUM"(a.jh),0) jh,"NVL"("SUM"(zyfkimg),0) xh from
+		(SELECT CX_NAME,"SUM"(jh)/1000 jh from
+		(SELECT CRA.CX_NAME ,"SUM"(CRA.JAN_MONTH) jh from CRM_RESOURCE_ALLOCATION cra
+		where cra.STATUS = '0'<if test="name != null and name !=''">
+								and  CRA.PZ_NAME =  #{name}
+							</if> GROUP BY CRA.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.feb_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+								and  CRAs.PZ_NAME =  #{name}
+							</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.MAR_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+								and  CRAs.PZ_NAME =  #{name}
+							</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.APR_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0'<if test="name != null and name !=''">
+								and  CRAs.PZ_NAME =  #{name}
+							</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.MAY_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+								and  CRAs.PZ_NAME =  #{name}
+							</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.JUN_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+								and  CRAs.PZ_NAME =  #{name}
+							</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.JUL_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0'<if test="name != null and name !=''">
+								and  CRAs.PZ_NAME =  #{name}
+							</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.AUG_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+								and  CRAs.PZ_NAME =  #{name}
+							</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.SEP_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+								and  CRAs.PZ_NAME =  #{name}
+							</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.OCT_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+								and  CRAs.PZ_NAME =  #{name}
+							</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.NOV_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0'<if test="name != null and name !=''">
+								and  CRAs.PZ_NAME =  #{name}
+							</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.DEC_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+								and  CRAs.PZ_NAME =  #{name}
+							</if> GROUP BY CRAs.CX_NAME )
+		GROUP BY CX_NAME) a
+		LEFT JOIN (SELECT CRA.CX_NAME companyname,NVL("SUM"(CRA.MBL_YEAR),0) zyfkimg from CRM_RESOURCE_ALLOCATION CRA
+		where CRA.STaTUS = '0'
+		<if test="name != null and name !=''">
+			and  CRA.PZ_NAME =  #{name}
+		</if>
+		AND CRA.FL_NAME = '现货'
+		GROUP BY CRA.CX_NAME)c
+		on  c.COMPANYNAME = a.cx_name
+		LEFT JOIN (SELECT decode(zb.company_id,
 		9580,
 		'唐钢',
 		9727,
@@ -211,9 +384,7 @@
 		'衡板',
 		7778,
 		'邯宝') AS companyname,
-		cx.name,
-		"SUM"(cr.MBL_YEAR) jh,
-		SUM(mx.fkimg) AS fkimg
+		cx.name
 		FROM scm_steel_settle_main zb
 		left join
 
@@ -229,67 +400,87 @@
 		JOIN scm_sale_order sso
 		ON sso.order_no = zb.aubel
 		AND sso.company_id = zb.company_id
-		LEFT JOIN CRM_RESOURCE_ALLOCATION cr
-		on cr.CX_NAME  = cx.name
-		left join report_product_class_level pzg
-		on mx.cpdj_id = pzg.id
-		INNER JOIN scm_variety_to_pt_gp svtpg
-		ON sso.product_code = svtpg.product_group
-		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN
-		(SELECT DISTINCT cfd.data_name
-		FROM crm_filter_data cfd
-		WHERE cfd.data_type = '2'
-		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0')
-		AND (sso.deleted IS NULL OR sso.deleted != 'X')
-		AND sso.sale_group NOT IN
-		(SELECT sso.sale_group
-		FROM crm_filter_data cfd
-		WHERE cfd.company_id = sso.company_id
-		AND cfd.data_type = 8
-		AND cfd.status = 0)
-		AND sso.saler_name NOT IN
-		(SELECT t.data_name
-		FROM crm_filter_data t
-		WHERE t.data_type = '1'
-		AND t.status = '0'
-		AND t.company_id = sso.company_id)
-		where
-		<!-- zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
-		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
-		<if test="name != null and name !=''">
-			 pz.VARIETY = #{name} and
-		</if>
-		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
-		pzg.product_grade = '特色战略产品'
-		 and cx.name is not null
+		where  cx.name is not null
 		GROUP BY zb.company_id,cx.name
-		ORDER BY zb.company_id )a
-		LEFT JOIN (select
-		CX_NAME,"SUM"(MBL_YEAR) xh
-		from CRM_RESOURCE_ALLOCATION
-		where FL_NAME = '现货'
-		GROUP BY CX_NAME) b
-		on b.CX_NAME = a.NAME) d
-
-		GROUP BY d.COMPanyName
-
-		ORDER BY  decode(d.companyname,
-		'唐钢',
-		'邯钢',
-		'宣钢',
-		'承钢',
-		'舞钢',
-		'石钢',
-		'衡板',
-		'邯宝')
+		ORDER BY zb.company_id)  b
+		on a.cx_name = b.name
+		GROUP BY b.companyname )
+		where companyName IS not null
 	</select>
 	<select id="Steelmillssum" resultType="map">
-		select NVL(SUM(z.xh)/1000,0),NVL("SUM"(z.JH)/1000,0) jh from
-		(
-		SELECT d.COMPANYNAME,NVL(SUM(D.XH),0) xh,NVL("SUM"(d.jh),0) jh  from  (select * from (
-		SELECT decode(zb.company_id,
+
+		select "SUM"(jh) jh,"SUM"(xh) xh from
+		(SELECT NVL(b.companyname,'0') companyname,"NVL"("SUM"(a.jh),0) jh,"NVL"("SUM"(zyfkimg),0) xh from
+		(SELECT CX_NAME,"SUM"(jh)/1000 jh from
+		(SELECT CRA.CX_NAME ,"SUM"(CRA.JAN_MONTH) jh from CRM_RESOURCE_ALLOCATION cra
+		where cra.STATUS = '0'<if test="name != null and name !=''">
+		and  CRA.PZ_NAME =  #{name}
+	</if> GROUP BY CRA.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.feb_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.MAR_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.APR_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0'<if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.MAY_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.JUN_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.JUL_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0'<if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.AUG_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.SEP_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.OCT_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.NOV_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0'<if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.DEC_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY CRAs.CX_NAME )
+		GROUP BY CX_NAME) a
+		LEFT JOIN (SELECT CRA.CX_NAME companyname,NVL("SUM"(CRA.MBL_YEAR),0) zyfkimg from CRM_RESOURCE_ALLOCATION CRA
+		where CRA.STaTUS = '0'
+		<if test="name != null and name !=''">
+			and  CRA.PZ_NAME =  #{name}
+		</if>
+		AND CRA.FL_NAME = '现货'
+		GROUP BY CRA.CX_NAME)c
+		on  c.COMPANYNAME = a.cx_name
+		LEFT JOIN (SELECT decode(zb.company_id,
 		9580,
 		'唐钢',
 		9727,
@@ -306,9 +497,7 @@
 		'衡板',
 		7778,
 		'邯宝') AS companyname,
-		cx.name,
-		"SUM"(cr.MBL_YEAR) jh,
-		SUM(mx.fkimg) AS fkimg
+		cx.name
 		FROM scm_steel_settle_main zb
 		left join
 
@@ -324,584 +513,294 @@
 		JOIN scm_sale_order sso
 		ON sso.order_no = zb.aubel
 		AND sso.company_id = zb.company_id
-		LEFT JOIN CRM_RESOURCE_ALLOCATION cr
-		on cr.CX_NAME  = cx.name
-		left join report_product_class_level pzg
-		on mx.cpdj_id = pzg.id
-		INNER JOIN scm_variety_to_pt_gp svtpg
-		ON sso.product_code = svtpg.product_group
-		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN
-		(SELECT DISTINCT cfd.data_name
-		FROM crm_filter_data cfd
-		WHERE cfd.data_type = '2'
-		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0')
-		AND (sso.deleted IS NULL OR sso.deleted != 'X')
-		AND sso.sale_group NOT IN
-		(SELECT sso.sale_group
-		FROM crm_filter_data cfd
-		WHERE cfd.company_id = sso.company_id
-		AND cfd.data_type = 8
-		AND cfd.status = 0)
-		AND sso.saler_name NOT IN
-		(SELECT t.data_name
-		FROM crm_filter_data t
-		WHERE t.data_type = '1'
-		AND t.status = '0'
-		AND t.company_id = sso.company_id)
-		where
-		<!-- zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
-		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
-
-		<if test="name != null and name !=''">
-			 pz.VARIETY = #{name} and
-		</if>
-		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
-		pzg.product_grade = '特色战略产品'
-		 and cx.name is not null
+		where  cx.name is not null
 		GROUP BY zb.company_id,cx.name
-		ORDER BY zb.company_id )a
-		LEFT JOIN (select
-		CX_NAME,"SUM"(MBL_YEAR) xh
-		from CRM_RESOURCE_ALLOCATION
-		where FL_NAME = '现货'
-		GROUP BY CX_NAME) b
-		on b.CX_NAME = a.NAME) d
-
-		GROUP BY d.COMPanyName
-
-		ORDER BY  decode(d.companyname,
-		'唐钢',
-		'邯钢',
-		'宣钢',
-		'承钢',
-		'舞钢',
-		'石钢',
-		'衡板',
-		'邯宝')
-		)z
+		ORDER BY zb.company_id)  b
+		on a.cx_name = b.name
+		GROUP BY b.companyname)
+		where companyName IS not null
 	</select>
 	<!--四-->
 	<select id="Steellist" resultType="map">
-		select c.COMPANYName,NVL(c.pzg/1000,0) pzg,NVL(c.jsl/1000,0) jsl,NVl(ROUND(b.jh/c.jsl,4)*100,0)  bili
-		from (
-		SELECT a.COMPANYName,"SUM"(a.fkimg) pzg,SUM(a.jsl) jsl from
-		(SELECT decode(zb.company_id,
-		9580,
-		'唐钢',
-		9727,
-		'邯钢',
-		9193,
-		'宣钢',
-		9196,
-		'承钢',
-		1932,
-		'舞钢',
-		8110,
-		'石钢',
-		8493,
-		'衡板',
-		7778,
-		'邯宝') AS companyname,
-		zb.company_id,
-		"ROUND"(SUM(mx.fkimg), 4) jsl,
-		SUM(mx.fkimg) AS fkimg
-		FROM scm_steel_settle_main zb
-		left join
+				SELECT x.* ,"ROUND"(x.nmb/x.jsl*100, 4) bili from (
+		SELECT SUM(a.jsl) jsl,b.companyname,"SUM"(b.pzgl)/1000 pzgl,"SUM"(a.nmb)  nmb from
 
-		SCM_SETTLEMENT_DETAILS mx
-		on zb.vbeln = mx.VBELN
+		(SELECT pz_NAme,"SUM"(jh)/1000 jsl ,"SUM"(nmb)/1000 nmb  from
+				(SELECT CRA.pz_NAme ,"SUM"(CRA.JAN_MONTH) jh,"SUM"(CRA.MBL_YEAR) nmb  from CRM_RESOURCE_ALLOCATION cra
+				where cra.STATUS = '0' <if test="name != null and name !=''">
+		and CRA.PZ_NAME =  #{name}
+	</if>  	 GROUP BY CRA.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.feb_MONTH) jh ,"SUM"(CRAs.MBL_YEAR) nmb   from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>   	 GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.MAR_MONTH) jh ,"SUM"(CRAs.MBL_YEAR) nmb  from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>  	  GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.APR_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if> 	 GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.MAY_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if> 	   GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.JUN_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if> 	  GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.JUL_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if> 	 GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.AUG_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if> 	   GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.SEP_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if> 	  GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.OCT_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0'  <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>  	  GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.NOV_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if> 	  GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.DEC_MONTH) jh ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if> 	   GROUP BY CRAs.pz_NAme )
+				GROUP BY pz_NAme) a
 
-		LEFT JOIN price_salebody_relation xszt
-		on mx.XSZT_ID = xszt.ID
-		LEFT JOIN scm_variety_to_pt_gp pz
-		on mx.pz_id = pz.id
-		LEFT JOIN crm_resource_data cx
-		on mx.cx_id = cx.code
-		JOIN scm_sale_order sso
-		ON sso.order_no = zb.aubel
-		AND sso.company_id = zb.company_id
-		left join report_product_class_level pzg
-		on mx.cpdj_id = pzg.id
-		INNER JOIN scm_variety_to_pt_gp svtpg
-		ON sso.product_code = svtpg.product_group
-		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN
-		(SELECT DISTINCT cfd.data_name
-		FROM crm_filter_data cfd
-		WHERE cfd.data_type = '2'
-		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0')
-		AND (sso.deleted IS NULL OR sso.deleted != 'X')
-		AND sso.sale_group NOT IN
-		(SELECT sso.sale_group
-		FROM crm_filter_data cfd
-		WHERE cfd.company_id = sso.company_id
-		AND cfd.data_type = 8
-		AND cfd.status = 0)
-		AND sso.saler_name NOT IN
-		(SELECT t.data_name
-		FROM crm_filter_data t
-		WHERE t.data_type = '1'
-		AND t.status = '0'
-		AND t.company_id = sso.company_id)
-		where
-		<!--zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
-		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
-		<if test="name != null and name !=''">
-			pz.VARIETY = #{name} and
-		</if>
-		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
-		pzg.product_grade = '特色战略产品'
-		 and  cx.name is not null
-		GROUP BY zb.company_id,cx.name
-		ORDER BY zb.company_id) a
-		GROUP BY a.companyName
-		ORDER BY decode(a.companyName,
-		'唐钢',
-		'邯钢',
-		'宣钢',
-		'承钢',
-		'舞钢',
-		'石钢',
-		'衡板',
-		'邯宝'))c
-		LEFT JOIN (SELECT
-		cx.companyname,
-		SUM(cr.MBL_YEAR) jh
-		FROM
-		CRM_RESOURCE_ALLOCATION cr
-		RIGHT  JOIN
-		(
-		SELECT
-		DECODE (
-		settle.company_id,
-		9580,
-		'唐钢',
-		9727,
-		'邯钢',
-		9193,
-		'宣钢',
-		9196,
-		'承钢',
-		1932,
-		'舞钢',
-		8110,
-		'石钢',
-		8493,
-		'衡板',
-		7778,
-		'邯宝'
-		) AS companyname,
-		DATA . NAME,
-		settle.company_id,
-		SUM (settle.fkimg) AS fkimg,
-		SUM (A .fkimg) AS pzgl,
-		CASE
-		WHEN SUM (settle.fkimg) / SUM (A .fkimg) IS NULL THEN
-		'--'
-		ELSE
-		TO_CHAR (
-		ROUND (
-		SUM (settle.fkimg) / SUM (A .fkimg),
-		2
-		)
-		)
-		END AS bz
-		FROM
-		scm_steel_settle settle
-		JOIN scm_delivery_detail detail ON settle.aubel = detail.order_no
-		AND settle.aupos = detail.order_item
-		JOIN crm_resource_data DATA ON DATA .full_name = detail.ext
-		AND DATA . TYPE = 3
-		AND DATA .parent_name IS NOT NULL
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		LEFT JOIN (
-		SELECT
-		settle. ID,
-		settle.fkimg
-		FROM
-		scm_steel_settle settle
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		JOIN report_product_class_level pzg ON sso.company_id = pzg.company_id
-		AND sso.product_type = pzg.product_class
-		WHERE
-		pzg.product_grade = '品种钢'
-		OR pzg.product_grade = '高端产品'
-		OR pzg.product_grade = '特色战略产品'
-		AND pzg.status = '0'
-		) A ON settle. ID = A . ID
-		INNER JOIN scm_variety_to_pt_gp svtpg ON sso.product_code = svtpg.product_group
-		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN (
-		SELECT DISTINCT
-		cfd.data_name
-		FROM
-		crm_filter_data cfd
-		WHERE
-		cfd.data_type = '2'
-		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0'
-		)
-		AND (
-		sso.deleted IS NULL
-		OR sso.deleted != 'X'
-		)
-		AND sso.sale_group NOT IN (
-		SELECT
-		sso.sale_group
-		FROM
-		crm_filter_data cfd
-		WHERE
-		cfd.company_id = sso.company_id
-		AND cfd.data_type = 8
-		AND cfd.status = 0
-		)
-		AND sso.saler_name NOT IN (
-		SELECT
-		T .data_name
-		FROM
-		crm_filter_data T
-		WHERE
-		T .data_type = '1'
-		AND T .status = '0'
-		AND T .company_id = sso.company_id
-		)
-		LEFT JOIN price_salebody_relation xsztdzb ON sso.company_id = xsztdzb.company_id
-		AND sso.sale_group = xsztdzb.sale_body_des
-		WHERE
-		1 = 1
-		GROUP BY
-		settle.company_id,
-		DATA . NAME
-		ORDER BY
-		company_id
-		) cx
-		ON cx.NAME = cr.CX_NAME
-		GROUP BY  cx.companyname)b
-		on c.companyname = b.companyname
-		ORDER BY "DECODE"(companyname, '唐钢',1,
-		'邯钢',2,
-		'宣钢',3,
-		'承钢',4,
-		'舞钢',5,
-		'石钢',6,
-		'衡板',7,
-		'邯宝',8)
+		LEFT JOIN (select
+		decode(sss.COMPANY_ID,
+					  9580,
+					  '唐钢',
+					  9727,
+					  '邯钢',
+					  9193,
+					  '宣钢',
+					  9196,
+					  '承钢',
+					  1932,
+					  '舞钢',
+					  8110,
+					  '石钢',
+					  8493,
+					  '衡板',
+					  7778,
+					  '邯宝') AS companyname,svtp.variety,"SUM"(sss.FKIMG) pzgl from
+		SCM_STEEL_SETTLE sss
+		left join scm_sale_order sso
+					on SSS.company_id = sso.company_id
+				   and sss.aubel = sso.order_no
+				   and sss.aupos = sso.order_row
+				 left join (select a.* from price_salebody_relation a where a.is_delete = 0 ) xsztdzb
+					ON sso.company_id = xsztdzb.company_id
+				   AND sso.sale_body = xsztdzb.sale_body_des
+						inner join scm_variety_to_pt_gp svtp
+					on sso.company_id = svtp.company_id
+				   and sso.product_code = svtp.product_group
+								left join
+								(SELECT a.company_id,
+								   a.product_class,
+								   a.product_line_class,
+								   a.product_class_crude,
+								   a.product_class_fine,
+								   a.product_grade
+							  FROM REPORT_PRODUCT_CLASS_LEVEL a
+							 where a.status = '0'
+							union all
+							SELECT b.company_id,
+								   b.second_code,
+								   b.product_line_class,
+								   b.product_class_crude,
+								   b.product_class_fine,
+								   b.product_grade
+							  FROM REPORT_PRODUCT_CLASS_LEVEL b
+							 where b.status = '0') rpcl
+					on sso.company_id = rpcl.company_id
+				   and sso.product_type = rpcl.product_class
+									where
+						rpcl.product_grade = '品种钢' OR rpcl.product_grade = '高端产品' OR
+								rpcl.product_grade = '特色战略产品'
+		GROUP BY sss.company_id ,svtp.variety) b
+		on a.PZ_name = b.variety
+		WHERE b.companyname is not null
+		GROUP BY b.companyname
+		) x
+
 	</select>
 	<select id="Steelsum" resultType="map">
-		select NVL("SUM"(p.pzgl)/1000,0) pzgl,NVL("SUM"(p.jsl)/1000,0) jsl,NVL("SUM"(p.jh)/1000,0) jh   from
-		(select c.COMPANYName,c.pzg pzgl,c.jsl,b.jh ,NVl(ROUND(b.jh/c.jsl,4)*100,0)  bili
-		from (
-		SELECT a.COMPANYName,"SUM"(a.fkimg) pzg,SUM(a.jsl) jsl from
-		(SELECT decode(zb.company_id,
-		9580,
-		'唐钢',
-		9727,
-		'邯钢',
-		9193,
-		'宣钢',
-		9196,
-		'承钢',
-		1932,
-		'舞钢',
-		8110,
-		'石钢',
-		8493,
-		'衡板',
-		7778,
-		'邯宝') AS companyname,
-		zb.company_id,
-		"ROUND"(SUM(mx.fkimg), 4) jsl,
-		SUM(mx.fkimg) AS fkimg
-		FROM scm_steel_settle_main zb
-		left join
+		select
+  "SUM"(jsl) jsl , "SUM"(pzgl) pzgl,"SUM"(nmb) jh
+from
+(SELECT x.* ,"ROUND"(x.nmb/x.jsl*100, 4) bili from (
+		SELECT SUM(a.jsl) jsl,b.companyname,"SUM"(b.pzgl)/1000 pzgl,"SUM"(a.nmb)  nmb from
 
-		SCM_SETTLEMENT_DETAILS mx
-		on zb.vbeln = mx.VBELN
-
-		LEFT JOIN price_salebody_relation xszt
-		on mx.XSZT_ID = xszt.ID
-		LEFT JOIN scm_variety_to_pt_gp pz
-		on mx.pz_id = pz.id
-		LEFT JOIN crm_resource_data cx
-		on mx.cx_id = cx.code
-		JOIN scm_sale_order sso
-		ON sso.order_no = zb.aubel
-		AND sso.company_id = zb.company_id
-		left join report_product_class_level pzg
-		on mx.cpdj_id = pzg.id
-		INNER JOIN scm_variety_to_pt_gp svtpg
-		ON sso.product_code = svtpg.product_group
-		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN
-		(SELECT DISTINCT cfd.data_name
-		FROM crm_filter_data cfd
-		WHERE cfd.data_type = '2'
-		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0')
-		AND (sso.deleted IS NULL OR sso.deleted != 'X')
-		AND sso.sale_group NOT IN
-		(SELECT sso.sale_group
-		FROM crm_filter_data cfd
-		WHERE cfd.company_id = sso.company_id
-		AND cfd.data_type = 8
-		AND cfd.status = 0)
-		AND sso.saler_name NOT IN
-		(SELECT t.data_name
-		FROM crm_filter_data t
-		WHERE t.data_type = '1'
-		AND t.status = '0'
-		AND t.company_id = sso.company_id)
-		where
-		<!--zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
-		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
+		(SELECT pz_NAme,"SUM"(jh)/1000 jsl ,"SUM"(nmb)/1000 nmb  from
+				(SELECT CRA.pz_NAme ,"SUM"(CRA.JAN_MONTH) jh,"SUM"(CRA.MBL_YEAR) nmb  from CRM_RESOURCE_ALLOCATION cra
+				where cra.STATUS = '0' <if test="name != null and name !=''">
+		and CRA.PZ_NAME =  #{name}
+	</if> 	 GROUP BY CRA.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.feb_MONTH) jh ,"SUM"(CRAs.MBL_YEAR) nmb   from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0'
 		<if test="name != null and name !=''">
-			pz.VARIETY = #{name} and
-		</if>
-		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
-		pzg.product_grade = '特色战略产品'
-		 and cx.name is not null
-		GROUP BY zb.company_id,cx.name
-		ORDER BY zb.company_id) a
-		GROUP BY a.companyName
-		ORDER BY decode(a.companyName,
-		'唐钢',
-		'邯钢',
-		'宣钢',
-		'承钢',
-		'舞钢',
-		'石钢',
-		'衡板',
-		'邯宝'))c
-		LEFT JOIN (SELECT
-		cx.companyname,
-		SUM(cr.MBL_YEAR) jh
-		FROM
-		CRM_RESOURCE_ALLOCATION cr
-		RIGHT  JOIN
-		(
-		SELECT
-		DECODE (
-		settle.company_id,
-		9580,
-		'唐钢',
-		9727,
-		'邯钢',
-		9193,
-		'宣钢',
-		9196,
-		'承钢',
-		1932,
-		'舞钢',
-		8110,
-		'石钢',
-		8493,
-		'衡板',
-		7778,
-		'邯宝'
-		) AS companyname,
-		DATA . NAME,
-		settle.company_id,
-		SUM (settle.fkimg) AS fkimg,
-		SUM (A .fkimg) AS pzgl,
-		CASE
-		WHEN SUM (settle.fkimg) / SUM (A .fkimg) IS NULL THEN
-		'--'
-		ELSE
-		TO_CHAR (
-		ROUND (
-		SUM (settle.fkimg) / SUM (A .fkimg),
-		2
-		)
-		)
-		END AS bz
-		FROM
-		scm_steel_settle settle
-		JOIN scm_delivery_detail detail ON settle.aubel = detail.order_no
-		AND settle.aupos = detail.order_item
-		JOIN crm_resource_data DATA ON DATA .full_name = detail.ext
-		AND DATA . TYPE = 3
-		AND DATA .parent_name IS NOT NULL
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		LEFT JOIN (
-		SELECT
-		settle. ID,
-		settle.fkimg
-		FROM
-		scm_steel_settle settle
-		JOIN scm_sale_order sso ON sso.order_no = settle.aubel
-		AND sso.company_id = settle.company_id
-		JOIN report_product_class_level pzg ON sso.company_id = pzg.company_id
-		AND sso.product_type = pzg.product_class
-		WHERE
-		pzg.product_grade = '品种钢'
-		OR pzg.product_grade = '高端产品'
-		OR pzg.product_grade = '特色战略产品'
-		AND pzg.status = '0'
-		) A ON settle. ID = A . ID
-		INNER JOIN scm_variety_to_pt_gp svtpg ON sso.product_code = svtpg.product_group
-		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN (
-		SELECT DISTINCT
-		cfd.data_name
-		FROM
-		crm_filter_data cfd
-		WHERE
-		cfd.data_type = '2'
-		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0'
-		)
-		AND (
-		sso.deleted IS NULL
-		OR sso.deleted != 'X'
-		)
-		AND sso.sale_group NOT IN (
-		SELECT
-		sso.sale_group
-		FROM
-		crm_filter_data cfd
-		WHERE
-		cfd.company_id = sso.company_id
-		AND cfd.data_type = 8
-		AND cfd.status = 0
-		)
-		AND sso.saler_name NOT IN (
-		SELECT
-		T .data_name
-		FROM
-		crm_filter_data T
-		WHERE
-		T .data_type = '1'
-		AND T .status = '0'
-		AND T .company_id = sso.company_id
-		)
-		LEFT JOIN price_salebody_relation xsztdzb ON sso.company_id = xsztdzb.company_id
-		AND sso.sale_group = xsztdzb.sale_body_des
-		WHERE
-		1 = 1
-		GROUP BY
-		settle.company_id,
-		DATA . NAME
-		ORDER BY
-		company_id
-		) cx
-		ON cx.NAME = cr.CX_NAME
-		GROUP BY  cx.companyname)b
-		on c.companyname = b.companyname) p
+			and CRAs.PZ_NAME =  #{name}
+		</if>GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.MAR_MONTH) jh ,"SUM"(CRAs.MBL_YEAR) nmb  from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0'  <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>	  GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.APR_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>	 GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.MAY_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0'	<if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>   GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.JUN_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>	  GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.JUL_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>	 GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.AUG_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>	   GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.SEP_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>	  GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.OCT_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0'   <if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>	  GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.NOV_MONTH) jh  ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0'	<if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>  GROUP BY CRAs.pz_NAme
+				UNION ALL
+				SELECT CRAs.pz_NAme ,"SUM"(cras.DEC_MONTH) jh ,"SUM"(CRAs.MBL_YEAR) nmb from CRM_RESOURCE_ALLOCATION cras
+				where cras.STATUS = '0' 	<if test="name != null and name !=''">
+		and CRAs.PZ_NAME =  #{name}
+	</if>   GROUP BY CRAs.pz_NAme )
+				GROUP BY pz_NAme) a
+
+		LEFT JOIN (select
+		decode(sss.COMPANY_ID,
+					  9580,
+					  '唐钢',
+					  9727,
+					  '邯钢',
+					  9193,
+					  '宣钢',
+					  9196,
+					  '承钢',
+					  1932,
+					  '舞钢',
+					  8110,
+					  '石钢',
+					  8493,
+					  '衡板',
+					  7778,
+					  '邯宝') AS companyname,svtp.variety,"SUM"(sss.FKIMG) pzgl from
+		SCM_STEEL_SETTLE sss
+		left join scm_sale_order sso
+					on SSS.company_id = sso.company_id
+				   and sss.aubel = sso.order_no
+				   and sss.aupos = sso.order_row
+				 left join (select a.* from price_salebody_relation a where a.is_delete = 0 ) xsztdzb
+					ON sso.company_id = xsztdzb.company_id
+				   AND sso.sale_body = xsztdzb.sale_body_des
+						inner join scm_variety_to_pt_gp svtp
+					on sso.company_id = svtp.company_id
+				   and sso.product_code = svtp.product_group
+								left join
+								(SELECT a.company_id,
+								   a.product_class,
+								   a.product_line_class,
+								   a.product_class_crude,
+								   a.product_class_fine,
+								   a.product_grade
+							  FROM REPORT_PRODUCT_CLASS_LEVEL a
+							 where a.status = '0'
+							union all
+							SELECT b.company_id,
+								   b.second_code,
+								   b.product_line_class,
+								   b.product_class_crude,
+								   b.product_class_fine,
+								   b.product_grade
+							  FROM REPORT_PRODUCT_CLASS_LEVEL b
+							 where b.status = '0') rpcl
+					on sso.company_id = rpcl.company_id
+				   and sso.product_type = rpcl.product_class
+									where
+						rpcl.product_grade = '品种钢' OR rpcl.product_grade = '高端产品' OR
+								rpcl.product_grade = '特色战略产品'
+		GROUP BY sss.company_id ,svtp.variety) b
+		on a.PZ_name = b.variety
+		WHERE b.companyname is not null
+		GROUP BY b.companyname
+		) x  )
 	</select>
 
 	<select id="salesmainsum" resultType="map">
-		select NVL(Sum( zyfkimg ),0)zyfkimg from   (SELECT
-		psr.sale_body,
-		SUM(mx.fkimg) AS zyfkimg
-		FROM scm_steel_settle_main zb
-		left join
+				SELECT  sum(zyfkimg) zyfkimg from
 
-		SCM_SETTLEMENT_DETAILS mx
-		on zb.vbeln = mx.VBELN
-		LEFT JOIN scm_variety_to_pt_gp pz
-		on mx.pz_id = pz.id
-		JOIN price_salebody_relation psr
-		on psr.company_Id = zb.company_id
-		left join report_product_class_level pzg
-		on mx.cpdj_id = pzg.id
-		JOIN scm_sale_order sso
-		ON sso.order_no = zb.aubel
-		AND sso.company_id = zb.company_id
-		INNER JOIN scm_variety_to_pt_gp svtpg
-		ON sso.product_code = svtpg.product_group
-		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN
-		(SELECT DISTINCT cfd.data_name
-		FROM crm_filter_data cfd
-		WHERE cfd.data_type = '2'
-		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0')
-		AND (sso.deleted IS NULL OR sso.deleted != 'X')
-		AND sso.sale_group NOT IN
-		(SELECT sso.sale_group
-		FROM crm_filter_data cfd
-		WHERE cfd.company_id = sso.company_id
-		AND cfd.data_type = 8
-		AND cfd.status = 0)
-		AND sso.saler_name NOT IN
-		(SELECT t.data_name
-		FROM crm_filter_data t
-		WHERE t.data_type = '1'
-		AND t.status = '0'
-		AND t.company_id = sso.company_id)
-		where<!-- zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
-		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
+		(SELECT CRA.FL_NAME companyname,NVL("SUM"(CRA.MBL_YEAR),0) zyfkimg from CRM_RESOURCE_ALLOCATION CRA
+		where CRA.STaTUS = '0'
+		AND CRA.FL_NAME = '出口' or
+		CRA.FL_NAME = '销售总公司' or
+		CRA.FL_NAME = '技术中心、事业部' or
+		 CRA.FL_NAME = '内贸'
 		<if test="name != null and name !=''">
-			  pz.VARIETY = #{name} AND
+			and  CRA.PZ_NAME =  #{name}
 		</if>
-		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
-		pzg.product_grade = '特色战略产品'
-		and psr.sale_body = '分公司'
-		or psr.sale_body = '销售公司资'
-		or psr.sale_body = '出口'
-		or psr.sale_body = '技术中心/市场部'
-
-		GROUP BY psr.sale_body)
+		GROUP BY CRA.FL_NAME)
 	</select>
 	<select id="salesmain" resultType="map">
-		SELECT
-		psr.sale_body companyname,
-		NVL(SUM(mx.fkimg),0) AS zyfkimg
-		FROM scm_steel_settle_main zb
-		left join
-
-		SCM_SETTLEMENT_DETAILS mx
-		on zb.vbeln = mx.VBELN
-		LEFT JOIN scm_variety_to_pt_gp pz
-		on mx.pz_id = pz.id
-		JOIN price_salebody_relation psr
-		on psr.company_Id = zb.company_id
-		left join report_product_class_level pzg
-		on mx.cpdj_id = pzg.id
-		JOIN scm_sale_order sso
-		ON sso.order_no = zb.aubel
-		AND sso.company_id = zb.company_id
-		INNER JOIN scm_variety_to_pt_gp svtpg
-		ON sso.product_code = svtpg.product_group
-		AND sso.company_id = svtpg.company_id
-		AND sso.order_type_describe NOT IN
-		(SELECT DISTINCT cfd.data_name
-		FROM crm_filter_data cfd
-		WHERE cfd.data_type = '2'
-		AND cfd.company_id = sso.company_id
-		AND cfd.status = '0')
-		AND (sso.deleted IS NULL OR sso.deleted != 'X')
-		AND sso.sale_group NOT IN
-		(SELECT sso.sale_group
-		FROM crm_filter_data cfd
-		WHERE cfd.company_id = sso.company_id
-		AND cfd.data_type = 8
-		AND cfd.status = 0)
-		AND sso.saler_name NOT IN
-		(SELECT t.data_name
-		FROM crm_filter_data t
-		WHERE t.data_type = '1'
-		AND t.status = '0'
-		AND t.company_id = sso.company_id)
-		where <!--zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
-		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
+					SELECT CRA.FL_NAME companyname,NVL("SUM"(CRA.MBL_YEAR),0) zyfkimg from CRM_RESOURCE_ALLOCATION CRA
+			where CRA.STaTUS = '0'
+			AND CRA.FL_NAME = '出口' or
+			CRA.FL_NAME = '销售总公司' or
+			CRA.FL_NAME = '技术中心、事业部' or
+			 CRA.FL_NAME = '内贸'
 		<if test="name != null and name !=''">
-			  pz.VARIETY = #{name} 	AND
+			and  CRA.PZ_NAME =  #{name}
 		</if>
-		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
-		pzg.product_grade = '特色战略产品'
-		and	psr.sale_body = '分公司'
-		or psr.sale_body = '销售公司资'
-		or psr.sale_body = '出口'
-		or psr.sale_body = '技术中心/市场部'
 
-		GROUP BY psr.sale_body
+			GROUP BY CRA.FL_NAME
 	</select>
 
 </mapper>
