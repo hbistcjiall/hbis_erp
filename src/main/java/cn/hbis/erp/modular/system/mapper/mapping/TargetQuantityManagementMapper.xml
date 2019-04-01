@@ -296,192 +296,182 @@
 	</select>
 
 	<select id="Steelmillsplan" resultType="map">
-		select * from (
-		SELECT NVL(b.companyname,'') companyname,"NVL"("SUM"(a.jh),0) jh,"NVL"("SUM"(zyfkimg),0) xh from
+		SELECT "DECODE"(w.COMPANY_ID,  9580,
+              '唐钢',
+              9727,
+              '邯钢',
+              9193,
+              '宣钢',
+              9196,
+              '承钢',
+              1932,
+              '舞钢',
+              8110,
+              '石钢',
+              8493,
+              '衡板',
+              7778,
+              '邯宝') AS companyname,
+								"SUM"(q.jh) jh,
+								"SUM"(q.xh) xh
+ FROM
+
+ (SELECT * from  (SELECT c.COMPANYNAME ,c.ZYFKIMG xh,a.jh from
 		(SELECT CX_NAME,"SUM"(jh)/1000 jh from
-		(SELECT CRA.CX_NAME ,"SUM"(CRA.JAN_MONTH) jh from CRM_RESOURCE_ALLOCATION cra
-		where cra.STATUS = '0'<if test="name != null and name !=''">
-								and  CRA.PZ_NAME =  #{name}
-							</if> GROUP BY CRA.CX_NAME
+		(SELECT CRA.CX_NAME ,"SUM"(CRA.JAN_MONTH)
+
+jh from CRM_RESOURCE_ALLOCATION cra
+		where cra.STATUS = '0' <if test="name != null and name !=''">
+		and  CRA.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+CRA.CX_NAME
 		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.feb_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		SELECT CRAs.CX_NAME ,"SUM"(cras.feb_MONTH)
+
+jh  from CRM_RESOURCE_ALLOCATION cras
 		where cras.STATUS = '0' <if test="name != null and name !=''">
-								and  CRAs.PZ_NAME =  #{name}
-							</if> GROUP BY CRAs.CX_NAME
+		and  CRAs.PZ_NAME =  #{name}
+	</if>  GROUP BY
+
+CRAs.CX_NAME
 		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.MAR_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		SELECT CRAs.CX_NAME ,"SUM"(cras.MAR_MONTH)
+
+jh  from CRM_RESOURCE_ALLOCATION cras
 		where cras.STATUS = '0' <if test="name != null and name !=''">
-								and  CRAs.PZ_NAME =  #{name}
-							</if> GROUP BY CRAs.CX_NAME
+		and  CRAs.PZ_NAME =  #{name}
+	</if>  GROUP BY
+
+CRAs.CX_NAME
 		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.APR_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0'<if test="name != null and name !=''">
-								and  CRAs.PZ_NAME =  #{name}
-							</if> GROUP BY CRAs.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.MAY_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		SELECT CRAs.CX_NAME ,"SUM"(cras.APR_MONTH)
+
+jh  from CRM_RESOURCE_ALLOCATION cras
 		where cras.STATUS = '0' <if test="name != null and name !=''">
-								and  CRAs.PZ_NAME =  #{name}
-							</if> GROUP BY CRAs.CX_NAME
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+CRAs.CX_NAME
 		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.JUN_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		SELECT CRAs.CX_NAME ,"SUM"(cras.MAY_MONTH)
+
+jh  from CRM_RESOURCE_ALLOCATION cras
 		where cras.STATUS = '0' <if test="name != null and name !=''">
-								and  CRAs.PZ_NAME =  #{name}
-							</if> GROUP BY CRAs.CX_NAME
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+CRAs.CX_NAME
 		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.JUL_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0'<if test="name != null and name !=''">
-								and  CRAs.PZ_NAME =  #{name}
-							</if> GROUP BY CRAs.CX_NAME
+		SELECT CRAs.CX_NAME ,"SUM"(cras.JUN_MONTH)
+
+jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0'  <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+CRAs.CX_NAME
 		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.AUG_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		SELECT CRAs.CX_NAME ,"SUM"(cras.JUL_MONTH)
+
+jh  from CRM_RESOURCE_ALLOCATION cras
 		where cras.STATUS = '0' <if test="name != null and name !=''">
-								and  CRAs.PZ_NAME =  #{name}
-							</if> GROUP BY CRAs.CX_NAME
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+CRAs.CX_NAME
 		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.SEP_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		SELECT CRAs.CX_NAME ,"SUM"(cras.AUG_MONTH)
+
+jh  from CRM_RESOURCE_ALLOCATION cras
 		where cras.STATUS = '0' <if test="name != null and name !=''">
-								and  CRAs.PZ_NAME =  #{name}
-							</if> GROUP BY CRAs.CX_NAME
+		and  CRAs.PZ_NAME =  #{name}
+	</if>  GROUP BY
+
+CRAs.CX_NAME
 		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.OCT_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		SELECT CRAs.CX_NAME ,"SUM"(cras.SEP_MONTH)
+
+jh  from CRM_RESOURCE_ALLOCATION cras
 		where cras.STATUS = '0' <if test="name != null and name !=''">
-								and  CRAs.PZ_NAME =  #{name}
-							</if> GROUP BY CRAs.CX_NAME
+		and  CRAs.PZ_NAME =  #{name}
+	</if>  GROUP BY
+
+CRAs.CX_NAME
 		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.NOV_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0'<if test="name != null and name !=''">
-								and  CRAs.PZ_NAME =  #{name}
-							</if> GROUP BY CRAs.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.DEC_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
+		SELECT CRAs.CX_NAME ,"SUM"(cras.OCT_MONTH)
+
+jh  from CRM_RESOURCE_ALLOCATION cras
 		where cras.STATUS = '0' <if test="name != null and name !=''">
-								and  CRAs.PZ_NAME =  #{name}
-							</if> GROUP BY CRAs.CX_NAME )
+		and  CRAs.PZ_NAME =  #{name}
+	</if>  GROUP BY
+
+CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.NOV_MONTH)
+
+jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.DEC_MONTH)
+
+jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+CRAs.CX_NAME )
 		GROUP BY CX_NAME) a
-		LEFT JOIN (SELECT CRA.CX_NAME companyname,NVL("SUM"(CRA.MBL_YEAR),0) zyfkimg from CRM_RESOURCE_ALLOCATION CRA
+		LEFT JOIN
+(SELECT CRA.CX_NAME
+
+companyname,NVL("SUM"(CRA.MBL_YEAR),0) zyfkimg from
+
+CRM_RESOURCE_ALLOCATION CRA
 		where CRA.STaTUS = '0'
+		AND CRA.FL_NAME = '现货'
 		<if test="name != null and name !=''">
 			and  CRA.PZ_NAME =  #{name}
 		</if>
-		AND CRA.FL_NAME = '现货'
 		GROUP BY CRA.CX_NAME)c
-		on  c.COMPANYNAME = a.cx_name
-		LEFT JOIN (SELECT decode(zb.company_id,
-		9580,
-		'唐钢',
-		9727,
-		'邯钢',
-		9193,
-		'宣钢',
-		9196,
-		'承钢',
-		1932,
-		'舞钢',
-		8110,
-		'石钢',
-		8493,
-		'衡板',
-		7778,
-		'邯宝') AS companyname,
-		cx.name
-		FROM scm_steel_settle_main zb
-		left join
+		on  c.COMPANYNAME = a.cx_name) x) q
+LEFT JOIN
+(SELECT GP.COMPANY_ID,c.companyname from
+(SELECT CRA.CX_NAME
 
-		SCM_SETTLEMENT_DETAILS mx
-		on zb.vbeln = mx.VBELN
+		companyname,NVL("SUM"(CRA.MBL_YEAR),0) zyfkimg ,PZ_name from
 
-		LEFT JOIN price_salebody_relation xszt
-		on mx.XSZT_ID = xszt.ID
-		LEFT JOIN scm_variety_to_pt_gp pz
-		on mx.pz_id = pz.id
-		LEFT JOIN crm_resource_data cx
-		on mx.cx_id = cx.code
-		JOIN scm_sale_order sso
-		ON sso.order_no = zb.aubel
-		AND sso.company_id = zb.company_id
-		where  cx.name is not null
-		GROUP BY zb.company_id,cx.name
-		ORDER BY zb.company_id)  b
-		on a.cx_name = b.name
-		GROUP BY b.companyname )
-		where companyName IS not null
+		CRM_RESOURCE_ALLOCATION CRA
+				where CRA.STaTUS = '0'
+				<if test="name != null and name !=''">
+					and  CRA.PZ_NAME =  #{name}
+				</if>
+				AND CRA.FL_NAME = '现货'
+				GROUP BY CRA.CX_NAME,PZ_name)c
+
+		LEFT JOIN SCM_VARIETY_TO_PT_GP gp
+		on gp.variety = c.PZ_name
+		GROUP BY GP.COMPANY_ID,c.companyname) w
+on w.COMPANYNAME = q.COMPANYNAME
+WHERE q.COMPANYNAME is not null
+GROUP BY w.COMPANY_ID
+ ORDER BY "DECODE"(companyname,'唐钢',1,
+              '邯钢',2,
+              '宣钢',3,
+              '承钢',4,
+              '舞钢',5,
+              '石钢',6,
+              '衡板',7,
+              '邯宝',8 )
 	</select>
 	<select id="Steelmillssum" resultType="map">
 
-		select "SUM"(jh) jh,"SUM"(xh) xh from
-		(SELECT NVL(b.companyname,'0') companyname,"NVL"("SUM"(a.jh),0) jh,"NVL"("SUM"(zyfkimg),0) xh from
-		(SELECT CX_NAME,"SUM"(jh)/1000 jh from
-		(SELECT CRA.CX_NAME ,"SUM"(CRA.JAN_MONTH) jh from CRM_RESOURCE_ALLOCATION cra
-		where cra.STATUS = '0'<if test="name != null and name !=''">
-		and  CRA.PZ_NAME =  #{name}
-	</if> GROUP BY CRA.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.feb_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0' <if test="name != null and name !=''">
-		and  CRAs.PZ_NAME =  #{name}
-	</if> GROUP BY CRAs.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.MAR_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0' <if test="name != null and name !=''">
-		and  CRAs.PZ_NAME =  #{name}
-	</if> GROUP BY CRAs.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.APR_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0'<if test="name != null and name !=''">
-		and  CRAs.PZ_NAME =  #{name}
-	</if> GROUP BY CRAs.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.MAY_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0' <if test="name != null and name !=''">
-		and  CRAs.PZ_NAME =  #{name}
-	</if> GROUP BY CRAs.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.JUN_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0' <if test="name != null and name !=''">
-		and  CRAs.PZ_NAME =  #{name}
-	</if> GROUP BY CRAs.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.JUL_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0'<if test="name != null and name !=''">
-		and  CRAs.PZ_NAME =  #{name}
-	</if> GROUP BY CRAs.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.AUG_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0' <if test="name != null and name !=''">
-		and  CRAs.PZ_NAME =  #{name}
-	</if> GROUP BY CRAs.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.SEP_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0' <if test="name != null and name !=''">
-		and  CRAs.PZ_NAME =  #{name}
-	</if> GROUP BY CRAs.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.OCT_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0' <if test="name != null and name !=''">
-		and  CRAs.PZ_NAME =  #{name}
-	</if> GROUP BY CRAs.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.NOV_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0'<if test="name != null and name !=''">
-		and  CRAs.PZ_NAME =  #{name}
-	</if> GROUP BY CRAs.CX_NAME
-		UNION ALL
-		SELECT CRAs.CX_NAME ,"SUM"(cras.DEC_MONTH) jh  from CRM_RESOURCE_ALLOCATION cras
-		where cras.STATUS = '0' <if test="name != null and name !=''">
-		and  CRAs.PZ_NAME =  #{name}
-	</if> GROUP BY CRAs.CX_NAME )
-		GROUP BY CX_NAME) a
-		LEFT JOIN (SELECT CRA.CX_NAME companyname,NVL("SUM"(CRA.MBL_YEAR),0) zyfkimg from CRM_RESOURCE_ALLOCATION CRA
-		where CRA.STaTUS = '0'
-		<if test="name != null and name !=''">
-			and  CRA.PZ_NAME =  #{name}
-		</if>
-		AND CRA.FL_NAME = '现货'
-		GROUP BY CRA.CX_NAME)c
-		on  c.COMPANYNAME = a.cx_name
-		LEFT JOIN (SELECT decode(zb.company_id,
-		9580,
+		SELECT "SUM"(jh) jh ,"SUM"(xh) xh from (
+		SELECT "DECODE"(w.COMPANY_ID,  9580,
 		'唐钢',
 		9727,
 		'邯钢',
@@ -497,28 +487,162 @@
 		'衡板',
 		7778,
 		'邯宝') AS companyname,
-		cx.name
-		FROM scm_steel_settle_main zb
-		left join
+		"SUM"(q.jh) jh,
+		"SUM"(q.xh) xh
+		FROM
 
-		SCM_SETTLEMENT_DETAILS mx
-		on zb.vbeln = mx.VBELN
+		(SELECT * from  (SELECT c.COMPANYNAME ,c.ZYFKIMG xh,a.jh from
+		(SELECT CX_NAME,"SUM"(jh)/1000 jh from
+		(SELECT CRA.CX_NAME ,"SUM"(CRA.JAN_MONTH)
 
-		LEFT JOIN price_salebody_relation xszt
-		on mx.XSZT_ID = xszt.ID
-		LEFT JOIN scm_variety_to_pt_gp pz
-		on mx.pz_id = pz.id
-		LEFT JOIN crm_resource_data cx
-		on mx.cx_id = cx.code
-		JOIN scm_sale_order sso
-		ON sso.order_no = zb.aubel
-		AND sso.company_id = zb.company_id
-		where  cx.name is not null
-		GROUP BY zb.company_id,cx.name
-		ORDER BY zb.company_id)  b
-		on a.cx_name = b.name
-		GROUP BY b.companyname)
-		where companyName IS not null
+		jh from CRM_RESOURCE_ALLOCATION cra
+		where cra.STATUS = '0' <if test="name != null and name !=''">
+		and  CRA.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+		CRA.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.feb_MONTH)
+
+		jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if>  GROUP BY
+
+		CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.MAR_MONTH)
+
+		jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if>  GROUP BY
+
+		CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.APR_MONTH)
+
+		jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+		CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.MAY_MONTH)
+
+		jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+		CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.JUN_MONTH)
+
+		jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0'  <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+		CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.JUL_MONTH)
+
+		jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+		CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.AUG_MONTH)
+
+		jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if>  GROUP BY
+
+		CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.SEP_MONTH)
+
+		jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if>  GROUP BY
+
+		CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.OCT_MONTH)
+
+		jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if>  GROUP BY
+
+		CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.NOV_MONTH)
+
+		jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+		CRAs.CX_NAME
+		UNION ALL
+		SELECT CRAs.CX_NAME ,"SUM"(cras.DEC_MONTH)
+
+		jh  from CRM_RESOURCE_ALLOCATION cras
+		where cras.STATUS = '0' <if test="name != null and name !=''">
+		and  CRAs.PZ_NAME =  #{name}
+	</if> GROUP BY
+
+		CRAs.CX_NAME )
+		GROUP BY CX_NAME) a
+		LEFT JOIN
+		(SELECT CRA.CX_NAME
+
+		companyname,NVL("SUM"(CRA.MBL_YEAR),0) zyfkimg from
+
+		CRM_RESOURCE_ALLOCATION CRA
+		where CRA.STaTUS = '0'
+		AND CRA.FL_NAME = '现货'
+		<if test="name != null and name !=''">
+			and  CRA.PZ_NAME =  #{name}
+		</if>
+		GROUP BY CRA.CX_NAME)c
+		on  c.COMPANYNAME = a.cx_name) x) q
+		LEFT JOIN
+		(SELECT GP.COMPANY_ID,c.companyname from
+		(SELECT CRA.CX_NAME
+
+		companyname,NVL("SUM"(CRA.MBL_YEAR),0) zyfkimg ,PZ_name from
+
+		CRM_RESOURCE_ALLOCATION CRA
+		where CRA.STaTUS = '0'
+		<if test="name != null and name !=''">
+			and  CRA.PZ_NAME =  #{name}
+		</if>
+		AND CRA.FL_NAME = '现货'
+		GROUP BY CRA.CX_NAME,PZ_name)c
+
+		LEFT JOIN SCM_VARIETY_TO_PT_GP gp
+		on gp.variety = c.PZ_name
+		GROUP BY GP.COMPANY_ID,c.companyname) w
+		on w.COMPANYNAME = q.COMPANYNAME
+		WHERE q.COMPANYNAME is not null
+		GROUP BY w.COMPANY_ID
+		ORDER BY "DECODE"(companyname,'唐钢',1,
+		'邯钢',2,
+		'宣钢',3,
+		'承钢',4,
+		'舞钢',5,
+		'石钢',6,
+		'衡板',7,
+		'邯宝',8 )
+		)
 	</select>
 	<!--四-->
 	<select id="Steellist" resultType="map">
