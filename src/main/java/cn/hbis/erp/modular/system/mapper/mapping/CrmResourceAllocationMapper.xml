@@ -50,7 +50,7 @@
                     DEC_MONTH
                 END
             ) planNum,
-            PZ_CODE
+            CX_NAME
         FROM
             crm_resource_allocation
         WHERE
@@ -61,27 +61,35 @@
         <if test="flName != null and flName != ''">
             and FL = #{flName}
         </if>
-        group by PZ_NAME,PZ_CODE
+        group by PZ_NAME,CX_NAME
         ) A
         LEFT JOIN (
         SELECT
-        svtpg.PRODUCT_GROUP pGroup,
-        svtpg.VARIETY pz,
-        sum(ssm.sl) fkimg
-        FROM SCM_STEEL_SETTLE_MAIN ssm
-        join SCM_SETTLEMENT_DETAILS ssd
-        ON ssm.vbeln = ssd.vbeln
-        JOIN scm_variety_to_pt_gp svtpg
-        on ssd.pz_id = svtpg.id
+        DATA.full_name fName,
+        DATA.name dName,
+        sum(settle.FKIMG) fkimg
+        FROM
+        scm_steel_settle settle
+        JOIN scm_delivery_detail detail ON settle.company_id = detail.company_id
+        AND settle.vgbel = detail.deliv_numb
+        AND settle.vgpos = detail.deliv_item
+        AND (
+        detail.delivery_delete != 'X'
+        OR detail.delivery_delete IS NULL
+        )
+        JOIN crm_resource_data DATA ON DATA .full_name = detail.ext
+        AND DATA .company_id = detail.company_id
+        AND DATA . TYPE = 3
+        AND DATA .parent_name IS NOT NULL
         WHERE
         1=1
         <if test="date != null and date != ''">
-            and TO_CHAR (ssm.FKDAT, 'YYYY-MM') = #{date}
+            and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
         </if>
-        AND (ssd.PREY1 != 'X' or ssd.PREY1 is null)
-        group by svtpg.PRODUCT_GROUP,svtpg.VARIETY
-        ) ss ON A.PZ_CODE = ss.pGroup
-        and A.PZ_NAME = ss.pz
+        GROUP BY
+        DATA . NAME,
+        DATA .full_name
+        ) ss ON A.CX_NAME= ss.dName
         GROUP BY
         ROLLUP (A.PZ_NAME))
         order by decode(pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线',5,'型带',6)
@@ -91,20 +99,30 @@
         select *
         from (
         SELECT
-        CX_NAME cxName,
-        SUM(ss.fkimg) as yield,
-        SUM(A.planNum) as planNum,
+        A .CX_NAME cxName,
         CASE
-        WHEN SUM (ss.fkimg) / SUM (A.planNum) IS NULL THEN
+        WHEN ss.fkimg IS NULL THEN
+        0
+        ELSE
+        ss.fkimg
+        END AS yield,
+        CASE
+        WHEN A .planNum IS NULL THEN
+        0
+        ELSE
+        A .planNum
+        END
+        AS planNum,
+        (
+        CASE
+        WHEN ss.fkimg / A .planNum IS NULL THEN
         '0'
         ELSE
         TO_CHAR (
-        ROUND (
-        SUM (ss.fkimg) / SUM (A.planNum) * 100,
-        2
+        ROUND (ss.fkimg / A .planNum  *100, 2)
         )
-        )
-        END AS schedule
+        END
+        ) AS schedule
         FROM
         (
         SELECT
@@ -151,26 +169,32 @@
         ) A
         LEFT JOIN (
         SELECT
-        crd.full_name fName,
-        crd.name dName,
-        sum(ssm.sl) fkimg
-        FROM SCM_STEEL_SETTLE_MAIN ssm
-        join SCM_SETTLEMENT_DETAILS ssd
-        ON ssm.vbeln = ssd.vbeln
-        JOIN CRM_RESOURCE_DATA crd
-        on ssd.cx_id = crd.code
-        and crd.TYPE = 3
-        AND crd.parent_name IS NOT NULL
+        DATA.full_name fName,
+        DATA.name dName,
+        sum(settle.FKIMG) fkimg
+        FROM
+        scm_steel_settle settle
+        JOIN scm_delivery_detail detail ON settle.company_id = detail.company_id
+        AND settle.vgbel = detail.deliv_numb
+        AND settle.vgpos = detail.deliv_item
+        AND (
+        detail.delivery_delete != 'X'
+        OR detail.delivery_delete IS NULL
+        )
+        JOIN crm_resource_data DATA ON DATA .full_name = detail.ext
+        AND DATA .company_id = detail.company_id
+        AND DATA . TYPE = 3
+        AND DATA .parent_name IS NOT NULL
         WHERE
         1=1
         <if test="date != null and date != ''">
-            and TO_CHAR (ssm.FKDAT, 'YYYY-MM') = #{date}
+            and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
         </if>
-        group by crd.full_name,crd.name
-        ) ss ON A.CX_NAME = ss.dName
         GROUP BY
-        A.CX_NAME
-        ORDER BY schedule ${sort}
+        DATA . NAME,
+        DATA .full_name) ss ON A.CX_NAME = SS.dName
+        ORDER BY
+        to_number(schedule) ${sort}
         )
         where
         rownum <![CDATA[   <=  ]]> 10
