@@ -245,18 +245,18 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         @Async
         public List<Map> mills(String name) {
             List<Map> sum = targetManagementMapper.Steelmillssum(name);
-            List<Map> newlist =  new ArrayList<Map>();
+            List<Map> newlist = new ArrayList<Map>();
             Map map = sum.get(0);
             double jhs = 0;
             double xhs = 0;
             String jh = String.valueOf(map.get("JH"));
-            if (jh != null &&!jh.equals("") && !jh.equals("null")) {
+            if (jh != null && !jh.equals("") && !jh.equals("null")) {
                 jhs = Double.parseDouble(map.get("JH").toString());
             }
             String xh = String.valueOf(map.get("XH"));
             if (xh != null && !xh.equals("") && !xh.equals("null")) {
                 xhs = Double.parseDouble(xh);
-            }else{
+            } else {
                 xhs = 0;
             }
             Map mills = new HashMap();
@@ -264,51 +264,57 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             mills.put("JH", jhs);
             mills.put("XH", xhs);
             newlist.add(mills);
+            Map m = new HashMap();
+            m.put("XH", 0);
+            m.put("COMPANYNAME", "唐钢");
+            m.put("JH", 0);
+            Map m1 = new HashMap();
+            m1.put("XH", 0);
+            m1.put("COMPANYNAME", "邯钢");
+            m1.put("JH", 0);
+            Map m2 = new HashMap();
+            m2.put("XH", 0);
+            m2.put("COMPANYNAME", "宣钢");
+            m2.put("JH", 0);
+            Map m3 = new HashMap();
+            m3.put("XH", 0);
+            m3.put("COMPANYNAME", "承钢");
+            m3.put("JH", 0);
+            Map m4 = new HashMap();
+            m4.put("XH", 0);
+            m4.put("COMPANYNAME", "舞钢");
+            m4.put("JH", 0);
+            Map m5 = new HashMap();
+            m5.put("XH", 0);
+            m5.put("COMPANYNAME", "石钢");
+            m5.put("JH", 0);
+            Map m6 = new HashMap();
+            m6.put("XH", 0);
+            m6.put("COMPANYNAME", "衡板");
+            m6.put("JH", 0);
+            newlist.add(m);
+            newlist.add(m1);
+            newlist.add(m2);
+            newlist.add(m3);
+            newlist.add(m4);
+            newlist.add(m5);
+            newlist.add(m6);
             List<Map> list = targetManagementMapper.Steelmillsplan(name);
-            if(list().size()>0){
-
-                for(int i=0;i<list.size();i++){
-                    newlist.add(list.get(i));
+            if (list().size() > 0) {
+                for (int j=1;j<newlist.size();j++){
+                    for (int i = 0; i < list.size(); i++) {
+                        if(newlist.get(j).get("COMPANYNAME").equals(list.get(i).get("COMPANYNAME"))){
+                            newlist.add(j,list.get(i));
+                            newlist.remove(j+1);
+                        }
+                    }
                 }
-            }else{
-                Map m = new HashMap();
-                m.put("XH",0);
-                m.put("COMPANYNAME", "唐钢");
-                m.put("JH", 0);
-                Map m1 = new HashMap();
-                m1.put("XH",0);
-                m1.put("COMPANYNAME", "邯钢");
-                m1.put("JH", 0);
-                Map m2 = new HashMap();
-                m2.put("XH",0);
-                m2.put("COMPANYNAME", "宣钢");
-                m2.put("JH", 0);
-                Map m3 = new HashMap();
-                m3.put("XH",0);
-                m3.put("COMPANYNAME", "承钢");
-                m3.put("JH", 0);
-                Map m4 = new HashMap();
-                m4.put("XH",0);
-                m4.put("COMPANYNAME", "舞钢");
-                m4.put("JH", 0);
-                Map m5 = new HashMap();
-                m5.put("XH",0);
-                m5.put("COMPANYNAME", "石钢");
-                m5.put("JH", 0);
-                Map m6 = new HashMap();
-                m6.put("XH",0);
-                m6.put("COMPANYNAME", "衡板");
-                m6.put("JH", 0);
-                newlist.add(m);
-                newlist.add(m1);
-                newlist.add(m2);
-                newlist.add(m3);
-                newlist.add(m4);
-                newlist.add(m5);
-                newlist.add(m6);
-            }
-
+                return newlist;
+                }
             return newlist;
+
+
+
         }
         //第三个
         @Async
