@@ -246,24 +246,32 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         public List<Map> mills(String name) {
             List<Map> sum = targetManagementMapper.Steelmillssum(name);
             List<Map> newlist = new ArrayList<Map>();
-            Map map = sum.get(0);
             double jhs = 0;
             double xhs = 0;
-            String jh = String.valueOf(map.get("JH"));
-            if (jh != null && !jh.equals("") && !jh.equals("null")) {
-                jhs = Double.parseDouble(map.get("JH").toString());
-            }
-            String xh = String.valueOf(map.get("XH"));
-            if (xh != null && !xh.equals("") && !xh.equals("null")) {
-                xhs = Double.parseDouble(xh);
-            } else {
-                xhs = 0;
-            }
+
+                Map map = sum.get(0);
+            if(map!=null) {
+                String jh = String.valueOf(map.get("JH"));
+                if (jh != null && !jh.equals("") && !jh.equals("null")) {
+                    jhs = Double.parseDouble(map.get("JH").toString());
+                }
+                String xh = String.valueOf(map.get("XH"));
+                if (xh != null && !xh.equals("") && !xh.equals("null")) {
+                    xhs = Double.parseDouble(xh);
+                } else {
+                    xhs = 0;
+                }
+                Map mills = new HashMap();
+                mills.put("COMPANYNAME", "集团");
+                mills.put("JH", jhs);
+                mills.put("XH", xhs);
+                newlist.add(mills);
+            }else {
             Map mills = new HashMap();
             mills.put("COMPANYNAME", "集团");
             mills.put("JH", jhs);
             mills.put("XH", xhs);
-            newlist.add(mills);
+            newlist.add(mills);}
             Map m = new HashMap();
             m.put("XH", 0);
             m.put("COMPANYNAME", "唐钢");
@@ -300,7 +308,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             newlist.add(m5);
             newlist.add(m6);
             List<Map> list = targetManagementMapper.Steelmillsplan(name);
-            if (list().size() > 0) {
+            if (list.size() > 0) {
                 for (int j=1;j<newlist.size();j++){
                     for (int i = 0; i < list.size(); i++) {
                         if(newlist.get(j).get("COMPANYNAME").equals(list.get(i).get("COMPANYNAME"))){
