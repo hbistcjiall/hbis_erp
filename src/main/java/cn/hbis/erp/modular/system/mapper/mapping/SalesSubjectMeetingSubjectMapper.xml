@@ -16,11 +16,11 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        ID AS Id, COMPANY_ID AS companyId, COMPANY_NAME AS companyName, SALE_BODY_DES AS saleBodyDes, SALE_BODY AS saleBody, IS_DELETE AS isDelete, GMT_CREATE AS gmtCrate, GMT_MODIFY AS gmtModify
+        COMPANY_ID AS companyId, COMPANY_NAME AS companyName, SALE_BODY_DES AS saleBodyDes, SALE_BODY AS saleBody, IS_DELETE AS isDelete, GMT_CREATE AS gmtCrate, GMT_MODIFY AS gmtModify
     </sql>
 
     <select id="List" resultType="map">
-        select
+        select ''||ID AS Id,
         <include refid="Base_Column_List"/>
         from PRICE_SALEBODY_RELATION where IS_DELETE = '0'
         <if test="companyId != null and '9727' == companyId">
