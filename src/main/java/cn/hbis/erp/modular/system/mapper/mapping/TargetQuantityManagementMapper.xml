@@ -46,8 +46,8 @@
 	<select id="typeselect" resultType="map">
 		select
 		"NAME",
-		NVL(jsl,0) jsl,
-		NVL(pzgl,0) pzgl,
+		NVL(jsl/1000,0) jsl,
+		NVL(pzgl/1000,0) pzgl,
 		NVL(ROUND(nmb / jsl,4)*100,0)  bili
 		from  (SELECT PZ.VARIETY NAME,
 		SUM (mx.fkimg) pzgl,
@@ -65,7 +65,8 @@
 		JOIN scm_sale_order sso
 		ON sso.order_no = zb.aubel
 		AND sso.company_id = zb.company_id
-
+		left join report_product_class_level pzg
+		on mx.cpdj_id = pzg.id
 		INNER JOIN scm_variety_to_pt_gp svtpg
 		ON sso.product_code = svtpg.product_group
 		AND sso.company_id = svtpg.company_id
@@ -95,7 +96,9 @@
 		</if>
 		<!--zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
 		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
-		  cx.name is not null
+		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
+		pzg.product_grade = '特色战略产品'
+		 and cx.name is not null
 
 		GROUP BY PZ.VARIETY) a
 		LEFT JOIN
@@ -109,15 +112,16 @@
 		<if test="name != null and name !=''">
 			and	pz_NAME = #{name}
 		</if>
+
 		GROUP BY
 		pz_name) b
 		on b.pz_name =  a.NAME
-
+		ORDER BY "DECODE" (name,'热板','冷板','宽厚板','棒线','型材')
 	</select>
 	<select id="typessum" resultType="map">
 		select
-		NVL(sum(jsl),0) jsl,
-		NVL(SUM(pzgl),0) pzgl
+		NVL(sum(jsl)/1000,0) jsl,
+		NVL(SUM(pzgl)/1000,0) pzgl
 		from  (SELECT PZ.VARIETY NAME,
 		SUM (mx.fkimg) pzgl,
 		ROUND (SUM(mx.fkimg), 2) jsl
@@ -134,7 +138,8 @@
 		JOIN scm_sale_order sso
 		ON sso.order_no = zb.aubel
 		AND sso.company_id = zb.company_id
-
+		left join report_product_class_level pzg
+		on mx.cpdj_id = pzg.id
 		INNER JOIN scm_variety_to_pt_gp svtpg
 		ON sso.product_code = svtpg.product_group
 		AND sso.company_id = svtpg.company_id
@@ -163,9 +168,11 @@
 		<if test="name != null and name !=''">
 			pz.VARIETY = #{name} and
 		</if>
+		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
+		pzg.product_grade = '特色战略产品'
 		<!--zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
 		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
-		  cx.name is not null
+		and  cx.name is not null
 
 		GROUP BY PZ.VARIETY) a
 		LEFT JOIN
@@ -186,7 +193,7 @@
 	</select>
 
 	<select id="Steelmillsplan" resultType="map">
-		SELECT d.COMPANYNAME,NVL(SUM(D.XH),0) xh,NVL("SUM"(d.jh),0) jh  from  (select * from (
+		SELECT d.COMPANYNAME,NVL(SUM(D.XH)/1000,0) xh,NVL("SUM"(d.jh)/1000,0) jh  from  (select * from (
 		SELECT decode(zb.company_id,
 		9580,
 		'唐钢',
@@ -224,6 +231,8 @@
 		AND sso.company_id = zb.company_id
 		LEFT JOIN CRM_RESOURCE_ALLOCATION cr
 		on cr.CX_NAME  = cx.name
+		left join report_product_class_level pzg
+		on mx.cpdj_id = pzg.id
 		INNER JOIN scm_variety_to_pt_gp svtpg
 		ON sso.product_code = svtpg.product_group
 		AND sso.company_id = svtpg.company_id
@@ -252,8 +261,9 @@
 		<if test="name != null and name !=''">
 			 pz.VARIETY = #{name} and
 		</if>
-
-		 cx.name is not null
+		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
+		pzg.product_grade = '特色战略产品'
+		 and cx.name is not null
 		GROUP BY zb.company_id,cx.name
 		ORDER BY zb.company_id )a
 		LEFT JOIN (select
@@ -276,7 +286,7 @@
 		'邯宝')
 	</select>
 	<select id="Steelmillssum" resultType="map">
-		select NVL(SUM(z.xh),0),NVL("SUM"(z.JH),0) jh from
+		select NVL(SUM(z.xh)/1000,0),NVL("SUM"(z.JH)/1000,0) jh from
 		(
 		SELECT d.COMPANYNAME,NVL(SUM(D.XH),0) xh,NVL("SUM"(d.jh),0) jh  from  (select * from (
 		SELECT decode(zb.company_id,
@@ -316,6 +326,8 @@
 		AND sso.company_id = zb.company_id
 		LEFT JOIN CRM_RESOURCE_ALLOCATION cr
 		on cr.CX_NAME  = cx.name
+		left join report_product_class_level pzg
+		on mx.cpdj_id = pzg.id
 		INNER JOIN scm_variety_to_pt_gp svtpg
 		ON sso.product_code = svtpg.product_group
 		AND sso.company_id = svtpg.company_id
@@ -341,11 +353,13 @@
 		where
 		<!-- zb.fkdat   >= to_date('2018-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')
 		AND zb.fkdat  <= to_date('2019-03-11 00:00:00','yyyy-mm-dd hh24:mi:ss')-->
+
 		<if test="name != null and name !=''">
 			 pz.VARIETY = #{name} and
 		</if>
-
-		  cx.name is not null
+		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
+		pzg.product_grade = '特色战略产品'
+		 and cx.name is not null
 		GROUP BY zb.company_id,cx.name
 		ORDER BY zb.company_id )a
 		LEFT JOIN (select
@@ -370,7 +384,7 @@
 	</select>
 	<!--四-->
 	<select id="Steellist" resultType="map">
-		select c.COMPANYName,NVL(c.pzg,0) pzg,NVL(c.jsl,0) jsl,NVl(ROUND(b.jh/c.jsl,4)*100,0)  bili
+		select c.COMPANYName,NVL(c.pzg/1000,0) pzg,NVL(c.jsl/1000,0) jsl,NVl(ROUND(b.jh/c.jsl,4)*100,0)  bili
 		from (
 		SELECT a.COMPANYName,"SUM"(a.fkimg) pzg,SUM(a.jsl) jsl from
 		(SELECT decode(zb.company_id,
@@ -408,6 +422,8 @@
 		JOIN scm_sale_order sso
 		ON sso.order_no = zb.aubel
 		AND sso.company_id = zb.company_id
+		left join report_product_class_level pzg
+		on mx.cpdj_id = pzg.id
 		INNER JOIN scm_variety_to_pt_gp svtpg
 		ON sso.product_code = svtpg.product_group
 		AND sso.company_id = svtpg.company_id
@@ -436,7 +452,9 @@
 		<if test="name != null and name !=''">
 			pz.VARIETY = #{name} and
 		</if>
-		  cx.name is not null
+		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
+		pzg.product_grade = '特色战略产品'
+		 and  cx.name is not null
 		GROUP BY zb.company_id,cx.name
 		ORDER BY zb.company_id) a
 		GROUP BY a.companyName
@@ -565,9 +583,17 @@
 		ON cx.NAME = cr.CX_NAME
 		GROUP BY  cx.companyname)b
 		on c.companyname = b.companyname
+		ORDER BY "DECODE"(companyname, '唐钢',1,
+		'邯钢',2,
+		'宣钢',3,
+		'承钢',4,
+		'舞钢',5,
+		'石钢',6,
+		'衡板',7,
+		'邯宝',8)
 	</select>
 	<select id="Steelsum" resultType="map">
-		select NVL("SUM"(p.pzgl),0) pzgl,NVL("SUM"(p.jsl),0) jsl,NVL("SUM"(p.jh),0) jh   from
+		select NVL("SUM"(p.pzgl)/1000,0) pzgl,NVL("SUM"(p.jsl)/1000,0) jsl,NVL("SUM"(p.jh)/1000,0) jh   from
 		(select c.COMPANYName,c.pzg pzgl,c.jsl,b.jh ,NVl(ROUND(b.jh/c.jsl,4)*100,0)  bili
 		from (
 		SELECT a.COMPANYName,"SUM"(a.fkimg) pzg,SUM(a.jsl) jsl from
@@ -606,6 +632,8 @@
 		JOIN scm_sale_order sso
 		ON sso.order_no = zb.aubel
 		AND sso.company_id = zb.company_id
+		left join report_product_class_level pzg
+		on mx.cpdj_id = pzg.id
 		INNER JOIN scm_variety_to_pt_gp svtpg
 		ON sso.product_code = svtpg.product_group
 		AND sso.company_id = svtpg.company_id
@@ -634,7 +662,9 @@
 		<if test="name != null and name !=''">
 			pz.VARIETY = #{name} and
 		</if>
-		  cx.name is not null
+		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
+		pzg.product_grade = '特色战略产品'
+		 and cx.name is not null
 		GROUP BY zb.company_id,cx.name
 		ORDER BY zb.company_id) a
 		GROUP BY a.companyName
@@ -778,7 +808,8 @@
 		on mx.pz_id = pz.id
 		JOIN price_salebody_relation psr
 		on psr.company_Id = zb.company_id
-
+		left join report_product_class_level pzg
+		on mx.cpdj_id = pzg.id
 		JOIN scm_sale_order sso
 		ON sso.order_no = zb.aubel
 		AND sso.company_id = zb.company_id
@@ -809,7 +840,9 @@
 		<if test="name != null and name !=''">
 			  pz.VARIETY = #{name} AND
 		</if>
-			psr.sale_body = '分公司'
+		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
+		pzg.product_grade = '特色战略产品'
+		and psr.sale_body = '分公司'
 		or psr.sale_body = '销售公司资'
 		or psr.sale_body = '出口'
 		or psr.sale_body = '技术中心/市场部'
@@ -818,7 +851,7 @@
 	</select>
 	<select id="salesmain" resultType="map">
 		SELECT
-		psr.sale_body,
+		psr.sale_body companyname,
 		NVL(SUM(mx.fkimg),0) AS zyfkimg
 		FROM scm_steel_settle_main zb
 		left join
@@ -829,7 +862,8 @@
 		on mx.pz_id = pz.id
 		JOIN price_salebody_relation psr
 		on psr.company_Id = zb.company_id
-
+		left join report_product_class_level pzg
+		on mx.cpdj_id = pzg.id
 		JOIN scm_sale_order sso
 		ON sso.order_no = zb.aubel
 		AND sso.company_id = zb.company_id
@@ -860,7 +894,9 @@
 		<if test="name != null and name !=''">
 			  pz.VARIETY = #{name} 	AND
 		</if>
-			psr.sale_body = '分公司'
+		pzg.product_grade = '品种钢' OR pzg.product_grade = '高端产品' OR
+		pzg.product_grade = '特色战略产品'
+		and	psr.sale_body = '分公司'
 		or psr.sale_body = '销售公司资'
 		or psr.sale_body = '出口'
 		or psr.sale_body = '技术中心/市场部'
