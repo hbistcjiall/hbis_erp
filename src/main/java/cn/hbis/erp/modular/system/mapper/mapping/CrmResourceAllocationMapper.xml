@@ -58,7 +58,7 @@
                        FROM crm_resource_allocation
                       where 1=1 and year = #{year}
                 <if test="flName != null and flName != ''">
-                    and flName = #{flName}
+                    and fl_Name = #{flName}
                 </if>
                       )
               group by PZ_NAME) jh
