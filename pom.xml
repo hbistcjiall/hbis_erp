@@ -17,7 +17,7 @@
     <name>hbis-admin</name>
     <description>hbis 的spring boot版本</description>
 
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,11 +25,9 @@
         <java.version>1.8</java.version>
         <shiro.version>1.4.0</shiro.version>
         <kaptcha.version>2.3.2</kaptcha.version>
-        <ehcache3.version>3.6.3</ehcache3.version>
         <ehcache2.version>2.10.6</ehcache2.version>
         <swagger.version>2.9.2</swagger.version>
         <ehcache.core.version>2.6.11</ehcache.core.version>
-        <!--<mysql-connector-java.version>8.0.11</mysql-connector-java.version>-->
         <jwt.version>0.9.0</jwt.version>
     </properties>
 
@@ -43,8 +41,8 @@
         </dependency>
         <dependency>
             <groupId>com.oracle</groupId>
-            <artifactId>ojdbc7</artifactId>
-            <version>11.1.0.2</version>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.velocity</groupId>
@@ -56,12 +54,6 @@
             <artifactId>mybatis-plus-generator</artifactId>
             <version>3.0.7.1</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>mysql</groupId>-->
-            <!--<artifactId>mysql-connector-java</artifactId>-->
-            <!--<version>${mysql-connector-java.version}</version>-->
-        <!--</dependency>-->
-
         <!--spring boot依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -132,11 +124,6 @@
             <artifactId>ehcache</artifactId>
             <version>${ehcache2.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>${ehcache3.version}</version>
-        </dependency>
 
         <!--swagger-->
         <dependency>
@@ -195,7 +182,11 @@
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
         </dependency>
-
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.3</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.xmlbeans</groupId>
             <artifactId>xmlbeans</artifactId>
@@ -213,15 +204,6 @@
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
         </dependency>
-        <!--需要分布式session的话需要放开注释-->
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.session</groupId>-->
-        <!--<artifactId>spring-session-data-redis</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-starter-data-redis</artifactId>-->
-        <!--</dependency>-->
     </dependencies>
 
     <build>
