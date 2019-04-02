@@ -2,7 +2,6 @@ package cn.hbis.erp.config.web;
 
 import cn.hbis.erp.config.properties.HbisProperties;
 import cn.hbis.erp.core.common.constant.Const;
-import cn.hbis.erp.core.interceptor.HbisUserFilter;
 import cn.hbis.erp.core.shiro.ShiroDbRealm;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
@@ -24,8 +23,6 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.servlet.Filter;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -136,13 +133,6 @@ public class ShiroConfig {
          * 没有权限跳转的url
          */
         shiroFilter.setUnauthorizedUrl("/global/error");
-
-        /**
-         * 覆盖默认的user拦截器(默认拦截器解决不了ajax请求 session超时的问题)
-         */
-        HashMap<String, Filter> myFilters = new HashMap<>();
-        myFilters.put("user", new HbisUserFilter());
-        shiroFilter.setFilters(myFilters);
 
         /**
          * 配置shiro拦截器链

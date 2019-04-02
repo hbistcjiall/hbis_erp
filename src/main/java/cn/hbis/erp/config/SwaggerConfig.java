@@ -27,7 +27,6 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))                         //这里采用包含注解的方式来确定要显示的接口
-                //.apis(RequestHandlerSelectors.basePackage("cn.hbis.erp.modular.system.controller"))     //这里采用包扫描的方式来确定要显示的接口
                 .paths(PathSelectors.any())
                 .build();
     }
