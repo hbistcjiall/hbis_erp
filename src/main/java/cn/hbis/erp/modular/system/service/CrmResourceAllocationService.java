@@ -36,11 +36,11 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
     public List<Allocation> selSchedule(String date,String flName){
         String month = "";
         String year = "";
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
         if (ToolUtil.isEmpty(date)){
             date = df.format(new Date()).toString();
         }
-        month = date.substring(5,7);
+        month = date.substring(4,6);
         year = date.substring(0,4);
         List<Allocation> lists = new ArrayList<>();
         List<Allocation> list = crmResourceAllocationMapper.selSchedule(date,month,year,flName);
@@ -74,11 +74,11 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
     public List<Allocation> selScheduleByCx(String date,String sort,String flName){
         String month = "";
         String year = "";
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
         if (ToolUtil.isEmpty(date)){
             date = df.format(new Date()).toString();
         }
-        month = date.substring(5,7);
+        month = date.substring(4,6);
         year = date.substring(0,4);
         if (sort.equals("0")){
             sort = "DESC";

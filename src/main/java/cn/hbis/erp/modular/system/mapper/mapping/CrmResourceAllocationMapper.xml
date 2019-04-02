@@ -2,197 +2,129 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.hbis.erp.modular.system.mapper.CrmResourceAllocationMapper">
     <select id="selSchedule" resultType="cn.hbis.erp.modular.system.entity.Allocation">
-        select * from (
-        SELECT
-        NVL (A .PZ_NAME, '合计') pzName,
-        SUM(ss.fkimg) as yield,
-        SUM(A.planNum) as planNum,
-        CASE
-        WHEN SUM (ss.fkimg) / SUM (A.planNum) IS NULL THEN
-        '0'
-        ELSE
-        TO_CHAR (
+        select ht.pzName pzName,
+       case
+         when sum(orderMount) is null then
+          0
+         else
+          sum(orderMount)
+       end yield,
+       case when hjjhl is null then 0 else hjjhl end planNum,
+         case when hjjhl = 0 then 0 when  sum(orderMount)/hjjhl is null then 0 else
+
         ROUND (
-        SUM (ss.fkimg) / SUM (A.planNum) * 100,
+        sum(orderMount)/hjjhl * 100,
         2
         )
-        )
+
         END AS schedule
-        FROM
-        (
-        SELECT
-            PZ_NAME,
-            sum (
-                CASE
-                WHEN #{month} = '01' THEN
-                    JAN_MONTH
-                WHEN #{month} = '02' THEN
-                    FEB_MONTH
-                WHEN #{month} = '03' THEN
-                    MAR_MONTH
-                WHEN #{month} = '04' THEN
-                    APR_MONTH
-                WHEN #{month} = '05' THEN
-                    MAY_MONTH
-                WHEN #{month} = '06' THEN
-                    JUN_MONTH
-                WHEN #{month} = '07' THEN
-                    JUL_MONTH
-                WHEN #{month} = '08' THEN
-                    AUG_MONTH
-                WHEN #{month} = '09' THEN
-                    SEP_MONTH
-                WHEN #{month} = '10' THEN
-                    OCT_MONTH
-                WHEN #{month} = '11' THEN
-                    NOV_MONTH
-                WHEN #{month} = '12' THEN
-                    DEC_MONTH
-                END
-            ) planNum,
-            CX_NAME
-        FROM
-            crm_resource_allocation
-        WHERE
-        1=1
-        <if test="year != null and year != ''">
-            and YEAR = #{year}
-        </if>
-        <if test="flName != null and flName != ''">
-            and FL = #{flName}
-        </if>
-        group by PZ_NAME,CX_NAME
-        ) A
-        LEFT JOIN (
-        SELECT
-        DATA.full_name fName,
-        DATA.name dName,
-        sum(settle.FKIMG) fkimg
-        FROM
-        scm_steel_settle settle
-        JOIN scm_delivery_detail detail ON settle.company_id = detail.company_id
-        AND settle.vgbel = detail.deliv_numb
-        AND settle.vgpos = detail.deliv_item
-        AND (
-        detail.delivery_delete != 'X'
-        OR detail.delivery_delete IS NULL
-        )
-        JOIN crm_resource_data DATA ON DATA .full_name = detail.ext
-        AND DATA .company_id = detail.company_id
-        AND DATA . TYPE = 3
-        AND DATA .parent_name IS NOT NULL
-        WHERE
-        1=1
-        <if test="date != null and date != ''">
-            and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
-        </if>
-        GROUP BY
-        DATA . NAME,
-        DATA .full_name
-        ) ss ON A.CX_NAME= ss.dName
-        GROUP BY
-        ROLLUP (A.PZ_NAME))
-        order by decode(pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线',5,'型带',6)
+  from (SELECT distinct svtp.variety      pzName,
+                        xsztdzb.sale_body saleBody,
+                        sso.ORDER_MOUNT   orderMount
+          from scm_sale_order sso
+         inner join scm_variety_to_pt_gp svtp
+            on sso.company_id = svtp.company_id
+           and sso.product_code = svtp.product_group
+          left join (select a.*
+                      from price_salebody_relation a
+                     where a.is_delete = 0) xsztdzb
+            ON sso.company_id = xsztdzb.company_id
+           AND sso.sale_body = xsztdzb.sale_body_des
+
+         WHERE 1 = 1
+           and instr(sso.dj_date, #{date}) > 0
+           and sso.order_type_describe not in
+               (select distinct cfd.data_name
+                  from crm_filter_data cfd
+                 where cfd.data_type = '2'
+                   and cfd.status = '0'
+                   and cfd.company_id = sso.company_id)
+           and sso.saler_name not in
+               (select cfd.data_name
+                  from crm_filter_data cfd
+                 where cfd.data_type = '1'
+                   and cfd.status = '0'
+                   and cfd.company_id = sso.company_id)
+
+           AND sso.sale_group NOT IN
+               (SELECT cfd.data_name
+                  FROM crm_filter_data cfd
+                 WHERE cfd.company_id = sso.company_id
+                   AND cfd.data_type = 9
+                   AND cfd.status = 0)) ht
+  left join (select PZ_NAME pzName, sum(planNum) hjjhl
+
+               from (SELECT distinct PZ_NAME, MAR_MONTH planNum
+                       FROM crm_resource_allocation
+                      where 1=1 and year = #{year}
+                <if test="flName != null and flName != ''">
+                    and flName = #{flName}
+                </if>
+                      )
+              group by PZ_NAME) jh
+    on ht.pzName = jh.pzName
+ group by ht.pzName,hjjhl
+order by decode(ht.pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线',5,'型带',6)
     </select>
 
     <select id="selScheduleByCx" resultType="cn.hbis.erp.modular.system.entity.Allocation">
-        select *
-        from (
-        SELECT
-        A .CX_NAME cxName,
+        select * from (select ht.dName cxName,
+        case when sum(orderMount) is null then 0 else sum(orderMount) end yield,
         CASE
-        WHEN ss.fkimg IS NULL THEN
+        WHEN hjjhl IS NULL THEN
         0
         ELSE
-        ss.fkimg
-        END AS yield,
+        hjjhl
+        END
+        planNum,
+
         CASE
-        WHEN A .planNum IS NULL THEN
+        WHEN sum(orderMount) / hjjhl IS NULL THEN
         0
+        when hjjhl is null then 0
         ELSE
-        A .planNum
+
+        ROUND (sum(orderMount) / hjjhl  *100, 2)
+
         END
-        AS planNum,
-        (
-        CASE
-        WHEN ss.fkimg / A .planNum IS NULL THEN
-        '0'
-        ELSE
-        TO_CHAR (
-        ROUND (ss.fkimg / A .planNum  *100, 2)
-        )
-        END
-        ) AS schedule
-        FROM
-        (
-        SELECT
-        sum (
-        CASE
-        WHEN #{month} = '01' THEN
-        JAN_MONTH
-        WHEN #{month} = '02' THEN
-        FEB_MONTH
-        WHEN #{month} = '03' THEN
-        MAR_MONTH
-        WHEN #{month} = '04' THEN
-        APR_MONTH
-        WHEN #{month} = '05' THEN
-        MAY_MONTH
-        WHEN #{month} = '06' THEN
-        JUN_MONTH
-        WHEN #{month} = '07' THEN
-        JUL_MONTH
-        WHEN #{month} = '08' THEN
-        AUG_MONTH
-        WHEN #{month} = '09' THEN
-        SEP_MONTH
-        WHEN #{month} = '10' THEN
-        OCT_MONTH
-        WHEN #{month} = '11' THEN
-        NOV_MONTH
-        WHEN #{month} = '12' THEN
-        DEC_MONTH
-        END
-        ) planNum,
-        CX_NAME
-        FROM
-        crm_resource_allocation
+        AS schedule
+        from (SELECT distinct DATA.NAME dName,
+        xsztdzb.sale_body saleBody,
+        sso.ORDER_MOUNT   orderMount
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND DATA . TYPE = 3
+        AND DATA.parent_name IS NOT NULL
+        join scm_sale_order sso
+        on detail.company_id = sso.company_id
+        and detail.ORDER_NO = sso.order_no
+        and detail.ORDER_ITEM = sso.order_row
+        left join (select a.*
+        from price_salebody_relation a
+        where a.is_delete = 0) xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_body = xsztdzb.sale_body_des
+        WHERE 1 = 1
+        <if test="date != null and date != ''">
+            and instr(sso.dj_date, #{date}) > 0
+        </if>
+        AND (detail.delivery_delete != 'X' OR
+        detail.delivery_delete IS NULL)
+        ) ht
+        left join (select cx_NAME,
+        sum(planNum) hjjhl
+        from (SELECT cx_NAME, MAR_MONTH planNum, fl_name
+        FROM crm_resource_allocation
         WHERE
         1=1
         <if test="year != null and year != ''">
             and YEAR = #{year}
-        </if>
-        <if test="flName != null and flName != ''">
-            and FL = #{flName}
-        </if>
-        group by CX_NAME
-        ) A
-        LEFT JOIN (
-        SELECT
-        DATA.full_name fName,
-        DATA.name dName,
-        sum(settle.FKIMG) fkimg
-        FROM
-        scm_steel_settle settle
-        JOIN scm_delivery_detail detail ON settle.company_id = detail.company_id
-        AND settle.vgbel = detail.deliv_numb
-        AND settle.vgpos = detail.deliv_item
-        AND (
-        detail.delivery_delete != 'X'
-        OR detail.delivery_delete IS NULL
-        )
-        JOIN crm_resource_data DATA ON DATA .full_name = detail.ext
-        AND DATA .company_id = detail.company_id
-        AND DATA . TYPE = 3
-        AND DATA .parent_name IS NOT NULL
-        WHERE
-        1=1
-        <if test="date != null and date != ''">
-            and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
-        </if>
-        GROUP BY
-        DATA . NAME,
-        DATA .full_name) ss ON A.CX_NAME = SS.dName
+        </if>)
+        group by cx_NAME) jh
+        on ht.dName = jh.cx_name
+        group by ht.dName,hjjhl
         ORDER BY
         to_number(schedule) ${sort}
         )
