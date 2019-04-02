@@ -109,16 +109,20 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
 产险合同进度报表1
 */
     @Async
-    public List<ScmSteelSettle> getcxhtjd(String startTime,String endTime,String cx) {
-        return scmSteelSettleMapper.getcxhtjd(startTime,endTime,cx);
+    public List<ScmSteelSettle> getcxhtjd(String date,String cxName) {
+        String date1 = date.replaceAll("[[\\s-:punct:]]","").substring(0,6);
+      String year = date1.substring(0,4);
+        return scmSteelSettleMapper.getcxhtjd(date1,year,cxName);
     }
 
     /*
 品种合同进度报表1
 */
     @Async
-    public List<ScmSteelSettle> getpzhtjd(String startTime,String endTime,String pz) {
-        return scmSteelSettleMapper.getpzhtjd(startTime,endTime,pz);
+    public List<ScmSteelSettle> getpzhtjd(String date,String pzName) {
+        String date1 = date.replaceAll("[[\\s-:punct:]]","").substring(0,6);
+        String year = date1.substring(0,4);
+        return scmSteelSettleMapper.getpzhtjd(date1,year,pzName);
     }
 
 
