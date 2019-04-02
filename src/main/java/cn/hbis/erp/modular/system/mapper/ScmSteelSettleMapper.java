@@ -14,8 +14,8 @@ import java.util.List;
  * @since 2019-03-16
  */
 public interface ScmSteelSettleMapper extends BaseMapper<ScmSteelSettle> {
-    List<ScmSteelSettle> getcx(@Param("dw") String dw,@Param("cx") String cx,@Param("startTime") String startTime,@Param("endTime")String endTime);
-    List<ScmSteelSettle> getpz(@Param("pz") String pz,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    List<ScmSteelSettle> getcx(@Param("dw") String dw,@Param("cx") String cx,@Param("startTime") String startTime,@Param("endTime")String endTime,@Param("startagainTime") String startagainTime,@Param("endagainTime")String endagainTime);
+    List<ScmSteelSettle> getpz(@Param("pz") String pz,@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("startagainTime") String startagainTime,@Param("endagainTime")String endagainTime);
     List<ScmSteelSettle> getzrbm(@Param("zrbm") String zrbm,@Param("startTime") String startTime,@Param("endTime") String endTime);
     List<ScmSteelSettle> getpzjszl(@Param("startTime") String startTime,@Param("endTime") String endTime);
     List<ScmSteelSettle> getpzgjswc(@Param("startTime") String startTime,@Param("endTime") String endTime);
@@ -24,7 +24,7 @@ public interface ScmSteelSettleMapper extends BaseMapper<ScmSteelSettle> {
     List<ScmSteelSettle> getzyjhcxtjpz();
     List<ScmSteelSettle> getzyjhcxtjcx(@Param("pz") String  pz);
     List<ScmSteelSettle> getzyjhcxtjxszt();
-    List<ScmSteelSettle> getcxhtjd(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("cx") String pz);
-    List<ScmSteelSettle> getpzhtjd(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("pz") String pz);
+    List<ScmSteelSettle> getcxhtjd(@Param("date") String date,@Param("year") String year,@Param("cxName") String cxName);
+    List<ScmSteelSettle> getpzhtjd(@Param("date") String date,@Param("year") String year,@Param("pzName") String cxName);
 
 }

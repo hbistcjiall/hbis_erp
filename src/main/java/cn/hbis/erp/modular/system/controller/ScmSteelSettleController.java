@@ -37,11 +37,14 @@ public class ScmSteelSettleController {
     @PostMapping("getcx")
     @Async
     public  List<ScmSteelSettle>  getcx(String dw,String cx,String startTime,String endTime) {
-        List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx,startTime,endTime);
+        String startagainTime="2019-01-01";
+        String endagainTime="2019-02-01";
+        List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx,startTime,endTime,startagainTime,endagainTime);
         return getcx ;
     }
     @ApiOperation(value = "月度品种报表")
     @ApiImplicitParams({
+
             @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
             @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
             @ApiImplicitParam(name = "pz", value = "品种", dataType = "String"),
@@ -49,13 +52,16 @@ public class ScmSteelSettleController {
     @PostMapping("getpz")
     @Async
     public  List<ScmSteelSettle>  getpz(String pz,String startTime,String endTime) {
-        List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz,startTime,endTime);
+        String startagainTime="2019-01-01";
+        String endagainTime="2019-02-01";
+        List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz,startTime,endTime,startagainTime,endagainTime);
         return getpz;
     }
     @ApiOperation(value = "责任部门报表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "zrbm", value = "责任部门", dataType = "String"),
-            @ApiImplicitParam(name = "rq", value = "日期", dataType = "String"),
+            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
     })
     @PostMapping("getzrbm")
     @Async
@@ -63,6 +69,7 @@ public class ScmSteelSettleController {
         List<ScmSteelSettle> getzrbm=scmSteelSettleService.getzrbm(zrbm,startTime,endTime);
         return getzrbm;
     }
+
 
     @ApiOperation(value = "结算完成情况报表")
     @ApiImplicitParams({
@@ -144,27 +151,25 @@ public class ScmSteelSettleController {
 
     @ApiOperation(value = "产线合同进度报表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
-            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
-            @ApiImplicitParam(name = "cx", value = "产线", dataType = "String"),
+            @ApiImplicitParam(name = "date", value = "日期", dataType = "String"),
+            @ApiImplicitParam(name = "cxName", value = "产线", dataType = "String"),
     })
     @PostMapping("getcxhtjd")
     @Async
-    public  List<ScmSteelSettle>  getcxhtjd(String startTime,String endTime,String cx ) {
-        List<ScmSteelSettle> getcxhtjd = scmSteelSettleService.getcxhtjd(startTime,endTime,cx);
+    public  List<ScmSteelSettle>  getcxhtjd(String date,String cxName ) {
+        List<ScmSteelSettle> getcxhtjd = scmSteelSettleService.getcxhtjd(date,cxName);
         return getcxhtjd;
     }
 
     @ApiOperation(value = "品种合同进度报表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
-            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
-            @ApiImplicitParam(name = "pz", value = "品种", dataType = "String"),
+            @ApiImplicitParam(name = "date", value = "日期", dataType = "String"),
+            @ApiImplicitParam(name = "pzName", value = "品种", dataType = "String"),
     })
     @PostMapping("getpzhtjd")
     @Async
-    public  List<ScmSteelSettle>  getpzhtjd(String startTime,String endTime,String pz) {
-        List<ScmSteelSettle> getpzhtjd = scmSteelSettleService.getpzhtjd(startTime,endTime,pz);
+    public  List<ScmSteelSettle>  getpzhtjd(String pzName,String date) {
+        List<ScmSteelSettle> getpzhtjd = scmSteelSettleService.getpzhtjd(date,pzName);
         return getpzhtjd;
     }
 

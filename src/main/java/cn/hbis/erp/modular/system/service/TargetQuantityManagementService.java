@@ -246,24 +246,32 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         public List<Map> mills(String name) {
             List<Map> sum = targetManagementMapper.Steelmillssum(name);
             List<Map> newlist = new ArrayList<Map>();
-            Map map = sum.get(0);
             double jhs = 0;
             double xhs = 0;
-            String jh = String.valueOf(map.get("JH"));
-            if (jh != null && !jh.equals("") && !jh.equals("null")) {
-                jhs = Double.parseDouble(map.get("JH").toString());
-            }
-            String xh = String.valueOf(map.get("XH"));
-            if (xh != null && !xh.equals("") && !xh.equals("null")) {
-                xhs = Double.parseDouble(xh);
-            } else {
-                xhs = 0;
-            }
+
+                Map map = sum.get(0);
+            if(map!=null) {
+                String jh = String.valueOf(map.get("JH"));
+                if (jh != null && !jh.equals("") && !jh.equals("null")) {
+                    jhs = Double.parseDouble(map.get("JH").toString());
+                }
+                String xh = String.valueOf(map.get("XH"));
+                if (xh != null && !xh.equals("") && !xh.equals("null")) {
+                    xhs = Double.parseDouble(xh);
+                } else {
+                    xhs = 0;
+                }
+                Map mills = new HashMap();
+                mills.put("COMPANYNAME", "集团");
+                mills.put("JH", jhs);
+                mills.put("XH", xhs);
+                newlist.add(mills);
+            }else {
             Map mills = new HashMap();
             mills.put("COMPANYNAME", "集团");
             mills.put("JH", jhs);
             mills.put("XH", xhs);
-            newlist.add(mills);
+            newlist.add(mills);}
             Map m = new HashMap();
             m.put("XH", 0);
             m.put("COMPANYNAME", "唐钢");
@@ -300,12 +308,14 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             newlist.add(m5);
             newlist.add(m6);
             List<Map> list = targetManagementMapper.Steelmillsplan(name);
-            if (list().size() > 0) {
+            if (list.size() > 0) {
                 for (int j=1;j<newlist.size();j++){
                     for (int i = 0; i < list.size(); i++) {
                         if(newlist.get(j).get("COMPANYNAME").equals(list.get(i).get("COMPANYNAME"))){
                             newlist.add(j,list.get(i));
                             newlist.remove(j+1);
+                        }else{
+                            continue;
                         }
                     }
                 }
@@ -453,55 +463,60 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             List<Map> list = targetManagementMapper.Steellist(name);
             List<Map> newlist =new ArrayList<>();
             newlist.add(type);
+            Map m =  new HashMap();
+            m.put("COMPANYNAME","唐钢");
+            m.put("PZGL",0);
+            m.put("JSL",0);
+            m.put("BILI","0%");
+            Map m11 =  new HashMap();
+            m11.put("COMPANYNAME","邯钢");
+            m11.put("PZGL",0);
+            m11.put("JSL",0);
+            m11.put("BILI","0%");
+            Map m1 =  new HashMap();
+            m1.put("COMPANYNAME","宣钢");
+            m1.put("PZGL",0);
+            m1.put("JSL",0);
+            m1.put("BILI","0%");
+            Map m2 =  new HashMap();
+            m2.put("COMPANYNAME","承钢");
+            m2.put("PZGL",0);
+            m2.put("JSL",0);
+            m2.put("BILI","0%");
+            Map m3 =  new HashMap();
+            m3.put("COMPANYNAME","舞钢");
+            m3.put("PZGL",0);
+            m3.put("JSL",0);
+            m3.put("BILI","0%");
+            Map m4 =  new HashMap();
+            m4.put("COMPANYNAME","石钢");
+            m4.put("PZGL",0);
+            m4.put("JSL",0);
+            m4.put("BILI","0%");
+            Map m5 =  new HashMap();
+            m5.put("COMPANYNAME","衡板");
+            m5.put("PZGL",0);
+            m5.put("JSL",0);
+            m5.put("BILI","0%");
+            newlist.add(m);
+            newlist.add(m11);
+            newlist.add(m1);
+            newlist.add(m2);
+            newlist.add(m3);
+            newlist.add(m4);
+            newlist.add(m5);
             if(list.size()>0){
-                for (int i=0;i<list.size();i++){
-                    String m1= list.get(i).get("BILI").toString();
-                    list.get(i).put("BILI",m1+"%");
-                    newlist.add(list.get(i));
+                for (int j=1;j<newlist.size();j++){
+                    for (int i = 0; i < list.size(); i++) {
+                        if(newlist.get(j).get("COMPANYNAME").equals(list.get(i).get("COMPANYNAME"))){
+                            newlist.add(j,list.get(i));
+                            newlist.remove(j+1);
+                        }else{
+                            continue;
+                        }
+                    }
                 }
-            }else{
-                Map m =  new HashMap();
-                m.put("COMPANYNAME","唐钢");
-                m.put("PZGL",0);
-                m.put("JSL",0);
-                m.put("BILI","0%");
-                Map m11 =  new HashMap();
-                m11.put("COMPANYNAME","邯钢");
-                m11.put("PZGL",0);
-                m11.put("JSL",0);
-                m11.put("BILI","0%");
-                Map m1 =  new HashMap();
-                m1.put("COMPANYNAME","宣钢");
-                m1.put("PZGL",0);
-                m1.put("JSL",0);
-                m1.put("BILI","0%");
-                Map m2 =  new HashMap();
-                m2.put("COMPANYNAME","承钢");
-                m2.put("PZGL",0);
-                m2.put("JSL",0);
-                m2.put("BILI","0%");
-                Map m3 =  new HashMap();
-                m3.put("COMPANYNAME","舞钢");
-                m3.put("PZGL",0);
-                m3.put("JSL",0);
-                m3.put("BILI","0%");
-                Map m4 =  new HashMap();
-                m4.put("COMPANYNAME","石钢");
-                m4.put("PZGL",0);
-                m4.put("JSL",0);
-                m4.put("BILI","0%");
-                Map m5 =  new HashMap();
-                m5.put("COMPANYNAME","衡板");
-                m5.put("PZGL",0);
-                m5.put("JSL",0);
-                m5.put("BILI","0%");
-                newlist.add(m);
-                newlist.add(m11);
-                newlist.add(m1);
-                newlist.add(m2);
-                newlist.add(m3);
-                newlist.add(m4);
-                newlist.add(m5);
+                return newlist;
             }
             return newlist;
         }
