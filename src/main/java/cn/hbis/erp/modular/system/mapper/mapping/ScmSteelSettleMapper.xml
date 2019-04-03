@@ -22,7 +22,7 @@
         sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt; = to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) sypzb,
         (sum(case when fkdat &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
-        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd') and fkdat &lt;= to_date (#{endagainTime},'yyyy-mm-dd') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))hb
         from (SELECT
         distinct decode(settle.company_id,
@@ -165,7 +165,7 @@
         sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt; = to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) sypzb,
         (sum(case when fkdat &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
-        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))hb
         from (SELECT
         distinct
