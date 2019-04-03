@@ -569,8 +569,8 @@
    </select>
 
     <select id="getzgsjswc" resultType="map">
-       = select companyname name ,sum(fkimg) jsl,sum(mb) mb，sum(fkimg)/sum(mb) wcl from (
-        select* from
+        select companyname name ,sum(fkimg) jsl,sum(mb) mb,sum(fkimg)/sum(mb) wcl from (
+        select * from
         (SELECT decode(settle.company_id,
         9580,
         '唐钢',

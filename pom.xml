@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>cn.hbis</groupId>
-    <artifactId>hbis</artifactId>
+    <artifactId>ROOT</artifactId>
     <version>1.0.0</version>
 
     <name>hbis-admin</name>
