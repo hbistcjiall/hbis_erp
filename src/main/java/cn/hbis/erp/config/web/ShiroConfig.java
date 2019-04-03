@@ -128,7 +128,7 @@ public class ShiroConfig {
         /**
          * 登陆成功后跳转的url
          */
-        shiroFilter.setSuccessUrl("/");
+        shiroFilter.setSuccessUrl("/index.html");
         /**
          * 没有权限跳转的url
          */
