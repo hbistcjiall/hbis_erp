@@ -1,5 +1,8 @@
 package cn.hbis.erp.modular.system.controller;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import cn.hbis.erp.modular.system.entity.ScmSteelSettle;
 import cn.hbis.erp.modular.system.service.ScmSteelSettleService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -36,9 +39,25 @@ public class ScmSteelSettleController {
     })
     @PostMapping("getcx")
     @Async
-    public  List<ScmSteelSettle>  getcx(String dw,String cx,String startTime,String endTime) {
-        String startagainTime="2019-01-01";
-        String endagainTime="2019-02-01";
+    public  List<ScmSteelSettle>  getcx(String dw,String cx,String startTime,String endTime) throws ParseException {
+
+
+        SimpleDateFormat sDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date=sDateFormat.parse("2019-03-01 00:00:00");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MONTH, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        String firstDay = sDateFormat.format(calendar.getTime());
+        Calendar calendar2 = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar2.set(Calendar.DAY_OF_MONTH, 1);
+        calendar2.add(Calendar.DATE, -1);
+        String lastDay = sDateFormat.format(calendar.getTime());
+        System.out.println(firstDay);
+        System.out.println(lastDay);
+        String startagainTime=firstDay;
+        String endagainTime=lastDay;
         List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx,startTime,endTime,startagainTime,endagainTime);
         return getcx ;
     }
@@ -51,9 +70,24 @@ public class ScmSteelSettleController {
     })
     @PostMapping("getpz")
     @Async
-    public  List<ScmSteelSettle>  getpz(String pz,String startTime,String endTime) {
-        String startagainTime="2019-01-01";
-        String endagainTime="2019-02-01";
+    public  List<ScmSteelSettle>  getpz(String pz,String startTime,String endTime) throws ParseException {
+        SimpleDateFormat sDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date=sDateFormat.parse("2019-03-01 00:00:00");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MONTH, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        String firstDay = sDateFormat.format(calendar.getTime());
+        Calendar calendar2 = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar2.set(Calendar.DAY_OF_MONTH, 1);
+        calendar2.add(Calendar.DATE, -1);
+        String lastDay = sDateFormat.format(calendar.getTime());
+        System.out.println(firstDay);
+        System.out.println(lastDay);
+        String startagainTime=firstDay;
+        String endagainTime=lastDay;
+
         List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz,startTime,endTime,startagainTime,endagainTime);
         return getpz;
     }

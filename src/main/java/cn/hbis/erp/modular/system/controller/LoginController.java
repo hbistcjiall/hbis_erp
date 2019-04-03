@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,12 @@ public class LoginController extends BaseController {
      *
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ModelAndView home() {
+        ModelAndView mav=new ModelAndView();
+        mav.setViewName("index.html");
+        return mav;
+    }
+
     public Map index() {
         Map map = new HashMap<>();
         //获取当前用户角色列表
