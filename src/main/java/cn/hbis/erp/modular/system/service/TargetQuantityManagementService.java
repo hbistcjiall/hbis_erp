@@ -9,10 +9,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityManagementMapper, TargetQuantityManagement> {
@@ -188,8 +185,11 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         //第一个
         @Async
         public List<Map> salesmain( String name){
-            List<Map> list = targetManagementMapper.salesmain(name);
-            List<Map> su = targetManagementMapper.salesmainsum(name);
+            Calendar cale = null;
+            cale = Calendar.getInstance();
+            int month = cale.get(Calendar.MONTH) + 1;
+            List<Map> list = targetManagementMapper.salesmain(name,String.valueOf(month));
+            List<Map> su = targetManagementMapper.salesmainsum(name,String.valueOf(month));
             String  sum = "0";
             if(su.size()>0){
             Map map = su.get(0);
@@ -244,7 +244,10 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         //第二个
         @Async
         public List<Map> mills(String name) {
-            List<Map> sum = targetManagementMapper.Steelmillssum(name);
+            Calendar cale = null;
+            cale = Calendar.getInstance();
+            int month = cale.get(Calendar.MONTH) + 1;
+            List<Map> sum = targetManagementMapper.Steelmillssum(name,String.valueOf(month));
             List<Map> newlist = new ArrayList<Map>();
             double jhs = 0;
             double xhs = 0;
@@ -307,7 +310,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             newlist.add(m4);
             newlist.add(m5);
             newlist.add(m6);
-            List<Map> list = targetManagementMapper.Steelmillsplan(name);
+            List<Map> list = targetManagementMapper.Steelmillsplan(name,String.valueOf(month));
             if (list.size() > 0) {
                 for (int j=1;j<newlist.size();j++){
                     for (int i = 0; i < list.size(); i++) {
@@ -329,11 +332,13 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         //第三个
         @Async
         public List<Map> typesa(String name){
-            List<Map> sum = targetManagementMapper.typessum(name);
+            Calendar cale = null;
+            cale = Calendar.getInstance();
+            int month = cale.get(Calendar.MONTH) + 1;
+            List<Map> sum = targetManagementMapper.typessum(name,String.valueOf(month));
             Map map = sum.get(0);
             String  jsl = "0";
             String pzgl = "0";
-            String  nmb = "0";
             if(map!=null) {
                 if (map.get("JSL") != null) {
                     jsl = map.get("JSL").toString();
@@ -341,15 +346,12 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 if (map.get("PZGL") != null) {
                     pzgl = map.get("PZGL").toString();
                 }
-                if (map.get("NMB") != null) {
-                    nmb = map.get("NMB").toString();
-                }
+
             }
-            double a = Double.parseDouble(nmb);
             double b=Double.parseDouble(jsl);
             double c=Double.parseDouble(pzgl);
             String result = "0";
-            double bi = a/b*100;
+            double bi = c/b*100;
             if(bi>0){
             result = String.valueOf(bi).substring(0,4);}
 
@@ -360,7 +362,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             type.put("BILI",result+"%");
             List<Map> newlist = new ArrayList<>();
             newlist.add(type);
-            List<Map> list = targetManagementMapper.typeselect(name);
+            List<Map> list = targetManagementMapper.typeselect(name,String.valueOf(month));
             if(list.size()>0) {
                 for (int i = 0; i < list.size(); i++) {
                     Map m1 = list.get(i);
@@ -407,18 +409,17 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         //第四个
         @Async
         public List<Map> settl(String name){
-            List<Map> sum = targetManagementMapper.Steelsum(name);
+            Calendar cale = null;
+            cale = Calendar.getInstance();
+            int month = cale.get(Calendar.MONTH) + 1;
+            List<Map> sum = targetManagementMapper.Steelsum(name,String.valueOf(month));
             Map map = sum.get(0);
-            double jhs = 0.0;
             double jsls = 0.0;
             double pzgls=0.0;
             double bi = 0;
-            String  jh ="";
             String jsl ="";
             String   pzgl ="";
-            if(!map.get("JH").equals("null")){
-                jh = map.get("JH").toString();
-            }
+
             if(!map.get("JSL").equals("null")){
                 jsl=map.get("JSL").toString();
             }
@@ -427,17 +428,12 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             }else {
                 pzgl="0";
             }
-            if(jh!=null&&!jh.equals("null")&&!jh.equals("")){
-                jh =  map.get("JH").toString();
-            }
+
             if(jsl!=null&&!jsl.equals("null")&&!jsl.equals("")){
                 jsl =  map.get("JSL").toString();
             }
             if(pzgl!=null&&!pzgl.equals("null")&&!pzgl.equals("")){
                 pzgl =  map.get("PZGL").toString();
-            }
-            if (jh != null && !jh.equals("") &&!jh.equals("null")) {
-                jhs = Double.parseDouble(jh);
             }
             if (jsl != null && !jsl.equals("") && !jsl.equals("null")) {
                 jsls = Double.parseDouble(jsl);
@@ -445,8 +441,8 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             if (pzgl != null && !pzgl.equals("") && !pzgl.equals("null")) {
                 pzgls = Double.parseDouble(pzgl);
             }
-            if(jhs/jsls>0){
-                bi = jhs/jsls;
+            if(pzgls/jsls>0){
+                bi = pzgls/jsls;
             }
 
             String result;
@@ -460,7 +456,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             type.put("PZGL",pzgls);
             type.put("JSL",jsls);
             type.put("BILI",result+"%");
-            List<Map> list = targetManagementMapper.Steellist(name);
+            List<Map> list = targetManagementMapper.Steellist(name,String.valueOf(month));
             List<Map> newlist =new ArrayList<>();
             newlist.add(type);
             Map m =  new HashMap();
