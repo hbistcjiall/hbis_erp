@@ -118,11 +118,11 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
     public List<Allocation> selCompany(String date){
         String month = "";
         String year = "";
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
         if (ToolUtil.isEmpty(date)){
             date = df.format(new Date()).toString();
         }
-        month = date.substring(5,7);
+        month = date.substring(4,6);
         year = date.substring(0,4);
 
         List<Allocation> lists = new ArrayList<>();
@@ -157,13 +157,26 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
     public List<Allocation> selByCompany(String date,String companyName){
         String month = "";
         String year = "";
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
         if (ToolUtil.isEmpty(date)){
             date = df.format(new Date()).toString();
         }
-        month = date.substring(5,7);
+        month = date.substring(4,6);
         year = date.substring(0,4);
 
+        if(ToolUtil.isNotEmpty(companyName)){
+            if (companyName.equals("唐钢")){
+                companyName = "9580";
+            }else if (companyName.equals("邯钢")){
+                companyName = "9727";
+            }else if (companyName.equals("宣钢")){
+                companyName = "9193";
+            }else if (companyName.equals("承钢")){
+                companyName = "9196";
+            }else if (companyName.equals("舞钢")){
+                companyName = "1932";
+            }
+        }
         List<Allocation> lists = new ArrayList<>();
         List<Allocation> list = crmResourceAllocationMapper.selByCompany(date,month,year,companyName);
         Allocation allocation = null;

@@ -879,130 +879,143 @@
     </select>
 
     <select id="getcxhtjd" resultType="map">
-  select dName,
-       case  when hjhtl is null then 0 else hjhtl end hjhtl,
-       case  when hjjhl is null then 0 else hjjhl end hjjhl,
-       case when hjjhl =0 then 0 when hjhtl / hjjhl is null then 0 else
+      select dName,
+           case  when hjhtl is null then 0 else hjhtl end hjhtl,
+           case  when hjjhl is null then 0 else hjjhl end hjjhl,
+           case when hjjhl =0 then 0 when hjhtl / hjjhl is null then 0 else
 
-        ROUND (
-        hjhtl / hjjhl * 100,
-        2
+            ROUND (
+            hjhtl / hjjhl * 100,
+            2
 
-        )
-        END AS schedulehj,
-        case  when zygshtl is null then 0 else zygshtl end zygshtl,
-        case  when zyfgshtl is null then 0 else zyfgshtl end zyfgshtl,
-         case  when planNumxsz is null then 0 else planNumxsz end planNumxsz,
-       case when planNumxsz =0 then 0 when htlzgs/planNumxsz is null then 0 else
+            )
+            END AS schedulehj,
+            case  when zygshtl is null then 0 else zygshtl end zygshtl,
+            case  when zyfgshtl is null then 0 else zyfgshtl end zyfgshtl,
+             case  when planNumxsz is null then 0 else planNumxsz end planNumxsz,
+           case when planNumxsz =0 then 0 when htlzgs/planNumxsz is null then 0 else
 
-        ROUND (
-        htlzgs/planNumxsz * 100,
-        2
-        )
+            ROUND (
+            htlzgs/planNumxsz * 100,
+            2
+            )
 
-        END AS schedulexsz,
-        case when htlzgs-planNumxsz is null then 0 else htlzgs-planNumxsz end jdxsz,
-        case  when zgshtl is null then 0 else zgshtl end zgshtl,
-         case  when planNumzgs is null then 0 else planNumzgs end planNumzgs,
-       case when planNumzgs =0 then 0 when htlzgs/planNumzgs is null then 0 else
+            END AS schedulexsz,
+            case when htlzgs-planNumxsz is null then 0 else htlzgs-planNumxsz end jdxsz,
+            case  when zgshtl is null then 0 else zgshtl end zgshtl,
+             case  when planNumzgs is null then 0 else planNumzgs end planNumzgs,
+           case when planNumzgs =0 then 0 when htlzgs/planNumzgs is null then 0 else
 
-        ROUND (
-        htlzgs/planNumzgs * 100,
-        2
-        )
+            ROUND (
+            htlzgs/planNumzgs * 100,
+            2
+            )
 
-        END AS schedulezgs,
-        case when zgshtl-planNumzgs is null then 0 else htlzgs-planNumzgs end jdzgs,
-        case  when ckhtl is null then 0 else ckhtl end ckhtl,
-         case  when planNumck is null then 0 else planNumck end planNumck,
-       case when planNumck =0 then 0 when ckhtl/planNumck is null then 0 else
+            END AS schedulezgs,
+            case when zgshtl-planNumzgs is null then 0 else htlzgs-planNumzgs end jdzgs,
+            case  when ckhtl is null then 0 else ckhtl end ckhtl,
+             case  when planNumck is null then 0 else planNumck end planNumck,
+           case when planNumck =0 then 0 when ckhtl/planNumck is null then 0 else
 
-        ROUND (
-        ckhtl/planNumck * 100,
-        2
-        )
+            ROUND (
+            ckhtl/planNumck * 100,
+            2
+            )
 
-        END AS scheduleck,
-        case when ckhtl-planNumck is null then 0 else ckhtl-planNumck end jdck
-  from (select distinct ht.dName dName,
-                        sum(ht.orderMount) hjhtl,
-                        hjjhl,
-                        sum(case
-                              when ht.saleBody = '专业公司' or ht.saleBody = '分公司' then
+            END AS scheduleck,
+            case when ckhtl-planNumck is null then 0 else ckhtl-planNumck end jdck
+      from (select distinct ht.dName dName,
+                            sum(ht.orderMount) hjhtl,
+                            hjjhl,
+                            sum(case
+                                  when ht.saleBody = '专业公司' or ht.saleBody = '分公司' then
+                                   ht.orderMount
+                                end) htlzgs,
+                            sum(case
+                                  when ht.saleBody = '专业公司' then
+                                   ht.orderMount
+                                end) zygshtl,
+                            sum(case
+                                   when ht.saleBody = '分公司' then
+                                    ht.orderMount
+                                 end) zyfgshtl, sum(case
+                              when ht.saleBody = '技术中心' or
+                                   ht.saleBody = '事业部' or
+                                   ht.saleBody = '子公司' then
                                ht.orderMount
-                            end) htlzgs,
-                        sum(case
-                              when ht.saleBody = '专业公司' then
-                               ht.orderMount
-                            end) zygshtl,
-                        sum(case
-                               when ht.saleBody = '分公司' then
-                                ht.orderMount
-                             end) zyfgshtl, sum(case
-                          when ht.saleBody = '技术中心' or
-                               ht.saleBody = '事业部' or
-                               ht.saleBody = '子公司' then
-                           ht.orderMount
-                        end) zgshtl,
-                        sum(case
-                              when ht.saleBody = '出口' then
-                               ht.orderMount
-                            end) ckhtl,
-                        jh.planNumxsz planNumxsz,
-                        jh.planNumzgs planNumzgs,
-                        jh.planNumck planNumck
+                            end) zgshtl,
+                            sum(case
+                                  when ht.saleBody = '出口' then
+                                   ht.orderMount
+                                end) ckhtl,
+                            jh.planNumxsz planNumxsz,
+                            jh.planNumzgs planNumzgs,
+                            jh.planNumck planNumck
 
-          from (SELECT distinct DATA.NAME         dName,
-                                xsztdzb.sale_body saleBody,
-                                sso.ORDER_MOUNT   orderMount
-                  from scm_delivery_detail detail
-                  JOIN crm_resource_data DATA
-                    ON DATA.full_name = detail.ext
-                   AND DATA.company_id = detail.company_id
-                   AND DATA . TYPE = 3
-                   AND DATA.parent_name IS NOT NULL
-                  join scm_sale_order sso
-                    on detail.company_id = sso.company_id
-                   and detail.ORDER_NO = sso.order_no
-                   and detail.ORDER_ITEM = sso.order_row
-                  left join (select a.*
-                              from price_salebody_relation a
-                             where a.is_delete = 0) xsztdzb
-                    ON sso.company_id = xsztdzb.company_id
-                   AND sso.sale_body = xsztdzb.sale_body_des
+              from (SELECT distinct DATA.NAME         dName,
+                                    xsztdzb.sale_body saleBody,
+                                    sso.ORDER_MOUNT   orderMount
+                      from scm_delivery_detail detail
+                      JOIN crm_resource_data DATA
+                        ON DATA.full_name = detail.ext
+                       AND DATA.company_id = detail.company_id
+                       AND DATA . TYPE = 3
+                       AND DATA.parent_name IS NOT NULL
+                      join scm_sale_order sso
+                        on detail.company_id = sso.company_id
+                       and detail.ORDER_NO = sso.order_no
+                       and detail.ORDER_ITEM = sso.order_row
+                      left join (select a.*
+                                  from price_salebody_relation a
+                                 where a.is_delete = 0) xsztdzb
+                        ON sso.company_id = xsztdzb.company_id
+                       AND sso.sale_body = xsztdzb.sale_body_des
 
-                 WHERE 1 = 1
-                   and instr(sso.dj_date, #{date}) > 0
-                   AND (detail.delivery_delete != 'X' OR
-                       detail.delivery_delete IS NULL)
-                    and DATA.name = #{cxName}
-                ) ht
-          left join (select cx_NAME,
-                           sum(planNum) hjjhl,
-                           sum(case
-                                 when fl_name = '销售总公司' then
-                                  planNum
-                               end) planNumxsz,
-                           sum(case
-                                 when fl_name = '出口' then
-                                  planNum
-                               end) planNumck,
-                           sum(case
-                                 when fl_name = '子公司其他' or fl_name = '技术中心、事业部' then
-                                  planNum
-                               end) planNumzgs
-                      from (SELECT cx_NAME, MAR_MONTH planNum, fl_name
-                              FROM crm_resource_allocation
-                             where year = #{year} )
-                     group by cx_NAME) jh
-            on ht.dName = jh.cx_name
-         group by ht.dName, hjjhl, jh.planNumxsz, jh.planNumzgs, jh.planNumck)
+                     WHERE 1 = 1
+                       and instr(sso.dj_date, #{date}) > 0
+                       AND (detail.delivery_delete != 'X' OR
+                           detail.delivery_delete IS NULL)
+                        and DATA.name = #{cxName}
+                        and sso.order_type_describe not in
+                        (select distinct cfd.data_name
+                        from crm_filter_data cfd
+                        where cfd.data_type = '2'
+                        and cfd.status = '0'
+                        and cfd.company_id = sso.company_id)
+                        and sso.saler_name not in
+                        (select cfd.data_name
+                        from crm_filter_data cfd
+                        where cfd.data_type = '1'
+                        and cfd.status = '0'
+                        and cfd.company_id = sso.company_id)
 
-
-
-
+                        AND sso.sale_group NOT IN
+                        (SELECT cfd.data_name
+                        FROM crm_filter_data cfd
+                        WHERE cfd.company_id = sso.company_id
+                        AND cfd.data_type = 9
+                        AND cfd.status = 0)
+                    ) ht
+              left join (select cx_NAME,
+                               sum(planNum) hjjhl,
+                               sum(case
+                                     when fl_name = '销售总公司' then
+                                      planNum
+                                   end) planNumxsz,
+                               sum(case
+                                     when fl_name = '出口' then
+                                      planNum
+                                   end) planNumck,
+                               sum(case
+                                     when fl_name = '子公司其他' or fl_name = '技术中心、事业部' then
+                                      planNum
+                                   end) planNumzgs
+                          from (SELECT cx_NAME, MAR_MONTH planNum, fl_name
+                                  FROM crm_resource_allocation
+                                 where year = #{year} )
+                         group by cx_NAME) jh
+                on ht.dName = jh.cx_name
+             group by ht.dName, hjjhl, jh.planNumxsz, jh.planNumzgs, jh.planNumck)
     </select>
-
-
 
 </mapper>
