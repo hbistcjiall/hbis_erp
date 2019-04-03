@@ -903,7 +903,8 @@
                                end) planNumzgs
                       from (SELECT distinct PZ_NAME, MAR_MONTH planNum, fl_name
                               FROM crm_resource_allocation
-                             where year = #{year})
+                             where year = #{year}
+                              and fl_Name <![CDATA[ != ]]> '品种钢')
                      group by PZ_NAME) jh
             on ht.pzName = jh.pzName
         <if test="pzName != null and pzName !=''">
@@ -1047,7 +1048,8 @@
                                    end) planNumzgs
                           from (SELECT cx_NAME, MAR_MONTH planNum, fl_name
                                   FROM crm_resource_allocation
-                                 where year = #{year} )
+                                 where year = #{year}
+                                 and fl_Name <![CDATA[ != ]]> '品种钢')
                          group by cx_NAME) jh
                 on ht.dName = jh.cx_name
              group by ht.dName, hjjhl, jh.planNumxsz, jh.planNumzgs, jh.planNumck)
