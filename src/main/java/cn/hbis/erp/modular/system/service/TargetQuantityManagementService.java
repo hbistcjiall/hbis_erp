@@ -186,10 +186,12 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         @Async
         public List<Map> salesmain( String name){
             Calendar cale = null;
+
             cale = Calendar.getInstance();
+            int year =cale.get(Calendar.YEAR);
             int month = cale.get(Calendar.MONTH) + 1;
-            List<Map> list = targetManagementMapper.salesmain(name,String.valueOf(month));
-            List<Map> su = targetManagementMapper.salesmainsum(name,String.valueOf(month));
+            List<Map> list = targetManagementMapper.salesmain(name,String.valueOf(month),String.valueOf(year));
+            List<Map> su = targetManagementMapper.salesmainsum(name,String.valueOf(month),String.valueOf(year));
             String  sum = "0";
             if(su.size()>0){
             Map map = su.get(0);
@@ -246,8 +248,9 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         public List<Map> mills(String name) {
             Calendar cale = null;
             cale = Calendar.getInstance();
+            int year =cale.get(Calendar.YEAR);
             int month = cale.get(Calendar.MONTH) + 1;
-            List<Map> sum = targetManagementMapper.Steelmillssum(name,String.valueOf(month));
+            List<Map> sum = targetManagementMapper.Steelmillssum(name,String.valueOf(month),String.valueOf(year));
             List<Map> newlist = new ArrayList<Map>();
             double jhs = 0;
             double xhs = 0;
@@ -310,7 +313,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             newlist.add(m4);
             newlist.add(m5);
             newlist.add(m6);
-            List<Map> list = targetManagementMapper.Steelmillsplan(name,String.valueOf(month));
+            List<Map> list = targetManagementMapper.Steelmillsplan(name,String.valueOf(month),String.valueOf(year));
             if (list.size() > 0) {
                 for (int j=1;j<newlist.size();j++){
                     for (int i = 0; i < list.size(); i++) {
@@ -334,8 +337,9 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         public List<Map> typesa(String name){
             Calendar cale = null;
             cale = Calendar.getInstance();
+            int year =cale.get(Calendar.YEAR);
             int month = cale.get(Calendar.MONTH) + 1;
-            List<Map> sum = targetManagementMapper.typessum(name,String.valueOf(month));
+            List<Map> sum = targetManagementMapper.typessum(name,String.valueOf(month),String.valueOf(year));
             Map map = sum.get(0);
             String  jsl = "0";
             String pzgl = "0";
@@ -362,7 +366,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             type.put("BILI",result+"%");
             List<Map> newlist = new ArrayList<>();
             newlist.add(type);
-            List<Map> list = targetManagementMapper.typeselect(name,String.valueOf(month));
+            List<Map> list = targetManagementMapper.typeselect(name,String.valueOf(month),String.valueOf(year));
             if(list.size()>0) {
                 for (int i = 0; i < list.size(); i++) {
                     Map m1 = list.get(i);
@@ -411,8 +415,9 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         public List<Map> settl(String name){
             Calendar cale = null;
             cale = Calendar.getInstance();
+            int year =cale.get(Calendar.YEAR);
             int month = cale.get(Calendar.MONTH) + 1;
-            List<Map> sum = targetManagementMapper.Steelsum(name,String.valueOf(month));
+            List<Map> sum = targetManagementMapper.Steelsum(name,String.valueOf(month),String.valueOf(year));
             Map map = sum.get(0);
             double jsls = 0.0;
             double pzgls=0.0;
@@ -456,7 +461,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             type.put("PZGL",pzgls);
             type.put("JSL",jsls);
             type.put("BILI",result+"%");
-            List<Map> list = targetManagementMapper.Steellist(name,String.valueOf(month));
+            List<Map> list = targetManagementMapper.Steellist(name,String.valueOf(month),String.valueOf(year));
             List<Map> newlist =new ArrayList<>();
             newlist.add(type);
             Map m =  new HashMap();

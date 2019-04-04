@@ -17,17 +17,20 @@ public interface TargetQuantityManagementMapper extends BaseMapper<TargetQuantit
      List<Map> getlist();
     List<Map> selectscaaccnuitList();
     List<Map>theList();
-    List<Map> typeselect(@Param("name") String name,@Param("month") String month);
-    List<Map> typessum(@Param("name") String name,@Param("month") String month);
 
-    List<Map>Steelmillsplan(@Param("name") String name,@Param("month") String month);
-    List<Map>Steelmillssum(@Param("name") String name,@Param("month") String month);
+    List<Map> salesmainsum(@Param("name") String name,@Param("month") String month ,@Param("year") String year );
+    List<Map> salesmain(@Param("name") String name,@Param("month") String month,@Param("year") String year);
 
-    List<Map> Steellist (@Param("name") String name,@Param("month") String month);
-    List<Map> Steelsum(@Param("name") String name,@Param("month") String month);
+    List<Map>Steelmillsplan(@Param("name") String name,@Param("month") String month,@Param("year") String year );
+    List<Map>Steelmillssum(@Param("name") String name,@Param("month") String month,@Param("year") String year );
 
-    List<Map> salesmainsum(@Param("name") String name,@Param("month") String month);
-    List<Map> salesmain(@Param("name") String name,@Param("month") String month);
+    List<Map> typeselect(@Param("name") String name,@Param("month") String month,@Param("year") String year);
+    List<Map> typessum(@Param("name") String name,@Param("month") String month,@Param("year") String year);
+
+    List<Map> Steellist (@Param("name") String name,@Param("month") String month,@Param("year") String year);
+    List<Map> Steelsum(@Param("name") String name,@Param("month") String month,@Param("year") String year);
+
+
 
 
 }
