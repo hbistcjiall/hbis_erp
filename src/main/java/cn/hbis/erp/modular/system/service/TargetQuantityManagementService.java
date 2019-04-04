@@ -186,7 +186,6 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         @Async
         public List<Map> salesmain( String name){
             Calendar cale = null;
-
             cale = Calendar.getInstance();
             int year =cale.get(Calendar.YEAR);
             int month = cale.get(Calendar.MONTH) + 1;
@@ -212,8 +211,11 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                     double mis = Double.parseDouble(mi);
                     double bi = mis / sums;
                     if(bi>0){
-                        String result = String.valueOf(bi * 100).substring(0, 4);
-                        ma.put("BILI", result);
+                        String result = String.valueOf(bi * 100)+"00";
+                           String  results = result .substring(0, 4);
+
+                        ma.put("BILI", results);
+
                         newlist.add(ma);
                     }else{
                         ma.put("BILI", "0");
@@ -363,7 +365,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             type.put("NAME","总量");
             type.put("JSL",b);
             type.put("PZGL",c);
-            type.put("BILI",result+"%");
+            type.put("BILI",result);
             List<Map> newlist = new ArrayList<>();
             newlist.add(type);
             List<Map> list = targetManagementMapper.typeselect(name,String.valueOf(month),String.valueOf(year));
@@ -371,7 +373,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 for (int i = 0; i < list.size(); i++) {
                     Map m1 = list.get(i);
                     String bili = m1.get("BILI").toString();
-                    m1.put("BILI", bili + "%");
+                    m1.put("BILI", bili );
                     newlist.add(m1);
                 }
             }else{
@@ -379,27 +381,27 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 ma.put("NAME","热板");
                 ma.put("JSL",0);
                 ma.put("PZGL",0);
-                ma.put("BILI","0%");
+                ma.put("BILI",0);
                 Map ma1 = new HashMap();
                 ma1.put("NAME","冷板");
                 ma1.put("JSL",0);
                 ma1.put("PZGL",0);
-                ma1.put("BILI","0%");
+                ma1.put("BILI",0);
                 Map ma2 = new HashMap();
                 ma2.put("NAME","宽厚板");
                 ma2.put("JSL",0);
                 ma2.put("PZGL",0);
-                ma2.put("BILI","0%");
+                ma2.put("BILI",0);
                 Map ma3 = new HashMap();
                 ma3.put("NAME","棒线");
                 ma3.put("JSL",0);
                 ma3.put("PZGL",0);
-                ma3.put("BILI","0%");
+                ma3.put("BILI",0);
                 Map ma4 = new HashMap();
                 ma4.put("NAME","型带");
                 ma4.put("JSL",0);
                 ma4.put("PZGL",0);
-                ma4.put("BILI","0%");
+                ma4.put("BILI",0);
                 newlist.add(ma);
                 newlist.add(ma1);
                 newlist.add(ma2);
@@ -422,45 +424,47 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             double jsls = 0.0;
             double pzgls=0.0;
             double bi = 0;
+            String result="0";
             String jsl ="";
             String   pzgl ="";
+            if(map !=null) {
+                if (!map.get("JSL").equals("null")) {
+                    jsl = map.get("JSL").toString();
+                }
+                if (!map.get("PZGL").equals("null") && map.get("PZGL") != null) {
+                    pzgl = map.get("PZGL").toString();
+                } else {
+                    pzgl = "0";
+                }
 
-            if(!map.get("JSL").equals("null")){
-                jsl=map.get("JSL").toString();
-            }
-            if(!map.get("PZGL").equals("null")&&map.get("PZGL")!=null){
-                pzgl =  map.get("PZGL").toString();
-            }else {
-                pzgl="0";
-            }
+                if (jsl != null && !jsl.equals("null") && !jsl.equals("")) {
+                    jsl = map.get("JSL").toString();
+                }
+                if (pzgl != null && !pzgl.equals("null") && !pzgl.equals("")) {
+                    pzgl = map.get("PZGL").toString();
+                }
+                if (jsl != null && !jsl.equals("") && !jsl.equals("null")) {
+                    jsls = Double.parseDouble(jsl);
+                }
+                if (pzgl != null && !pzgl.equals("") && !pzgl.equals("null")) {
+                    pzgls = Double.parseDouble(pzgl);
+                }
+                if (pzgls / jsls > 0) {
+                    bi = pzgls / jsls;
+                }
 
-            if(jsl!=null&&!jsl.equals("null")&&!jsl.equals("")){
-                jsl =  map.get("JSL").toString();
-            }
-            if(pzgl!=null&&!pzgl.equals("null")&&!pzgl.equals("")){
-                pzgl =  map.get("PZGL").toString();
-            }
-            if (jsl != null && !jsl.equals("") && !jsl.equals("null")) {
-                jsls = Double.parseDouble(jsl);
-            }
-            if (pzgl != null && !pzgl.equals("") && !pzgl.equals("null")) {
-                pzgls = Double.parseDouble(pzgl);
-            }
-            if(pzgls/jsls>0){
-                bi = pzgls/jsls;
-            }
 
-            String result;
-            if(bi>0) {
-                result = String.valueOf(bi * 100).substring(0, 4);
-            }else{
-                result = String.valueOf(bi);
+                if (bi > 0) {
+                    result = String.valueOf(bi * 100).substring(0, 4);
+                } else {
+                    result = String.valueOf(bi);
+                }
             }
             Map type =  new HashMap();
             type.put("COMPANYNAME","集团");
             type.put("PZGL",pzgls);
             type.put("JSL",jsls);
-            type.put("BILI",result+"%");
+            type.put("BILI",result);
             List<Map> list = targetManagementMapper.Steellist(name,String.valueOf(month),String.valueOf(year));
             List<Map> newlist =new ArrayList<>();
             newlist.add(type);

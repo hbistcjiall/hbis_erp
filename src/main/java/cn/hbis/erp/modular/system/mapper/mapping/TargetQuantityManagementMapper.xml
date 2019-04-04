@@ -26,771 +26,249 @@
 
         </if>
     </select>
-	<select id="getlist" resultType="map">
+    <select id="getlist" resultType="map">
 		select sa.ACCOUNTABILITY_UNIT_CODE code,sa.ACCOUNTABILITY_UNIT_NAME NAME
 		from SCM_ACCOUNTABILITY_UNIT_MANAGE  sa
 		WHERE sa.DELETESTATUS = '0'
 	</select>
-	<select id="selectscaaccnuitList" resultType="map">
+    <select id="selectscaaccnuitList" resultType="map">
         select ACCOUNTABILITY_UNIT_ID AS ID,ACCOUNTABILITY_UNIT_CODE AS CODE,ACCOUNTABILITY_UNIT_NAME AS "NAME"
         from SCM_ACCOUNTABILITY_UNIT_MANAGE
         where DELETESTATUS = '0'
     </select>
-	<select id="theList" resultType="map">
+    <select id="theList" resultType="map">
         select RESPONSIBILITY_UNIT AS CODE
         from SCM_TARGET_QUANTITY_MANAGEMENT
         where DELETESTATUS = '0' ORDER BY RESPONSIBILITY_UNIT
     </select>
-	<!-- 一 -->
-	<select id="salesmainsum" resultType="map">
-		SELECT  "SUM"(zyfkimg) zyfkimg from
-		(
-		SELECT a.FL_name companyname,NVL("SUM"(JHL),0) zyfkimg from
-		( select *
-		from (select '1' yf,year || '1月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JAN_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '2' yf,year || '2月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(FEB_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '3' yf,year || '3月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(MAR_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '4' yf,year || '4月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(APR_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '5' yf,year || '5月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(MAY_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '6' yf,year || '6月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JUN_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '7' yf,year || '7月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JUL_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '8' yf,year || '8月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(AUG_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '9' yf,year || '9月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(SEP_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '10' yf,year || '10月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(OCT_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '11' yf,year || '11月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(NOV_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '12' yf,year || '12月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(DEC_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name) a
-		WHERE rq like #{year}||'%' and yf = 3
-		<if test="name != null and name !=''">
-			and a.pz=#{name}
-		</if>
-		ORDER BY    fl_name , cx ,
-		"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
-		where a.FL_Name ='内贸' or  a.FL_Name ='出口' or a.FL_Name ='技术中心、事业部' or a.FL_Name ='销售总公司'
+    <!-- 一 -->
+    <select id="salesmainsum" resultType="map">
+        SELECT "SUM"(zyfkimg) zyfkimg from
+        (
+        SELECT a.FL_name companyname,NVL("SUM"(JHL),0) zyfkimg from
+        ( select *
+        from (select '1' yf,year || '1月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JAN_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '2' yf,year || '2月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(FEB_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '3' yf,year || '3月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(MAR_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '4' yf,year || '4月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(APR_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '5' yf,year || '5月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(MAY_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '6' yf,year || '6月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JUN_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '7' yf,year || '7月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JUL_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '8' yf,year || '8月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(AUG_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '9' yf,year || '9月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(SEP_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '10' yf,year || '10月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(OCT_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '11' yf,year || '11月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(NOV_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '12' yf,year || '12月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(DEC_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name) a
+        WHERE rq like #{year}||'%' and yf = 3
+        <if test="name != null and name !=''">
+            and a.pz=#{name}
+        </if>
+        ORDER BY fl_name , cx ,
+        "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
+        where a.FL_Name ='内贸' or a.FL_Name ='出口' or a.FL_Name ='技术中心、事业部' or a.FL_Name ='销售总公司'
 
-		GROUP BY a.FL_NAME
+        GROUP BY a.FL_NAME
 
-		)
+        )
 
-	</select>
-	<select id="salesmain" resultType="map">
-		SELECT a.FL_name companyname,NVL("SUM"(JHL),0) zyfkimg from
-		( select *
-		from (select '1' yf,year || '1月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JAN_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '2' yf,year || '2月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(FEB_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '3' yf,year || '3月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(MAR_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '4' yf,year || '4月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(APR_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '5' yf,year || '5月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(MAY_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '6' yf,year || '6月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JUN_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '7' yf,year || '7月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JUL_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '8' yf,year || '8月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(AUG_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '9' yf,year || '9月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(SEP_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '10' yf,year || '10月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(OCT_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '11' yf,year || '11月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(NOV_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '12' yf,year || '12月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(DEC_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name) a
-		WHERE rq LIKE #{year}||'%' and
-		yf = 3
-		<if test="name != null and name !=''">
-			and a.pz=#{name}
-		</if>
-		ORDER BY    fl_name , cx ,
-		"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
-		where a.FL_Name ='内贸' or  a.FL_Name ='出口' or a.FL_Name ='技术中心、事业部' or a.FL_Name ='销售总公司'
+    </select>
+    <select id="salesmain" resultType="map">
+        SELECT a.FL_name companyname,NVL("SUM"(JHL),0) zyfkimg from
+        ( select *
+        from (select '1' yf,year || '1月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JAN_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '2' yf,year || '2月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(FEB_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '3' yf,year || '3月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(MAR_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '4' yf,year || '4月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(APR_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '5' yf,year || '5月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(MAY_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '6' yf,year || '6月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JUN_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '7' yf,year || '7月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JUL_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '8' yf,year || '8月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(AUG_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '9' yf,year || '9月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(SEP_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '10' yf,year || '10月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(OCT_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '11' yf,year || '11月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(NOV_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '12' yf,year || '12月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(DEC_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name) a
+        WHERE rq LIKE #{year}||'%' and
+        yf = 3
+        <if test="name != null and name !=''">
+            and a.pz=#{name}
+        </if>
+        ORDER BY fl_name , cx ,
+        "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
+        where a.FL_Name ='内贸' or a.FL_Name ='出口' or a.FL_Name ='技术中心、事业部' or a.FL_Name ='销售总公司'
 
-		GROUP BY a.FL_NAME
+        GROUP BY a.FL_NAME
 
-	</select>
-	<!-- 二 -->
-	<select id="Steelmillsplan" resultType="map">
-		SELECT  distinct "DECODE"(n.COMPANY_ID,9580,
-		'唐钢',
-		9727,
-		'邯钢',
-		9193,
-		'宣钢',
-		9196,
-		'承钢',
-		1932,
-		'舞钢',
-		8110,
-		'石钢',
-		8493,
-		'衡板',
-		7778,
-		'邯宝' ) companyname,"SUM"(m.xh) xh,"SUM"(m.jhl) jh from
-		( SELECT z.CX,x.XH,z.jhl from
-		(SELECT "SUM"(JHL) xh,cx from
-		( select *
-		from (select '1' yf,year || '1月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JAN_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '2' yf,year || '2月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(FEB_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '3' yf,year || '3月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(MAR_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '4' yf,year || '4月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(APR_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '5' yf,year || '5月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(MAY_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '6' yf,year || '6月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JUN_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '7' yf,year || '7月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JUL_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '8' yf,year || '8月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(AUG_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '9' yf,year || '9月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(SEP_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '10' yf,year || '10月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(OCT_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '11' yf,year || '11月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(NOV_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '12' yf,year || '12月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(DEC_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name) a
-		where rq like #{year}||'%' and yf = 3 and FL_name = '现货'
-		<if test="name != null and name !=''">
-			and a.pz=#{name}
-		</if>
-		ORDER BY    fl_name , cx ,
-		"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材'))
-		GROUP BY cx ) x
-		LEFT JOIN
-		(SELECT "SUM"(JHL) jhl,cx from
-		( select *
-		from (select '1' yf,year || '1月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JAN_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '2' yf,year || '2月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(FEB_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '3' yf,year || '3月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(MAR_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '4' yf,year || '4月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(APR_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '5' yf,year || '5月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(MAY_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '6' yf,year || '6月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JUN_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '7' yf,year || '7月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JUL_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '8' yf,year || '8月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(AUG_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '9' yf,year || '9月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(SEP_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '10' yf,year || '10月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(OCT_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '11' yf,year || '11月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(NOV_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '12' yf,year || '12月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(DEC_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name) a
-		where rq like #{year}||'%' and yf = 3
-		<if test="name != null and name !=''">
-			and a.pz=#{name}
-		</if>
-		ORDER BY    fl_name , cx ,
-		"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材'))
-		GROUP BY cx ) z
-		on z.Cx =x.CX  ) m
+    </select>
 
-		LEFT JOIN
-		(SELECT COMPANY_ID,cx_name from
-
-		(SELECT a.*,GP.COMPANY_ID from (
-		SELECT CRA.CX_NAME , CRA.PZ_NAME
-		from CRM_RESOURCE_ALLOCATION cra
-		GROUP BY cra.CX_NAME, CRA.PZ_NAME) a
-		LEFT JOIN SCM_VARIETY_TO_PT_GP gp
-		on gp.variety = a.PZ_name ) ) n
-		on n.CX_NAME = m.cx
-		GROUP BY n.COMPANY_ID
-		ORDER BY "DECODE"(n.COMPANY_ID,9580,
-		'唐钢',
-		9727,
-		'邯钢',
-		9193,
-		'宣钢',
-		9196,
-		'承钢',
-		1932,
-		'舞钢',
-		8110,
-		'石钢',
-		8493,
-		'衡板',
-		7778,
-		'邯宝' )
-
-	</select>
-	<select id="Steelmillssum" resultType="map">
-		SELECT "SUM"(xh) xh,"SUM"(jh) jh from
-		(
-		SELECT  distinct "DECODE"(n.COMPANY_ID,9580,
-		'唐钢',
-		9727,
-		'邯钢',
-		9193,
-		'宣钢',
-		9196,
-		'承钢',
-		1932,
-		'舞钢',
-		8110,
-		'石钢',
-		8493,
-		'衡板',
-		7778,
-		'邯宝' ) companyname,"SUM"(m.xh) xh,"SUM"(m.jhl) jh from
-		( SELECT z.CX,x.XH,z.jhl from
-		(SELECT "SUM"(JHL) xh,cx from
-		( select *
-		from (select '1' yf,year || '1月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JAN_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '2' yf,year || '2月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(FEB_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '3' yf,year || '3月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(MAR_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '4' yf,year || '4月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(APR_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '5' yf,year || '5月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(MAY_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '6' yf,year || '6月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JUN_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '7' yf,year || '7月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JUL_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '8' yf,year || '8月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(AUG_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '9' yf,year || '9月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(SEP_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '10' yf,year || '10月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(OCT_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '11' yf,year || '11月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(NOV_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '12' yf,year || '12月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(DEC_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name) a
-		where rq like #{year}||'%' and yf = 3 and FL_name = '现货'
-		<if test="name != null and name !=''">
-			and a.pz=#{name}
-		</if>
-		ORDER BY    fl_name , cx ,
-		"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材'))
-		GROUP BY cx ) x
-		LEFT JOIN
-		(SELECT "SUM"(JHL) jhl,cx from
-		( select *
-		from (select '1' yf,year || '1月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JAN_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '2' yf,year || '2月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(FEB_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '3' yf,year || '3月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(MAR_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '4' yf,year || '4月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(APR_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '5' yf,year || '5月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(MAY_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '6' yf,year || '6月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JUN_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '7' yf,year || '7月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(JUL_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '8' yf,year || '8月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(AUG_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '9' yf,year || '9月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(SEP_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '10' yf,year || '10月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(OCT_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '11' yf,year || '11月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(NOV_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name
-		union all
-		select '12' yf,year || '12月' rq,PZ_NAME pz,
-		cx_name cx,
-		fl_name,
-		sum(DEC_MONTH) jhl
-		from crm_resource_allocation
-		where STATUS = '0'
-		group by year, PZ_NAME, cx_name, fl_name) a
-		where rq like #{year}||'%' and yf = 3
-		<if test="name != null and name !=''">
-			and a.pz=#{name}
-		</if>
-		ORDER BY    fl_name , cx ,
-		"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材'))
-		GROUP BY cx ) z
-		on z.Cx =x.CX  ) m
-
-		LEFT JOIN
-		(SELECT COMPANY_ID,cx_name from
-
-		(SELECT a.*,GP.COMPANY_ID from (
-		SELECT CRA.CX_NAME , CRA.PZ_NAME
-		from CRM_RESOURCE_ALLOCATION cra
-		GROUP BY cra.CX_NAME, CRA.PZ_NAME) a
-		LEFT JOIN SCM_VARIETY_TO_PT_GP gp
-		on gp.variety = a.PZ_name ) ) n
-		on n.CX_NAME = m.cx
-		GROUP BY n.COMPANY_ID
-		ORDER BY "DECODE"(n.COMPANY_ID,9580,
-		'唐钢',
-		9727,
-		'邯钢',
-		9193,
-		'宣钢',
-		9196,
-		'承钢',
-		1932,
-		'舞钢',
-		8110,
-		'石钢',
-		8493,
-		'衡板',
-		7778,
-		'邯宝' )
-		)
-
-	</select>
-
-
-
-	<!--三-->
-	<select id="typeselect" resultType="map">
-		SELECT a.pz ,a.pzgl ,b.jsl ,"ROUND"(a.pzgl/b.jsl, 2)*100|| '%'  bili  from
+    <!--三-->
+    <select id="typeselect" resultType="map">
+		SELECT a.pz name,a.pzgl ,b.jsl ,"ROUND"(a.pzgl/b.jsl, 2)*100 bili  from
 (SELECT Pz, "SUM"(jhl) pzgl from
 (select *
   from (select '1' yf,year || '1月' rq,PZ_NAME pz,
@@ -991,7 +469,7 @@ select *
           from crm_resource_allocation
             where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name) a
-					where rq LIKE #{year}||'%' AND yf = 3 AND FL_name!= '品种钢'
+					where rq LIKE #{year}||'%' AND yf = 3
         ORDER BY    fl_name , cx ,
         "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材')
 		)
@@ -1000,11 +478,10 @@ select *
 
 
 	</select>
-	<select id="typessum" resultType="map">
+    <select id="typessum" resultType="map">
 		SELECT sum(pzgl) pzgl,"SUM"(jsl) jsl, "ROUND"((sum(pzgl)/"SUM"(jsl))*100, 2)|| '%'  bili
 		from
-		(
-		SELECT a.pz ,a.pzgl ,b.jsl ,"ROUND"(a.pzgl/b.jsl, 2)*100  bili  from
+		(	SELECT a.pz name,a.pzgl ,b.jsl ,"ROUND"(a.pzgl/b.jsl, 2)*100 bili  from
 (SELECT Pz, "SUM"(jhl) pzgl from
 (select *
   from (select '1' yf,year || '1月' rq,PZ_NAME pz,
@@ -1205,7 +682,7 @@ select *
           from crm_resource_allocation
             where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name) a
-					where rq LIKE #{year}||'%' AND yf = 3 AND FL_name!= '品种钢'
+					where rq LIKE #{year}||'%' AND yf = 3
         ORDER BY    fl_name , cx ,
         "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材')
 		)
@@ -1216,494 +693,1414 @@ select *
 
 	</select>
 
+    <!-- 二 -->
+    <select id="Steelmillsplan" resultType="map">
+        SELECT
+        DECODE( m.COMPANy_id,9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') companyname,"NVL"("SUM"(s.JHL),0) jh,NVL("SUM"(s.XH),0) xh from
+
+        ( SELECT a.cx,a.jhl,b.XH from
+        ( SELECT cx ,"SUM"(jhl) jhl from
+        (select *
+        from (select '1' yf,year || '1月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JAN_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '2' yf,year || '2月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(FEB_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '3' yf,year || '3月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(MAR_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '4' yf,year || '4月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(APR_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '5' yf,year || '5月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(MAY_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '6' yf,year || '6月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JUN_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '7' yf,year || '7月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JUL_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '8' yf,year || '8月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(AUG_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '9' yf,year || '9月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(SEP_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '10' yf,year || '10月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(OCT_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '11' yf,year || '11月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(NOV_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '12' yf,year || '12月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(DEC_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name) a
+        WHERE  rq LIKE  #{year}||'%' and yf = 3
+        <if test="name != null and name !=''">
+            and a.pz=#{name}
+        </if>
+        ORDER BY    fl_name , cx ,
+        "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
+        GROUP BY cx  ) a
+        LEFT JOIN
+        (SELECT cx ,"SUM"(jhl) xh from
+        (select *
+        from (select '1' yf,year || '1月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JAN_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '2' yf,year || '2月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(FEB_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '3' yf,year || '3月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(MAR_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '4' yf,year || '4月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(APR_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '5' yf,year || '5月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(MAY_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '6' yf,year || '6月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JUN_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '7' yf,year || '7月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JUL_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '8' yf,year || '8月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(AUG_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '9' yf,year || '9月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(SEP_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '10' yf,year || '10月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(OCT_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '11' yf,year || '11月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(NOV_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '12' yf,year || '12月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(DEC_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name) a
+        WHERE  rq LIKE  #{year}||'%' and yf = 3 and FL_name = '现货'
+        <if test="name != null and name !=''">
+            and a.pz=#{name}
+        </if>
 
 
-	<!--四-->
-	<select id="Steellist" resultType="map">
-					SELECT "DECODE"(n.COMPANY_ID,9580,
-			'唐钢',
-			9727,
-			'邯钢',
-			9193,
-			'宣钢',
-			9196,
-			'承钢',
-			1932,
-			'舞钢',
-			8110,
-			'石钢',
-			8493,
-			'衡板',
-			7778,
-			'邯宝' ) companyname,
-	NVL("SUM"(p.pzgl),0) pzgl,NVL("SUM"(jsl),0) jsl ,
+        ORDER BY    fl_name , cx ,
+        "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
+        GROUP BY cx   ) b
+        on a.cx= b.CX ) s
+        LEFT JOIN
+        (SELECT "DATA"."NAME",DETAIL.COMPANY_ID from
 
-		NVL("ROUND"("SUM"(p.pzgl)/"SUM"(jsl)*100, 2),0)|| '%'   bili  from
-	 (SELECT m.cx,m.pzgl,n.jhl jsl from
-	 (SELECT cx,"SUM"(jhl) pzgl from
-	(select *
-	  from (select '1' yf,year || '1月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(JAN_MONTH) jhl
-			  from crm_resource_allocation
-			   where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '2' yf,year || '2月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(FEB_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '3' yf,year || '3月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(MAR_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '4' yf,year || '4月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(APR_MONTH) jhl
-			  from crm_resource_allocation
-			   where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '5' yf,year || '5月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(MAY_MONTH) jhl
-			  from crm_resource_allocation
-				  where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '6' yf,year || '6月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(JUN_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '7' yf,year || '7月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(JUL_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '8' yf,year || '8月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(AUG_MONTH) jhl
-			  from crm_resource_allocation
-			   where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '9' yf,year || '9月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(SEP_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '10' yf,year || '10月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(OCT_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '11' yf,year || '11月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(NOV_MONTH) jhl
-			  from crm_resource_allocation
-			  where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '12' yf,year || '12月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(DEC_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name) a
-			WHERE   rq LIKE #{year}||'%' and yf = 3 AND FL_name = '品种钢'
-	ORDER BY    fl_name , cx ,
-			"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') )
-	 GROUP BY cx)  m
-	LEFT JOIN
-	(SELECT cx ,"SUM"(jhl) jhl from
-	(select *
-	  from (select '1' yf,year || '1月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(JAN_MONTH) jhl
-			  from crm_resource_allocation
-			   where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '2' yf,year || '2月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(FEB_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '3' yf,year || '3月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(MAR_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '4' yf,year || '4月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(APR_MONTH) jhl
-			  from crm_resource_allocation
-			   where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '5' yf,year || '5月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(MAY_MONTH) jhl
-			  from crm_resource_allocation
-				  where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '6' yf,year || '6月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(JUN_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '7' yf,year || '7月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(JUL_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '8' yf,year || '8月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(AUG_MONTH) jhl
-			  from crm_resource_allocation
-			   where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '9' yf,year || '9月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(SEP_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '10' yf,year || '10月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(OCT_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '11' yf,year || '11月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(NOV_MONTH) jhl
-			  from crm_resource_allocation
-			  where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '12' yf,year || '12月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(DEC_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name) a
-			WHERE  rq LIKE #{year}||'%' and yf = 3 AND FL_name != '品种钢'
+        scm_delivery_detail detail
+        LEFT JOIN
+        CRM_RESOURCE_DATA DATA
+        on   data.full_name = detail.ext AND
+        data.company_id =
 
-	ORDER BY    fl_name , cx ,
-			"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
-				GROUP BY cx) n
-	on n.cx=m.cx ) p
+        detail.company_id
+        and	data.type = 3
+        where data.name is not null
+        GROUP BY "DATA"."NAME",DETAIL.COMPANY_ID) m
+        on s.CX = m.name
+        where  m.company_id is not null
+        GROUP BY m.company_id
 
-	LEFT JOIN
-	(SELECT COMPANY_ID,cx_name from
+    </select>
+    <select id="Steelmillssum" resultType="map">
+        SELECT "SUM"(xh) xh,"SUM"(jh) jh from
+        ( SELECT
+        DECODE( m.COMPANy_id,9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') companyname,"NVL"("SUM"(s.JHL),0) jh,NVL("SUM"(s.XH),0) xh from
 
-	(SELECT a.*,GP.COMPANY_ID from (
-	SELECT CRA.CX_NAME , CRA.PZ_NAME
-	from CRM_RESOURCE_ALLOCATION cra
-	GROUP BY cra.CX_NAME, CRA.PZ_NAME) a
-	LEFT JOIN SCM_VARIETY_TO_PT_GP gp
-			on gp.variety = a.PZ_name ) ) n
-	on n.CX_NAME = p.cx
-	GROUP BY n.COMPANY_ID
+        ( SELECT a.cx,a.jhl,b.XH from
+        ( SELECT cx ,"SUM"(jhl) jhl from
+        (select *
+        from (select '1' yf,year || '1月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JAN_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '2' yf,year || '2月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(FEB_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '3' yf,year || '3月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(MAR_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '4' yf,year || '4月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(APR_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '5' yf,year || '5月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(MAY_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '6' yf,year || '6月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JUN_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '7' yf,year || '7月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JUL_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '8' yf,year || '8月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(AUG_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '9' yf,year || '9月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(SEP_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '10' yf,year || '10月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(OCT_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '11' yf,year || '11月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(NOV_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '12' yf,year || '12月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(DEC_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name) a
+        WHERE  rq LIKE  #{year}||'%' and yf = 3
+        <if test="name != null and name !=''">
+            and a.pz=#{name}
+        </if>
+        ORDER BY    fl_name , cx ,
+        "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
+        GROUP BY cx  ) a
+        LEFT JOIN
+        (SELECT cx ,"SUM"(jhl) xh from
+        (select *
+        from (select '1' yf,year || '1月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JAN_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '2' yf,year || '2月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(FEB_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '3' yf,year || '3月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(MAR_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '4' yf,year || '4月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(APR_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '5' yf,year || '5月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(MAY_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '6' yf,year || '6月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JUN_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '7' yf,year || '7月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(JUL_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '8' yf,year || '8月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(AUG_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '9' yf,year || '9月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(SEP_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '10' yf,year || '10月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(OCT_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '11' yf,year || '11月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(NOV_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name
+        union all
+        select '12' yf,year || '12月' rq,PZ_NAME pz,
+        cx_name cx,
+        fl_name,
+        sum(DEC_MONTH) jhl
+        from crm_resource_allocation
+        where STATUS = '0'
+        group by year, PZ_NAME, cx_name, fl_name) a
+        WHERE  rq LIKE  #{year}||'%' and yf = 3 and FL_name = '现货'
+        <if test="name != null and name !=''">
+            and a.pz=#{name}
+        </if>
+
+
+        ORDER BY    fl_name , cx ,
+        "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
+        GROUP BY cx   ) b
+        on a.cx= b.CX ) s
+        LEFT JOIN
+        (SELECT "DATA"."NAME",DETAIL.COMPANY_ID from
+
+        scm_delivery_detail detail
+        LEFT JOIN
+        CRM_RESOURCE_DATA DATA
+        on   data.full_name = detail.ext AND
+        data.company_id =
+
+        detail.company_id
+        and	data.type = 3
+        where data.name is not null
+        GROUP BY "DATA"."NAME",DETAIL.COMPANY_ID) m
+        on s.CX = m.name
+        where  m.company_id is not null
+        GROUP BY m.company_id
+        )
+
+    </select>
+    <!--四-->
+    <select id="Steellist" resultType="map">
+						SELECT "DECODE"(m.company_id,9580,
+						'唐钢',
+						9727,
+						'邯钢',
+						9193,
+						'宣钢',
+						9196,
+						'承钢',
+						1932,
+						'舞钢',
+						8110,
+						'石钢',
+						8493,
+						'衡板',
+						7778,
+						'邯宝' ) companyname,
+
+		NVL("SUM"(x.JSL),0) jsl,NVL("SUM"(x.PZGL),0) pzgl
+
+		,"ROUND"("SUM"(x.PZGL)/"SUM"(x.JSL), 4)*100 bili from
+		(
+		SELECT s.CX,s.JSL,x.PZGL from
+		(SELECT cx ,"SUM"(jhl) jsl from
+				(select *
+				  from (select '1' yf,year || '1月'
+
+		rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JAN_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '2' yf,year || '2月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(FEB_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '3' yf,year || '3月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(MAR_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '4' yf,year || '4月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(APR_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '5' yf,year || '5月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(MAY_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							  where STATUS =
+
+		'0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '6' yf,year || '6月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JUN_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '7' yf,year || '7月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JUL_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '8' yf,year || '8月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(AUG_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '9' yf,year || '9月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(SEP_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '10' yf,year || '10
+
+		月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(OCT_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '11' yf,year || '11
+
+		月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(NOV_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						  where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '12' yf,year || '12
+
+		月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(DEC_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name) a
+						WHERE  rq LIKE #{yaer}||'%' and
+
+		yf = 3 AND FL_name <![CDATA[ != ]]>  '品种钢'
+
+				ORDER BY    fl_name , cx ,
+						"DECODE"(pz,'热板','冷
+
+		板','宽厚板','棒线','型材') ) a
+							GROUP BY cx ) s
+		LEFT JOIN
+		(SELECT cx ,"SUM"(jhl) pzgl from
+				(select *
+				  from (select '1' yf,year || '1月'
+
+		rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JAN_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '2' yf,year || '2月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(FEB_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '3' yf,year || '3月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(MAR_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '4' yf,year || '4月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(APR_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '5' yf,year || '5月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(MAY_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							  where STATUS =
+
+		'0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '6' yf,year || '6月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JUN_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '7' yf,year || '7月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JUL_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '8' yf,year || '8月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(AUG_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '9' yf,year || '9月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(SEP_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '10' yf,year || '10
+
+		月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(OCT_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '11' yf,year || '11
+
+		月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(NOV_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						  where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '12' yf,year || '12
+
+		月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(DEC_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name) a
+						WHERE  rq LIKE #{year}||'%' and
+
+		yf = 3 AND FL_name = '品种钢'
+
+				ORDER BY    fl_name , cx ,
+						"DECODE"(pz,'热板','冷
+
+		板','宽厚板','棒线','型材') ) a
+							GROUP BY cx  ) x
+		on s.CX= x.CX
+		) x
+		LEFT JOIN
+		(SELECT "DATA"."NAME",DETAIL.COMPANY_ID from
+
+		scm_delivery_detail detail
+		LEFT JOIN
+		  CRM_RESOURCE_DATA DATA
+		on   data.full_name = detail.ext AND
+					data.company_id =
+
+		detail.company_id
+				and	data.type = 3
+		where data.name is not null
+		GROUP BY "DATA"."NAME",DETAIL.COMPANY_ID) m
+		on x.CX = m.name
+		where  m.company_id is not null
+		 GROUP BY m.company_id
 	</select>
-	<select id="Steelsum" resultType="map">
-		SELECT NVL("SUM"(pzgl),0) pzgl,NVL("SUM"(jsl),0) jsl from (
-			SELECT "DECODE"(n.COMPANY_ID,9580,
-			'唐钢',
-			9727,
-			'邯钢',
-			9193,
-			'宣钢',
-			9196,
-			'承钢',
-			1932,
-			'舞钢',
-			8110,
-			'石钢',
-			8493,
-			'衡板',
-			7778,
-			'邯宝' ) companyname,
-	NVL("SUM"(p.pzgl),0) pzgl,NVL("SUM"(jsl),0) jsl ,
+    <select id="Steelsum" resultType="map">
+		SELECT NVL("SUM"(pzgl),0) pzgl,NVL("SUM"(jsl),0) jsl from (SELECT "DECODE"(m.company_id,9580,
+						'唐钢',
+						9727,
+						'邯钢',
+						9193,
+						'宣钢',
+						9196,
+						'承钢',
+						1932,
+						'舞钢',
+						8110,
+						'石钢',
+						8493,
+						'衡板',
+						7778,
+						'邯宝' ) companyname,
 
-		NVL("ROUND"("SUM"(p.pzgl)/"SUM"(jsl)*100, 2),0)|| '%'   bili  from
-	 (SELECT m.cx,m.pzgl,n.jhl jsl from
-	 (SELECT cx,"SUM"(jhl) pzgl from
-	(select *
-	  from (select '1' yf,year || '1月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(JAN_MONTH) jhl
-			  from crm_resource_allocation
-			   where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '2' yf,year || '2月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(FEB_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '3' yf,year || '3月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(MAR_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '4' yf,year || '4月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(APR_MONTH) jhl
-			  from crm_resource_allocation
-			   where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '5' yf,year || '5月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(MAY_MONTH) jhl
-			  from crm_resource_allocation
-				  where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '6' yf,year || '6月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(JUN_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '7' yf,year || '7月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(JUL_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '8' yf,year || '8月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(AUG_MONTH) jhl
-			  from crm_resource_allocation
-			   where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '9' yf,year || '9月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(SEP_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '10' yf,year || '10月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(OCT_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '11' yf,year || '11月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(NOV_MONTH) jhl
-			  from crm_resource_allocation
-			  where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '12' yf,year || '12月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(DEC_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name) a
-			WHERE   rq LIKE #{year}||'%' and yf = 3 AND FL_name = '品种钢'
-	ORDER BY    fl_name , cx ,
-			"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') )
-	 GROUP BY cx)  m
-	LEFT JOIN
-	(SELECT cx ,"SUM"(jhl) jhl from
-	(select *
-	  from (select '1' yf,year || '1月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(JAN_MONTH) jhl
-			  from crm_resource_allocation
-			   where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '2' yf,year || '2月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(FEB_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '3' yf,year || '3月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(MAR_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '4' yf,year || '4月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(APR_MONTH) jhl
-			  from crm_resource_allocation
-			   where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '5' yf,year || '5月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(MAY_MONTH) jhl
-			  from crm_resource_allocation
-				  where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '6' yf,year || '6月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(JUN_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '7' yf,year || '7月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(JUL_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '8' yf,year || '8月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(AUG_MONTH) jhl
-			  from crm_resource_allocation
-			   where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '9' yf,year || '9月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(SEP_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '10' yf,year || '10月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(OCT_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '11' yf,year || '11月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(NOV_MONTH) jhl
-			  from crm_resource_allocation
-			  where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name
-			union all
-			select '12' yf,year || '12月' rq,PZ_NAME pz,
-				   cx_name cx,
-				   fl_name,
-				   sum(DEC_MONTH) jhl
-			  from crm_resource_allocation
-				where STATUS = '0'
-			 group by year, PZ_NAME, cx_name, fl_name) a
-			WHERE  rq LIKE #{year}||'%' and yf = 3 AND FL_name != '品种钢'
+		"SUM"(x.JSL) jsl,"SUM"(x.PZGL) pzgl
 
-	ORDER BY    fl_name , cx ,
-			"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
-				GROUP BY cx) n
-	on n.cx=m.cx ) p
+		,"ROUND"("SUM"(x.PZGL)/"SUM"(x.JSL), 4)*100 bili from
+		(
+		SELECT s.CX,s.JSL,x.PZGL from
+		(SELECT cx ,"SUM"(jhl) jsl from
+				(select *
+				  from (select '1' yf,year || '1月'
 
-	LEFT JOIN
-	(SELECT COMPANY_ID,cx_name from
+		rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JAN_MONTH)
 
-	(SELECT a.*,GP.COMPANY_ID from (
-	SELECT CRA.CX_NAME , CRA.PZ_NAME
-	from CRM_RESOURCE_ALLOCATION cra
-	GROUP BY cra.CX_NAME, CRA.PZ_NAME) a
-	LEFT JOIN SCM_VARIETY_TO_PT_GP gp
-			on gp.variety = a.PZ_name ) ) n
-	on n.CX_NAME = p.cx
-	GROUP BY n.COMPANY_ID
+		jhl
+						  from
+
+		crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '2' yf,year || '2月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(FEB_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '3' yf,year || '3月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(MAR_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '4' yf,year || '4月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(APR_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '5' yf,year || '5月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(MAY_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							  where STATUS =
+
+		'0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '6' yf,year || '6月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JUN_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '7' yf,year || '7月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JUL_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '8' yf,year || '8月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(AUG_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '9' yf,year || '9月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(SEP_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '10' yf,year || '10
+
+		月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(OCT_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '11' yf,year || '11
+
+		月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(NOV_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						  where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '12' yf,year || '12
+
+		月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(DEC_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name) a
+						WHERE  rq LIKE #{year}||'%' and
+
+		yf = 3 AND FL_name <![CDATA[ != ]]>  '品种钢'
+
+				ORDER BY    fl_name , cx ,
+						"DECODE"(pz,'热板','冷
+
+		板','宽厚板','棒线','型材') ) a
+							GROUP BY cx ) s
+		LEFT JOIN
+		(SELECT cx ,"SUM"(jhl) pzgl from
+				(select *
+				  from (select '1' yf,year || '1月'
+
+		rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JAN_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '2' yf,year || '2月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(FEB_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '3' yf,year || '3月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(MAR_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '4' yf,year || '4月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(APR_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '5' yf,year || '5月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(MAY_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							  where STATUS =
+
+		'0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '6' yf,year || '6月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JUN_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '7' yf,year || '7月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JUL_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '8' yf,year || '8月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(AUG_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '9' yf,year || '9月
+
+		' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(SEP_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '10' yf,year || '10
+
+		月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(OCT_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '11' yf,year || '11
+
+		月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(NOV_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+						  where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name
+						union all
+						select '12' yf,year || '12
+
+		月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(DEC_MONTH)
+
+		jhl
+						  from
+
+		crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+
+		cx_name, fl_name) a
+						WHERE  rq LIKE  #{year}||'%' and
+
+		yf = 3 AND FL_name = '品种钢'
+
+				ORDER BY    fl_name , cx ,
+						"DECODE"(pz,'热板','冷
+
+		板','宽厚板','棒线','型材') ) a
+							GROUP BY cx  ) x
+		on s.CX= x.CX
+		) x
+		LEFT JOIN
+		(SELECT "DATA"."NAME",DETAIL.COMPANY_ID from
+
+		scm_delivery_detail detail
+		LEFT JOIN
+		  CRM_RESOURCE_DATA DATA
+		on   data.full_name = detail.ext AND
+					data.company_id =
+
+		detail.company_id
+				and	data.type = 3
+		where data.name is not null
+		GROUP BY "DATA"."NAME",DETAIL.COMPANY_ID) m
+		on x.CX = m.name
+		where  m.company_id is not null
+		 GROUP BY m.company_id
 		)
 
 	</select>
-
-
-
-
 
 
 </mapper>
