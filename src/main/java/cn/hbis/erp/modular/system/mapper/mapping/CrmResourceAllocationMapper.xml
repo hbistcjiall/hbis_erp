@@ -143,8 +143,9 @@ order by decode(ht.pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线
         1=1
         <if test="year != null and year != ''">
             and YEAR = #{year}
-        </if>)
-        and fl_Name <![CDATA[ != ]]> '品种钢'
+        </if>
+        and fl_Name <![CDATA[ != ]]> '品种钢')
+
         group by cx_NAME) jh
         on ht.dName = jh.cx_name
         group by ht.dName,hjjhl
@@ -349,8 +350,9 @@ order by decode(ht.pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线
 
                       from (SELECT MAR_MONTH planNum, fl_name flName,cx_name cxName
                               FROM crm_resource_allocation
-                             where year = #{year})
-                      and fl_Name <![CDATA[ != ]]> '品种钢'
+                             where year = #{year}
+                              and fl_Name <![CDATA[ != ]]> '品种钢')
+
                      group by flName,cxName) jh
             on ht.saleBody = jh.flname and ht.dName = jh.cxName
          group by saleBody, jh.hjjhl)
