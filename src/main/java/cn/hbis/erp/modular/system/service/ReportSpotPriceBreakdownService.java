@@ -26,27 +26,59 @@ public class ReportSpotPriceBreakdownService extends ServiceImpl<ReportSpotPrice
     private ReportSpotPriceBreakdownMapper reportSpotPriceBreakdownMapper;
     @Async
     public List<ReportSpotPriceBreakdown> queryDayList(String startMonth, String endMonth, String company) {
-        //log.info("== query days list ==");
-        System.out.println(reportSpotPriceBreakdownMapper.queryDayList(startMonth, endMonth, company));
-        return reportSpotPriceBreakdownMapper.queryDayList(startMonth, endMonth, company);
+        List<ReportSpotPriceBreakdown> List = reportSpotPriceBreakdownMapper.queryDayList(startMonth, endMonth, company);
+        for (int i = 0; i < List.size(); i++){
+            if ("CHENGGANG".equals(List.get(i).getCompany())){
+                List.get(i).setCompany("承钢");
+            }else if ("xuangang".equals(List.get(i).getCompany())){
+                List.get(i).setCompany("宣钢");
+            }else{
+                List.get(i).setCompany("小计");
+            }
+        }
+        return List;
     }
     @Async
     public List<ReportSpotPriceBreakdown> queryXunList(String startMonth, String endMonth,String company) {
-        //log.info("== query xun list ==");
-        System.out.println(reportSpotPriceBreakdownMapper.queryXunList(startMonth, endMonth, company));
-        return reportSpotPriceBreakdownMapper.queryXunList(startMonth, endMonth, company);
+        List<ReportSpotPriceBreakdown> List = reportSpotPriceBreakdownMapper.queryXunList(startMonth, endMonth, company);
+        for (int i = 0; i < List.size(); i++){
+            if ("CHENGGANG".equals(List.get(i).getCompany())){
+                List.get(i).setCompany("承钢");
+            }else if ("xuangang".equals(List.get(i).getCompany())){
+                List.get(i).setCompany("宣钢");
+            }else{
+                List.get(i).setCompany("小计");
+            }
+        }
+        return List;
     }
     @Async
     public List<ReportSpotPriceBreakdown> queryMonthList(String startMonth, String endMonth,String company) {
-        //log.info("== query month list ==");
-        System.out.println(reportSpotPriceBreakdownMapper.queryMonthList(startMonth, endMonth, company));
-        return reportSpotPriceBreakdownMapper.queryMonthList(startMonth, endMonth, company);
+        List<ReportSpotPriceBreakdown> List = reportSpotPriceBreakdownMapper.queryMonthList(startMonth, endMonth, company);
+        for (int i = 0; i < List.size(); i++){
+            if ("CHENGGANG".equals(List.get(i).getCompany())){
+                List.get(i).setCompany("承钢");
+            }else if ("xuangang".equals(List.get(i).getCompany())){
+                List.get(i).setCompany("宣钢");
+            }else{
+                List.get(i).setCompany("小计");
+            }
+        }
+        return List;
     }
     @Async
     public List<ReportSpotPriceBreakdown> queryYearList(String startMonth, String endMonth,String company) {
-        //log.info("== query year list ==");
-        System.out.println(reportSpotPriceBreakdownMapper.queryYearList(startMonth, endMonth, company));
-        return reportSpotPriceBreakdownMapper.queryYearList(startMonth, endMonth, company);
+        List<ReportSpotPriceBreakdown> List = reportSpotPriceBreakdownMapper.queryYearList(startMonth, endMonth, company);
+        for (int i = 0; i < List.size(); i++){
+            if ("CHENGGANG".equals(List.get(i).getCompany())){
+                List.get(i).setCompany("承钢");
+            }else if ("xuangang".equals(List.get(i).getCompany())){
+                List.get(i).setCompany("宣钢");
+            }else{
+                List.get(i).setCompany("小计");
+            }
+        }
+        return List;
     }
 
     /*public void exportExcel(String startMonth, String endMonth, String company, HttpServletRequest request,

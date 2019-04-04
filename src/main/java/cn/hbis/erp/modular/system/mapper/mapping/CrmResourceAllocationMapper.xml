@@ -60,6 +60,7 @@
                 <if test="flName != null and flName != ''">
                     and fl_Name = #{flName}
                 </if>
+                and fl_Name <![CDATA[ != ]]> '品种钢'
                       )
               group by PZ_NAME) jh
     on ht.pzName = jh.pzName
@@ -112,16 +113,38 @@ order by decode(ht.pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线
         </if>
         AND (detail.delivery_delete != 'X' OR
         detail.delivery_delete IS NULL)
+        and sso.order_type_describe not in
+        (select distinct cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '2'
+        and cfd.status = '0'
+        and cfd.company_id = sso.company_id)
+        and sso.saler_name not in
+        (select cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '1'
+        and cfd.status = '0'
+        and cfd.company_id = sso.company_id)
+
+        AND sso.sale_group NOT IN
+        (SELECT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 9
+        AND cfd.status = 0)
+        and xsztdzb.sale_body != '现货'
+        and xsztdzb.sale_body != '自办公司'
         ) ht
         left join (select cx_NAME,
         sum(planNum) hjjhl
-        from (SELECT cx_NAME, MAR_MONTH planNum, fl_name
+        from (SELECT cx_NAME, MAR_MONTH planNum
         FROM crm_resource_allocation
         WHERE
         1=1
         <if test="year != null and year != ''">
             and YEAR = #{year}
         </if>)
+        and fl_Name <![CDATA[ != ]]> '品种钢'
         group by cx_NAME) jh
         on ht.dName = jh.cx_name
         group by ht.dName,hjjhl
@@ -133,139 +156,205 @@ order by decode(ht.pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线
     </select>
 
     <select id="selCompany" resultType="cn.hbis.erp.modular.system.entity.Allocation">
-      select * from (SELECT NVL(A.companyName, '合计') companyName,
-       SUM(ss.fkimg) as yield,
-       SUM(A.planNum) as planNum
-      FROM (SELECT
-                   sum (
-                CASE
-                WHEN #{month} = '01' THEN
-                JAN_MONTH
-                WHEN #{month} = '02' THEN
-                FEB_MONTH
-                WHEN #{month} = '03' THEN
-                MAR_MONTH
-                WHEN #{month} = '04' THEN
-                APR_MONTH
-                WHEN #{month} = '05' THEN
-                MAY_MONTH
-                WHEN #{month} = '06' THEN
-                JUN_MONTH
-                WHEN #{month} = '07' THEN
-                JUL_MONTH
-                WHEN #{month} = '08' THEN
-                AUG_MONTH
-                WHEN #{month} = '09' THEN
-                SEP_MONTH
-                WHEN #{month} = '10' THEN
-                OCT_MONTH
-                WHEN #{month} = '11' THEN
-                NOV_MONTH
-                WHEN #{month} = '12' THEN
-                DEC_MONTH
-                END
-                ) planNum,
-                   cra.CX_NAME,
-                   clcr.company_name companyName
-              FROM crm_resource_allocation cra,
-              crm_line_class_relation clcr
-              WHERE 1=1
-                <if test="year != null and year != ''">
-                    and YEAR = #{year}
-                </if>
-                and clcr.product_line in
-                   (select DISTINCT cx_name from crm_resource_allocation)
-             group by cra.CX_NAME,clcr.company_name) A
-      LEFT JOIN (SELECT data.NAME dName,
-                        data.full_name fName,
-                        SUM(settle.fkimg) fkimg
-                FROM scm_steel_settle settle
-                JOIN scm_delivery_detail detail
-                ON settle.aubel = detail.order_no
-                AND settle.aupos = detail.order_item
-                JOIN crm_resource_data data
-                on DATA.TYPE = 3
-                AND DATA.parent_name IS NOT NULL
-                and data.full_name = detail.ext
-                  WHERE 1 = 1
-                    <if test="date != null and date != ''">
-                        and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
-                    </if>
-                    AND (settle.PREY1 != 'X' or settle.PREY1 is null)
-                  GROUP BY DATA . NAME, DATA.full_name) ss
-        ON A.CX_NAME = ss.dName
-        OR A.CX_NAME = ss.fName
-     GROUP BY ROLLUP(A.companyName))
-        order by decode(companyName,'合计',1,'唐钢',2,'邯钢',3,'宣钢',4,'承钢',5,'舞钢',6)
+      select * from(
+        select NVL(decode(companyId,
+                          9580,
+                          '唐钢',
+                          9727,
+                          '邯钢',
+                          9193,
+                          '宣钢',
+                          9196,
+                          '承钢',
+                          1932,
+                          '舞钢',
+                          8110,
+                          '石钢',
+                          8493,
+                          '衡板',
+                          7778,
+                          '邯宝'),
+                   '合计') companyName,
+               case
+                 when sum(orderMount) is null then
+                  0
+                 else
+                  sum(orderMount)
+               end yield,
+               case when sum(planNum) is null then 0 else sum(planNum) end planNum,
+                 case when sum(planNum) is null then 0 when sum(orderMount)/sum(planNum) is null then 0 else
+                   ROUND (
+                sum(orderMount)/sum(planNum) * 100,
+                2
+                ) end schedule
+          from (select ht.companyId,
+                       ht.dName,
+                       jh.hjjhl planNum,
+                       sum(ht.orderMount) orderMount
+
+                  from (SELECT distinct DATA.NAME dName,
+                                        case
+                                          when sso.ORDER_MOUNT is null then
+                                           0
+                                          else
+                                           sso.ORDER_MOUNT
+                                        end orderMount,
+                                        DATA.company_Id companyId,
+                                        xsztdzb.sale_body saleBody
+                          from scm_delivery_detail detail
+                          JOIN crm_resource_data DATA
+                            ON DATA.full_name = detail.ext
+                           AND DATA.company_id = detail.company_id
+                           AND DATA . TYPE = 3
+                           AND DATA.parent_name IS NOT NULL
+                          join scm_sale_order sso
+                            on detail.company_id = sso.company_id
+                           and detail.ORDER_NO = sso.order_no
+                           and detail.ORDER_ITEM = sso.order_row
+                          left join (select a.*
+                                      from price_salebody_relation a
+                                     where a.is_delete = 0) xsztdzb
+                            ON sso.company_id = xsztdzb.company_id
+                           AND sso.sale_body = xsztdzb.sale_body_des
+                         WHERE 1 = 1
+                           and instr(sso.dj_date, #{date}) > 0
+
+                           AND (detail.delivery_delete != 'X' OR
+                               detail.delivery_delete IS NULL)
+                           and sso.order_type_describe not in
+                               (select distinct cfd.data_name
+                                  from crm_filter_data cfd
+                                 where cfd.data_type = '2'
+                                   and cfd.status = '0'
+                                   and cfd.company_id = sso.company_id)
+                           and sso.saler_name not in
+                               (select cfd.data_name
+                                  from crm_filter_data cfd
+                                 where cfd.data_type = '1'
+                                   and cfd.status = '0'
+                                   and cfd.company_id = sso.company_id)
+
+                           AND sso.sale_group NOT IN
+                               (SELECT cfd.data_name
+                                  FROM crm_filter_data cfd
+                                 WHERE cfd.company_id = sso.company_id
+                                   AND cfd.data_type = 9
+                                   AND cfd.status = 0)) ht
+                  left join (select CX_NAME cxName, sum(planNum) hjjhl
+                              from (SELECT CX_NAME, MAR_MONTH planNum
+                                      FROM crm_resource_allocation
+                                     WHERE 1 = 1
+                                       and YEAR = #{year}
+                                       and fl_Name <![CDATA[ != ]]> '品种钢')
+                             group by CX_NAME) jh
+                    on ht.dName = jh.cxName
+                 group by ht.companyId, ht.dName, jh.hjjhl)
+
+         GROUP BY ROLLUP(companyId)
+        )
+      order by decode(companyName,'合计',1,'唐钢',2,'邯钢',3,'宣钢',4,'承钢',5,'舞钢',6)
     </select>
     <select id="selByCompany" resultType="cn.hbis.erp.modular.system.entity.Allocation">
-      select * from (
-        SELECT a.flName flName,
-       SUM(ss.fkimg) as yield,
-       SUM(A.planNum) as planNum
-      FROM (SELECT
-                   sum (
-            CASE
-            WHEN #{month} = '01' THEN
-            JAN_MONTH
-            WHEN #{month} = '02' THEN
-            FEB_MONTH
-            WHEN #{month} = '03' THEN
-            MAR_MONTH
-            WHEN #{month} = '04' THEN
-            APR_MONTH
-            WHEN #{month} = '05' THEN
-            MAY_MONTH
-            WHEN #{month} = '06' THEN
-            JUN_MONTH
-            WHEN #{month} = '07' THEN
-            JUL_MONTH
-            WHEN #{month} = '08' THEN
-            AUG_MONTH
-            WHEN #{month} = '09' THEN
-            SEP_MONTH
-            WHEN #{month} = '10' THEN
-            OCT_MONTH
-            WHEN #{month} = '11' THEN
-            NOV_MONTH
-            WHEN #{month} = '12' THEN
-            DEC_MONTH
-            END
-            ) planNum,
-               cra.CX_NAME,
-               cra.fl_name flName
-              FROM crm_resource_allocation cra,
-              crm_line_class_relation clcr
-              WHERE 1 = 1
-                    <if test="year != null and year != ''">
-                        and cra.YEAR = #{year}
-                    </if>
-                     and clcr.product_line in
-                               (select DISTINCT cx_name from crm_resource_allocation)
-            <if test="companyName != null and companyName != ''">
-                and clcr.company_name = #{companyName}
-            </if>
-             group by cra.CX_NAME,cra.fl_name) A
-      LEFT JOIN (SELECT data.NAME dName,
-                        data.full_name fName,
-                        SUM(settle.fkimg) fkimg
-                FROM scm_steel_settle settle
-                JOIN scm_delivery_detail detail
-                ON settle.aubel = detail.order_no
-                AND settle.aupos = detail.order_item
-                JOIN crm_resource_data data
-                on DATA.TYPE = 3
-                AND DATA.parent_name IS NOT NULL
-                and data.full_name = detail.ext
-                  WHERE 1 = 1
-                    <if test="date != null and date != ''">
-                        and TO_CHAR (settle.FKDAT, 'YYYY-MM') = #{date}
-                    </if>
-                    AND (settle.PREY1 != 'X' or settle.PREY1 is null)
-                  GROUP BY DATA . NAME, DATA.full_name) ss
-        ON A.CX_NAME = ss.dName
-        OR A.CX_NAME = ss.fName
-        GROUP BY a.flName)
-        order by decode(flName,'销售总公司',1,'技术中心、事业部',2,'出口',3,'现货',4,'子公司其他',5,'品种钢',6)
+                 select saleBody flName,
+       case
+         when sum(orderMount) is null then
+          0
+         else
+          sum(orderMount)
+       end yield,
+       case
+         when sum(planNum) is null then 0 else
+          sum(planNum)
+       end planNum,
+       case
+         when sum(planNum) = 0 or sum(planNum) is null then
+          0
+         when sum(orderMount) / sum(planNum) is null then
+          0
+         else
+          round(sum(orderMount) / sum(planNum) * 100, 2)
+       end schedule
+  from (select (case
+                 when saleBody = '技术中心、事业部' or saleBody = '子公司其他' then
+                  '子公司'
+                 else
+                  saleBody
+               end) saleBody,
+               sum(orderMount) orderMount,
+               jh.hjjhl planNum
+          from (select (case
+                         when saleBody = '分公司' or saleBody = '专业公司' then
+                          '销售总公司'
+                         when saleBody = '事业部' or saleBody = '技术中心' then
+                          '技术中心、事业部'
+                         when saleBody = '子公司' then
+                          '子公司其他'
+                         when saleBody = '出口' then
+                          '出口'
+                       end) saleBody,dName,
+                       sum(orderMount) orderMount
+                  from (SELECT distinct
+                  DATA.name dName,
+                  xsztdzb.sale_body saleBody,
+                                        sso.ORDER_MOUNT   orderMount
+                          from scm_delivery_detail detail
+                          JOIN crm_resource_data DATA
+                            ON DATA.full_name = detail.ext
+                           AND DATA.company_id = detail.company_id
+                           AND DATA . TYPE = 3
+                           AND DATA.parent_name IS NOT NULL
+                          join scm_sale_order sso
+                            on detail.company_id = sso.company_id
+                           and detail.ORDER_NO = sso.order_no
+                           and detail.ORDER_ITEM = sso.order_row
+                          left join (select a.*
+                                      from price_salebody_relation a
+                                     where a.is_delete = 0) xsztdzb
+                            ON sso.company_id = xsztdzb.company_id
+                           AND sso.sale_body = xsztdzb.sale_body_des
+
+                         WHERE 1 = 1
+                           and instr(sso.dj_date, #{date }) > 0
+                           AND (detail.delivery_delete != 'X' OR
+                               detail.delivery_delete IS NULL)
+
+                           and sso.order_type_describe not in
+                               (select distinct cfd.data_name
+                                  from crm_filter_data cfd
+                                 where cfd.data_type = '2'
+                                   and cfd.status = '0'
+                                   and cfd.company_id = sso.company_id)
+                           and sso.saler_name not in
+                               (select cfd.data_name
+                                  from crm_filter_data cfd
+                                 where cfd.data_type = '1'
+                                   and cfd.status = '0'
+                                   and cfd.company_id = sso.company_id)
+
+                           AND sso.sale_group NOT IN
+                               (SELECT cfd.data_name
+                                  FROM crm_filter_data cfd
+                                 WHERE cfd.company_id = sso.company_id
+                                   AND cfd.data_type = 9
+                                   AND cfd.status = 0)
+                           and xsztdzb.sale_body <![CDATA[ != ]]> '现货'
+                           and xsztdzb.sale_body <![CDATA[ != ]]> '自办公司'
+                           and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢'
+                            <if test="companyName != null and companyName != ''">
+                                and detail.company_id = #{companyName}
+                            </if>
+                           )
+                 group by saleBody,dName) ht
+          left join (select flName, cxName,sum(planNum) hjjhl
+
+                      from (SELECT MAR_MONTH planNum, fl_name flName,cx_name cxName
+                              FROM crm_resource_allocation
+                             where year = #{year})
+                      and fl_Name <![CDATA[ != ]]> '品种钢'
+                     group by flName,cxName) jh
+            on ht.saleBody = jh.flname and ht.dName = jh.cxName
+         group by saleBody, jh.hjjhl)
+ group by saleBody
+
     </select>
 </mapper>
