@@ -637,6 +637,29 @@
         ON DATA.full_name = detail.ext
         AND DATA.TYPE = 3
         AND DATA.parent_name IS NOT NULL
+        JOIN scm_sale_order sso
+        on sso.order_no = settle.aubel
+        and sso.ORDER_ROW = settle.AUPOS
+        AND sso.company_id = settle.company_id
+        left join (SELECT a.company_id,
+        a.product_class,
+        a.product_line_class,
+        a.product_class_crude,
+        a.product_class_fine,
+        a.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL a
+        where a.status = '0'
+        union all
+        SELECT b.company_id,
+        b.second_code,
+        b.product_line_class,
+        b.product_class_crude,
+        b.product_class_fine,
+        b.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL b
+        where b.status = '0') rpcl
+        on sso.company_id = rpcl.company_id
+        and sso.product_type = rpcl.product_class
         where settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
         AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
         group by settle.company_id,DATA.NAME
