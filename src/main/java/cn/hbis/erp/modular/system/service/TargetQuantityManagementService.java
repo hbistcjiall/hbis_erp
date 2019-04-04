@@ -32,7 +32,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             if(id != null && !id.equals("")){
                 TargetQuantityManagement targetManagement = targetManagementMapper.selectById(id);
                 if(!year.equals("")&&year!=null){
-                    targetManagement.setYaer(year);
+                    targetManagement.setYear(year);
                 }
                 if(jan==null||jan.equals("")){
                     targetManagement.setJanuary("0");
@@ -103,7 +103,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 }
                 TargetQuantityManagement targetManagement = new TargetQuantityManagement();
                 if(!year.equals("")&&year!=null){
-                    targetManagement.setYaer(year);
+                    targetManagement.setYear(year);
                 }
                 if(!targetname.equals("")&&targetname!=null){
 
@@ -413,10 +413,8 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
 
             }
         //第四个
-        @Async
         public List<Map> settl(String name){
-            Calendar cale = null;
-            cale = Calendar.getInstance();
+            Calendar cale = Calendar.getInstance();
             int year =cale.get(Calendar.YEAR);
             int month = cale.get(Calendar.MONTH) + 1;
             List<Map> sum = targetManagementMapper.Steelsum(name,String.valueOf(month),String.valueOf(year));
@@ -426,7 +424,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             double bi = 0;
             String result="0";
             String jsl ="";
-            String   pzgl ="";
+            String pzgl ="";
             if(map !=null) {
                 if (!map.get("JSL").equals("null")) {
                     jsl = map.get("JSL").toString();

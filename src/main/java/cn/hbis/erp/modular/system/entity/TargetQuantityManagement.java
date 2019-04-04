@@ -32,7 +32,7 @@ public class TargetQuantityManagement implements Serializable {
      * 年份
      */
     @TableField("YEAR")
-    private String yaer;
+    private String year;
     /**
      * 一月份
      */

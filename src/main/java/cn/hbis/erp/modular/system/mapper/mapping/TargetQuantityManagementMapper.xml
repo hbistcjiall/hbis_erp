@@ -1415,7 +1415,7 @@ select *
 						 group by year, PZ_NAME,
 
 		cx_name, fl_name) a
-						WHERE  rq LIKE #{yaer}||'%' and
+						WHERE  rq LIKE #{year}||'%' and
 
 		yf = 3 AND FL_name <![CDATA[ != ]]>  '品种钢'
 
