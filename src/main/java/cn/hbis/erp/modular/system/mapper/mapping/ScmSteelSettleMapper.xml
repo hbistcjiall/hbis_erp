@@ -761,8 +761,8 @@
    </select>
 
     <select id="getzgsjswc" resultType="map">
-        select companyname name ,fkimg jsl,pzgl,round(pzgl/fkimg*100,2) wcl from
-        (SELECT decode(settle.company_id,
+        select companyid,companyname name ,sum(fkimg) jsl,sum(pzgl) pzgl,round(sum(pzgl)/sum(fkimg)*100,2) wcl from
+        (SELECT DISTINCT decode(settle.company_id,
         9580,
         '唐钢',
         9727,
@@ -779,18 +779,17 @@
         '衡板',
         7778,
         '邯宝') AS companyname,
-        settle.company_id,
+        settle.company_id companyid,
         settle.fkimg AS fkimg,
-				case when rpcl.product_grade = '品种钢'
-				OR rpcl.product_grade = '高端产品'
-				OR rpcl.product_grade = '特色战略产品' then settle.fkimg end pzgl
-
+        case when rpcl.product_grade = '品种钢'
+        OR rpcl.product_grade = '高端产品'
+        OR rpcl.product_grade = '特色战略产品' then settle.fkimg end pzgl
         FROM scm_steel_settle settle
         LEFT JOIN scm_sale_order sso
         on sso.order_no = settle.aubel
         and sso.ORDER_ROW = settle.AUPOS
         AND sso.company_id = settle.company_id
-				left join (SELECT a.company_id,
+        left join (SELECT a.company_id,
         a.product_class,
         a.product_line_class,
         a.product_class_crude,
@@ -809,9 +808,29 @@
         where b.status = '0') rpcl
         on sso.company_id = rpcl.company_id
         and sso.product_type = rpcl.product_class
-	    where settle.fkdat &gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
-	    and settle.fkdat &lt;=  to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
-				)
+        where settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+       	AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+        )
+        group by companyname,companyid
+        order by decode(companyid,
+        9580,
+        1,
+        9727,
+        2,
+        7778,
+        3,
+        9193,
+        4,
+        9196,
+        5,
+        1932,
+        6,
+        8110,
+        7,
+        8493,
+        8,
+        null,
+        9) asc
 </select>
 
     <select id="getzyjh" resultType="map">
