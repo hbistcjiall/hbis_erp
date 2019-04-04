@@ -2,23 +2,48 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.hbis.erp.modular.system.mapper.CrmResourceAllocationMapper">
     <select id="selSchedule" resultType="cn.hbis.erp.modular.system.entity.Allocation">
-        select ht.pzName pzName,
+    select pzName pzName,
        case
          when sum(orderMount) is null then
           0
          else
           sum(orderMount)
        end yield,
-       case when hjjhl is null then 0 else hjjhl end planNum,
-         case when hjjhl = 0 then 0 when  sum(orderMount)/hjjhl is null then 0 else
+       case
+         when sum(planNum) is null then
+          0
+         else
+          sum(planNum)
+       end planNum,
+       case
+         when sum(planNum) = 0 then
+          0
+         when sum(orderMount) / sum(planNum) is null then
+          0
+         else
 
-        ROUND (
-        sum(orderMount)/hjjhl * 100,
-        2
-        )
+          ROUND(sum(orderMount) / sum(planNum) * 100, 2)
 
-        END AS schedule
-  from (SELECT distinct svtp.variety      pzName,
+       END AS schedule
+  from (select ht.pzName pzName,(case
+                 when saleBody = '技术中心、事业部' or saleBody = '子公司其他' or saleBody = '现货' then
+                  '子公司'
+                 else
+                  saleBody
+               end) saleBody,
+               sum(orderMount) orderMount,
+               jh.hjjhl planNum
+  from(
+  select (case
+                     when saleBody = '分公司' or saleBody = '专业公司' then
+                      '销售总公司'
+                     when saleBody = '事业部' or saleBody = '技术中心' then
+                      '技术中心、事业部'
+                     when saleBody = '子公司' or saleBody = '自办公司'then
+                      '子公司其他'
+                     else saleBody
+                   end) saleBody,pzName,orderMount
+  from(SELECT distinct svtp.variety      pzName,
                         xsztdzb.sale_body saleBody,
                         sso.ORDER_MOUNT   orderMount
           from scm_sale_order sso
@@ -32,7 +57,7 @@
            AND sso.sale_body = xsztdzb.sale_body_des
 
          WHERE 1 = 1
-           and instr(sso.dj_date, #{date}) > 0
+           and instr(sso.dj_date, #{date})>0
            and sso.order_type_describe not in
                (select distinct cfd.data_name
                   from crm_filter_data cfd
@@ -51,21 +76,23 @@
                   FROM crm_filter_data cfd
                  WHERE cfd.company_id = sso.company_id
                    AND cfd.data_type = 9
-                   AND cfd.status = 0)) ht
-  left join (select PZ_NAME pzName, sum(planNum) hjjhl
+                   AND cfd.status = 0)
+           and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢'
+            <if test="flName != null and flName != ''">
+                and xsztdzb.sale_body in (${flName})
+            </if>
+           )) ht
+  left join (select PZ_NAME pzName,flName, sum(planNum) hjjhl
 
-               from (SELECT distinct PZ_NAME, MAR_MONTH planNum
+               from (SELECT distinct PZ_NAME, MAR_MONTH planNum,fl_Name flName
                        FROM crm_resource_allocation
                       where 1=1 and year = #{year}
-                <if test="flName != null and flName != ''">
-                    and fl_Name = #{flName}
-                </if>
-                and fl_Name <![CDATA[ != ]]> '品种钢'
                       )
-              group by PZ_NAME) jh
-    on ht.pzName = jh.pzName
- group by ht.pzName,hjjhl
-order by decode(ht.pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线',5,'型带',6)
+              group by PZ_NAME,flName) jh
+    on ht.pzName = jh.pzName and ht.saleBody = jh.flName
+    group by ht.pzName,ht.saleBody, jh.hjjhl)
+ group by pzName
+order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5)
     </select>
 
     <select id="selScheduleByCx" resultType="cn.hbis.erp.modular.system.entity.Allocation">
@@ -132,8 +159,7 @@ order by decode(ht.pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线
         WHERE cfd.company_id = sso.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        and xsztdzb.sale_body != '现货'
-        and xsztdzb.sale_body != '自办公司'
+        and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢'
         ) ht
         left join (select cx_NAME,
         sum(planNum) hjjhl
@@ -144,7 +170,7 @@ order by decode(ht.pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线
         <if test="year != null and year != ''">
             and YEAR = #{year}
         </if>
-        and fl_Name <![CDATA[ != ]]> '品种钢')
+        )
 
         group by cx_NAME) jh
         on ht.dName = jh.cx_name
@@ -240,13 +266,15 @@ order by decode(ht.pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线
                                   FROM crm_filter_data cfd
                                  WHERE cfd.company_id = sso.company_id
                                    AND cfd.data_type = 9
-                                   AND cfd.status = 0)) ht
+                                   AND cfd.status = 0
+                                   )
+                                   and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢') ht
                   left join (select CX_NAME cxName, sum(planNum) hjjhl
                               from (SELECT CX_NAME, MAR_MONTH planNum
                                       FROM crm_resource_allocation
                                      WHERE 1 = 1
                                        and YEAR = #{year}
-                                       and fl_Name <![CDATA[ != ]]> '品种钢')
+                                       )
                              group by CX_NAME) jh
                     on ht.dName = jh.cxName
                  group by ht.companyId, ht.dName, jh.hjjhl)
@@ -276,22 +304,21 @@ order by decode(ht.pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线
           round(sum(orderMount) / sum(planNum) * 100, 2)
        end schedule
   from (select (case
-                 when saleBody = '技术中心、事业部' or saleBody = '子公司其他' then
-                  '子公司'
-                 else
-                  saleBody
+                when saleBody = '技术中心、事业部' or saleBody = '子公司其他' or saleBody = '现货' then
+                '子公司'
+                else
+                saleBody
                end) saleBody,
                sum(orderMount) orderMount,
                jh.hjjhl planNum
           from (select (case
-                         when saleBody = '分公司' or saleBody = '专业公司' then
-                          '销售总公司'
-                         when saleBody = '事业部' or saleBody = '技术中心' then
-                          '技术中心、事业部'
-                         when saleBody = '子公司' then
-                          '子公司其他'
-                         when saleBody = '出口' then
-                          '出口'
+                        when saleBody = '分公司' or saleBody = '专业公司' then
+                        '销售总公司'
+                        when saleBody = '事业部' or saleBody = '技术中心' then
+                        '技术中心、事业部'
+                        when saleBody = '子公司' or saleBody = '自办公司'then
+                        '子公司其他'
+                        else saleBody
                        end) saleBody,dName,
                        sum(orderMount) orderMount
                   from (SELECT distinct
@@ -338,8 +365,6 @@ order by decode(ht.pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线
                                  WHERE cfd.company_id = sso.company_id
                                    AND cfd.data_type = 9
                                    AND cfd.status = 0)
-                           and xsztdzb.sale_body <![CDATA[ != ]]> '现货'
-                           and xsztdzb.sale_body <![CDATA[ != ]]> '自办公司'
                            and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢'
                             <if test="companyName != null and companyName != ''">
                                 and detail.company_id = #{companyName}
@@ -351,12 +376,12 @@ order by decode(ht.pzName,'合计',1,'热板',2,'冷板',3,'宽厚板',4,'棒线
                       from (SELECT MAR_MONTH planNum, fl_name flName,cx_name cxName
                               FROM crm_resource_allocation
                              where year = #{year}
-                              and fl_Name <![CDATA[ != ]]> '品种钢')
+                              )
 
                      group by flName,cxName) jh
             on ht.saleBody = jh.flname and ht.dName = jh.cxName
          group by saleBody, jh.hjjhl)
  group by saleBody
-
+        order by decode(saleBody,'销售总公司',1,'子公司',2,'出口',3)
     </select>
 </mapper>

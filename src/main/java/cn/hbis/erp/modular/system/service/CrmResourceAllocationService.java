@@ -42,6 +42,17 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         }
         month = date.substring(4,6);
         year = date.substring(0,4);
+
+        if(ToolUtil.isNotEmpty(flName)){
+            if (flName.equals("3")){
+                flName =  "'专业公司','分公司'";
+            }else if (flName.equals("4")){
+                flName =  "'事业部','技术中心','子公司','自办公司'";
+            }else if (flName.equals("2")){
+                flName =  "'出口'";
+            }
+
+        }
         List<Allocation> lists = new ArrayList<>();
         List<Allocation> list = crmResourceAllocationMapper.selSchedule(date,month,year,flName);
         Allocation allocation = null;

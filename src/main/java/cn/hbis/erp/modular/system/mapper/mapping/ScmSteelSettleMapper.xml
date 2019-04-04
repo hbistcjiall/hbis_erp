@@ -909,6 +909,7 @@
                              WHERE cfd.company_id = sso.company_id
                                AND cfd.data_type = 9
                                AND cfd.status = 0)
+        and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢'
                 ) ht
           left join (select PZ_NAME pzName,
                            sum(planNum) hjjhl,
@@ -927,7 +928,7 @@
                       from (SELECT distinct PZ_NAME, MAR_MONTH planNum, fl_name
                               FROM crm_resource_allocation
                              where year = #{year}
-                              and fl_Name <![CDATA[ != ]]> '品种钢')
+                              )
                      group by PZ_NAME) jh
             on ht.pzName = jh.pzName
         <if test="pzName != null and pzName !=''">
@@ -1034,7 +1035,9 @@
                        and instr(sso.dj_date, #{date}) > 0
                        AND (detail.delivery_delete != 'X' OR
                            detail.delivery_delete IS NULL)
-                        and DATA.name = #{cxName}
+                        <if test="cxName != null and cxName != ''">
+                            and DATA.name = #{cxName}
+                        </if>
                         and sso.order_type_describe not in
                         (select distinct cfd.data_name
                         from crm_filter_data cfd
@@ -1054,6 +1057,7 @@
                         WHERE cfd.company_id = sso.company_id
                         AND cfd.data_type = 9
                         AND cfd.status = 0)
+                        and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢'
                     ) ht
               left join (select cx_NAME,
                                sum(planNum) hjjhl,
