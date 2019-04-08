@@ -811,7 +811,7 @@ select *
         from crm_resource_allocation
         where STATUS = '0'
         group by year, PZ_NAME, cx_name, fl_name) a
-        WHERE  rq LIKE  #{year}||'%' and yf = 3
+        WHERE  rq LIKE  #{year}||'%' and yf = 3 AND FL_name <![CDATA[ != ]]>  '品种钢'
         <if test="name != null and name !=''">
             and a.pz=#{name}
         </if>
@@ -1062,7 +1062,7 @@ select *
         from crm_resource_allocation
         where STATUS = '0'
         group by year, PZ_NAME, cx_name, fl_name) a
-        WHERE  rq LIKE  #{year}||'%' and yf = 3
+        WHERE  rq LIKE  #{year}||'%' and yf = 3 AND FL_name <![CDATA[ != ]]>  '品种钢'
         <if test="name != null and name !=''">
             and a.pz=#{name}
         </if>
