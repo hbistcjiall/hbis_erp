@@ -13,10 +13,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
@@ -70,20 +67,17 @@ public class ProductSalesProtocolAccountSalesController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "varieties", value = "产品类别", dataType = "String"),
             @ApiImplicitParam(name = "beginTime", value = "统计月份开始", dataType = "String"),
-            @ApiImplicitParam(name = "endTime", value = "统计月份结束", dataType = "String"),
-            @ApiImplicitParam(name = "limit" ,value = "每页条数",dataType ="String" ),
-            @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
+            @ApiImplicitParam(name = "endTime", value = "统计月份结束", dataType = "String")
     })
-    @PostMapping(value = "exportSubsidiaryVarietySteel")
-    public void exportVarietySteelState(String varieties, String beginTime, String endTime,String limit, String page, HttpServletResponse response) {
+    @GetMapping(value = "export")
+    public void exportVarietySteelState(String varieties, String beginTime, String endTime, HttpServletResponse response) {
         beginTime = DateUtil.getFirstDayOfMonth(beginTime);
         endTime = DateUtil.getLastDayOfMonth(endTime);
-        Page<Map<String, Object>> productSalesProtocolAccountSales = productSalesProtocolAccountSalesService.list(varieties, beginTime, endTime);
-        List<Map<String,Object>> resultList = productSalesProtocolAccountSales.getRecords();
+        List<Map<String, Object>> productSalesProtocolAccountSales = productSalesProtocolAccountSalesService.exportList(varieties, beginTime, endTime);
         List<Map<String, Object>> list = new ArrayList<>();
-        for(int i = 0; i < resultList.size(); i++) {
+        for(int i = 0; i < productSalesProtocolAccountSales.size(); i++) {
+            Map<String,Object> map = productSalesProtocolAccountSales.get(i);
             Map<String, Object> temp = new HashMap<>();
-            Map<String,Object> map = resultList.get(i);
             if (map.get("COMPANYNAME") != null){
                 temp.put("companyName", map.get("COMPANYNAME"));
             }else{
@@ -124,7 +118,6 @@ public class ProductSalesProtocolAccountSalesController {
         map.put("column11", "协议户中执行协议政策总销量");
         map.put("column12", "协议户中执行协议政策总销量占协议总销量比");
         listmap.add(map);
-        //sql语句查询的顺序
         String[] colOrder={"companyName", "varieties", "totalSales","protocolAccontNum","protocolSalesYear", "totalProtocolSales",
                 "totalProtocolSalesOfYear","totalProtocolSalesOfProduct","zibanProtocolSales","zibanProtocolSalesOfTotal","xieyiProtocolSales","xieyiProtocolSalesOfTotal"};
         String[] mergeCols= {};
@@ -132,14 +125,13 @@ public class ProductSalesProtocolAccountSalesController {
         StringBuffer filename = null;
         filename = new StringBuffer();
         filename.append("产品总销量及销售公司协议户销量统计表");
-        filename.append(format1.format(new Date()));
         filename.append(EXPORT_XLSX_FILE_SUFFIX);
 
         OutputStream out = null;
         try {
             //web浏览通过MIME类型判断文件是excel类型
-            response.setContentType("application/vnd.ms-excel");
-            response.setHeader("Content-disposition", "attachment;filename=" + new String(filename.toString().getBytes("UTF-8"), "ISO8859-1"));
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+            response.setHeader("Content-disposition", "attachment;filename= "+new String(filename.toString().getBytes("UTF-8"), "ISO8859-1"));
             out = response.getOutputStream();
             exportXlsx(out,filename.toString(),listmap,list,mergeCols,colOrder,response);
         } catch (FileNotFoundException e) {

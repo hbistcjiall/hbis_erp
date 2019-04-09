@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public interface ProtocolAccountDetailsStatisticsMapper extends BaseMapper<ProtocolAccountDetailsStatistics> {
     /**
-     * 根据条件查询协议户明细列表
+     * 根据条件查询销售总公司协议户销量明细统计列表
      */
     Page<Map<String, Object>> List(@Param("page") Page page, @Param("varieties") String varieties,
                                    @Param("beginTime") String beginTime, @Param("endTime") String endTime,
@@ -28,9 +28,9 @@ public interface ProtocolAccountDetailsStatisticsMapper extends BaseMapper<Proto
                                    @Param("supplyMode") String supplyMode, @Param("companyIdList") List companyIdList);
 
     /**
-     * 根据条件查询协议户明细列表(不分页)
+     * 导出 销售总公司协议户销量明细统计列表
      */
-    List<Map<String, Object>> List(@Param("varieties") String varieties,
-                                   @Param("beginTime") String beginTime, @Param("endTime") String endTime,
-                                   @Param("supplyMode") String supplyMode, @Param("companyIdList") List companyIdList);
+    List<Map<String, Object>> List(@Param("varieties") String varieties, @Param("beginTime") String beginTime,
+                                   @Param("endTime") String endTime, @Param("supplyMode") String supplyMode,
+                                   @Param("companyIdList") List companyIdList);
 }
