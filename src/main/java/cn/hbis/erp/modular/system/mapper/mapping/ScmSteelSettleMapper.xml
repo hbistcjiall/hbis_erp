@@ -16,14 +16,14 @@
 
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) fgspzgl,
 
-        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body  &lt; &gt; '专业公司' or sale_body  &lt; &gt; '分公司' or sale_body is not null)  then fkimg end) zgsfkimg,
-        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body  &lt; &gt; '专业公司' or sale_body  &lt; &gt; '分公司' or sale_body is not null) and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) zgspzgl,
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货')  then fkimg end) zgsfkimg,
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货') and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) zgspzgl,
 
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end)zybz,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end)fgsbz,
-        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body  &lt; &gt; '专业公司' or sale_body  &lt; &gt; '分公司' or sale_body is not null) and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货') and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')  then fkimg end)zgsbz,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) bz,
@@ -289,6 +289,7 @@
         AND cfd.status = 0)
         group by  t.companyname,t.name  )
         ) ) where 1=1
+        and  NAME &lt; &gt; '唐钢1580热轧线'  and  name &lt; &gt; '唐钢中厚板'
         <if test="dw != null">
             and COMPANYNAME = #{dw}
         </if>
