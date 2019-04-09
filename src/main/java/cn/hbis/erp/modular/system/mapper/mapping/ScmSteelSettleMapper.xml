@@ -1031,8 +1031,10 @@
                              end) zyfgshtl, sum(case
                           when ht.saleBody = '技术中心' or
                                ht.saleBody = '事业部' or
-                               ht.saleBody = '子公司' then
-                           ht.orderMount
+                               ht.saleBody = '子公司' or
+                               ht.saleBody = '自办公司' or
+                               ht.saleBody = '现货' then
+                               ht.orderMount
                         end) zgshtl,
                         sum(case
                               when ht.saleBody = '出口' then
@@ -1056,6 +1058,9 @@
                    AND sso.sale_body = xsztdzb.sale_body_des
 
                  WHERE 1 = 1
+                    <if test="pzName != null and pzName != ''">
+                        and svtp.variety = #{pzName}
+                    </if>
                    and instr(sso.dj_date, #{date}) > 0
                    and sso.order_type_describe not in
        (select distinct cfd.data_name
@@ -1088,7 +1093,7 @@
                                   planNum
                                end) planNumck,
                            sum(case
-                                 when fl_name = '子公司其他' or fl_name = '技术中心、事业部' then
+                                 when fl_name = '子公司其他' or fl_name = '技术中心、事业部' or fl_name = '现货' then
                                   planNum
                                end) planNumzgs
                       from (SELECT distinct PZ_NAME, MAR_MONTH planNum, fl_name
@@ -1097,59 +1102,122 @@
                               )
                      group by PZ_NAME) jh
             on ht.pzName = jh.pzName
-        <if test="pzName != null and pzName !=''">
-            where HT.PZNAME = #{pzName}
-        </if>
          group by ht.pzName, hjjhl, jh.planNumxsz, jh.planNumzgs, jh.planNumck)
          order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5)
     </select>
 
     <select id="getcxhtjd" resultType="map">
       select dName,
-           case  when hjhtl is null then 0 else hjhtl end hjhtl,
-           case  when hjjhl is null then 0 else hjjhl end hjjhl,
-           case when hjjhl =0 then 0 when hjhtl / hjjhl is null then 0 else
-
-            ROUND (
-            hjhtl / hjjhl * 100,
-            2
-
-            )
-            END AS schedulehj,
-            case  when zygshtl is null then 0 else zygshtl end zygshtl,
-            case  when zyfgshtl is null then 0 else zyfgshtl end zyfgshtl,
-             case  when planNumxsz is null then 0 else planNumxsz end planNumxsz,
-           case when planNumxsz =0 then 0 when htlzgs/planNumxsz is null then 0 else
-
-            ROUND (
-            htlzgs/planNumxsz * 100,
-            2
-            )
-
-            END AS schedulexsz,
-            case when htlzgs-planNumxsz is null then 0 else htlzgs-planNumxsz end jdxsz,
-            case  when zgshtl is null then 0 else zgshtl end zgshtl,
-             case  when planNumzgs is null then 0 else planNumzgs end planNumzgs,
-           case when planNumzgs =0 then 0 when htlzgs/planNumzgs is null then 0 else
-
-            ROUND (
-            htlzgs/planNumzgs * 100,
-            2
-            )
-
-            END AS schedulezgs,
-            case when zgshtl-planNumzgs is null then 0 else htlzgs-planNumzgs end jdzgs,
-            case  when ckhtl is null then 0 else ckhtl end ckhtl,
-             case  when planNumck is null then 0 else planNumck end planNumck,
-           case when planNumck =0 then 0 when ckhtl/planNumck is null then 0 else
-
-            ROUND (
-            ckhtl/planNumck * 100,
-            2
-            )
-
-            END AS scheduleck,
-            case when ckhtl-planNumck is null then 0 else ckhtl-planNumck end jdck
+        case
+        when hjhtl is null then
+        0
+        else
+        hjhtl
+        end hjhtl,
+        case
+        when hjjhl is null then
+        0
+        else
+        hjjhl
+        end hjjhl,
+        case
+        when hjjhl = 0 then
+        0
+        when hjhtl / hjjhl is null then
+        0
+        else
+        ROUND(hjhtl / hjjhl * 100, 2)
+        END AS schedulehj,
+        case
+        when zygshtl is null then
+        0
+        else
+        zygshtl
+        end zygshtl,
+        case
+        when zyfgshtl is null then
+        0
+        else
+        zyfgshtl
+        end zyfgshtl,
+        case
+        when planNumxsz is null then
+        0
+        else
+        planNumxsz
+        end planNumxsz,
+        case
+        when planNumxsz = 0 then
+        0
+        when htlzgs / planNumxsz is null then
+        0
+        else
+        ROUND(htlzgs / planNumxsz * 100, 2)
+        END AS schedulexsz,
+        case
+        when htlzgs=0 or htlzgs is null then
+        -planNumxsz
+        when planNumxsz = 0 or planNumxsz is null then
+        htlzgs
+        else
+        htlzgs - planNumxsz
+        end jdxsz,
+        case
+        when zgshtl is null then
+        0
+        else
+        zgshtl
+        end zgshtl,
+        case
+        when planNumzgs is null then
+        0
+        else
+        planNumzgs
+        end planNumzgs,
+        case
+        when planNumzgs = 0 then
+        0
+        when htlzgs / planNumzgs is null then
+        0
+        else
+        ROUND(htlzgs / planNumzgs * 100, 2)
+        END AS schedulezgs,
+        case
+        when zgshtl= 0 or zgshtl is null then
+        -planNumzgs
+        when planNumzgs=0 or planNumzgs is null then
+        zgshtl
+        else
+        htlzgs - planNumzgs
+        end jdzgs,
+        case
+        when ckhtl is null then
+        0
+        else
+        ckhtl
+        end ckhtl,
+        case
+        when planNumck is null then
+        0
+        else
+        planNumck
+        end planNumck,
+        case
+        when planNumck = 0 then
+        0
+        when ckhtl / planNumck is null then
+        0
+        else
+        ROUND(ckhtl / planNumck * 100, 2)
+        END AS scheduleck,
+        case
+        when ckhtl= 0 or ckhtl is null then
+        -planNumck
+        when planNumck=0 or planNumck is null then
+        ckhtl
+        else
+        ckhtl - planNumck
+        end jdck
       from (select distinct ht.dName dName,
                             sum(ht.orderMount) hjhtl,
                             hjjhl,
@@ -1167,7 +1235,9 @@
                                  end) zyfgshtl, sum(case
                               when ht.saleBody = '技术中心' or
                                    ht.saleBody = '事业部' or
-                                   ht.saleBody = '子公司' then
+                                   ht.saleBody = '子公司' or
+                                   ht.saleBody = '自办公司' or
+                                    ht.saleBody = '现货' then
                                ht.orderMount
                             end) zgshtl,
                             sum(case
@@ -1223,7 +1293,6 @@
                         WHERE cfd.company_id = sso.company_id
                         AND cfd.data_type = 9
                         AND cfd.status = 0)
-                        and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢'
                     ) ht
               left join (select cx_NAME,
                                sum(planNum) hjjhl,
@@ -1236,7 +1305,7 @@
                                       planNum
                                    end) planNumck,
                                sum(case
-                                     when fl_name = '子公司其他' or fl_name = '技术中心、事业部' then
+                                     when fl_name = '子公司其他' or fl_name = '技术中心、事业部' or fl_name = '现货' then
                                       planNum
                                    end) planNumzgs
                           from (SELECT cx_NAME, MAR_MONTH planNum, fl_name

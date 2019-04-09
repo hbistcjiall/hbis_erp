@@ -24,15 +24,7 @@
     </sql>
 
     <select id="tree" resultType="cn.hbis.erp.core.common.node.ZTreeNode">
-		select DEPT_ID AS id, PID as pId, SIMPLE_NAME as name,
-		(
-		CASE
-		WHEN (PID = '0' OR PID IS NULL) THEN
-		'true'
-		ELSE
-		'false'
-		END
-		) as open from sys_dept
+		select DEPT_ID AS id, PID as pId, SIMPLE_NAME as name from sys_dept
 	</select>
 
     <select id="list" resultType="map">
