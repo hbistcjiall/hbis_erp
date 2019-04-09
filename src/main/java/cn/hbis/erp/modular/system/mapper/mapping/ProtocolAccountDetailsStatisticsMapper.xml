@@ -17,7 +17,14 @@
         SCM_SALE_ORDER o
         on
         d.account_name = o.saler_name
+        left join scm_variety_to_pt_gp svtpg
+        on o.company_id = svtpg.company_id
+        and o.product_code = svtpg.product_group
+        left join crm_filter_data cfd
+        on o.company_id = cfd.company_id
         where 1 = 1
+        and cfd.data_type = '1'
+        and cfd.status = '0'
         <if test="varieties != null and '热板' == varieties">
             and d.VARIETIES = '热板' or d.VARIETIES = '酸洗'
         </if>
@@ -62,7 +69,14 @@
         SCM_SALE_ORDER o
         on
         d.account_name = o.saler_name
+        left join scm_variety_to_pt_gp svtpg
+        on o.company_id = svtpg.company_id
+        and o.product_code = svtpg.product_group
+        left join crm_filter_data cfd
+        on o.company_id = cfd.company_id
         where 1 = 1
+        and cfd.data_type = '1'
+        and cfd.status = '0'
         <if test="varieties != null and '热板' == varieties">
             and d.VARIETIES = '热板' or d.VARIETIES = '酸洗'
         </if>
