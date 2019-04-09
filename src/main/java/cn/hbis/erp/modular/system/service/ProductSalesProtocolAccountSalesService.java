@@ -9,6 +9,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,5 +42,20 @@ public class ProductSalesProtocolAccountSalesService extends ServiceImpl<Product
             endTime = endTime.replace("-","");
         }
         return this.baseMapper.list(page, varieties, beginTime, endTime);
+    }
+    /**
+     * 导出 产品总销量及销售公司协议户销量统计
+     *
+     *
+     */
+    public List<Map<String, Object>> exportList(String varieties, String beginTime, String endTime) {
+        if (beginTime != null){
+            beginTime = beginTime.replace("-","");
+        }
+        if (endTime != null){
+            endTime = endTime.replace("-","");
+        }
+        return this.baseMapper.list(varieties, beginTime, endTime);
+
     }
 }

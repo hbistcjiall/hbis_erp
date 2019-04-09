@@ -142,16 +142,16 @@
         from crm_resource_allocation
         where STATUS = '0'
         group by year, PZ_NAME, cx_name, fl_name) a
-        WHERE rq like #{year}||'%' and yf = 3
+        WHERE rq LIKE  #{year}||'%' and
+        yf = #{month}
         <if test="name != null and name !=''">
             and a.pz=#{name}
         </if>
         ORDER BY fl_name , cx ,
         "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
         where a.FL_Name ='内贸' or a.FL_Name ='出口' or a.FL_Name ='技术中心、事业部' or a.FL_Name ='销售总公司'
-
+        or a.FL_name ='现货'
         GROUP BY a.FL_NAME
-
         )
 
     </select>
@@ -253,22 +253,21 @@
         from crm_resource_allocation
         where STATUS = '0'
         group by year, PZ_NAME, cx_name, fl_name) a
-        WHERE rq LIKE #{year}||'%' and
-        yf = 3
+        WHERE rq LIKE  #{year}||'%' and
+        yf = #{month}
         <if test="name != null and name !=''">
             and a.pz=#{name}
         </if>
         ORDER BY fl_name , cx ,
         "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
         where a.FL_Name ='内贸' or a.FL_Name ='出口' or a.FL_Name ='技术中心、事业部' or a.FL_Name ='销售总公司'
-
+        or a.FL_name ='现货'
         GROUP BY a.FL_NAME
-
     </select>
 
     <!--三-->
     <select id="typeselect" resultType="map">
-		SELECT a.pz name,a.pzgl ,b.jsl ,"ROUND"(a.pzgl/b.jsl, 2)*100 bili  from
+		SELECT a.pz name,NVL(a.pzgl,0) pzgl,NVL(b.jsl,0) jsl ,NVL("ROUND"(a.pzgl/b.jsl, 2)*100,0) bili  from
 (SELECT Pz, "SUM"(jhl) pzgl from
 (select *
   from (select '1' yf,year || '1月' rq,PZ_NAME pz,
@@ -366,7 +365,7 @@
           from crm_resource_allocation
             where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name) a
-					where rq LIKE #{year}||'%' AND yf = 3 AND FL_name ='品种钢'
+					where rq LIKE #{year}||'%' AND yf = #{month} AND FL_name ='品种钢'
         ORDER BY    fl_name , cx ,
         "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') )
 GROUP BY pz ) a
@@ -469,7 +468,7 @@ select *
           from crm_resource_allocation
             where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name) a
-					where rq LIKE #{year}||'%' AND yf = 3
+					where rq LIKE #{year}||'%' AND yf = #{month} AND FL_name <![CDATA[ != ]]>  '品种钢'
         ORDER BY    fl_name , cx ,
         "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材')
 		)
@@ -479,9 +478,9 @@ select *
 
 	</select>
     <select id="typessum" resultType="map">
-		SELECT sum(pzgl) pzgl,"SUM"(jsl) jsl, "ROUND"((sum(pzgl)/"SUM"(jsl))*100, 2)|| '%'  bili
+		SELECT NVL(sum(pzgl),0) pzgl,"SUM"(jsl) jsl, NVL("ROUND"((sum(pzgl)/"SUM"(jsl))*100, 2),0)|| '%'  bili
 		from
-		(	SELECT a.pz name,a.pzgl ,b.jsl ,"ROUND"(a.pzgl/b.jsl, 2)*100 bili  from
+		(SELECT a.pz name,a.pzgl ,b.jsl ,"ROUND"(a.pzgl/b.jsl, 2)*100 bili  from
 (SELECT Pz, "SUM"(jhl) pzgl from
 (select *
   from (select '1' yf,year || '1月' rq,PZ_NAME pz,
@@ -579,7 +578,7 @@ select *
           from crm_resource_allocation
             where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name) a
-					where rq LIKE #{year}||'%' AND yf = 3 AND FL_name ='品种钢'
+					where rq LIKE #{year}||'%' AND yf = #{month} AND FL_name ='品种钢'
         ORDER BY    fl_name , cx ,
         "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') )
 GROUP BY pz ) a
@@ -682,7 +681,7 @@ select *
           from crm_resource_allocation
             where STATUS = '0'
          group by year, PZ_NAME, cx_name, fl_name) a
-					where rq LIKE #{year}||'%' AND yf = 3
+					where rq LIKE #{year}||'%' AND yf = #{month} AND FL_name <![CDATA[ != ]]>  '品种钢'
         ORDER BY    fl_name , cx ,
         "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材')
 		)
@@ -695,8 +694,8 @@ select *
 
     <!-- 二 -->
     <select id="Steelmillsplan" resultType="map">
-        SELECT
-        DECODE( m.COMPANy_id,9580,
+
+        SELECT  DECODE( COMPANY_ID,9580,
         '唐钢',
         9727,
         '邯钢',
@@ -711,9 +710,54 @@ select *
         8493,
         '衡板',
         7778,
-        '邯宝') companyname,"NVL"("SUM"(s.JHL),0) jh,NVL("SUM"(s.XH),0) xh from
-
-        ( SELECT a.cx,a.jhl,b.XH from
+        '邯宝') companyname,"SUM"(jhl)jh,NVL("SUM"(xh),0) xh FROM
+        (SELECT  case
+        when a.cx = '唐钢1700/1810' then'9580'
+        when a.cx = '唐钢酸洗' then'9580'
+        when a.cx = '唐钢一冷罩退' then'9580'
+        when a.cx = '唐钢热基镀锌' then'9580'
+        when a.cx = '唐钢一冷冷基镀锌' then'9580'
+        when a.cx = '唐钢一冷酸轧' then'9580'
+        when a.cx = '唐钢二冷酸轧' then'9580'
+        when a.cx = '唐钢新区连退' then'9580'
+        when a.cx = '唐钢新区镀锌' then'9580'
+        when a.cx = '唐钢棒材' then'9580'
+        when a.cx = '唐钢线材' then'9580'
+        when a.cx = '唐钢中型' then'9580'
+        when a.cx = '唐钢1580热轧线' then'9580'
+        when a.cx = '唐钢中厚板' then'9580'
+        when a.cx = '唐钢大型' then'9580'
+        when a.cx = '唐钢中厚板' then'9580'
+        when a.cx = '邯钢2250' then'7778'
+        when a.cx = '邯宝酸轧' then'7778'
+        when a.cx = '邯钢西区镀锌' then'7778'
+        when a.cx = '邯钢西区连退' then'7778'
+        when a.cx = '邯钢CSP' then'9727'
+        when a.cx = '邯钢酸洗' then'9727'
+        when a.cx = '邯钢一冷罩退' then'9727'
+        when a.cx = '邯钢热基镀锌' then'9727'
+        when a.cx = '邯钢一冷冷基镀锌' then'9727'
+        when a.cx = '邯钢电镀锌' then'9727'
+        when a.cx = '邯钢彩涂' then'9727'
+        when a.cx = '邯钢酸轧' then'9727'
+        when a.cx = '邯钢3000/3500' then'9727'
+        when a.cx = '邯钢棒材' then'9727'
+        when a.cx = '邯钢线材' then'9727'
+        when a.cx = '邯钢新钢轧线材' then'9727'
+        when a.cx = '邯钢新钢轧棒材' then'9727'
+        when a.cx = '邯钢新钢轧型材' then'9727'
+        when a.cx = '宣钢棒材' then'9193'
+        when a.cx = '宣钢一高线、二高线' then'9193'
+        when a.cx = '宣钢中型' then'9193'
+        when a.cx = '宣钢带钢' then'9193'
+        when a.cx = '承钢1780' then'9196'
+        when a.cx = '承钢棒材' then'9196'
+        when a.cx = '承钢线材' then'9196'
+        when a.cx = '承钢中宽带' then'9196'
+        when a.cx = '舞钢4100/4200' then'1932'
+        when a.cx = '石钢棒材' then'8110'
+        when a.cx = '衡板冷板' then'8493'
+        END company_id ,a.jhl,b.XH from
         ( SELECT cx ,"SUM"(jhl) jhl from
         (select *
         from (select '1' yf,year || '1月' rq,PZ_NAME pz,
@@ -811,7 +855,7 @@ select *
         from crm_resource_allocation
         where STATUS = '0'
         group by year, PZ_NAME, cx_name, fl_name) a
-        WHERE  rq LIKE  #{year}||'%' and yf = 3 AND FL_name <![CDATA[ != ]]>  '品种钢'
+        WHERE  rq LIKE  #{year}||'%' and yf = #{month} AND FL_name <![CDATA[ != ]]>  '品种钢'
         <if test="name != null and name !=''">
             and a.pz=#{name}
         </if>
@@ -916,7 +960,7 @@ select *
         from crm_resource_allocation
         where STATUS = '0'
         group by year, PZ_NAME, cx_name, fl_name) a
-        WHERE  rq LIKE  #{year}||'%' and yf = 3 and FL_name = '现货'
+        WHERE  rq LIKE  #{year}||'%' and yf = #{month} and FL_name = '现货'
         <if test="name != null and name !=''">
             and a.pz=#{name}
         </if>
@@ -925,29 +969,14 @@ select *
         ORDER BY    fl_name , cx ,
         "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
         GROUP BY cx   ) b
-        on a.cx= b.CX ) s
-        LEFT JOIN
-        (SELECT "DATA"."NAME",DETAIL.COMPANY_ID from
-
-        scm_delivery_detail detail
-        LEFT JOIN
-        CRM_RESOURCE_DATA DATA
-        on   data.full_name = detail.ext AND
-        data.company_id =
-
-        detail.company_id
-        and	data.type = 3
-        where data.name is not null
-        GROUP BY "DATA"."NAME",DETAIL.COMPANY_ID) m
-        on s.CX = m.name
-        where  m.company_id is not null
-        GROUP BY m.company_id
+        on a.cx= b.CX )
+        GROUP BY company_id
 
     </select>
     <select id="Steelmillssum" resultType="map">
         SELECT "SUM"(xh) xh,"SUM"(jh) jh from
-        ( SELECT
-        DECODE( m.COMPANy_id,9580,
+        (
+        SELECT  DECODE( COMPANY_ID,9580,
         '唐钢',
         9727,
         '邯钢',
@@ -962,9 +991,54 @@ select *
         8493,
         '衡板',
         7778,
-        '邯宝') companyname,"NVL"("SUM"(s.JHL),0) jh,NVL("SUM"(s.XH),0) xh from
-
-        ( SELECT a.cx,a.jhl,b.XH from
+        '邯宝') companyname,"SUM"(jhl)jh,"SUM"(xh) xh FROM
+        (SELECT  case
+        when a.cx = '唐钢1700/1810' then'9580'
+        when a.cx = '唐钢酸洗' then'9580'
+        when a.cx = '唐钢一冷罩退' then'9580'
+        when a.cx = '唐钢热基镀锌' then'9580'
+        when a.cx = '唐钢一冷冷基镀锌' then'9580'
+        when a.cx = '唐钢一冷酸轧' then'9580'
+        when a.cx = '唐钢二冷酸轧' then'9580'
+        when a.cx = '唐钢新区连退' then'9580'
+        when a.cx = '唐钢新区镀锌' then'9580'
+        when a.cx = '唐钢棒材' then'9580'
+        when a.cx = '唐钢线材' then'9580'
+        when a.cx = '唐钢中型' then'9580'
+        when a.cx = '唐钢1580热轧线' then'9580'
+        when a.cx = '唐钢中厚板' then'9580'
+        when a.cx = '唐钢大型' then'9580'
+        when a.cx = '唐钢中厚板' then'9580'
+        when a.cx = '邯钢2250' then'7778'
+        when a.cx = '邯宝酸轧' then'7778'
+        when a.cx = '邯钢西区镀锌' then'7778'
+        when a.cx = '邯钢西区连退' then'7778'
+        when a.cx = '邯钢CSP' then'9727'
+        when a.cx = '邯钢酸洗' then'9727'
+        when a.cx = '邯钢一冷罩退' then'9727'
+        when a.cx = '邯钢热基镀锌' then'9727'
+        when a.cx = '邯钢一冷冷基镀锌' then'9727'
+        when a.cx = '邯钢电镀锌' then'9727'
+        when a.cx = '邯钢彩涂' then'9727'
+        when a.cx = '邯钢酸轧' then'9727'
+        when a.cx = '邯钢3000/3500' then'9727'
+        when a.cx = '邯钢棒材' then'9727'
+        when a.cx = '邯钢线材' then'9727'
+        when a.cx = '邯钢新钢轧线材' then'9727'
+        when a.cx = '邯钢新钢轧棒材' then'9727'
+        when a.cx = '邯钢新钢轧型材' then'9727'
+        when a.cx = '宣钢棒材' then'9193'
+        when a.cx = '宣钢一高线、二高线' then'9193'
+        when a.cx = '宣钢中型' then'9193'
+        when a.cx = '宣钢带钢' then'9193'
+        when a.cx = '承钢1780' then'9196'
+        when a.cx = '承钢棒材' then'9196'
+        when a.cx = '承钢线材' then'9196'
+        when a.cx = '承钢中宽带' then'9196'
+        when a.cx = '舞钢4100/4200' then'1932'
+        when a.cx = '石钢棒材' then'8110'
+        when a.cx = '衡板冷板' then'8493'
+        END company_id ,a.jhl,b.XH from
         ( SELECT cx ,"SUM"(jhl) jhl from
         (select *
         from (select '1' yf,year || '1月' rq,PZ_NAME pz,
@@ -1062,7 +1136,7 @@ select *
         from crm_resource_allocation
         where STATUS = '0'
         group by year, PZ_NAME, cx_name, fl_name) a
-        WHERE  rq LIKE  #{year}||'%' and yf = 3 AND FL_name <![CDATA[ != ]]>  '品种钢'
+        WHERE  rq LIKE  #{year}||'%' and yf = #{month} AND FL_name <![CDATA[ != ]]>  '品种钢'
         <if test="name != null and name !=''">
             and a.pz=#{name}
         </if>
@@ -1167,7 +1241,7 @@ select *
         from crm_resource_allocation
         where STATUS = '0'
         group by year, PZ_NAME, cx_name, fl_name) a
-        WHERE  rq LIKE  #{year}||'%' and yf = 3 and FL_name = '现货'
+        WHERE  rq LIKE  #{year}||'%' and yf = #{month} and FL_name = '现货'
         <if test="name != null and name !=''">
             and a.pz=#{name}
         </if>
@@ -1176,928 +1250,591 @@ select *
         ORDER BY    fl_name , cx ,
         "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
         GROUP BY cx   ) b
-        on a.cx= b.CX ) s
-        LEFT JOIN
-        (SELECT "DATA"."NAME",DETAIL.COMPANY_ID from
-
-        scm_delivery_detail detail
-        LEFT JOIN
-        CRM_RESOURCE_DATA DATA
-        on   data.full_name = detail.ext AND
-        data.company_id =
-
-        detail.company_id
-        and	data.type = 3
-        where data.name is not null
-        GROUP BY "DATA"."NAME",DETAIL.COMPANY_ID) m
-        on s.CX = m.name
-        where  m.company_id is not null
-        GROUP BY m.company_id
+        on a.cx= b.CX )
+        GROUP BY company_id
         )
 
     </select>
+
     <!--四-->
     <select id="Steellist" resultType="map">
-						SELECT "DECODE"(m.company_id,9580,
-						'唐钢',
-						9727,
-						'邯钢',
-						9193,
-						'宣钢',
-						9196,
-						'承钢',
-						1932,
-						'舞钢',
-						8110,
-						'石钢',
-						8493,
-						'衡板',
-						7778,
-						'邯宝' ) companyname,
 
-		NVL("SUM"(x.JSL),0) jsl,NVL("SUM"(x.PZGL),0) pzgl
-
-		,"ROUND"("SUM"(x.PZGL)/"SUM"(x.JSL), 4)*100 bili from
-		(
-		SELECT s.CX,s.JSL,x.PZGL from
+      SELECT DECODE( COMPANY_ID,9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') companyname,NVL("SUM"(JSL),0) jsl,NVL("SUM"(PZGL),0) pzgl,
+				NVL("ROUND"("SUM"(PZGL)/"SUM"(JSL), 4)*100,0) bili from
+(SELECT  case
+        when s.cx = '唐钢1700/1810' then'9580'
+        when s.cx = '唐钢酸洗' then'9580'
+        when s.cx = '唐钢一冷罩退' then'9580'
+        when s.cx = '唐钢热基镀锌' then'9580'
+        when s.cx = '唐钢一冷冷基镀锌' then'9580'
+        when s.cx = '唐钢一冷酸轧' then'9580'
+        when s.cx = '唐钢二冷酸轧' then'9580'
+        when s.cx = '唐钢新区连退' then'9580'
+        when s.cx = '唐钢新区镀锌' then'9580'
+        when s.cx = '唐钢棒材' then'9580'
+        when s.cx = '唐钢线材' then'9580'
+        when s.cx = '唐钢中型' then'9580'
+        when s.cx = '唐钢1580热轧线' then'9580'
+        when s.cx = '唐钢中厚板' then'9580'
+        when s.cx = '唐钢大型' then'9580'
+        when s.cx = '唐钢中厚板' then'9580'
+        when s.cx = '邯钢2250' then'7778'
+        when s.cx = '邯宝酸轧' then'7778'
+        when s.cx = '邯钢西区镀锌' then'7778'
+        when s.cx = '邯钢西区连退' then'7778'
+        when s.cx = '邯钢CSP' then'9727'
+        when s.cx = '邯钢酸洗' then'9727'
+        when s.cx = '邯钢一冷罩退' then'9727'
+        when s.cx = '邯钢热基镀锌' then'9727'
+        when s.cx = '邯钢一冷冷基镀锌' then'9727'
+        when s.cx = '邯钢电镀锌' then'9727'
+        when s.cx = '邯钢彩涂' then'9727'
+        when s.cx = '邯钢酸轧' then'9727'
+        when s.cx = '邯钢3000/3500' then'9727'
+        when s.cx = '邯钢棒材' then'9727'
+        when s.cx = '邯钢线材' then'9727'
+        when s.cx = '邯钢新钢轧线材' then'9727'
+        when s.cx = '邯钢新钢轧棒材' then'9727'
+        when s.cx = '邯钢新钢轧型材' then'9727'
+        when s.cx = '宣钢棒材' then'9193'
+        when s.cx = '宣钢一高线、二高线' then'9193'
+        when s.cx = '宣钢中型' then'9193'
+        when s.cx = '宣钢带钢' then'9193'
+        when s.cx = '承钢1780' then'9196'
+        when s.cx = '承钢棒材' then'9196'
+        when s.cx = '承钢线材' then'9196'
+        when s.cx = '承钢中宽带' then'9196'
+        when s.cx = '舞钢4100/4200' then'1932'
+        when s.cx = '石钢棒材' then'8110'
+        when s.cx = '衡板冷板' then'8493'
+        END company_id,s.JSL,x.PZGL from
 		(SELECT cx ,"SUM"(jhl) jsl from
 				(select *
-				  from (select '1' yf,year || '1月'
-
-		rq,PZ_NAME pz,
+				  from (select '1' yf,year || '1月'rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(JAN_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(JAN_MONTH) jhl
+              from crm_resource_allocation
 						   where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '2' yf,year || '2月
-
-		' rq,PZ_NAME pz,
+						select '2' yf,year || '2月'rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(FEB_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(FEB_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name,fl_name
 						union all
-						select '3' yf,year || '3月
-
-		' rq,PZ_NAME pz,
+						select '3' yf,year || '3月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(MAR_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(MAR_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '4' yf,year || '4月
-
-		' rq,PZ_NAME pz,
+						select '4' yf,year || '4月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(APR_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(APR_MONTH) jhl
+						  from crm_resource_allocation
 						   where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+							cx_name, fl_name
 						union all
-						select '5' yf,year || '5月
-
-		' rq,PZ_NAME pz,
+						select '5' yf,year || '5月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(MAY_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-							  where STATUS =
-
-		'0'
+							   sum(MAY_MONTH) jhl
+						  from crm_resource_allocation
+							  where STATUS ='0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '6' yf,year || '6月
-
-		' rq,PZ_NAME pz,
+						select '6' yf,year || '6月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(JUN_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(JUN_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '7' yf,year || '7月
-
-		' rq,PZ_NAME pz,
+						select '7' yf,year || '7月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(JUL_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(JUL_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '8' yf,year || '8月
-
-		' rq,PZ_NAME pz,
+						select '8' yf,year || '8月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(AUG_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(AUG_MONTH) jhl
+						  from crm_resource_allocation
 						   where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '9' yf,year || '9月
-
-		' rq,PZ_NAME pz,
+						select '9' yf,year || '9月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(SEP_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(SEP_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						 group by year, PZ_NAME,cx_name, fl_name
 						union all
-						select '10' yf,year || '10
-
-		月' rq,PZ_NAME pz,
+						select '10' yf,year || '10月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(OCT_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(OCT_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						 group by year, PZ_NAME,cx_name, fl_name
 						union all
-						select '11' yf,year || '11
-
-		月' rq,PZ_NAME pz,
+						select '11' yf,year || '11月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(NOV_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(NOV_MONTH) jhl
+						  from crm_resource_allocation
 						  where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						 group by year, PZ_NAME,cx_name, fl_name
 						union all
-						select '12' yf,year || '12
-
-		月' rq,PZ_NAME pz,
+						select '12' yf,year || '12月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(DEC_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(DEC_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name) a
-						WHERE  rq LIKE #{year}||'%' and
-
-		yf = 3 AND FL_name <![CDATA[ != ]]>  '品种钢'
+						 group by year, PZ_NAME,cx_name, fl_name) a
+						WHERE  rq LIKE #{year}||'%' and yf = #{month} AND FL_name  <![CDATA[ != ]]> '品种钢'
 
 				ORDER BY    fl_name , cx ,
-						"DECODE"(pz,'热板','冷
-
-		板','宽厚板','棒线','型材') ) a
+						"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
 							GROUP BY cx ) s
 		LEFT JOIN
 		(SELECT cx ,"SUM"(jhl) pzgl from
 				(select *
-				  from (select '1' yf,year || '1月'
-
-		rq,PZ_NAME pz,
+				  from (select '1' yf,year || '1月'rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(JAN_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(JAN_MONTH) jhl
+						  from crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,cx_name, fl_name
+						union all
+						select '2' yf,year || '2月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(FEB_MONTH) jhl
+						  from crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,cx_name, fl_name
+						union all
+						select '3' yf,year || '3月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(MAR_MONTH) jhl
+						  from crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,cx_name, fl_name
+						union all
+						select '4' yf,year || '4月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(APR_MONTH) jhl
+						  from crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,cx_name, fl_name
+						union all
+						select '5' yf,year || '5月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(MAY_MONTH) jhl
+						  from crm_resource_allocation
+							  where STATUS ='0'
+						 group by year, PZ_NAME,
+							cx_name, fl_name
+						union all
+						select '6' yf,year || '6月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JUN_MONTH) jhl
+						  from crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+						cx_name, fl_name
+						union all
+						select '7' yf,year || '7月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JUL_MONTH) jhl
+						  from crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+						cx_name, fl_name
+						union all
+						select '8' yf,year || '8月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(AUG_MONTH) jhl
+						  from crm_resource_allocation
 						   where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '2' yf,year || '2月
-
-		' rq,PZ_NAME pz,
+						select '9' yf,year || '9月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(FEB_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(SEP_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+							cx_name, fl_name
 						union all
-						select '3' yf,year || '3月
-
-		' rq,PZ_NAME pz,
+						select '10' yf,year || '10月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(MAR_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(OCT_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						 group by year, PZ_NAME,cx_name, fl_name
 						union all
-						select '4' yf,year || '4月
-
-		' rq,PZ_NAME pz,
+						select '11' yf,year || '11月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(APR_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-						   where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '5' yf,year || '5月
-
-		' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(MAY_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-							  where STATUS =
-
-		'0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '6' yf,year || '6月
-
-		' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(JUN_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '7' yf,year || '7月
-
-		' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(JUL_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '8' yf,year || '8月
-
-		' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(AUG_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-						   where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '9' yf,year || '9月
-
-		' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(SEP_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '10' yf,year || '10
-
-		月' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(OCT_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '11' yf,year || '11
-
-		月' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(NOV_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(NOV_MONTH) jhl
+						  from crm_resource_allocation
 						  where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '12' yf,year || '12
-
-		月' rq,PZ_NAME pz,
+						select '12' yf,year || '12月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(DEC_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(DEC_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name) a
-						WHERE  rq LIKE #{year}||'%' and
-
-		yf = 3 AND FL_name = '品种钢'
+						 group by year, PZ_NAME,cx_name, fl_name) a
+						WHERE  rq LIKE #{year}||'%' and yf = #{month} AND FL_name = '品种钢'
 
 				ORDER BY    fl_name , cx ,
-						"DECODE"(pz,'热板','冷
-
-		板','宽厚板','棒线','型材') ) a
+						"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
 							GROUP BY cx  ) x
-		on s.CX= x.CX
-		) x
-		LEFT JOIN
-		(SELECT "DATA"."NAME",DETAIL.COMPANY_ID from
-
-		scm_delivery_detail detail
-		LEFT JOIN
-		  CRM_RESOURCE_DATA DATA
-		on   data.full_name = detail.ext AND
-					data.company_id =
-
-		detail.company_id
-				and	data.type = 3
-		where data.name is not null
-		GROUP BY "DATA"."NAME",DETAIL.COMPANY_ID) m
-		on x.CX = m.name
-		where  m.company_id is not null
-		 GROUP BY m.company_id
+		on s.CX= x.CX )
+GROUP BY company_ID
 	</select>
     <select id="Steelsum" resultType="map">
-		SELECT NVL("SUM"(pzgl),0) pzgl,NVL("SUM"(jsl),0) jsl from (SELECT "DECODE"(m.company_id,9580,
-						'唐钢',
-						9727,
-						'邯钢',
-						9193,
-						'宣钢',
-						9196,
-						'承钢',
-						1932,
-						'舞钢',
-						8110,
-						'石钢',
-						8493,
-						'衡板',
-						7778,
-						'邯宝' ) companyname,
+		SELECT NVL("SUM"(pzgl),0) pzgl,NVL("SUM"(jsl),0) jsl from (
 
-		"SUM"(x.JSL) jsl,"SUM"(x.PZGL) pzgl
 
-		,"ROUND"("SUM"(x.PZGL)/"SUM"(x.JSL), 4)*100 bili from
-		(
-		SELECT s.CX,s.JSL,x.PZGL from
+      SELECT DECODE( COMPANY_ID,9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') companyname,NVL("SUM"(JSL),0) jsl,NVL("SUM"(PZGL),0) pzgl,
+				NVL("ROUND"("SUM"(PZGL)/"SUM"(JSL), 4)*100,0) bili from
+(SELECT  case
+        when s.cx = '唐钢1700/1810' then'9580'
+        when s.cx = '唐钢酸洗' then'9580'
+        when s.cx = '唐钢一冷罩退' then'9580'
+        when s.cx = '唐钢热基镀锌' then'9580'
+        when s.cx = '唐钢一冷冷基镀锌' then'9580'
+        when s.cx = '唐钢一冷酸轧' then'9580'
+        when s.cx = '唐钢二冷酸轧' then'9580'
+        when s.cx = '唐钢新区连退' then'9580'
+        when s.cx = '唐钢新区镀锌' then'9580'
+        when s.cx = '唐钢棒材' then'9580'
+        when s.cx = '唐钢线材' then'9580'
+        when s.cx = '唐钢中型' then'9580'
+        when s.cx = '唐钢1580热轧线' then'9580'
+        when s.cx = '唐钢中厚板' then'9580'
+        when s.cx = '唐钢大型' then'9580'
+        when s.cx = '唐钢中厚板' then'9580'
+        when s.cx = '邯钢2250' then'7778'
+        when s.cx = '邯宝酸轧' then'7778'
+        when s.cx = '邯钢西区镀锌' then'7778'
+        when s.cx = '邯钢西区连退' then'7778'
+        when s.cx = '邯钢CSP' then'9727'
+        when s.cx = '邯钢酸洗' then'9727'
+        when s.cx = '邯钢一冷罩退' then'9727'
+        when s.cx = '邯钢热基镀锌' then'9727'
+        when s.cx = '邯钢一冷冷基镀锌' then'9727'
+        when s.cx = '邯钢电镀锌' then'9727'
+        when s.cx = '邯钢彩涂' then'9727'
+        when s.cx = '邯钢酸轧' then'9727'
+        when s.cx = '邯钢3000/3500' then'9727'
+        when s.cx = '邯钢棒材' then'9727'
+        when s.cx = '邯钢线材' then'9727'
+        when s.cx = '邯钢新钢轧线材' then'9727'
+        when s.cx = '邯钢新钢轧棒材' then'9727'
+        when s.cx = '邯钢新钢轧型材' then'9727'
+        when s.cx = '宣钢棒材' then'9193'
+        when s.cx = '宣钢一高线、二高线' then'9193'
+        when s.cx = '宣钢中型' then'9193'
+        when s.cx = '宣钢带钢' then'9193'
+        when s.cx = '承钢1780' then'9196'
+        when s.cx = '承钢棒材' then'9196'
+        when s.cx = '承钢线材' then'9196'
+        when s.cx = '承钢中宽带' then'9196'
+        when s.cx = '舞钢4100/4200' then'1932'
+        when s.cx = '石钢棒材' then'8110'
+        when s.cx = '衡板冷板' then'8493'
+        END company_id,s.JSL,x.PZGL from
 		(SELECT cx ,"SUM"(jhl) jsl from
 				(select *
-				  from (select '1' yf,year || '1月'
-
-		rq,PZ_NAME pz,
+				  from (select '1' yf,year || '1月'rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(JAN_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(JAN_MONTH) jhl
+              from crm_resource_allocation
 						   where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '2' yf,year || '2月
-
-		' rq,PZ_NAME pz,
+						select '2' yf,year || '2月'rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(FEB_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(FEB_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name,fl_name
 						union all
-						select '3' yf,year || '3月
-
-		' rq,PZ_NAME pz,
+						select '3' yf,year || '3月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(MAR_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(MAR_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '4' yf,year || '4月
-
-		' rq,PZ_NAME pz,
+						select '4' yf,year || '4月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(APR_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(APR_MONTH) jhl
+						  from crm_resource_allocation
 						   where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+							cx_name, fl_name
 						union all
-						select '5' yf,year || '5月
-
-		' rq,PZ_NAME pz,
+						select '5' yf,year || '5月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(MAY_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-							  where STATUS =
-
-		'0'
+							   sum(MAY_MONTH) jhl
+						  from crm_resource_allocation
+							  where STATUS ='0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '6' yf,year || '6月
-
-		' rq,PZ_NAME pz,
+						select '6' yf,year || '6月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(JUN_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(JUN_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '7' yf,year || '7月
-
-		' rq,PZ_NAME pz,
+						select '7' yf,year || '7月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(JUL_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(JUL_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '8' yf,year || '8月
-
-		' rq,PZ_NAME pz,
+						select '8' yf,year || '8月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(AUG_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(AUG_MONTH) jhl
+						  from crm_resource_allocation
 						   where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '9' yf,year || '9月
-
-		' rq,PZ_NAME pz,
+						select '9' yf,year || '9月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(SEP_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(SEP_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						 group by year, PZ_NAME,cx_name, fl_name
 						union all
-						select '10' yf,year || '10
-
-		月' rq,PZ_NAME pz,
+						select '10' yf,year || '10月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(OCT_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(OCT_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						 group by year, PZ_NAME,cx_name, fl_name
 						union all
-						select '11' yf,year || '11
-
-		月' rq,PZ_NAME pz,
+						select '11' yf,year || '11月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(NOV_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(NOV_MONTH) jhl
+						  from crm_resource_allocation
 						  where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						 group by year, PZ_NAME,cx_name, fl_name
 						union all
-						select '12' yf,year || '12
-
-		月' rq,PZ_NAME pz,
+						select '12' yf,year || '12月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(DEC_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(DEC_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name) a
-						WHERE  rq LIKE #{year}||'%' and
-
-		yf = 3 AND FL_name <![CDATA[ != ]]>  '品种钢'
+						 group by year, PZ_NAME,cx_name, fl_name) a
+						WHERE  rq LIKE #{year}||'%' and yf = #{month} AND FL_name  <![CDATA[ != ]]> '品种钢'
 
 				ORDER BY    fl_name , cx ,
-						"DECODE"(pz,'热板','冷
-
-		板','宽厚板','棒线','型材') ) a
+						"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
 							GROUP BY cx ) s
 		LEFT JOIN
 		(SELECT cx ,"SUM"(jhl) pzgl from
 				(select *
-				  from (select '1' yf,year || '1月'
-
-		rq,PZ_NAME pz,
+				  from (select '1' yf,year || '1月'rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(JAN_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(JAN_MONTH) jhl
+						  from crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,cx_name, fl_name
+						union all
+						select '2' yf,year || '2月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(FEB_MONTH) jhl
+						  from crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,cx_name, fl_name
+						union all
+						select '3' yf,year || '3月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(MAR_MONTH) jhl
+						  from crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,cx_name, fl_name
+						union all
+						select '4' yf,year || '4月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(APR_MONTH) jhl
+						  from crm_resource_allocation
+						   where STATUS = '0'
+						 group by year, PZ_NAME,cx_name, fl_name
+						union all
+						select '5' yf,year || '5月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(MAY_MONTH) jhl
+						  from crm_resource_allocation
+							  where STATUS ='0'
+						 group by year, PZ_NAME,
+							cx_name, fl_name
+						union all
+						select '6' yf,year || '6月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JUN_MONTH) jhl
+						  from crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+						cx_name, fl_name
+						union all
+						select '7' yf,year || '7月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(JUL_MONTH) jhl
+						  from crm_resource_allocation
+							where STATUS = '0'
+						 group by year, PZ_NAME,
+						cx_name, fl_name
+						union all
+						select '8' yf,year || '8月' rq,PZ_NAME pz,
+							   cx_name cx,
+							   fl_name,
+							   sum(AUG_MONTH) jhl
+						  from crm_resource_allocation
 						   where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '2' yf,year || '2月
-
-		' rq,PZ_NAME pz,
+						select '9' yf,year || '9月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(FEB_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(SEP_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+							cx_name, fl_name
 						union all
-						select '3' yf,year || '3月
-
-		' rq,PZ_NAME pz,
+						select '10' yf,year || '10月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(MAR_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(OCT_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						 group by year, PZ_NAME,cx_name, fl_name
 						union all
-						select '4' yf,year || '4月
-
-		' rq,PZ_NAME pz,
+						select '11' yf,year || '11月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(APR_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-						   where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '5' yf,year || '5月
-
-		' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(MAY_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-							  where STATUS =
-
-		'0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '6' yf,year || '6月
-
-		' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(JUN_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '7' yf,year || '7月
-
-		' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(JUL_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '8' yf,year || '8月
-
-		' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(AUG_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-						   where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '9' yf,year || '9月
-
-		' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(SEP_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '10' yf,year || '10
-
-		月' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(OCT_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
-							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name
-						union all
-						select '11' yf,year || '11
-
-		月' rq,PZ_NAME pz,
-							   cx_name cx,
-							   fl_name,
-							   sum(NOV_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(NOV_MONTH) jhl
+						  from crm_resource_allocation
 						  where STATUS = '0'
 						 group by year, PZ_NAME,
-
-		cx_name, fl_name
+						cx_name, fl_name
 						union all
-						select '12' yf,year || '12
-
-		月' rq,PZ_NAME pz,
+						select '12' yf,year || '12月' rq,PZ_NAME pz,
 							   cx_name cx,
 							   fl_name,
-							   sum(DEC_MONTH)
-
-		jhl
-						  from
-
-		crm_resource_allocation
+							   sum(DEC_MONTH) jhl
+						  from crm_resource_allocation
 							where STATUS = '0'
-						 group by year, PZ_NAME,
-
-		cx_name, fl_name) a
-						WHERE  rq LIKE  #{year}||'%' and
-
-		yf = 3 AND FL_name = '品种钢'
+						 group by year, PZ_NAME,cx_name, fl_name) a
+						WHERE  rq LIKE #{year}||'%' and yf = #{month} AND FL_name = '品种钢'
 
 				ORDER BY    fl_name , cx ,
-						"DECODE"(pz,'热板','冷
-
-		板','宽厚板','棒线','型材') ) a
+						"DECODE"(pz,'热板','冷板','宽厚板','棒线','型材') ) a
 							GROUP BY cx  ) x
-		on s.CX= x.CX
-		) x
-		LEFT JOIN
-		(SELECT "DATA"."NAME",DETAIL.COMPANY_ID from
+		on s.CX= x.CX )
+GROUP BY company_ID
 
-		scm_delivery_detail detail
-		LEFT JOIN
-		  CRM_RESOURCE_DATA DATA
-		on   data.full_name = detail.ext AND
-					data.company_id =
-
-		detail.company_id
-				and	data.type = 3
-		where data.name is not null
-		GROUP BY "DATA"."NAME",DETAIL.COMPANY_ID) m
-		on x.CX = m.name
-		where  m.company_id is not null
-		 GROUP BY m.company_id
 		)
 
 	</select>

@@ -23,15 +23,15 @@
         '邯宝'),'合计')as companyName,
         sso.company_id as companyId,
         NVL(spad.varieties,'小计') as varieties,
-        sum(sso.order_mount) as totalSales,
+        round (sum(sso.order_mount),2) as totalSales,
         sum(1)-count(distinct spad.account_name) as protocolAccountNum,
-        sum(spad.annual_agreement_volume) as protocolSalesYear,
-        sum(case when psr.sale_body_des = '销售总公司' then sso.order_mount else 0 end) as totalProtocolSales,
+        round (sum(spad.annual_agreement_volume),2) as protocolSalesYear,
+        round (sum(case when psr.sale_body_des = '销售总公司' then sso.order_mount else 0 end),2) as totalProtocolSales,
         round (case when sum(case when psr.sale_body_des = '销售总公司' then sso.order_mount else 0 end) = 0 then 0 else sum(case when psr.sale_body_des = '销售总公司' then sso.order_mount else 0 end) / sum(spad.annual_agreement_volume) end,4)*100 as totalProtocolSalesOfYear,
         round (case when sum(case when psr.sale_body_des = '销售总公司' then sso.order_mount else 0 end) = 0 then 0 else sum(case when psr.sale_body_des = '销售总公司' then sso.order_mount else 0 end) / sum(sso.order_mount) end,4)*100 as totalProtocolSalesOfProduct,
-        sum(case when spad.supply_mode = '自办' then sso.order_mount else 0 end) as zibanProtocolSales,
+        round (sum(case when spad.supply_mode = '自办' then sso.order_mount else 0 end),2) as zibanProtocolSales,
         round (case when sum(case when spad.supply_mode = '自办' then sso.order_mount else 0 end) = 0 then 0 else sum(case when spad.supply_mode = '自办' then sso.order_mount else 0 end) / sum(sso.order_mount) end,4)*100 as zibanProtocolSalesOfTotal,
-        sum(case when sop.pricetype = '协议价' then sso.order_mount else 0 end) as xieyiProtocolSales,
+        round (sum(case when sop.pricetype = '协议价' then sso.order_mount else 0 end),2) as xieyiProtocolSales,
         round (case when sum(case when sop.pricetype = '协议价' then sso.order_mount else 0 end) = 0 then 0 else sum(case when sop.pricetype = '协议价' then sso.order_mount else 0 end) / sum(sso.order_mount) end,4)*100 as xieyiProtocolSalesOfTotal
         from SCM_SALE_ORDER sso
         join SCM_PROTOCOL_ACCOUNT_DETAILS spad
@@ -40,9 +40,16 @@
         on sso.company_id = psr.company_id
         join SCM_ORDERTYPE_PRICETYPE sop
         on sso.company_id = sop.companyid
+        left join scm_variety_to_pt_gp svtpg
+        on sso.company_id = svtpg.company_id
+        and sso.product_code = svtpg.product_group
+        left join crm_filter_data cfd
+        on sso.company_id = cfd.company_id
         where 1 = 1
 	    and sso.order_type_describe != '出口订单'
 	    and sso.order_type_describe != '出口退订'
+        and cfd.data_type = '1'
+        and cfd.status = '0'
 	    and spad.deletestatus = '0'
         and psr.is_delete = '0'
         and sop.deletestate = '0'

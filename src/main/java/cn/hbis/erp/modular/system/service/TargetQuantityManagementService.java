@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -308,6 +309,10 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             m6.put("XH", 0);
             m6.put("COMPANYNAME", "衡板");
             m6.put("JH", 0);
+            Map m7 = new HashMap();
+            m7.put("XH", 0);
+            m7.put("COMPANYNAME", "邯宝");
+            m7.put("JH", 0);
             newlist.add(m);
             newlist.add(m1);
             newlist.add(m2);
@@ -315,6 +320,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             newlist.add(m4);
             newlist.add(m5);
             newlist.add(m6);
+            newlist.add(m7);
             List<Map> list = targetManagementMapper.Steelmillsplan(name,String.valueOf(month),String.valueOf(year));
             if (list.size() > 0) {
                 for (int j=1;j<newlist.size();j++){
@@ -330,9 +336,6 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 return newlist;
                 }
             return newlist;
-
-
-
         }
         //第三个
         @Async
@@ -501,6 +504,11 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             m5.put("PZGL",0);
             m5.put("JSL",0);
             m5.put("BILI","0");
+            Map m6 =  new HashMap();
+            m6.put("COMPANYNAME","邯宝");
+            m6.put("PZGL",0);
+            m6.put("JSL",0);
+            m6.put("BILI","0");
             newlist.add(m);
             newlist.add(m11);
             newlist.add(m1);
@@ -508,6 +516,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             newlist.add(m3);
             newlist.add(m4);
             newlist.add(m5);
+            newlist.add(m6);
             if(list.size()>0){
                 for (int j=1;j<newlist.size();j++){
                     for (int i = 0; i < list.size(); i++) {

@@ -3,13 +3,13 @@
 <mapper namespace="cn.hbis.erp.modular.system.mapper.ProtocolAccountDetailsStatisticsMapper">
 
     <select id="List" resultType="map">
-        select CONCAT(CONCAT(#{beginTime},'-'),#{endTime}) as statisticsTime,d.ACCOUNT_NAME as accountName, d.SUPPLY_MODE as supplyMode,
+        select distinct CONCAT(CONCAT(#{beginTime},'-'),#{endTime}) as statisticsTime,d.ACCOUNT_NAME as accountName, d.SUPPLY_MODE as supplyMode,
         d.VARIETIES as varieties, d.MAIN_SALES_REGIONAL as mainSalesRegional, d.AIDED_SALES_REGIONAL_ONE as
         aidedSalesRegionalOne, d.AIDED_SALES_REGIONAL_TWO as aidedSalesRegionalTwo, d.STEEL_MILLS as
-        steelMills,d.ANNUAL_AGREEMENT_VOLUME as annualAgreementVolume,
-        o.order_mount as orderMount, （select so.order_mount from SCM_PROTOCOL_ACCOUNT_DETAILS pad join SCM_SALE_ORDER so
+        steelMills,NVL(d.ANNUAL_AGREEMENT_VOLUME,0) as annualAgreementVolume,
+        NVL(o.order_mount,0) as orderMount, NVL((select so.order_mount from SCM_PROTOCOL_ACCOUNT_DETAILS pad left join SCM_SALE_ORDER so
         on pad.account_name = so.saler_name
-        join SCM_ORDERTYPE_PRICETYPE op on so.ORDER_TYPE_DESCRIBE = op.ORDERTYPE where op.pricetype = '协议价'）as
+        join SCM_ORDERTYPE_PRICETYPE op on so.ORDER_TYPE_DESCRIBE = op.ORDERTYPE where op.pricetype = '协议价'),0)as
         protocolOrderMount
         from
         SCM_PROTOCOL_ACCOUNT_DETAILS d
@@ -52,8 +52,8 @@
     </select>
 
     <select id="sumList" resultType="map">
-        SELECT SUM(CFSL),SUM(annualAgreementVolume),SUM(orderMount),SUM(protocolOrderMount) FROM (
-        select '' as statisticsTime,'' as accountName,sum(1)-1 CFSL,'' as supplyMode, '' as varieties, '' as mainSalesRegional, '' as aidedSalesRegionalOne, '' as aidedSalesRegionalTwo, '' as steelMills,sum(d.ANNUAL_AGREEMENT_VOLUME) as annualAgreementVolume,
+        SELECT NVL(SUM(CFSL),0) as accountName,NVL(SUM(annualAgreementVolume),0) as annualAgreementVolume,NVL(SUM(orderMount),0) as orderMount,NVL(SUM(protocolOrderMount),0) as protocolOrderMount FROM (
+        select distinct '' as statisticsTime,'' as accountName,sum(1)-1 CFSL,'' as supplyMode, '' as varieties, '' as mainSalesRegional, '' as aidedSalesRegionalOne, '' as aidedSalesRegionalTwo, '' as steelMills,sum(d.ANNUAL_AGREEMENT_VOLUME) as annualAgreementVolume,
         sum(o.order_mount) as orderMount, sum(（select so.order_mount from SCM_PROTOCOL_ACCOUNT_DETAILS pad join SCM_SALE_ORDER so on pad.account_name = so.saler_name
         join SCM_ORDERTYPE_PRICETYPE op on so.ORDER_TYPE_DESCRIBE = op.ORDERTYPE where op.pricetype = '协议价'）) as protocolOrderMount
         from

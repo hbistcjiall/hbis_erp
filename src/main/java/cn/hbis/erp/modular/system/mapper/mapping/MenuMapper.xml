@@ -61,16 +61,7 @@
         m2.MENU_ID
         END
         ) AS pId,
-        m1.NAME
-        AS NAME,
-        (
-        CASE
-        WHEN (m2.MENU_ID = '0' OR m2.MENU_ID IS NULL) THEN
-        'true'
-        ELSE
-        'false'
-        END
-        ) as open
+        m1.NAME AS NAME
         FROM
         sys_menu m1
         LEFT join sys_menu m2 ON m1.PCODE = m2.CODE
@@ -89,25 +80,7 @@
         m2.MENU_ID
         END
         ) AS pId,
-        m1.NAME AS name,
-        (
-        CASE
-        WHEN (m2.MENU_ID = '0' OR m2.MENU_ID IS
-        NULL) THEN
-        'true'
-        ELSE
-        'false'
-        END
-        ) as open,
-        (
-        CASE
-        WHEN (m3.MENU_ID = '0' OR m3.MENU_ID
-        IS NULL) THEN
-        'false'
-        ELSE
-        'true'
-        END
-        ) as checked
+        m1.NAME AS name
         FROM
         sys_menu m1
         LEFT JOIN

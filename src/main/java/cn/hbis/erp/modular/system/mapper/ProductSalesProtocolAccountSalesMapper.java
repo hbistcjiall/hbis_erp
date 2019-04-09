@@ -14,7 +14,6 @@ import java.util.Map;
  * </p>
  *
  *
- *
  */
 public interface ProductSalesProtocolAccountSalesMapper extends BaseMapper<ProductSalesProtocolAccountSales> {
 
@@ -23,4 +22,9 @@ public interface ProductSalesProtocolAccountSalesMapper extends BaseMapper<Produ
      */
     Page<Map<String, Object>> list(@Param("page") Page page, @Param("varieties") String varieties,
                                    @Param("beginTime") String beginTime, @Param("endTime") String endTime);
+    /**
+     * 导出 产品总销量及销售公司协议户销量统计
+     */
+    List<Map<String, Object>> list(@Param("varieties") String varieties, @Param("beginTime") String beginTime,
+                                   @Param("endTime") String endTime);
 }
