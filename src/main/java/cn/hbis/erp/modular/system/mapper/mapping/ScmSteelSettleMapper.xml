@@ -722,7 +722,7 @@
     </select>
 
     <select id="getpzgjswc" resultType="map">
-      select name ,jsl,pzgl,round(pzgl/jsl*100,2) wcl from (
+      select name ,NVL(jsl,0) jsl,NVL(pzgl,0) pzgl,NVL(round(pzgl/jsl*100,2),0) wcl from (
         SELECT
         B.VARIETY name,
         SUM(case when rpcl.product_grade = '品种钢'
