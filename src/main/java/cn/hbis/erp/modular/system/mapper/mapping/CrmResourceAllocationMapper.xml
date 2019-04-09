@@ -116,30 +116,188 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
 
         END
         AS schedule
-        from (SELECT distinct DATA.NAME dName,
-        xsztdzb.sale_body saleBody,
+        from (SELECT case
+        when sso.company_id = '9580' and
+        sso.product_code = '01' and
+        sso.sale_group = '2005' then
+        '唐钢1700/1810'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '2005' then
+        '唐钢酸洗'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '2003' and
+        sso.material_group_info = '冷轧低碳钢带（罩退）' then
+        '唐钢一冷罩退'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '2003' and
+        sso.material_group_info = '连续热镀锌钢带（热轧基板）' then
+        '唐钢热基镀锌'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '2003' and
+        sso.material_group_info = '连续热镀锌钢带（冷轧基板）' then
+        '唐钢一冷冷基镀锌'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '2003' and
+        sso.material_group_info = '冷轧硬钢带' then
+        '唐钢一冷酸轧'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '1500' and
+        sso.material_group_info = '冷轧硬钢带' then
+        '唐钢二冷酸轧'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '1500' and
+        sso.material_group_info = '冷轧低碳钢带（连退）' then
+        '唐钢新区连退'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '1500' and
+        sso.material_group_info = '连续热镀锌钢带（冷轧基板）' then
+        '唐钢新区镀锌'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '2003' and
+        (sso.material_group_info <![CDATA[ != ]]> '冷轧低碳钢带（罩退）' and
+        sso.material_group_info <![CDATA[ != ]]> '连续热镀锌钢带（热轧基板）' and
+        sso.material_group_info <![CDATA[ != ]]> '连续热镀锌钢带（冷轧基板）' and
+        sso.material_group_info <![CDATA[ != ]]> '冷轧硬钢带') or
+        sso.sale_group = '1500' and
+        (sso.material_group_info <![CDATA[ != ]]> '冷轧硬钢带' and
+        sso.material_group_info <![CDATA[ != ]]> '冷轧低碳钢带（连退）' and
+        sso.material_group_info <![CDATA[ != ]]> '连续热镀锌钢带（冷轧基板）') then
+        '唐钢其他'
+        when sso.company_id = '9580' and
+        sso.product_code = '03' then
+        '唐钢棒材'
+        when sso.company_id = '9580' and
+        sso.product_code = '04' then
+        '唐钢线材'
+        when sso.company_id = '9580' and
+        sso.product_code = '05' and
+        sso.sale_group = '2002' and
+        sso.MATERIAL_CODE like '935%' then
+        '唐钢中型'
+        when sso.company_id = '9580' and
+        sso.product_code = '01' and
+        sso.sale_group = '4000' then
+        '唐钢1580热轧线'
+        when sso.company_id = '9580' and
+        sso.product_code in ('21', '22', '23') then
+        '唐钢中厚板'
+        when sso.company_id = '9580' and
+        sso.product_code = '05' and
+        sso.sale_group = '2002' and
+        sso.MATERIAL_CODE like '941%' then
+        '唐钢大型'
+        when sso.company_id = '7778' and
+        sso.product_code = 'I' then
+        '邯钢2250'
+        when sso.company_id = '9727' and
+        sso.product_code = '20' then
+        '邯钢CSP'
+        when sso.company_id = '9727' and
+        sso.product_code = '21' then
+        '邯钢酸洗'
+        when sso.company_id = '9727' and
+        sso.product_code = '31' then
+        '邯钢一冷罩退'
+        when sso.company_id = '9727' and
+        sso.product_code = '22' then
+        '邯钢热基镀锌'
+        when sso.company_id = '9727' and
+        sso.product_code = '33' and
+        sso.material_code not like 'C4%' then
+        '邯钢热基镀锌'
+        when sso.company_id = '9727' and
+        sso.product_code = '33' and
+        sso.material_code like 'C4%' then
+        '邯钢一冷冷基镀锌'
+        when sso.company_id = '9727' and
+        sso.product_code = '35' then
+        '邯钢电镀锌'
+        when sso.company_id = '9727' and
+        sso.product_code = '34' then
+        '邯钢彩涂'
+        when sso.company_id = '9727' and
+        sso.product_code = '30' then
+        '邯钢酸轧'
+        when sso.company_id = '7778' and
+        sso.product_code = 'Z' then
+        '邯宝酸轧'
+        when sso.company_id = '7778' and
+        sso.product_code = 'L' then
+        '邯钢西区连退'
+        when sso.company_id = '7778' and
+        sso.product_code = 'M' then
+        '邯钢西区镀锌'
+        when sso.company_id = '9727' and
+        sso.product_code = '10' then
+        '邯钢3000/3500'
+        when sso.company_id = '9727' and
+        sso.product_code = '01' and
+        sso.sale_body != '优特钢' then
+        '邯钢棒材'
+        when sso.company_id = '9727' and
+        sso.product_code = '02' and
+        sso.sale_body != '优特钢' then
+        '邯钢线材'
+        when sso.company_id = '9727' and
+        sso.product_code = '02' and
+        sso.sale_body = '优特钢' then
+        '邯钢新钢轧线材'
+        when sso.company_id = '9727' and
+        sso.product_code = '01' and
+        sso.sale_body = '优特钢' then
+        '邯钢新钢轧棒材'
+        when sso.company_id = '9727' and
+        sso.product_code = '03' then
+        '邯钢新钢轧型材'
+        when sso.company_id = '9193' and
+        sso.product_code in ('01', '02') then
+        '宣钢棒材'
+        when sso.company_id = '9193' and
+        sso.product_code = '03' then
+        '宣钢一高线、二高线'
+        when sso.company_id = '9193' and
+        sso.product_code = '08' then
+        '宣钢中型'
+        when sso.company_id = '9193' and
+        sso.product_code = '04' then
+        '宣钢带钢'
+        when sso.company_id = '9196' and
+        sso.product_code = '10' then
+        '承钢1780'
+        when sso.company_id = '9196' and
+        sso.product_code = '40' and
+        sso.MATERIAL_CODE like '501%' then
+        '承钢棒材'
+        when sso.company_id = '9196' and
+        sso.product_code = '40' and
+        sso.MATERIAL_CODE like '502%' then
+        '承钢线材'
+        when sso.company_id = '9196' and
+        sso.product_code = '50' then
+        '承钢中宽带'
+        when sso.company_id = '1932' and
+        sso.product_code = 'J' then
+        '舞钢4100/4200'
+        when sso.company_id = '8110' then
+        '石钢棒材'
+        when sso.company_id = '8493' then
+        '衡板冷板'
+        end dName,
         sso.ORDER_MOUNT   orderMount
-        from scm_delivery_detail detail
-        JOIN crm_resource_data DATA
-        ON DATA.full_name = detail.ext
-        AND DATA.company_id = detail.company_id
-        AND DATA . TYPE = 3
-        AND DATA.parent_name IS NOT NULL
-        join scm_sale_order sso
-        on detail.company_id = sso.company_id
-        and detail.ORDER_NO = sso.order_no
-        and detail.ORDER_ITEM = sso.order_row
-        left join (select a.*
-        from price_salebody_relation a
-        where a.is_delete = 0) xsztdzb
-        ON sso.company_id = xsztdzb.company_id
-        AND sso.sale_body = xsztdzb.sale_body_des
+        from scm_sale_order sso
         WHERE 1 = 1
         <if test="date != null and date != ''">
             and instr(sso.dj_date, #{date}) > 0
         </if>
-        AND (detail.delivery_delete != 'X' OR
-        detail.delivery_delete IS NULL)
         and sso.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
@@ -152,24 +310,28 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
         where cfd.data_type = '1'
         and cfd.status = '0'
         and cfd.company_id = sso.company_id)
-
-        AND sso.sale_group NOT IN
-        (SELECT cfd.data_name
+        and sso.sale_group not in
+        (SELECT sso.sale_group
         FROM crm_filter_data cfd
-        WHERE cfd.company_id = sso.company_id
-        AND cfd.data_type = 9
-        AND cfd.status = 0)
-        and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢'
+        where cfd.company_id = sso.company_id
+        and instr(sso.sale_group, cfd.data_name, 1, 1) > 0
+        and cfd.data_type = 4
+        and cfd.status = 0)
+        and sso.sale_group <![CDATA[ != ]]> 'C100'
+        and sso.sale_group <![CDATA[ != ]]> 'K200'
+        and sso.product_info <![CDATA[ != ]]> '连铸坯'
+
         ) ht
         left join (select cx_NAME,
         sum(planNum) hjjhl
-        from (SELECT cx_NAME, MAR_MONTH planNum
+        from (SELECT cx_NAME, MAR_MONTH planNum,fl_name
         FROM crm_resource_allocation
         WHERE
         1=1
         <if test="year != null and year != ''">
             and YEAR = #{year}
         </if>
+        and fl_name <![CDATA[ != ]]> '品种钢'
         )
 
         group by cx_NAME) jh
@@ -184,24 +346,7 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
 
     <select id="selCompany" resultType="cn.hbis.erp.modular.system.entity.Allocation">
       select * from(
-        select NVL(decode(companyId,
-                          9580,
-                          '唐钢',
-                          9727,
-                          '邯钢',
-                          9193,
-                          '宣钢',
-                          9196,
-                          '承钢',
-                          1932,
-                          '舞钢',
-                          8110,
-                          '石钢',
-                          8493,
-                          '衡板',
-                          7778,
-                          '邯宝'),
-                   '合计') companyName,
+        select NVL(companyName,'合计') companyName,
                case
                  when sum(orderMount) is null then
                   0
@@ -214,72 +359,251 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
                 sum(orderMount)/sum(planNum) * 100,
                 2
                 ) end schedule
-          from (select ht.companyId,
+          from (select ht.companyName,
                        ht.dName,
                        jh.hjjhl planNum,
                        sum(ht.orderMount) orderMount
 
-                  from (SELECT distinct DATA.NAME dName,
-                                        case
-                                          when sso.ORDER_MOUNT is null then
-                                           0
-                                          else
-                                           sso.ORDER_MOUNT
-                                        end orderMount,
-                                        DATA.company_Id companyId,
-                                        xsztdzb.sale_body saleBody
-                          from scm_delivery_detail detail
-                          JOIN crm_resource_data DATA
-                            ON DATA.full_name = detail.ext
-                           AND DATA.company_id = detail.company_id
-                           AND DATA . TYPE = 3
-                           AND DATA.parent_name IS NOT NULL
-                          join scm_sale_order sso
-                            on detail.company_id = sso.company_id
-                           and detail.ORDER_NO = sso.order_no
-                           and detail.ORDER_ITEM = sso.order_row
-                          left join (select a.*
-                                      from price_salebody_relation a
-                                     where a.is_delete = 0) xsztdzb
-                            ON sso.company_id = xsztdzb.company_id
-                           AND sso.sale_body = xsztdzb.sale_body_des
-                         WHERE 1 = 1
-                           and instr(sso.dj_date, #{date}) > 0
-
-                           AND (detail.delivery_delete != 'X' OR
-                               detail.delivery_delete IS NULL)
-                           and sso.order_type_describe not in
-                               (select distinct cfd.data_name
-                                  from crm_filter_data cfd
-                                 where cfd.data_type = '2'
-                                   and cfd.status = '0'
-                                   and cfd.company_id = sso.company_id)
-                           and sso.saler_name not in
-                               (select cfd.data_name
-                                  from crm_filter_data cfd
-                                 where cfd.data_type = '1'
-                                   and cfd.status = '0'
-                                   and cfd.company_id = sso.company_id)
-
-                           AND sso.sale_group NOT IN
-                               (SELECT cfd.data_name
-                                  FROM crm_filter_data cfd
-                                 WHERE cfd.company_id = sso.company_id
-                                   AND cfd.data_type = 9
-                                   AND cfd.status = 0
-                                   )
-                                   and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢') ht
+                  from (SELECT case
+                        when sso.company_id = '9580' and
+                        sso.product_code = '01' and
+                        sso.sale_group = '2005' then
+                        '唐钢1700/1810'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '02' and
+                        sso.sale_group = '2005' then
+                        '唐钢酸洗'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '02' and
+                        sso.sale_group = '2003' and
+                        sso.material_group_info = '冷轧低碳钢带（罩退）' then
+                        '唐钢一冷罩退'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '02' and
+                        sso.sale_group = '2003' and
+                        sso.material_group_info = '连续热镀锌钢带（热轧基板）' then
+                        '唐钢热基镀锌'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '02' and
+                        sso.sale_group = '2003' and
+                        sso.material_group_info = '连续热镀锌钢带（冷轧基板）' then
+                        '唐钢一冷冷基镀锌'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '02' and
+                        sso.sale_group = '2003' and
+                        sso.material_group_info = '冷轧硬钢带' then
+                        '唐钢一冷酸轧'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '02' and
+                        sso.sale_group = '1500' and
+                        sso.material_group_info = '冷轧硬钢带' then
+                        '唐钢二冷酸轧'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '02' and
+                        sso.sale_group = '1500' and
+                        sso.material_group_info = '冷轧低碳钢带（连退）' then
+                        '唐钢新区连退'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '02' and
+                        sso.sale_group = '1500' and
+                        sso.material_group_info = '连续热镀锌钢带（冷轧基板）' then
+                        '唐钢新区镀锌'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '02' and
+                        sso.sale_group = '2003' and
+                        (sso.material_group_info <![CDATA[ != ]]> '冷轧低碳钢带（罩退）' and
+                        sso.material_group_info <![CDATA[ != ]]> '连续热镀锌钢带（热轧基板）' and
+                        sso.material_group_info <![CDATA[ != ]]> '连续热镀锌钢带（冷轧基板）' and
+                        sso.material_group_info <![CDATA[ != ]]> '冷轧硬钢带') or
+                        sso.sale_group = '1500' and
+                        (sso.material_group_info <![CDATA[ != ]]> '冷轧硬钢带' and
+                        sso.material_group_info <![CDATA[ != ]]> '冷轧低碳钢带（连退）' and
+                        sso.material_group_info <![CDATA[ != ]]> '连续热镀锌钢带（冷轧基板）') then
+                        '唐钢其他'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '03' then
+                        '唐钢棒材'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '04' then
+                        '唐钢线材'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '05' and
+                        sso.sale_group = '2002' and
+                        sso.MATERIAL_CODE like '935%' then
+                        '唐钢中型'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '01' and
+                        sso.sale_group = '4000' then
+                        '唐钢1580热轧线'
+                        when sso.company_id = '9580' and
+                        sso.product_code in ('21', '22', '23') then
+                        '唐钢中厚板'
+                        when sso.company_id = '9580' and
+                        sso.product_code = '05' and
+                        sso.sale_group = '2002' and
+                        sso.MATERIAL_CODE like '941%' then
+                        '唐钢大型'
+                        when sso.company_id = '7778' and
+                        sso.product_code = 'I' then
+                        '邯钢2250'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '20' then
+                        '邯钢CSP'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '21' then
+                        '邯钢酸洗'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '31' then
+                        '邯钢一冷罩退'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '22' then
+                        '邯钢热基镀锌'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '33' and
+                        sso.material_code not like 'C4%' then
+                        '邯钢热基镀锌'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '33' and
+                        sso.material_code like 'C4%' then
+                        '邯钢一冷冷基镀锌'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '35' then
+                        '邯钢电镀锌'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '34' then
+                        '邯钢彩涂'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '30' then
+                        '邯钢酸轧'
+                        when sso.company_id = '7778' and
+                        sso.product_code = 'Z' then
+                        '邯宝酸轧'
+                        when sso.company_id = '7778' and
+                        sso.product_code = 'L' then
+                        '邯钢西区连退'
+                        when sso.company_id = '7778' and
+                        sso.product_code = 'M' then
+                        '邯钢西区镀锌'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '10' then
+                        '邯钢3000/3500'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '01' and
+                        sso.sale_body != '优特钢' then
+                        '邯钢棒材'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '02' and
+                        sso.sale_body != '优特钢' then
+                        '邯钢线材'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '02' and
+                        sso.sale_body = '优特钢' then
+                        '邯钢新钢轧线材'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '01' and
+                        sso.sale_body = '优特钢' then
+                        '邯钢新钢轧棒材'
+                        when sso.company_id = '9727' and
+                        sso.product_code = '03' then
+                        '邯钢新钢轧型材'
+                        when sso.company_id = '9193' and
+                        sso.product_code in ('01', '02') then
+                        '宣钢棒材'
+                        when sso.company_id = '9193' and
+                        sso.product_code = '03' then
+                        '宣钢一高线、二高线'
+                        when sso.company_id = '9193' and
+                        sso.product_code = '08' then
+                        '宣钢中型'
+                        when sso.company_id = '9193' and
+                        sso.product_code = '04' then
+                        '宣钢带钢'
+                        when sso.company_id = '9196' and
+                        sso.product_code = '10' then
+                        '承钢1780'
+                        when sso.company_id = '9196' and
+                        sso.product_code = '40' and
+                        sso.MATERIAL_CODE like '501%' then
+                        '承钢棒材'
+                        when sso.company_id = '9196' and
+                        sso.product_code = '40' and
+                        sso.MATERIAL_CODE like '502%' then
+                        '承钢线材'
+                        when sso.company_id = '9196' and
+                        sso.product_code = '50' then
+                        '承钢中宽带'
+                        when sso.company_id = '1932' and
+                        sso.product_code = 'J' then
+                        '舞钢4100/4200'
+                        when sso.company_id = '8110' then
+                        '石钢棒材'
+                        when sso.company_id = '8493' then
+                        '衡板冷板'
+                        end dName,
+                        case
+                         when sso.company_id = '9580' then
+                          '唐钢'
+                         when sso.company_id = '9727' then
+                          '邯钢'
+                         when sso.company_id = '7778' then
+                          '邯宝'
+                         when sso.company_id = '9193' then
+                          '宣钢'
+                         when sso.company_id = '9196' then
+                          '承钢'
+                         when sso.company_id = '1932' then
+                          '舞钢'
+                         when sso.company_id = '8110' then
+                          '石钢'
+                         when sso.company_id = '8493' then
+                          '衡板'
+                       end companyName,
+                        case
+                          when sso.ORDER_MOUNT is null then
+                           0
+                          else
+                           sso.ORDER_MOUNT
+                        end orderMount
+                        from scm_sale_order sso
+                        WHERE 1 = 1
+                                <if test="date != null and date != ''">
+                                    and instr(sso.dj_date, #{date}) > 0
+                                </if>
+                                and sso.order_type_describe not in
+                                (select distinct cfd.data_name
+                                from crm_filter_data cfd
+                                where cfd.data_type = '2'
+                                and cfd.status = '0'
+                                and cfd.company_id = sso.company_id)
+                                and sso.saler_name not in
+                                (select cfd.data_name
+                                from crm_filter_data cfd
+                                where cfd.data_type = '1'
+                                and cfd.status = '0'
+                                and cfd.company_id = sso.company_id)
+                                and sso.sale_group not in
+                                (SELECT sso.sale_group
+                                FROM crm_filter_data cfd
+                                where cfd.company_id = sso.company_id
+                                and instr(sso.sale_group, cfd.data_name, 1, 1) > 0
+                                and cfd.data_type = 4
+                                and cfd.status = 0)
+                                and sso.sale_group <![CDATA[ != ]]> 'C100'
+                                and sso.sale_group <![CDATA[ != ]]> 'K200'
+                                and sso.product_info <![CDATA[ != ]]> '连铸坯'
+                                   ) ht
                   left join (select CX_NAME cxName, sum(planNum) hjjhl
-                              from (SELECT CX_NAME, MAR_MONTH planNum
+                              from (SELECT CX_NAME, MAR_MONTH planNum,fl_name
                                       FROM crm_resource_allocation
                                      WHERE 1 = 1
                                        and YEAR = #{year}
+                                       and fl_name <![CDATA[ != ]]> '品种钢'
                                        )
                              group by CX_NAME) jh
                     on ht.dName = jh.cxName
-                 group by ht.companyId, ht.dName, jh.hjjhl)
+                 group by ht.companyName, ht.dName, jh.hjjhl)
 
-         GROUP BY ROLLUP(companyId)
+         GROUP BY ROLLUP(companyName)
         )
       order by decode(companyName,'合计',1,'唐钢',2,'邯钢',3,'宣钢',4,'承钢',5,'舞钢',6)
     </select>
@@ -321,54 +645,218 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
                         else saleBody
                        end) saleBody,dName,
                        sum(orderMount) orderMount
-                  from (SELECT distinct
-                  DATA.name dName,
-                  xsztdzb.sale_body saleBody,
-                                        sso.ORDER_MOUNT   orderMount
-                          from scm_delivery_detail detail
-                          JOIN crm_resource_data DATA
-                            ON DATA.full_name = detail.ext
-                           AND DATA.company_id = detail.company_id
-                           AND DATA . TYPE = 3
-                           AND DATA.parent_name IS NOT NULL
-                          join scm_sale_order sso
-                            on detail.company_id = sso.company_id
-                           and detail.ORDER_NO = sso.order_no
-                           and detail.ORDER_ITEM = sso.order_row
-                          left join (select a.*
-                                      from price_salebody_relation a
-                                     where a.is_delete = 0) xsztdzb
-                            ON sso.company_id = xsztdzb.company_id
-                           AND sso.sale_body = xsztdzb.sale_body_des
+                  from (SELECT case
+        when sso.company_id = '9580' and
+        sso.product_code = '01' and
+        sso.sale_group = '2005' then
+        '唐钢1700/1810'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '2005' then
+        '唐钢酸洗'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '2003' and
+        sso.material_group_info = '冷轧低碳钢带（罩退）' then
+        '唐钢一冷罩退'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '2003' and
+        sso.material_group_info = '连续热镀锌钢带（热轧基板）' then
+        '唐钢热基镀锌'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '2003' and
+        sso.material_group_info = '连续热镀锌钢带（冷轧基板）' then
+        '唐钢一冷冷基镀锌'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '2003' and
+        sso.material_group_info = '冷轧硬钢带' then
+        '唐钢一冷酸轧'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '1500' and
+        sso.material_group_info = '冷轧硬钢带' then
+        '唐钢二冷酸轧'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '1500' and
+        sso.material_group_info = '冷轧低碳钢带（连退）' then
+        '唐钢新区连退'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '1500' and
+        sso.material_group_info = '连续热镀锌钢带（冷轧基板）' then
+        '唐钢新区镀锌'
+        when sso.company_id = '9580' and
+        sso.product_code = '02' and
+        sso.sale_group = '2003' and
+        (sso.material_group_info <![CDATA[ != ]]> '冷轧低碳钢带（罩退）' and
+        sso.material_group_info <![CDATA[ != ]]> '连续热镀锌钢带（热轧基板）' and
+        sso.material_group_info <![CDATA[ != ]]> '连续热镀锌钢带（冷轧基板）' and
+        sso.material_group_info <![CDATA[ != ]]> '冷轧硬钢带') or
+        sso.sale_group = '1500' and
+        (sso.material_group_info <![CDATA[ != ]]> '冷轧硬钢带' and
+        sso.material_group_info <![CDATA[ != ]]> '冷轧低碳钢带（连退）' and
+        sso.material_group_info <![CDATA[ != ]]> '连续热镀锌钢带（冷轧基板）') then
+        '唐钢其他'
+        when sso.company_id = '9580' and
+        sso.product_code = '03' then
+        '唐钢棒材'
+        when sso.company_id = '9580' and
+        sso.product_code = '04' then
+        '唐钢线材'
+        when sso.company_id = '9580' and
+        sso.product_code = '05' and
+        sso.sale_group = '2002' and
+        sso.MATERIAL_CODE like '935%' then
+        '唐钢中型'
+        when sso.company_id = '9580' and
+        sso.product_code = '01' and
+        sso.sale_group = '4000' then
+        '唐钢1580热轧线'
+        when sso.company_id = '9580' and
+        sso.product_code in ('21', '22', '23') then
+        '唐钢中厚板'
+        when sso.company_id = '9580' and
+        sso.product_code = '05' and
+        sso.sale_group = '2002' and
+        sso.MATERIAL_CODE like '941%' then
+        '唐钢大型'
+        when sso.company_id = '7778' and
+        sso.product_code = 'I' then
+        '邯钢2250'
+        when sso.company_id = '9727' and
+        sso.product_code = '20' then
+        '邯钢CSP'
+        when sso.company_id = '9727' and
+        sso.product_code = '21' then
+        '邯钢酸洗'
+        when sso.company_id = '9727' and
+        sso.product_code = '31' then
+        '邯钢一冷罩退'
+        when sso.company_id = '9727' and
+        sso.product_code = '22' then
+        '邯钢热基镀锌'
+        when sso.company_id = '9727' and
+        sso.product_code = '33' and
+        sso.material_code not like 'C4%' then
+        '邯钢热基镀锌'
+        when sso.company_id = '9727' and
+        sso.product_code = '33' and
+        sso.material_code like 'C4%' then
+        '邯钢一冷冷基镀锌'
+        when sso.company_id = '9727' and
+        sso.product_code = '35' then
+        '邯钢电镀锌'
+        when sso.company_id = '9727' and
+        sso.product_code = '34' then
+        '邯钢彩涂'
+        when sso.company_id = '9727' and
+        sso.product_code = '30' then
+        '邯钢酸轧'
+        when sso.company_id = '7778' and
+        sso.product_code = 'Z' then
+        '邯宝酸轧'
+        when sso.company_id = '7778' and
+        sso.product_code = 'L' then
+        '邯钢西区连退'
+        when sso.company_id = '7778' and
+        sso.product_code = 'M' then
+        '邯钢西区镀锌'
+        when sso.company_id = '9727' and
+        sso.product_code = '10' then
+        '邯钢3000/3500'
+        when sso.company_id = '9727' and
+        sso.product_code = '01' and
+        sso.sale_body != '优特钢' then
+        '邯钢棒材'
+        when sso.company_id = '9727' and
+        sso.product_code = '02' and
+        sso.sale_body != '优特钢' then
+        '邯钢线材'
+        when sso.company_id = '9727' and
+        sso.product_code = '02' and
+        sso.sale_body = '优特钢' then
+        '邯钢新钢轧线材'
+        when sso.company_id = '9727' and
+        sso.product_code = '01' and
+        sso.sale_body = '优特钢' then
+        '邯钢新钢轧棒材'
+        when sso.company_id = '9727' and
+        sso.product_code = '03' then
+        '邯钢新钢轧型材'
+        when sso.company_id = '9193' and
+        sso.product_code in ('01', '02') then
+        '宣钢棒材'
+        when sso.company_id = '9193' and
+        sso.product_code = '03' then
+        '宣钢一高线、二高线'
+        when sso.company_id = '9193' and
+        sso.product_code = '08' then
+        '宣钢中型'
+        when sso.company_id = '9193' and
+        sso.product_code = '04' then
+        '宣钢带钢'
+        when sso.company_id = '9196' and
+        sso.product_code = '10' then
+        '承钢1780'
+        when sso.company_id = '9196' and
+        sso.product_code = '40' and
+        sso.MATERIAL_CODE like '501%' then
+        '承钢棒材'
+        when sso.company_id = '9196' and
+        sso.product_code = '40' and
+        sso.MATERIAL_CODE like '502%' then
+        '承钢线材'
+        when sso.company_id = '9196' and
+        sso.product_code = '50' then
+        '承钢中宽带'
+        when sso.company_id = '1932' and
+        sso.product_code = 'J' then
+        '舞钢4100/4200'
+        when sso.company_id = '8110' then
+        '石钢棒材'
+        when sso.company_id = '8493' then
+        '衡板冷板'
+        end dName,
+        xsztdzb.sale_body saleBody,
+        sso.ORDER_MOUNT orderMount
+        from scm_sale_order sso
+        left join (select a.*
+        from price_salebody_relation a
+        where a.is_delete = 0) xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_body = xsztdzb.sale_body_des
 
-                         WHERE 1 = 1
-                           and instr(sso.dj_date, #{date }) > 0
-                           AND (detail.delivery_delete != 'X' OR
-                               detail.delivery_delete IS NULL)
-
-                           and sso.order_type_describe not in
-                               (select distinct cfd.data_name
-                                  from crm_filter_data cfd
-                                 where cfd.data_type = '2'
-                                   and cfd.status = '0'
-                                   and cfd.company_id = sso.company_id)
-                           and sso.saler_name not in
-                               (select cfd.data_name
-                                  from crm_filter_data cfd
-                                 where cfd.data_type = '1'
-                                   and cfd.status = '0'
-                                   and cfd.company_id = sso.company_id)
-
-                           AND sso.sale_group NOT IN
-                               (SELECT cfd.data_name
-                                  FROM crm_filter_data cfd
-                                 WHERE cfd.company_id = sso.company_id
-                                   AND cfd.data_type = 9
-                                   AND cfd.status = 0)
-                           and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢'
-                            <if test="companyName != null and companyName != ''">
-                                and detail.company_id = #{companyName}
-                            </if>
+        WHERE 1 = 1
+        and instr(sso.dj_date, #{date}) > 0
+        and sso.order_type_describe not in
+        (select distinct cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '2'
+        and cfd.status = '0'
+        and cfd.company_id = sso.company_id)
+        and sso.saler_name not in
+        (select cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '1'
+        and cfd.status = '0'
+        and cfd.company_id = sso.company_id)
+        and sso.sale_group not in
+        (SELECT sso.sale_group
+        FROM crm_filter_data cfd
+        where cfd.company_id = sso.company_id
+        and instr(sso.sale_group, cfd.data_name, 1, 1) > 0
+        and cfd.data_type = 4
+        and cfd.status = 0)
+        and sso.sale_group <![CDATA[ != ]]> 'C100'
+        and sso.sale_group <![CDATA[ != ]]> 'K200'
+        and sso.product_info <![CDATA[ != ]]> '连铸坯'
+        <if test="companyName != null and companyName != ''">
+            and sso.company_id = #{companyName}
+        </if>
                            )
                  group by saleBody,dName) ht
           left join (select flName, cxName,sum(planNum) hjjhl
@@ -376,6 +864,7 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
                       from (SELECT MAR_MONTH planNum, fl_name flName,cx_name cxName
                               FROM crm_resource_allocation
                              where year = #{year}
+                              and fl_name <![CDATA[ != ]]> '品种钢'
                               )
 
                      group by flName,cxName) jh
