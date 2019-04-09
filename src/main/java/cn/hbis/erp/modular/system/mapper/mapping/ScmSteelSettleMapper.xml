@@ -762,7 +762,7 @@
    </select>
 
     <select id="getzgsjswc" resultType="map">
-        select companyid,companyname name ,sum(fkimg) jsl,sum(pzgl) pzgl,round(sum(pzgl)/sum(fkimg)*100,2) wcl from
+        select companyid,companyname name ,NVL(sum(fkimg),0) jsl,NVL(sum(pzgl),0) pzgl,NVL(round(sum(pzgl)/sum(fkimg)*100,2),0) wcl from
         (SELECT DISTINCT decode(settle.company_id,
         9580,
         '唐钢',
