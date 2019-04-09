@@ -54,7 +54,7 @@ public class ProtocolAccountDetailsStatisticsService extends ServiceImpl<Protoco
     }
 
     /**
-     * 查询协议户明细统计列表
+     * 导出 销售总公司协议户销量明细统计列表
      *
      *
      */
