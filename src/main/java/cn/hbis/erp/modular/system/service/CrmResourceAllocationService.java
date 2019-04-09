@@ -186,6 +186,10 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
                 companyName = "9196";
             }else if (companyName.equals("舞钢")){
                 companyName = "1932";
+            }else if (companyName.equals("石钢")){
+                companyName = "8110";
+            }else if (companyName.equals("衡板")){
+                companyName = "8493";
             }
         }
         List<Allocation> lists = new ArrayList<>();
