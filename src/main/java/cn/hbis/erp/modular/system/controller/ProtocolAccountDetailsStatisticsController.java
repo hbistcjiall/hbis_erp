@@ -5,7 +5,6 @@ import cn.hbis.erp.core.util.DateUtil;
 import cn.hbis.erp.core.util.ExcelNewUtil;
 import cn.hbis.erp.modular.system.service.ProtocolAccountDetailsStatisticsService;
 import cn.hbis.erp.modular.system.warpper.ProtocolAccountDetailsStatisticsWrapper;
-import cn.hbis.erp.modular.system.warpper.ProtocolAccountDetailsWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,18 +13,13 @@ import org.apache.commons.io.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -82,17 +76,16 @@ public class ProtocolAccountDetailsStatisticsController {
             @ApiImplicitParam(name = "limit" ,value = "每页条数",dataType ="String" ),
             @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
     })
-    @PostMapping(value = "exportSubsidiaryVarietySteel")
-    public void exportVarietySteelState(String varieties, String beginTime, String endTime, String supplyMode, @RequestParam(value = "idList") List<String> companyIdList,
+    @GetMapping(value = "exportSubsidiaryVarietySteel")
+    public void exportVarietySteelState(String varieties, String beginTime, String endTime, String supplyMode, @RequestParam(value = "idList") List<String> idList,
                                         String limit, String page, HttpServletResponse response) {
         beginTime = DateUtil.getFirstDayOfMonth(beginTime);
         endTime = DateUtil.getLastDayOfMonth(endTime);
-            Page<Map<String, Object>> protocolAccountDetailsStatistics = protocolAccountDetailsStatisticsService.List(varieties, beginTime, endTime, supplyMode, companyIdList);
-        List<Map<String,Object>> resultList = protocolAccountDetailsStatistics.getRecords();
+            List<Map<String, Object>> protocolAccountDetailsStatistics = protocolAccountDetailsStatisticsService.searchList(varieties, beginTime, endTime, supplyMode, idList);
         List<Map<String, Object>> list = new ArrayList<>();
-        for(int i = 0; i < resultList.size(); i++) {
+        for(int i = 0; i < protocolAccountDetailsStatistics.size(); i++) {
             Map<String, Object> temp = new HashMap<>();
-            Map<String,Object> map = resultList.get(i);
+            Map<String,Object> map = protocolAccountDetailsStatistics.get(i);
             temp.put("statisticsTime", map.get("STATISTICSTIME"));
             temp.put("accountName", map.get("ACCOUNTNAME"));
             temp.put("supplyMode", map.get("SUPPLYMODE"));
@@ -127,11 +120,9 @@ public class ProtocolAccountDetailsStatisticsController {
         String[] colOrder={"statisticsTime", "accountName", "supplyMode","varieties","mainSalesRegional", "aidedSalesRegionalOne",
                 "aidedSalesRegionalTwo","steelMills","annualagreementvolume","orderMount","protocolOrderMount"};
         String[] mergeCols= {};
-        DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
         StringBuffer filename = null;
         filename = new StringBuffer();
-        filename.append("子公司品种钢情况");
-        filename.append(format1.format(new Date()));
+        filename.append("销售总公司明细");
         filename.append(EXPORT_XLSX_FILE_SUFFIX);
 
         OutputStream out = null;

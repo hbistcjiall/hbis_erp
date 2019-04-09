@@ -53,4 +53,19 @@ public class ProtocolAccountDetailsStatisticsService extends ServiceImpl<Protoco
         return this.baseMapper.sumList(varieties, beginTime, endTime, supplyMode, companyIdList);
     }
 
+    /**
+     * 查询协议户明细统计列表
+     *
+     *
+     */
+    @Async
+    public List<Map<String, Object>> searchList(String varieties, String beginTime, String endTime, String supplyMode, List<String> companyIdList) {
+        if (beginTime != null){
+            beginTime = beginTime.replace("-","");
+        }
+        if (endTime != null){
+            endTime = endTime.replace("-","");
+        }
+        return this.baseMapper.List(varieties, beginTime, endTime, supplyMode, companyIdList);
+    }
 }

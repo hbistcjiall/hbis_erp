@@ -36,6 +36,16 @@ public class ProtocolAccountDetailsService extends ServiceImpl<ProtocolAccountDe
         Page page = PageFactory.defaultPage();
         return this.baseMapper.searchProtocolAccountDetailList(page, varieties, beginTime, endTime, protocolYear, steelMills);
     }
+
+    /**
+     * 查询协议户明细列表（不分页）
+     *
+     *
+     */
+    @Async
+    public List<Map<String, Object>> searchDetailList(String varieties, String beginTime, String endTime, String protocolYear, String steelMills) {
+        return this.baseMapper.searchProtocolAccountDetailList(varieties, beginTime, endTime, protocolYear, steelMills);
+    }
     /**
      * 修改协议户明细
      *

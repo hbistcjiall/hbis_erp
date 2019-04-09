@@ -23,7 +23,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -158,14 +161,13 @@ public class ProtocolAccountDetailsController extends BaseController {
             @ApiImplicitParam(name = "limit" ,value = "每页条数",dataType ="String" ),
             @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
     })
-    @PostMapping(value = "exportlist")
+    @GetMapping(value = "exportlist")
     public void exportlist(String varieties, String beginTime, String endTime, String protocolYear, String steelMills, String limit, String page, HttpServletResponse response) {
-        Page<Map<String, Object>> protocolAccounts = protocolAccountDetailsService.searchList(varieties, beginTime, endTime, protocolYear, steelMills);
+        List<Map<String, Object>> protocolAccounts = protocolAccountDetailsService.searchDetailList(varieties, beginTime, endTime, protocolYear, steelMills);
         List<Map<String, Object>> list=new ArrayList<>();
-        List<Map<String,Object>> resultList = protocolAccounts.getRecords();
         DateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        for(int i = 0; i < resultList.size(); i++) {
-            Map<String,Object> map = resultList.get(i);
+        for(int i = 0; i < protocolAccounts.size(); i++) {
+            Map<String,Object> map = protocolAccounts.get(i);
             Map<String, Object> temp = new HashMap<>();
             temp.put("uploadTime", format2.format(map.get("UPLOADTIME")));
             temp.put("protocolYear", map.get("PROTOCOLYEAR"));
@@ -204,18 +206,17 @@ public class ProtocolAccountDetailsController extends BaseController {
         map.put("column10", "年协议量（吨）");
         listmap.add(map);
         String[] colOrder={"uploadTime","protocolYear","accountName","supplyMode","varieties","mainSalesRegional","aidedSalesRegionalOne","aidedSalesRegionalTwo","steelMills","annualAgreementVolume"};
-        String[] mergeCols= {};
-        DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
+        String[] mergeCols= {"protocolYear"};
         StringBuffer filename = null;
         filename = new StringBuffer();
-        filename.append("协议户明细列表");
-        filename.append(format1.format(new Date()));
+        filename.append("协议户明细");
         filename.append(EXPORT_XLSX_FILE_SUFFIX);
+
         OutputStream out = null;
         try {
             //web浏览通过MIME类型判断文件是excel类型
-            response.setContentType("application/vnd.ms-excel");
-            response.setHeader("Content-disposition", "attachment;filename=" + new String(filename.toString().getBytes("UTF-8"), "ISO8859-1"));
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+            response.setHeader("Content-disposition", "attachment;filename= "+new String(filename.toString().getBytes("UTF-8"), "ISO8859-1"));
             out = response.getOutputStream();
             exportXlsx(out,filename.toString(),listmap,list,mergeCols,colOrder,response);
         } catch (FileNotFoundException e) {
