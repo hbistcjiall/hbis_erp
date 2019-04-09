@@ -26,4 +26,11 @@ public interface ProtocolAccountDetailsStatisticsMapper extends BaseMapper<Proto
     List sumList(@Param("varieties") String varieties,
                                    @Param("beginTime") String beginTime, @Param("endTime") String endTime,
                                    @Param("supplyMode") String supplyMode, @Param("companyIdList") List companyIdList);
+
+    /**
+     * 根据条件查询协议户明细列表(不分页)
+     */
+    List<Map<String, Object>> List(@Param("varieties") String varieties,
+                                   @Param("beginTime") String beginTime, @Param("endTime") String endTime,
+                                   @Param("supplyMode") String supplyMode, @Param("companyIdList") List companyIdList);
 }
