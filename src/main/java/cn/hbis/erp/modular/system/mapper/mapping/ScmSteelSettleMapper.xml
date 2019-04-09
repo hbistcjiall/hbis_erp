@@ -1062,7 +1062,12 @@
                     <if test="pzName != null and pzName != ''">
                         and svtp.variety = #{pzName}
                     </if>
-                   and instr(sso.dj_date, #{date}) > 0
+                    <if test="startTime != null and startTime != ''">
+                        and sso.dj_date <![CDATA[ >= ]]> #{startTime}
+                    </if>
+                    <if test="endTime != null and endTime != ''">
+                        and sso.dj_date <![CDATA[ <= ]]> #{endTime}
+                    </if>
                    and sso.order_type_describe not in
        (select distinct cfd.data_name
           from crm_filter_data cfd
@@ -1434,7 +1439,12 @@
         AND sso.sale_body = xsztdzb.sale_body_des
 
         WHERE 1 = 1
-        and instr(sso.dj_date, #{date}) > 0
+        <if test="startTime != null and startTime != ''">
+            and sso.dj_date <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and sso.dj_date <![CDATA[ <= ]]> #{endTime}
+        </if>
         and sso.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
@@ -1457,9 +1467,7 @@
         and sso.sale_group <![CDATA[ != ]]> 'C100'
         and sso.sale_group <![CDATA[ != ]]> 'K200'
         and sso.product_info <![CDATA[ != ]]> '连铸坯'
-        <if test="cxName != null and cxName != ''">
-            and DATA.name = #{cxName}
-        </if>) ht
+        ) ht
         left join (select cx_NAME,
         sum(planNum) hjjhl,
         sum(case
@@ -1481,6 +1489,10 @@
         and fl_Name <![CDATA[ != ]]> '品种钢')
         group by cx_NAME) jh
         on ht.dName = jh.cx_name
+        where 1=1
+        <if test="cxName != null and cxName != ''">
+            and ht.dName = #{cxName}
+        </if>
         group by ht.dName,
         hjjhl,
         jh.planNumxsz,

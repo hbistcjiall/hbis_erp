@@ -1,8 +1,4 @@
 package cn.hbis.erp.modular.system.controller;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import cn.hbis.erp.modular.system.entity.ScmSteelSettle;
 import cn.hbis.erp.modular.system.service.ScmSteelSettleService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -14,6 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -185,25 +185,27 @@ public class ScmSteelSettleController {
 
     @ApiOperation(value = "产线合同进度报表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "date", value = "日期", dataType = "String"),
+            @ApiImplicitParam(name = "startTime", value = "开始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "结束日期", dataType = "String"),
             @ApiImplicitParam(name = "cxName", value = "产线", dataType = "String"),
     })
     @PostMapping("getcxhtjd")
     @Async
-    public  List<ScmSteelSettle>  getcxhtjd(String date,String cxName ) {
-        List<ScmSteelSettle> getcxhtjd = scmSteelSettleService.getcxhtjd(date,cxName);
+    public  List<ScmSteelSettle>  getcxhtjd(String startTime,String endTime,String cxName ) {
+        List<ScmSteelSettle> getcxhtjd = scmSteelSettleService.getcxhtjd(startTime,endTime,cxName);
         return getcxhtjd;
     }
 
     @ApiOperation(value = "品种合同进度报表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "date", value = "日期", dataType = "String"),
+            @ApiImplicitParam(name = "startTime", value = "开始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "结束日期", dataType = "String"),
             @ApiImplicitParam(name = "pzName", value = "品种", dataType = "String"),
     })
     @PostMapping("getpzhtjd")
     @Async
-    public  List<ScmSteelSettle>  getpzhtjd(String pzName,String date) {
-        List<ScmSteelSettle> getpzhtjd = scmSteelSettleService.getpzhtjd(date,pzName);
+    public  List<ScmSteelSettle>  getpzhtjd(String pzName,String startTime,String endTime) {
+        List<ScmSteelSettle> getpzhtjd = scmSteelSettleService.getpzhtjd(startTime,endTime,pzName);
         return getpzhtjd;
     }
 

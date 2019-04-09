@@ -628,22 +628,31 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
           round(sum(orderMount) / sum(planNum) * 100, 2)
        end schedule
   from (select (case
-                when saleBody = '技术中心、事业部' or saleBody = '子公司其他' or saleBody = '现货' then
-                '子公司'
-                else
-                saleBody
-               end) saleBody,
-               sum(orderMount) orderMount,
-               jh.hjjhl planNum
-          from (select (case
-                        when saleBody = '分公司' or saleBody = '专业公司' then
-                        '销售总公司'
-                        when saleBody = '事业部' or saleBody = '技术中心' then
-                        '技术中心、事业部'
-                        when saleBody = '子公司' or saleBody = '自办公司'then
-                        '子公司其他'
-                        else saleBody
-                       end) saleBody,dName,
+        when saleBody = '技术中心、事业部' or saleBody = '子公司其他' or
+        saleBody = '现货' then
+        '子公司'
+        when saleBody is null then
+        '-'
+        else
+        saleBody
+        end) saleBody,
+        sum(orderMount) orderMount,
+        jh.hjjhl planNum
+          from (select case
+                    when saleBody = '分公司' or saleBody = '专业公司' or
+                    (companyId = '1932' or saleGroup = '销售部') or
+                    (companyId = '8110' and ssaleBody = '分公司' and
+                    ssaleBody != '出口') then
+                    '销售总公司'
+                    when saleBody = '事业部' or saleBody = '技术中心' then
+                    '技术中心、事业部'
+                    when saleBody = '子公司' or saleBody = '自办公司' or
+                    (companyId = '8493' and saleGroup = '营销中心' or
+                    saleGroup = '1000') then
+                    '子公司其他'
+                    else
+                    saleBody
+                    end as saleBody,dName,
                        sum(orderMount) orderMount
                   from (SELECT case
         when sso.company_id = '9580' and
@@ -822,7 +831,10 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
         '衡板冷板'
         end dName,
         xsztdzb.sale_body saleBody,
-        sso.ORDER_MOUNT orderMount
+        sso.ORDER_MOUNT orderMount,
+        sso.SALE_GROUP saleGroup,
+        sso.company_id companyId,
+        sso.sale_body ssaleBody
         from scm_sale_order sso
         left join (select a.*
         from price_salebody_relation a
@@ -858,7 +870,7 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
             and sso.company_id = #{companyName}
         </if>
                            )
-                 group by saleBody,dName) ht
+                 group by saleBody,dName,companyId, saleGroup, ssaleBody) ht
           left join (select flName, cxName,sum(planNum) hjjhl
 
                       from (SELECT MAR_MONTH planNum, fl_name flName,cx_name cxName

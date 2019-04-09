@@ -193,21 +193,24 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         Allocation allocation = null;
         for (Allocation model : list){
             allocation = new Allocation();
-            if (model.getPlanNum()==null){
-                allocation.setPlanNum(0.00);
-                allocation.setSchedule(0.00);
-            }else {
-                allocation.setPlanNum(model.getPlanNum());
+            if (!model.getFlName().equals("-")){
+                if (model.getPlanNum()==null){
+                    allocation.setPlanNum(0.00);
+                    allocation.setSchedule(0.00);
+                }else {
+                    allocation.setPlanNum(model.getPlanNum());
+                }
+                if (model.getYield()==null){
+                    allocation.setYield(0.00);
+                    allocation.setSchedule(0.00);
+                }else {
+                    allocation.setYield(model.getYield());
+                }
+                allocation.setSchedule(model.getSchedule());
+                allocation.setFlName(model.getFlName());
+                lists.add(allocation);
             }
-            if (model.getYield()==null){
-                allocation.setYield(0.00);
-                allocation.setSchedule(0.00);
-            }else {
-                allocation.setYield(model.getYield());
-            }
-            allocation.setSchedule(model.getSchedule());
-            allocation.setFlName(model.getFlName());
-            lists.add(allocation);
+
         }
         return lists;
     }
