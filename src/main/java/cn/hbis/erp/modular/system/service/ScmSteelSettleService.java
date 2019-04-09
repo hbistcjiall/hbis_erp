@@ -3,11 +3,14 @@ package cn.hbis.erp.modular.system.service;
 import cn.hbis.erp.modular.system.entity.ScmSteelSettle;
 import cn.hbis.erp.modular.system.mapper.ScmSteelSettleMapper;
 import cn.hbis.erp.modular.system.warpper.ScmSteelSettleWrapper;
+import cn.stylefeng.roses.core.util.ToolUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 /**
  * <p>
@@ -109,20 +112,40 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
 产险合同进度报表1
 */
     @Async
-    public List<ScmSteelSettle> getcxhtjd(String date,String cxName) {
-        String date1 = date.replaceAll("[[\\s-:punct:]]","").substring(0,6);
-      String year = date1.substring(0,4);
-        return scmSteelSettleMapper.getcxhtjd(date1,year,cxName);
+    public List<ScmSteelSettle> getcxhtjd(String startTime,String endTime,String cxName) {
+        String month = "";
+        String year = "";
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
+        if (ToolUtil.isEmpty(startTime)){
+            startTime = df.format(new Date()).toString();
+        }else {
+            startTime = startTime.replaceAll("[[\\s-:punct:]]","").substring(0,6);
+            if (ToolUtil.isNotEmpty(endTime)){
+                endTime = endTime.replaceAll("[[\\s-:punct:]]","").substring(0,6);
+            }
+        }
+        year = startTime.substring(0,4);
+        return scmSteelSettleMapper.getcxhtjd(startTime,endTime,year,cxName);
     }
 
     /*
 品种合同进度报表1
 */
     @Async
-    public List<ScmSteelSettle> getpzhtjd(String date,String pzName) {
-        String date1 = date.replaceAll("[[\\s-:punct:]]","").substring(0,6);
-        String year = date1.substring(0,4);
-        return scmSteelSettleMapper.getpzhtjd(date1,year,pzName);
+    public List<ScmSteelSettle> getpzhtjd(String startTime,String endTime,String pzName) {
+        String month = "";
+        String year = "";
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
+        if (ToolUtil.isEmpty(startTime)){
+            startTime = df.format(new Date()).toString();
+        }else {
+            startTime = startTime.replaceAll("[[\\s-:punct:]]","").substring(0,6);
+            if (ToolUtil.isNotEmpty(endTime)){
+                endTime = endTime.replaceAll("[[\\s-:punct:]]","").substring(0,6);
+            }
+        }
+        year = startTime.substring(0,4);
+        return scmSteelSettleMapper.getpzhtjd(startTime,endTime,year,pzName);
     }
 
 
