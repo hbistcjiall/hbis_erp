@@ -9,29 +9,24 @@
         NAME,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)pzgl,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end)zyfkimg,
-
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)zypzgl,
-
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end)fgsfkimg,
-
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) fgspzgl,
-
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货')  then fkimg end) zgsfkimg,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货') and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) zgspzgl,
-
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
-        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end)zybz,
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end)*100 zybz,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
-        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end)fgsbz,
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end)*100 fgsbz,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货') and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
-        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')  then fkimg end)zgsbz,
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')  then fkimg end)*100 zgsbz,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
-        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) bz,
-        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
-        sum(case when fkdat  &gt;= to_date ('2019-02-01 00:00:00','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date ('2019-02-28 00:00:00','yyyy-mm-dd hh24:mi:ss')then fkimg end) sypzb,
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end)*100 bz,
+        sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+        sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) sypzb,
         (sum(case when fkdat  &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
-        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date ('2019-02-01','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date ('2019-02-28','yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
-        sum(case when fkdat  &gt;= to_date ('2019-02-01','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date ('2019-02-28','yyyy-mm-dd hh24:mi:ss')then fkimg end))hb
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+        sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))hb
         from (SELECT
         distinct decode(settle.company_id,
         9580,
@@ -66,7 +61,6 @@
         ON DATA.full_name = detail.ext
         AND DATA.company_id = detail.company_id
         AND (DATA.TYPE = 3 )
-
         where settle.company_id = detail.company_id
         and settle.vgbel = detail.deliv_numb
         and settle.vgpos = detail.deliv_item
@@ -74,7 +68,6 @@
         detail.delivery_delete is null)) name,
         (select max(detail.ext)
         from scm_delivery_detail detail
-
         where settle.company_id = detail.company_id
         and settle.vgbel = detail.deliv_numb
         and settle.vgpos = detail.deliv_item
@@ -116,8 +109,8 @@
         and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
         AND ( xsztdzb.sale_body_des  &lt; &gt;'唐钢中厚板公司'  or
         xsztdzb.sale_body_des  &lt; &gt;'唐钢不锈钢公司' or
-        xsztdzb.sale_body_des ='出口'  or
-        xsztdzb.sale_body_des ='唐银联营公司数据' )
+        xsztdzb.sale_body_des &lt; &gt; '出口'  or
+        xsztdzb.sale_body_des &lt; &gt; '唐银联营公司数据' )
         and  settle.company_id in ('9580','9727','9193','9196')
         order by settle.id desc) t
         where t.order_type_describe not in
@@ -139,14 +132,8 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-
-
-
         and t.name is not null group by  t.companyname,t.name) a
-
         union all
-
-
         ( select companyname,name,nvl(zyfkimg,0)+ nvl(fgsfkimg,0) +nvl(zgsfkimg,0) fkimg,nvl(zypzgl,0)+nvl(fgspzgl,0)+nvl(zgspzgl,0) pzgl,
         zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl,sypzb,hb,
         (nvl(zypzgl,0)+nvl(fgspzgl,0)+nvl(zgspzgl,0))/(nvl(zyfkimg,0)+ nvl(fgsfkimg,0) +nvl(zgsfkimg,0)) bz,'2'sx,
@@ -154,13 +141,8 @@
         (fgspzgl/fgsfkimg) fgsbz,
         (zgspzgl/zgsfkimg) zgsbz
         from(select  companyname,name,
-
-
-
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end)
-
         zyfkimg,
-
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
         zypzgl,
         sum( case when company_id='8110' then
@@ -169,8 +151,6 @@
         sum( case when company_id='8110' then
         case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sggl = '分公司'  or sale_body &lt; &gt; '出口') and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end else null end )
         fgspzgl,
-
-
         sum(case when company_id = '1932'  then
         case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部')  then fkimg end
         when company_id ='8493'  then
@@ -181,18 +161,13 @@
         when company_id ='8493'  then
         case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' ) and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end  end )
         zgspzgl,
-
-
-
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date ('2019-02-01 00:00:00','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date ('2019-02-28 00:00:00','yyyy-mm-dd hh24:mi:ss')then fkimg end)
         sypzb,
-
         (sum(case when fkdat  &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date ('2019-02-01','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date ('2019-02-28','yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date ('2019-02-01','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date ('2019-02-28','yyyy-mm-dd hh24:mi:ss')then fkimg end))
         hb
-
         from (SELECT
         distinct decode(settle.company_id,
         9580,
@@ -222,7 +197,13 @@
         sso.order_type_describe,
         sso.saler_name,
         sso.sale_group,
-        '' name,
+        decode(settle.company_id,
+        1932,
+        '宽厚板',
+        8110,
+        '特钢',
+        8493,
+        '薄板') AS name,
         (select max(detail.ext)
         from scm_delivery_detail detail
 
@@ -290,13 +271,19 @@
         group by  t.companyname,t.name  )
         ) ) where 1=1
         and  NAME &lt; &gt; '唐钢1580热轧线'  and  name &lt; &gt; '唐钢中厚板'
-        <if test="dw != null">
+        <if test="dw != '' and  dw != null ">
             and COMPANYNAME = #{dw}
         </if>
-        <if test="cx != null">
-            and   NAME=#{cx}
+        <if test="cx != null and  cx.size > 0">
+            and   NAME in
+            <foreach item="item" index="index" collection="cx" open="(" separator="," close=")">
+                　　#{item}
+            </foreach>
         </if>
-        order by sx,COMPANYNAME, NAME
+        order by "DECODE"(COMPANYNAME,'唐钢','1','邯钢','2','宣钢','3','承钢','4','舞钢','5','石钢','6','衡板'，'7')
+
+
+
     </select>
 
 
@@ -835,115 +822,118 @@
 </select>
 
     <select id="getzyjh" resultType="map">
-            select *
-  from (select '1' yf,year || '1月' rq,PZ_NAME pz,
-               cx_name cx,
-               fl_name,
-               sum(JAN_MONTH) jhl
-          from crm_resource_allocation
-           where STATUS = '0'
-         group by year, PZ_NAME, cx_name, fl_name
-        union all
-        select '2' yf,year || '2月' rq,PZ_NAME pz,
-               cx_name cx,
-               fl_name,
-               sum(FEB_MONTH) jhl
-          from crm_resource_allocation
-            where STATUS = '0'
-         group by year, PZ_NAME, cx_name, fl_name
-        union all
-        select '3' yf,year || '3月' rq,PZ_NAME pz,
-               cx_name cx,
-               fl_name,
-               sum(MAR_MONTH) jhl
-          from crm_resource_allocation
-            where STATUS = '0'
-         group by year, PZ_NAME, cx_name, fl_name
-        union all
-        select '4' yf,year || '4月' rq,PZ_NAME pz,
-               cx_name cx,
-               fl_name,
-               sum(APR_MONTH) jhl
-          from crm_resource_allocation
-           where STATUS = '0'
-         group by year, PZ_NAME, cx_name, fl_name
-        union all
-        select '5' yf,year || '5月' rq,PZ_NAME pz,
-               cx_name cx,
-               fl_name,
-               sum(MAY_MONTH) jhl
-          from crm_resource_allocation
-              where STATUS = '0'
-         group by year, PZ_NAME, cx_name, fl_name
-        union all
-        select '6' yf,year || '6月' rq,PZ_NAME pz,
-               cx_name cx,
-               fl_name,
-               sum(JUN_MONTH) jhl
-          from crm_resource_allocation
-            where STATUS = '0'
-         group by year, PZ_NAME, cx_name, fl_name
-        union all
-        select '7' yf,year || '7月' rq,PZ_NAME pz,
-               cx_name cx,
-               fl_name,
-               sum(JUL_MONTH) jhl
-          from crm_resource_allocation
-            where STATUS = '0'
-         group by year, PZ_NAME, cx_name, fl_name
-        union all
-        select '8' yf,year || '8月' rq,PZ_NAME pz,
-               cx_name cx,
-               fl_name,
-               sum(AUG_MONTH) jhl
-          from crm_resource_allocation
-           where STATUS = '0'
-         group by year, PZ_NAME, cx_name, fl_name
-        union all
-        select '9' yf,year || '9月' rq,PZ_NAME pz,
-               cx_name cx,
-               fl_name,
-               sum(SEP_MONTH) jhl
-          from crm_resource_allocation
-            where STATUS = '0'
-         group by year, PZ_NAME, cx_name, fl_name
-        union all
-        select '10' yf,year || '10月' rq,PZ_NAME pz,
-               cx_name cx,
-               fl_name,
-               sum(OCT_MONTH) jhl
-          from crm_resource_allocation
-            where STATUS = '0'
-         group by year, PZ_NAME, cx_name, fl_name
-        union all
-        select '11' yf,year || '11月' rq,PZ_NAME pz,
-               cx_name cx,
-               fl_name,
-               sum(NOV_MONTH) jhl
-          from crm_resource_allocation
-          where STATUS = '0'
-         group by year, PZ_NAME, cx_name, fl_name
-        union all
-        select '12' yf,year || '12月' rq,PZ_NAME pz,
-               cx_name cx,
-               fl_name,
-               sum(DEC_MONTH) jhl
-          from crm_resource_allocation
-            where STATUS = '0'
-         group by year, PZ_NAME, cx_name, fl_name) a
+    select *
+    from (select '1' yf,year || '1月' rq,PZ_NAME pz,
+    cx_name cx,
+    fl_name,
+    sum(JAN_MONTH) jhl
+    from crm_resource_allocation
+    where STATUS = '0'
+    group by year, PZ_NAME, cx_name, fl_name
+    union all
+    select '2' yf,year || '2月' rq,PZ_NAME pz,
+    cx_name cx,
+    fl_name,
+    sum(FEB_MONTH) jhl
+    from crm_resource_allocation
+    where STATUS = '0'
+    group by year, PZ_NAME, cx_name, fl_name
+    union all
+    select '3' yf,year || '3月' rq,PZ_NAME pz,
+    cx_name cx,
+    fl_name,
+    sum(MAR_MONTH) jhl
+    from crm_resource_allocation
+    where STATUS = '0'
+    group by year, PZ_NAME, cx_name, fl_name
+    union all
+    select '4' yf,year || '4月' rq,PZ_NAME pz,
+    cx_name cx,
+    fl_name,
+    sum(APR_MONTH) jhl
+    from crm_resource_allocation
+    where STATUS = '0'
+    group by year, PZ_NAME, cx_name, fl_name
+    union all
+    select '5' yf,year || '5月' rq,PZ_NAME pz,
+    cx_name cx,
+    fl_name,
+    sum(MAY_MONTH) jhl
+    from crm_resource_allocation
+    where STATUS = '0'
+    group by year, PZ_NAME, cx_name, fl_name
+    union all
+    select '6' yf,year || '6月' rq,PZ_NAME pz,
+    cx_name cx,
+    fl_name,
+    sum(JUN_MONTH) jhl
+    from crm_resource_allocation
+    where STATUS = '0'
+    group by year, PZ_NAME, cx_name, fl_name
+    union all
+    select '7' yf,year || '7月' rq,PZ_NAME pz,
+    cx_name cx,
+    fl_name,
+    sum(JUL_MONTH) jhl
+    from crm_resource_allocation
+    where STATUS = '0'
+    group by year, PZ_NAME, cx_name, fl_name
+    union all
+    select '8' yf,year || '8月' rq,PZ_NAME pz,
+    cx_name cx,
+    fl_name,
+    sum(AUG_MONTH) jhl
+    from crm_resource_allocation
+    where STATUS = '0'
+    group by year, PZ_NAME, cx_name, fl_name
+    union all
+    select '9' yf,year || '9月' rq,PZ_NAME pz,
+    cx_name cx,
+    fl_name,
+    sum(SEP_MONTH) jhl
+    from crm_resource_allocation
+    where STATUS = '0'
+    group by year, PZ_NAME, cx_name, fl_name
+    union all
+    select '10' yf,year || '10月' rq,PZ_NAME pz,
+    cx_name cx,
+    fl_name,
+    sum(OCT_MONTH) jhl
+    from crm_resource_allocation
+    where STATUS = '0'
+    group by year, PZ_NAME, cx_name, fl_name
+    union all
+    select '11' yf,year || '11月' rq,PZ_NAME pz,
+    cx_name cx,
+    fl_name,
+    sum(NOV_MONTH) jhl
+    from crm_resource_allocation
+    where STATUS = '0'
+    group by year, PZ_NAME, cx_name, fl_name
+    union all
+    select '12' yf,year || '12月' rq,PZ_NAME pz,
+    cx_name cx,
+    fl_name,
+    sum(DEC_MONTH) jhl
+    from crm_resource_allocation
+    where STATUS = '0'
+    group by year, PZ_NAME, cx_name, fl_name) a
 
- where
-        rq like  '%'||#{nf}||'%'
-        <if test="yf != ''">
-           and yf = #{yf}
-         </if>
-        <if test="pz != ''">
-           and pz = #{pz}
+    where
+    rq like  '%'||#{nf}||'%'
+    <if test="yf != ''">
+        and yf = #{yf}
+    </if>
+    <if test="pz != '' and pz != null">
+        and pz = #{pz}
+    </if>
+        <if test="cx != null and  cx.size > 0">
+            and   cx in
+            <foreach item="item" index="index" collection="cx" open="(" separator="," close=")">
+                　　#{item}
+            </foreach>
         </if>
-        <if test="cx != ''">
-        and cx = #{cx}
-        </if>
-        <if test="xszt != ''">
+        <if test="xszt != ''and xszt != null">
         and fl_name = #{xszt}
         </if>
         ORDER BY    fl_name , cx ,
@@ -962,6 +952,7 @@
         <if test="pz != ''">
             where pz_name = #{pz}
         </if>
+        order by cx_name
     </select>
 
     <select id="getzyjhcxtjxszt" resultType="map">
