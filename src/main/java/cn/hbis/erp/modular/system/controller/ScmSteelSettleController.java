@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
@@ -186,12 +187,11 @@ public class ScmSteelSettleController {
     @ApiOperation(value = "产线合同进度报表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startTime", value = "开始日期", dataType = "String"),
-            @ApiImplicitParam(name = "endTime", value = "结束日期", dataType = "String"),
-            @ApiImplicitParam(name = "cxName", value = "产线", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "结束日期", dataType = "String")
     })
     @PostMapping("getcxhtjd")
     @Async
-    public  List<ScmSteelSettle>  getcxhtjd(String startTime,String endTime,String cxName ) {
+    public  List<ScmSteelSettle>  getcxhtjd(String startTime,String endTime,@RequestParam(required = false) List<String> cxName ) {
         List<ScmSteelSettle> getcxhtjd = scmSteelSettleService.getcxhtjd(startTime,endTime,cxName);
         return getcxhtjd;
     }

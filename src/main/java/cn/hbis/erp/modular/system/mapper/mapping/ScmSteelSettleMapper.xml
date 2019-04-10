@@ -1490,8 +1490,11 @@
         group by cx_NAME) jh
         on ht.dName = jh.cx_name
         where 1=1
-        <if test="cxName != null and cxName != ''">
-            and ht.dName = #{cxName}
+        <if test=" cxName != null and cxName.size > 0">
+            and ht.dName in
+            <foreach item="item" index="index" collection="cxName" open="(" separator="," close=")">
+                　　　　#{item}
+            </foreach>
         </if>
         group by ht.dName,
         hjjhl,

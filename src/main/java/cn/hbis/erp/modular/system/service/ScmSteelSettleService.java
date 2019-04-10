@@ -1,5 +1,6 @@
 package cn.hbis.erp.modular.system.service;
 
+import cn.hbis.erp.core.util.DateUtil;
 import cn.hbis.erp.modular.system.entity.ScmSteelSettle;
 import cn.hbis.erp.modular.system.mapper.ScmSteelSettleMapper;
 import cn.hbis.erp.modular.system.warpper.ScmSteelSettleWrapper;
@@ -112,18 +113,12 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
 产险合同进度报表1
 */
     @Async
-    public List<ScmSteelSettle> getcxhtjd(String startTime,String endTime,String cxName) {
+    public List<ScmSteelSettle> getcxhtjd(String startTime,String endTime,List<String> cxName) {
         String month = "";
         String year = "";
         SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
-        if (ToolUtil.isEmpty(startTime)){
-            startTime = df.format(new Date()).toString();
-        }else {
-            startTime = startTime.replaceAll("[[\\s-:punct:]]","").substring(0,6);
-            if (ToolUtil.isNotEmpty(endTime)){
-                endTime = endTime.replaceAll("[[\\s-:punct:]]","").substring(0,6);
-            }
-        }
+        startTime = DateUtil.getFirstDayOfMonth(startTime).replaceAll("[[\\s-:punct:]]","").substring(0,8);
+        endTime = DateUtil.getLastDayOfMonth(endTime).replaceAll("[[\\s-:punct:]]","").substring(0,8);
         year = startTime.substring(0,4);
         return scmSteelSettleMapper.getcxhtjd(startTime,endTime,year,cxName);
     }
