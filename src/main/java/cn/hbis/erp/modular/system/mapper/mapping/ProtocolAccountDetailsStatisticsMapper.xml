@@ -50,7 +50,7 @@
         <if test="supplyMode != null and supplyMode != ''">
             and d.supply_mode = #{supplyMode}
         </if>
-        <if test="companyIdList.size() > 0">
+        <if test="companyIdList != null and companyIdList.size() > 0">
             and d.steel_mills in
             <foreach item="item" index="index" collection="companyIdList" open="(" separator="," close=")">
                 　　　　#{item}
@@ -101,7 +101,7 @@
         <if test="supplyMode != null and supplyMode != ''">
             and d.supply_mode = #{supplyMode}
         </if>
-        <if test="companyIdList.size() > 0">
+        <if test="companyIdList != null and companyIdList.size() > 0">
             and d.steel_mills in
             <foreach item="item" index="index" collection="companyIdList" open="(" separator="," close=")">
                 　　　　#{item}
