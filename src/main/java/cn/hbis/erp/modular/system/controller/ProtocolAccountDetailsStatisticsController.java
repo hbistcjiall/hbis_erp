@@ -50,7 +50,7 @@ public class ProtocolAccountDetailsStatisticsController {
             @ApiImplicitParam(name = "page" ,value = "第几页",dataType ="String" )
     })
     @PostMapping(value = "list")
-    public Map list(String varieties, String beginTime, String endTime, String supplyMode, @RequestParam(value = "idList") List<String> companyIdList, String limit, String page) {
+    public Map list(String varieties, String beginTime, String endTime, String supplyMode, @RequestParam(value = "idList",required = false) List<String> companyIdList, String limit, String page) {
         beginTime = DateUtil.getFirstDayOfMonth(beginTime);
         endTime = DateUtil.getLastDayOfMonth(endTime);
         Map map = new HashMap();
@@ -74,7 +74,7 @@ public class ProtocolAccountDetailsStatisticsController {
             @ApiImplicitParam(name = "supplyMode", value = "供货方式", dataType = "String")
     })
     @GetMapping(value = "exportSubsidiaryVarietySteel")
-    public void exportProtocolSalesDetailStatistics(String varieties, String beginTime, String endTime, String supplyMode, @RequestParam(value = "idList") List<String> idList, HttpServletResponse response) {
+    public void exportProtocolSalesDetailStatistics(String varieties, String beginTime, String endTime, String supplyMode, @RequestParam(value = "idList",required = false) List<String> idList, HttpServletResponse response) {
         beginTime = DateUtil.getFirstDayOfMonth(beginTime);
         endTime = DateUtil.getLastDayOfMonth(endTime);
         List<Map<String, Object>> protocolAccountDetailsStatistics = protocolAccountDetailsStatisticsService.searchList(varieties, beginTime, endTime, supplyMode, idList);
