@@ -591,6 +591,18 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
                                 and sso.sale_group <![CDATA[ != ]]> 'C100'
                                 and sso.sale_group <![CDATA[ != ]]> 'K200'
                                 and sso.product_info <![CDATA[ != ]]> '连铸坯'
+        and sso.SALE_GROUP not in(select ssa.sale_group
+        from scm_sale_order ssa
+        where ssa.company_id = '8493' and ssa.sale_group != '营销中心' and ssa.sale_group !='1000'
+        )
+        and sso.SALE_GROUP not in(select ssa.sale_group
+        from scm_sale_order ssa
+        where ssa.company_id = '1932' and ssa.sale_group != '销售部' and ssa.sale_group != '科技部'
+        )
+        and sso.sale_body not in (select ssa.sale_body
+        from scm_sale_order ssa
+        where ssa.company_id = '9196' and ssa.sale_body = '河北经营部'
+        )
                                    ) ht
                   left join (select CX_NAME cxName, sum(planNum) hjjhl
                               from (SELECT CX_NAME, MAR_MONTH planNum,fl_name

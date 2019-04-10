@@ -1114,6 +1114,23 @@
 
     <select id="getcxhtjd" resultType="map">
         select dName,
+        decode(companyId,
+        9580,
+        '河钢唐钢',
+        9727,
+        '河钢邯钢',
+        9193,
+        '河钢宣钢',
+        9196,
+        '河钢承钢',
+        1932,
+        '河钢舞钢',
+        8110,
+        '河钢石钢',
+        8493,
+        '河钢衡板',
+        7778,
+        '河钢邯宝') companyId,
         case
         when hjhtl is null then
         0
@@ -1225,6 +1242,7 @@
         ckhtl - planNumck
         end jdck
         from (select distinct ht.dName dName,
+        ht.companyId companyId,
         sum(ht.orderMount) hjhtl,
         hjjhl,
         sum(case
@@ -1430,7 +1448,8 @@
         '衡板冷板'
         end dName,
         xsztdzb.sale_body saleBody,
-        sso.ORDER_MOUNT orderMount
+        sso.ORDER_MOUNT orderMount,
+        sso.company_id companyId
         from scm_sale_order sso
         left join (select a.*
         from price_salebody_relation a
@@ -1497,10 +1516,16 @@
             </foreach>
         </if>
         group by ht.dName,
+        ht.companyId,
         hjjhl,
         jh.planNumxsz,
         jh.planNumzgs,
         jh.planNumck)
+        where 1=1
+        <if test="companyId != null and companyId != ''">
+            and companyId = #{companyId}
+        </if>
+        order by decode(companyId,'河钢唐钢',1,'河钢邯钢',2,'河钢宣钢',3,'河钢承钢',4,'河钢舞钢',5,'河钢石钢',6,'河钢衡板',7,'河钢邯宝',8)
     </select>
 
 </mapper>
