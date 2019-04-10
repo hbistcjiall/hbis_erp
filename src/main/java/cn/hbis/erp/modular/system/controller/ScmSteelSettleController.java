@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import cn.hbis.erp.core.util.DateUtil;
 
 /**
  * <p>
@@ -36,15 +37,15 @@ public class ScmSteelSettleController {
             @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
             @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
             @ApiImplicitParam(name = "dw", value = "单位", dataType = "String"),
-            @ApiImplicitParam(name = "cx", value = "产线", dataType = "String"),
+
     })
     @PostMapping("getcx")
     @Async
-    public  List<ScmSteelSettle>  getcx(String dw,String cx,String startTime,String endTime) throws ParseException {
-
-
+    public  List<ScmSteelSettle>  getcx(String dw,@RequestParam(required = false) List<String> cx, String startTime, String endTime) throws ParseException {
+        String  startTime1=(String)DateUtil.getFirstDayOfMonth(startTime);
+        String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
         SimpleDateFormat sDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date=sDateFormat.parse("2019-03-01 00:00:00");
+        Date date=sDateFormat.parse(startTime);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.MONTH, -1);
@@ -59,7 +60,8 @@ public class ScmSteelSettleController {
         System.out.println(lastDay);
         String startagainTime=firstDay;
         String endagainTime=lastDay;
-        List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx,startTime,endTime,startagainTime,endagainTime);
+        List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx,startTime1+"00:00:00",endTime1+"00:00:00",startagainTime,endagainTime);
+
         return getcx ;
     }
     @ApiOperation(value = "月度品种报表")
@@ -143,12 +145,12 @@ public class ScmSteelSettleController {
             @ApiImplicitParam(name = "nf", value = "年份", dataType = "String"),
             @ApiImplicitParam(name = "yf", value = "月份", dataType = "String"),
             @ApiImplicitParam(name = "pz", value = "品种", dataType = "String"),
-            @ApiImplicitParam(name = "cx", value = "产线", dataType = "String"),
+
             @ApiImplicitParam(name = "xszt", value = "销售主题", dataType = "String"),
     })
     @PostMapping("getzyjh")
     @Async
-    public  List<ScmSteelSettle>  getzyjh(String nf,String yf,String pz,String cx,String xszt) {
+    public  List<ScmSteelSettle>  getzyjh(String nf,String yf,String pz,@RequestParam(required = false) List<String> cx,String xszt) {
         List<ScmSteelSettle> getzyjh=scmSteelSettleService.getzyjh(nf,yf,pz,cx,xszt);
         return getzyjh;
     }
