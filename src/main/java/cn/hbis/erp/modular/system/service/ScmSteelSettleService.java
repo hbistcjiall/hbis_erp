@@ -1,6 +1,5 @@
 package cn.hbis.erp.modular.system.service;
 
-import cn.hbis.erp.core.util.DateUtil;
 import cn.hbis.erp.modular.system.entity.ScmSteelSettle;
 import cn.hbis.erp.modular.system.mapper.ScmSteelSettleMapper;
 import cn.hbis.erp.modular.system.warpper.ScmSteelSettleWrapper;
@@ -115,10 +114,10 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
         String month = "";
         String year = "";
         SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
-        startTime = DateUtil.getFirstDayOfMonth(startTime).replaceAll("[[\\s-:punct:]]","").substring(0,8);
-        endTime = DateUtil.getLastDayOfMonth(endTime).replaceAll("[[\\s-:punct:]]","").substring(0,8);
+        startTime = startTime.replaceAll("[[\\s-:punct:]]","").substring(0,6);
+        month = startTime.substring(4,6);
         year = startTime.substring(0,4);
-        return scmSteelSettleMapper.getcxhtjd(startTime,endTime,year,cxName,companyId);
+        return scmSteelSettleMapper.getcxhtjd(startTime,endTime,year,cxName,companyId,month);
     }
 
     /*
@@ -128,10 +127,10 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     public List<ScmSteelSettle> getpzhtjd(String startTime,String endTime,String pzName) {
         String month = "";
         String year = "";
-        startTime = DateUtil.getFirstDayOfMonth(startTime).replaceAll("[[\\s-:punct:]]","").substring(0,8);
-        endTime = DateUtil.getLastDayOfMonth(endTime).replaceAll("[[\\s-:punct:]]","").substring(0,8);
+        startTime = startTime.replaceAll("[[\\s-:punct:]]","").substring(0,6);
+        month = startTime.substring(4,6);
         year = startTime.substring(0,4);
-        return scmSteelSettleMapper.getpzhtjd(startTime,endTime,year,pzName);
+        return scmSteelSettleMapper.getpzhtjd(startTime,endTime,year,pzName,month);
     }
 
 

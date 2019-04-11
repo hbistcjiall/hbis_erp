@@ -48,7 +48,7 @@
         settle.company_id,
         xsztdzb.sale_body,
         rpcl.product_grade,
-        settle.fkimg,
+        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
         settle.id,
         settle.fkdat,
         sso.order_mount,
@@ -190,7 +190,7 @@
         xsztdzb.sale_body,
         sso.sale_body sggl,
         rpcl.product_grade,
-        settle.fkimg,
+        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
         settle.id,
         settle.fkdat,
         sso.order_mount,
@@ -271,6 +271,7 @@
         group by  t.companyname,t.name  )
         ) ) where 1=1
         and  NAME &lt; &gt; '唐钢1580热轧线'  and  name &lt; &gt; '唐钢中厚板'
+
         <if test="dw != '' and  dw != null ">
             and COMPANYNAME = #{dw}
         </if>
@@ -1054,11 +1055,9 @@
                         and svtp.variety = #{pzName}
                     </if>
                     <if test="startTime != null and startTime != ''">
-                        and sso.dj_date <![CDATA[ >= ]]> #{startTime}
+                        and instr(sso.dj_date, #{startTime})>0
                     </if>
-                    <if test="endTime != null and endTime != ''">
-                        and sso.dj_date <![CDATA[ <= ]]> #{endTime}
-                    </if>
+
                    and sso.order_type_describe not in
        (select distinct cfd.data_name
           from crm_filter_data cfd
@@ -1093,7 +1092,32 @@
                                  when fl_name = '子公司其他' or fl_name = '技术中心、事业部' or fl_name = '现货' then
                                   planNum
                                end) planNumzgs
-                      from (SELECT distinct PZ_NAME, MAR_MONTH planNum, fl_name
+                      from (SELECT distinct PZ_NAME, CASE
+                                                    WHEN #{month} = '01' THEN
+                                                    JAN_MONTH
+                                                    WHEN #{month} = '02' THEN
+                                                    FEB_MONTH
+                                                    WHEN #{month} = '03' THEN
+                                                    MAR_MONTH
+                                                    WHEN #{month} = '04' THEN
+                                                    APR_MONTH
+                                                    WHEN #{month} = '05' THEN
+                                                    MAY_MONTH
+                                                    WHEN #{month} = '06' THEN
+                                                    JUN_MONTH
+                                                    WHEN #{month} = '07' THEN
+                                                    JUL_MONTH
+                                                    WHEN #{month} = '08' THEN
+                                                    AUG_MONTH
+                                                    WHEN #{month} = '09' THEN
+                                                    SEP_MONTH
+                                                    WHEN #{month} = '10' THEN
+                                                    OCT_MONTH
+                                                    WHEN #{month} = '11' THEN
+                                                    NOV_MONTH
+                                                    WHEN #{month} = '12' THEN
+                                                    DEC_MONTH
+                                                    END planNum, fl_name
                               FROM crm_resource_allocation
                              where year = #{year}
                               )
@@ -1382,6 +1406,9 @@
         when sso.company_id = '7778' and
         sso.product_code = 'M' then
         '邯钢西区镀锌'
+        when sso.company_id = '7778' and
+        sso.product_code = 'S' then
+        '邯宝其他'
         when sso.company_id = '9727' and
         sso.product_code = '10' then
         '邯钢3000/3500'
@@ -1450,10 +1477,7 @@
 
         WHERE 1 = 1
         <if test="startTime != null and startTime != ''">
-            and sso.dj_date <![CDATA[ >= ]]> #{startTime}
-        </if>
-        <if test="endTime != null and endTime != ''">
-            and sso.dj_date <![CDATA[ <= ]]> #{endTime}
+            and instr(sso.dj_date, #{startTime})>0
         </if>
         and sso.order_type_describe not in
         (select distinct cfd.data_name
@@ -1493,7 +1517,32 @@
         fl_name = '现货' then
         planNum
         end) planNumzgs
-        from (SELECT cx_NAME, MAR_MONTH planNum, fl_name
+        from (SELECT cx_NAME, CASE
+                            WHEN #{month} = '01' THEN
+                            JAN_MONTH
+                            WHEN #{month} = '02' THEN
+                            FEB_MONTH
+                            WHEN #{month} = '03' THEN
+                            MAR_MONTH
+                            WHEN #{month} = '04' THEN
+                            APR_MONTH
+                            WHEN #{month} = '05' THEN
+                            MAY_MONTH
+                            WHEN #{month} = '06' THEN
+                            JUN_MONTH
+                            WHEN #{month} = '07' THEN
+                            JUL_MONTH
+                            WHEN #{month} = '08' THEN
+                            AUG_MONTH
+                            WHEN #{month} = '09' THEN
+                            SEP_MONTH
+                            WHEN #{month} = '10' THEN
+                            OCT_MONTH
+                            WHEN #{month} = '11' THEN
+                            NOV_MONTH
+                            WHEN #{month} = '12' THEN
+                            DEC_MONTH
+                            END planNum, fl_name
         FROM crm_resource_allocation
         where year = #{year}
         and fl_Name <![CDATA[ != ]]> '品种钢')
