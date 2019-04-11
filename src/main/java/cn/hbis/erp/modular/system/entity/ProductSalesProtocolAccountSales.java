@@ -1,5 +1,8 @@
 package cn.hbis.erp.modular.system.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +16,7 @@ public class ProductSalesProtocolAccountSales implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String companyName;//子公司名
+    @TableId
     private String companyId;//子公司id
     private String varieties;//产品类别
     private Double totalSales;//总销量

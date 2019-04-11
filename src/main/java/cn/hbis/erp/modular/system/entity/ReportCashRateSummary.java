@@ -1,5 +1,7 @@
 package cn.hbis.erp.modular.system.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -16,7 +18,7 @@ public class ReportCashRateSummary implements Serializable {
     private static final long serialVersionUID = 4013992525944989718L;
 
     private String productGrade;//产品等级
-
+    @TableId
     private Long companyId;//子公司
     private String companyName;
     private BigDecimal deliveryWeight;//发货总量

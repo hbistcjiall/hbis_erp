@@ -1,5 +1,7 @@
 package cn.hbis.erp.modular.system.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -15,6 +17,7 @@ public class ReportVarietySteelBean implements Serializable {
 
     private static final long serialVersionUID = -7368686079565891847L;
 
+    @TableId
     private String companyId;
     private String companyName;//子公司
     private String varietyClass;//品种类别

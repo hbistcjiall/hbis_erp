@@ -1,5 +1,7 @@
 package cn.hbis.erp.modular.system.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +15,7 @@ public class ProtocolAccountDetailsStatistics implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String statisticsTime;//统计月份
+    @TableId
     private String accountName;//用户名（全称）
     private String supplyMode;//供货方式
     private String varieties;//品种
