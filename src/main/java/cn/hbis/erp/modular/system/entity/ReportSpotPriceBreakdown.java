@@ -1,6 +1,7 @@
 package cn.hbis.erp.modular.system.entity;
 
 import cn.hbis.erp.core.util.DoubleUtil;
+import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serializable;
 
@@ -20,6 +21,7 @@ public class ReportSpotPriceBreakdown implements Serializable {
     private String            orderMonth;
     private String            orderXun;
     private String            orderDay;
+    @TableId
     private String            company;
     private String            type;                                   //1=结算量；2=结算价
     //高线
