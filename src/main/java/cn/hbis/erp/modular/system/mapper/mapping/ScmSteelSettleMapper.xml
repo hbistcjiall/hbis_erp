@@ -48,7 +48,7 @@
         settle.company_id,
         xsztdzb.sale_body,
         rpcl.product_grade,
-        settle.fkimg,
+        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
         settle.id,
         settle.fkdat,
         sso.order_mount,
@@ -190,7 +190,7 @@
         xsztdzb.sale_body,
         sso.sale_body sggl,
         rpcl.product_grade,
-        settle.fkimg,
+        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
         settle.id,
         settle.fkdat,
         sso.order_mount,
@@ -271,6 +271,7 @@
         group by  t.companyname,t.name  )
         ) ) where 1=1
         and  NAME &lt; &gt; '唐钢1580热轧线'  and  name &lt; &gt; '唐钢中厚板'
+
         <if test="dw != '' and  dw != null ">
             and COMPANYNAME = #{dw}
         </if>

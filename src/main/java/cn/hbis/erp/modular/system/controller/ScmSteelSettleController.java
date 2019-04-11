@@ -74,8 +74,10 @@ public class ScmSteelSettleController {
     @PostMapping("getpz")
     @Async
     public  List<ScmSteelSettle>  getpz(String pz,String startTime,String endTime) throws ParseException {
+        String  startTime1=(String)DateUtil.getFirstDayOfMonth(startTime);
+        String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
         SimpleDateFormat sDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date=sDateFormat.parse("2019-03-01 00:00:00");
+        Date date=sDateFormat.parse(startTime);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.MONTH, -1);
@@ -91,7 +93,7 @@ public class ScmSteelSettleController {
         String startagainTime=firstDay;
         String endagainTime=lastDay;
 
-        List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz,startTime,endTime,startagainTime,endagainTime);
+        List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz,startTime1+"00:00:00",endTime1+"00:00:00",startagainTime,endagainTime);
         return getpz;
     }
     @ApiOperation(value = "责任部门报表")
@@ -103,7 +105,9 @@ public class ScmSteelSettleController {
     @PostMapping("getzrbm")
     @Async
     public  List<ScmSteelSettle>  getzrbm(String zrbm,String startTime,String endTime) {
-        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getzrbm(zrbm,startTime,endTime);
+        String  startTime1=(String)DateUtil.getFirstDayOfMonth(startTime);
+        String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
+        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getzrbm(zrbm,startTime1+"00:00:00",endTime1+"00:00:00");
         return getzrbm;
     }
 
