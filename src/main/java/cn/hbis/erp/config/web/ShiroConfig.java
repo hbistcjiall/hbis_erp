@@ -160,6 +160,7 @@ public class ShiroConfig {
         hashMap.put("/img/**", "anon");
         hashMap.put("/webjars/**", "anon");
         hashMap.put("/v2/**", "anon");
+        hashMap.put("/appAllocation/**", "anon");
         hashMap.put("/**", "user");
 
         shiroFilter.setFilterChainDefinitionMap(hashMap);

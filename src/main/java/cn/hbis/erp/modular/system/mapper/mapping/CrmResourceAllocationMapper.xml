@@ -83,12 +83,37 @@
             </if>
            )) ht
   left join (select PZ_NAME pzName,flName, sum(planNum) hjjhl
-
-               from (SELECT distinct PZ_NAME, MAR_MONTH planNum,fl_Name flName
-                       FROM crm_resource_allocation
-                      where 1=1 and year = #{year}
+             from (SELECT distinct PZ_NAME,
+                            CASE
+                            WHEN #{month} = '01' THEN
+                            JAN_MONTH
+                            WHEN #{month} = '02' THEN
+                            FEB_MONTH
+                            WHEN #{month} = '03' THEN
+                            MAR_MONTH
+                            WHEN #{month} = '04' THEN
+                            APR_MONTH
+                            WHEN #{month} = '05' THEN
+                            MAY_MONTH
+                            WHEN #{month} = '06' THEN
+                            JUN_MONTH
+                            WHEN #{month} = '07' THEN
+                            JUL_MONTH
+                            WHEN #{month} = '08' THEN
+                            AUG_MONTH
+                            WHEN #{month} = '09' THEN
+                            SEP_MONTH
+                            WHEN #{month} = '10' THEN
+                            OCT_MONTH
+                            WHEN #{month} = '11' THEN
+                            NOV_MONTH
+                            WHEN #{month} = '12' THEN
+                            DEC_MONTH
+                            END planNum,fl_Name flName
+                   FROM crm_resource_allocation
+                   where 1=1 and year = #{year}
                       )
-              group by PZ_NAME,flName) jh
+             group by PZ_NAME,flName) jh
     on ht.pzName = jh.pzName and ht.saleBody = jh.flName
     group by ht.pzName,ht.saleBody, jh.hjjhl)
  group by pzName
@@ -323,8 +348,33 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
 
         ) ht
         left join (select cx_NAME,
-        sum(planNum) hjjhl
-        from (SELECT cx_NAME, MAR_MONTH planNum,fl_name
+                    sum(planNum) hjjhl
+                    from (SELECT cx_NAME, CASE
+                    WHEN #{month} = '01' THEN
+                    JAN_MONTH
+                    WHEN #{month} = '02' THEN
+                    FEB_MONTH
+                    WHEN #{month} = '03' THEN
+                    MAR_MONTH
+                    WHEN #{month} = '04' THEN
+                    APR_MONTH
+                    WHEN #{month} = '05' THEN
+                    MAY_MONTH
+                    WHEN #{month} = '06' THEN
+                    JUN_MONTH
+                    WHEN #{month} = '07' THEN
+                    JUL_MONTH
+                    WHEN #{month} = '08' THEN
+                    AUG_MONTH
+                    WHEN #{month} = '09' THEN
+                    SEP_MONTH
+                    WHEN #{month} = '10' THEN
+                    OCT_MONTH
+                    WHEN #{month} = '11' THEN
+                    NOV_MONTH
+                    WHEN #{month} = '12' THEN
+                    DEC_MONTH
+                    END planNum,fl_name
         FROM crm_resource_allocation
         WHERE
         1=1
@@ -605,7 +655,32 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
         )
                                    ) ht
                   left join (select CX_NAME cxName, sum(planNum) hjjhl
-                              from (SELECT CX_NAME, MAR_MONTH planNum,fl_name
+                              from (SELECT CX_NAME, CASE
+                                                    WHEN #{month} = '01' THEN
+                                                    JAN_MONTH
+                                                    WHEN #{month} = '02' THEN
+                                                    FEB_MONTH
+                                                    WHEN #{month} = '03' THEN
+                                                    MAR_MONTH
+                                                    WHEN #{month} = '04' THEN
+                                                    APR_MONTH
+                                                    WHEN #{month} = '05' THEN
+                                                    MAY_MONTH
+                                                    WHEN #{month} = '06' THEN
+                                                    JUN_MONTH
+                                                    WHEN #{month} = '07' THEN
+                                                    JUL_MONTH
+                                                    WHEN #{month} = '08' THEN
+                                                    AUG_MONTH
+                                                    WHEN #{month} = '09' THEN
+                                                    SEP_MONTH
+                                                    WHEN #{month} = '10' THEN
+                                                    OCT_MONTH
+                                                    WHEN #{month} = '11' THEN
+                                                    NOV_MONTH
+                                                    WHEN #{month} = '12' THEN
+                                                    DEC_MONTH
+                                                    END planNum,fl_name
                                       FROM crm_resource_allocation
                                      WHERE 1 = 1
                                        and YEAR = #{year}
@@ -878,6 +953,18 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
         and sso.sale_group <![CDATA[ != ]]> 'C100'
         and sso.sale_group <![CDATA[ != ]]> 'K200'
         and sso.product_info <![CDATA[ != ]]> '连铸坯'
+        and sso.SALE_GROUP not in(select ssa.sale_group
+        from scm_sale_order ssa
+        where ssa.company_id = '8493' and ssa.sale_group != '营销中心' and ssa.sale_group !='1000'
+        )
+        and sso.SALE_GROUP not in(select ssa.sale_group
+        from scm_sale_order ssa
+        where ssa.company_id = '1932' and ssa.sale_group != '销售部' and ssa.sale_group != '科技部'
+        )
+        and sso.sale_body not in (select ssa.sale_body
+        from scm_sale_order ssa
+        where ssa.company_id = '9196' and ssa.sale_body = '河北经营部'
+        )
         <if test="companyName != null and companyName != ''">
             and sso.company_id = #{companyName}
         </if>
@@ -885,7 +972,32 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
                  group by saleBody,dName,companyId, saleGroup, ssaleBody) ht
           left join (select flName, cxName,sum(planNum) hjjhl
 
-                      from (SELECT MAR_MONTH planNum, fl_name flName,cx_name cxName
+                      from (SELECT CASE
+                                    WHEN #{month} = '01' THEN
+                                    JAN_MONTH
+                                    WHEN #{month} = '02' THEN
+                                    FEB_MONTH
+                                    WHEN #{month} = '03' THEN
+                                    MAR_MONTH
+                                    WHEN #{month} = '04' THEN
+                                    APR_MONTH
+                                    WHEN #{month} = '05' THEN
+                                    MAY_MONTH
+                                    WHEN #{month} = '06' THEN
+                                    JUN_MONTH
+                                    WHEN #{month} = '07' THEN
+                                    JUL_MONTH
+                                    WHEN #{month} = '08' THEN
+                                    AUG_MONTH
+                                    WHEN #{month} = '09' THEN
+                                    SEP_MONTH
+                                    WHEN #{month} = '10' THEN
+                                    OCT_MONTH
+                                    WHEN #{month} = '11' THEN
+                                    NOV_MONTH
+                                    WHEN #{month} = '12' THEN
+                                    DEC_MONTH
+                                    END planNum, fl_name flName,cx_name cxName
                               FROM crm_resource_allocation
                              where year = #{year}
                               and fl_name <![CDATA[ != ]]> '品种钢'
