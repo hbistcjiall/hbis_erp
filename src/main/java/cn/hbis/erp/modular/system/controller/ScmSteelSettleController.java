@@ -193,12 +193,13 @@ public class ScmSteelSettleController {
     @ApiOperation(value = "产线合同进度报表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startTime", value = "开始日期", dataType = "String"),
-            @ApiImplicitParam(name = "endTime", value = "结束日期", dataType = "String")
+            @ApiImplicitParam(name = "endTime", value = "结束日期", dataType = "String"),
+            @ApiImplicitParam(name = "companyId", value = "公司ID", dataType = "String")
     })
     @PostMapping("getcxhtjd")
     @Async
-    public  List<ScmSteelSettle>  getcxhtjd(String startTime,String endTime,@RequestParam(required = false) List<String> cxName ) {
-        List<ScmSteelSettle> getcxhtjd = scmSteelSettleService.getcxhtjd(startTime,endTime,cxName);
+    public  List<ScmSteelSettle>  getcxhtjd(String startTime,String endTime,@RequestParam(required = false) List<String> cxName ,String companyId) {
+        List<ScmSteelSettle> getcxhtjd = scmSteelSettleService.getcxhtjd(startTime,endTime,cxName,companyId);
         return getcxhtjd;
     }
 
