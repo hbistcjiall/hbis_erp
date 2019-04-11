@@ -962,50 +962,116 @@
 
     <select id="getpzhtjd" resultType="map">
       select pzName,
-       case  when hjhtl is null then 0 else hjhtl end hjhtl,
-       case  when hjjhl is null then 0 else hjjhl end hjjhl,
-       case when hjjhl =0 then 0 when hjhtl / hjjhl is null then 0 else
-
-        ROUND (
-        hjhtl / hjjhl * 100,
-        2
-
-        )
+        case
+        when hjhtl is null then
+        0
+        else
+        hjhtl
+        end hjhtl,
+        case
+        when hjjhl is null then
+        0
+        else
+        hjjhl
+        end hjjhl,
+        case
+        when hjjhl = 0 then
+        0
+        when hjhtl / hjjhl is null then
+        0
+        else
+        ROUND(hjhtl / hjjhl * 100, 2)
         END AS schedulehj,
-        case  when zygshtl is null then 0 else zygshtl end zygshtl,
-        case  when zyfgshtl is null then 0 else zyfgshtl end zyfgshtl,
-         case  when planNumxsz is null then 0 else planNumxsz end planNumxsz,
-       case when planNumxsz =0 then 0 when htlzgs/planNumxsz is null then 0 else
-
-        ROUND (
-        htlzgs/planNumxsz * 100,
-        2
-        )
-
+        case
+        when zygshtl is null then
+        0
+        else
+        zygshtl
+        end zygshtl,
+        case
+        when zyfgshtl is null then
+        0
+        else
+        zyfgshtl
+        end zyfgshtl,
+        case
+        when planNumxsz is null then
+        0
+        else
+        planNumxsz
+        end planNumxsz,
+        case
+        when planNumxsz = 0 then
+        0
+        when htlzgs / planNumxsz is null then
+        0
+        else
+        ROUND(htlzgs / planNumxsz * 100, 2)
         END AS schedulexsz,
-        case when htlzgs-planNumxsz is null then 0 else htlzgs-planNumxsz end jdxsz,
-        case  when zgshtl is null then 0 else zgshtl end zgshtl,
-         case  when planNumzgs is null then 0 else planNumzgs end planNumzgs,
-       case when planNumzgs =0 then 0 when htlzgs/planNumzgs is null then 0 else
-
-        ROUND (
-        htlzgs/planNumzgs * 100,
-        2
-        )
-
+        case
+        when htlzgs = 0 or htlzgs is null then
+        nvl(-planNumxsz,0)
+        when planNumxsz = 0 or planNumxsz is null then
+        htlzgs
+        else
+        htlzgs - planNumxsz
+        end jdxsz,
+        case
+        when zgshtl is null then
+        0
+        else
+        zgshtl
+        end zgshtl,
+        case
+        when planNumzgs is null then
+        0
+        else
+        planNumzgs
+        end planNumzgs,
+        case
+        when planNumzgs = 0 then
+        0
+        when zgshtl / planNumzgs is null then
+        0
+        else
+        ROUND(zgshtl / planNumzgs * 100, 2)
         END AS schedulezgs,
-        case when zgshtl-planNumzgs is null then 0 else htlzgs-planNumzgs end jdzgs,
-        case  when ckhtl is null then 0 else ckhtl end ckhtl,
-         case  when planNumck is null then 0 else planNumck end planNumck,
-       case when planNumck =0 then 0 when ckhtl/planNumck is null then 0 else
-
-        ROUND (
-        ckhtl/planNumck * 100,
-        2
-        )
-
+        case
+        when zgshtl = 0 or zgshtl is null then
+        nvl(-planNumzgs,0)
+        when planNumzgs = 0 or planNumzgs is null then
+        zgshtl
+        else
+        zgshtl - planNumzgs
+        end jdzgs,
+        case
+        when ckhtl is null then
+        0
+        else
+        ckhtl
+        end ckhtl,
+        case
+        when planNumck is null then
+        0
+        else
+        planNumck
+        end planNumck,
+        case
+        when planNumck = 0 then
+        0
+        when ckhtl / planNumck is null then
+        0
+        else
+        ROUND(ckhtl / planNumck * 100, 2)
         END AS scheduleck,
-        case when ckhtl-planNumck is null then 0 else ckhtl-planNumck end jdck
+        case
+        when ckhtl = 0 or ckhtl is null then
+        nvl(-planNumck,0)
+        when planNumck = 0 or planNumck is null then
+        ckhtl
+        else
+        ckhtl - planNumck
+        end jdck
   from (select distinct ht.pzName pzName,
                         sum(ht.orderMount) hjhtl,
                         hjjhl,
@@ -1036,7 +1102,7 @@
                         jh.planNumzgs planNumzgs,
                         jh.planNumck planNumck
 
-          from (SELECT distinct svtp.variety pzName,
+          from (SELECT svtp.variety pzName,
                                 xsztdzb.sale_body saleBody,
                                 sso.ORDER_MOUNT   orderMount
                 from scm_sale_order sso
@@ -1060,7 +1126,7 @@
                    and sso.order_type_describe not in
        (select distinct cfd.data_name
           from crm_filter_data cfd
-         where cfd.data_type = '2'
+         where cfd.data_type in ('5', '1', '7', '9')
            and cfd.status = '0'
            and cfd.company_id = sso.company_id)
    and sso.saler_name not in
@@ -1075,7 +1141,6 @@
                              WHERE cfd.company_id = sso.company_id
                                AND cfd.data_type = 9
                                AND cfd.status = 0)
-        and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢'
                 ) ht
           left join (select PZ_NAME pzName,
                            sum(planNum) hjjhl,
@@ -1119,6 +1184,7 @@
                                                     END planNum, fl_name
                               FROM crm_resource_allocation
                              where year = #{year}
+                              and fl_name <![CDATA[ != ]]> '品种钢'
                               )
                      group by PZ_NAME) jh
             on ht.pzName = jh.pzName
@@ -1193,7 +1259,7 @@
         END AS schedulexsz,
         case
         when htlzgs = 0 or htlzgs is null then
-        -planNumxsz
+        nvl(-planNumxsz,0)
         when planNumxsz = 0 or planNumxsz is null then
         htlzgs
         else
@@ -1214,18 +1280,18 @@
         case
         when planNumzgs = 0 then
         0
-        when htlzgs / planNumzgs is null then
+        when zgshtl / planNumzgs is null then
         0
         else
-        ROUND(htlzgs / planNumzgs * 100, 2)
+        ROUND(zgshtl / planNumzgs * 100, 2)
         END AS schedulezgs,
         case
         when zgshtl = 0 or zgshtl is null then
-        -planNumzgs
+        nvl(-planNumzgs,0)
         when planNumzgs = 0 or planNumzgs is null then
         zgshtl
         else
-        htlzgs - planNumzgs
+        zgshtl - planNumzgs
         end jdzgs,
         case
         when ckhtl is null then
@@ -1249,7 +1315,7 @@
         END AS scheduleck,
         case
         when ckhtl = 0 or ckhtl is null then
-        -planNumck
+        nvl(-planNumck,0)
         when planNumck = 0 or planNumck is null then
         ckhtl
         else
@@ -1481,7 +1547,7 @@
         and sso.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type = '2'
+        where cfd.data_type in ('5', '1', '7', '9')
         and cfd.status = '0'
         and cfd.company_id = sso.company_id)
         and sso.saler_name not in
