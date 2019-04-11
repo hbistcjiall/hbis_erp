@@ -26,20 +26,20 @@
         and cfd.data_type = '1'
         and cfd.status = '0'
         <if test="varieties != null and '热板' == varieties">
-            and d.VARIETIES = '热板' or d.VARIETIES = '酸洗'
+            and (d.VARIETIES = '热板' or d.VARIETIES = '酸洗')
         </if>
         <if test="varieties != null and '冷板' == varieties">
-            and d.VARIETIES = '彩涂' or d.VARIETIES = '冷板' or d.VARIETIES = '镀锌'
+            and (d.VARIETIES = '彩涂' or d.VARIETIES = '冷板' or d.VARIETIES = '镀锌')
         </if>
         <if test="varieties != null and '宽厚板' == varieties">
             and d.VARIETIES = '宽厚板'
         </if>
         <if test="varieties != null and '棒线' == varieties">
-            and d.VARIETIES = '钢筋' or d.VARIETIES = '普线' or d.VARIETIES = '品种线' or d.VARIETIES = '优钢' or d.VARIETIES =
-            '锚杆钢'
+            and (d.VARIETIES = '钢筋' or d.VARIETIES = '普线' or d.VARIETIES = '品种线' or d.VARIETIES = '优钢' or d.VARIETIES =
+            '锚杆钢')
         </if>
         <if test="varieties != null and'型带' == varieties">
-            and d.VARIETIES = '角钢' or d.VARIETIES = '矿用钢'
+            and (d.VARIETIES = '角钢' or d.VARIETIES = '矿用钢')
         </if>
         <if test="endTime != null and endTime != ''">
             and o.dj_date <![CDATA[ < ]]> #{endTime}
@@ -78,19 +78,19 @@
         and cfd.data_type = '1'
         and cfd.status = '0'
         <if test="varieties != null and '热板' == varieties">
-            and d.VARIETIES = '热板' or d.VARIETIES = '酸洗'
+            and (d.VARIETIES = '热板' or d.VARIETIES = '酸洗')
         </if>
         <if test="varieties != null and '冷板' == varieties">
-            and d.VARIETIES = '彩涂' or d.VARIETIES = '冷板' or d.VARIETIES = '镀锌'
+            and (d.VARIETIES = '彩涂' or d.VARIETIES = '冷板' or d.VARIETIES = '镀锌')
         </if>
         <if test="varieties != null and '宽厚板' == varieties">
             and d.VARIETIES = '宽厚板'
         </if>
         <if test="varieties != null and '棒线' == varieties">
-            and d.VARIETIES = '钢筋' or d.VARIETIES = '普线' or d.VARIETIES = '品种线' or d.VARIETIES = '优钢' or d.VARIETIES = '锚杆钢'
+            and (d.VARIETIES = '钢筋' or d.VARIETIES = '普线' or d.VARIETIES = '品种线' or d.VARIETIES = '优钢' or d.VARIETIES = '锚杆钢')
         </if>
         <if test="varieties != null and'型带' == varieties">
-            and d.VARIETIES = '角钢' or d.VARIETIES = '矿用钢'
+            and (d.VARIETIES = '角钢' or d.VARIETIES = '矿用钢')
         </if>
         <if test="endTime != null and endTime != ''">
             and o.dj_date <![CDATA[ < ]]> #{endTime}

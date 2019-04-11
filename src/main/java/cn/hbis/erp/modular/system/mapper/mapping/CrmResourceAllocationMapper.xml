@@ -2,122 +2,135 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.hbis.erp.modular.system.mapper.CrmResourceAllocationMapper">
     <select id="selSchedule" resultType="cn.hbis.erp.modular.system.entity.Allocation">
-    select pzName pzName,
-       case
-         when sum(orderMount) is null then
-          0
-         else
-          sum(orderMount)
-       end yield,
-       case
-         when sum(planNum) is null then
-          0
-         else
-          sum(planNum)
-       end planNum,
-       case
-         when sum(planNum) = 0 then
-          0
-         when sum(orderMount) / sum(planNum) is null then
-          0
-         else
+        select aa.pzName pzName,
+        case
+        when sum(orderMount) is null then
+        0
+        else
+        sum(orderMount)
+        end yield,
+        case
+        when jh.hjjhl is null then
+        0
+        else
+        jh.hjjhl
+        end planNum,
+        case
+        when jh.hjjhl = 0 then
+        0
+        when sum(orderMount) / jh.hjjhl is null then
+        0
+        else
+        ROUND(sum(orderMount) / jh.hjjhl * 100, 2)
+        END AS schedule
+        from (select ht.pzName pzName,
+        (case
+        when saleBody = '技术中心、事业部' or saleBody = '子公司其他' or
+        saleBody = '现货' then
+        '子公司'
+        else
+        saleBody
+        end) saleBody,
+        sum(orderMount) orderMount
+        from (select (case
+        when saleBody = '分公司' or saleBody = '专业公司' then
+        '销售总公司'
+        when saleBody = '事业部' or saleBody = '技术中心' then
+        '技术中心、事业部'
+        when saleBody = '子公司' or saleBody = '自办公司' then
+        '子公司其他'
+        else
+        saleBody
+        end) saleBody,
+        pzName,
+        orderMount
+        from (SELECT svtp.variety      pzName,
+        xsztdzb.sale_body saleBody,
+        sso.ORDER_MOUNT   orderMount
+        from scm_sale_order sso
+        inner join scm_variety_to_pt_gp svtp
+        on sso.company_id = svtp.company_id
+        and sso.product_code = svtp.product_group
+        left join (select a.*
+        from price_salebody_relation a
+        where a.is_delete = 0) xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_body = xsztdzb.sale_body_des
+        WHERE 1 = 1
+        and instr(sso.dj_date, #{date}) > 0
+        and sso.order_type_describe not in
+        (select distinct cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type in ('5', '1', '7', '9')
+        and cfd.status = '0'
+        and cfd.company_id = sso.company_id)
+        and sso.saler_name not in
+        (select cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '1'
+        and cfd.status = '0'
+        and cfd.company_id = sso.company_id)
+        AND sso.sale_group NOT IN
+        (SELECT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 9
+        AND cfd.status = 0)
+        <if test = "flName != null and flName != ''" >
+        and xsztdzb.sale_body in (${flName})
+        </if>)) ht
+        group by ht.pzName, ht.saleBody) aa
+        left join (select PZ_NAME pzName, sum(planNum) hjjhl
+        from (SELECT PZ_NAME,
+        CASE
+        WHEN #{month} = '01' THEN
+        JAN_MONTH
+        WHEN #{month} = '02' THEN
+        FEB_MONTH
+        WHEN #{month} = '03' THEN
+        MAR_MONTH
+        WHEN #{month} = '04' THEN
+        APR_MONTH
+        WHEN #{month} = '05' THEN
+        MAY_MONTH
+        WHEN #{month} = '06' THEN
+        JUN_MONTH
+        WHEN #{month} = '07' THEN
+        JUL_MONTH
+        WHEN #{month} = '08' THEN
+        AUG_MONTH
+        WHEN #{month} = '09' THEN
+        SEP_MONTH
+        WHEN #{month} = '10' THEN
+        OCT_MONTH
+        WHEN #{month} = '11' THEN
+        NOV_MONTH
+        WHEN #{month} = '12' THEN
+        DEC_MONTH
+        END planNum
+        FROM crm_resource_allocation
+        where 1 = 1
+        and year = #{year}
+        and fl_name != '品种钢'
+        <if test="flName1 != null and flName1 != ''">
+            and fl_name in (${flName1})
+        </if>
+        )
+        group by PZ_NAME) jh
+        on aa.pzName = jh.pzName
+        group by aa.pzName, jh.hjjhl
+        order by decode(pzName,
+        '热板',
+        1,
+        '冷板',
+        2,
+        '宽厚板',
+        3,
+        '棒线',
+        4,
+        '型带',
+        5)
 
-          ROUND(sum(orderMount) / sum(planNum) * 100, 2)
-
-       END AS schedule
-  from (select ht.pzName pzName,(case
-                 when saleBody = '技术中心、事业部' or saleBody = '子公司其他' or saleBody = '现货' then
-                  '子公司'
-                 else
-                  saleBody
-               end) saleBody,
-               sum(orderMount) orderMount,
-               jh.hjjhl planNum
-  from(
-  select (case
-                     when saleBody = '分公司' or saleBody = '专业公司' then
-                      '销售总公司'
-                     when saleBody = '事业部' or saleBody = '技术中心' then
-                      '技术中心、事业部'
-                     when saleBody = '子公司' or saleBody = '自办公司'then
-                      '子公司其他'
-                     else saleBody
-                   end) saleBody,pzName,orderMount
-  from(SELECT distinct svtp.variety      pzName,
-                        xsztdzb.sale_body saleBody,
-                        sso.ORDER_MOUNT   orderMount
-          from scm_sale_order sso
-         inner join scm_variety_to_pt_gp svtp
-            on sso.company_id = svtp.company_id
-           and sso.product_code = svtp.product_group
-          left join (select a.*
-                      from price_salebody_relation a
-                     where a.is_delete = 0) xsztdzb
-            ON sso.company_id = xsztdzb.company_id
-           AND sso.sale_body = xsztdzb.sale_body_des
-
-         WHERE 1 = 1
-           and instr(sso.dj_date, #{date})>0
-           and sso.order_type_describe not in
-               (select distinct cfd.data_name
-                  from crm_filter_data cfd
-                 where cfd.data_type = '2'
-                   and cfd.status = '0'
-                   and cfd.company_id = sso.company_id)
-           and sso.saler_name not in
-               (select cfd.data_name
-                  from crm_filter_data cfd
-                 where cfd.data_type = '1'
-                   and cfd.status = '0'
-                   and cfd.company_id = sso.company_id)
-
-           AND sso.sale_group NOT IN
-               (SELECT cfd.data_name
-                  FROM crm_filter_data cfd
-                 WHERE cfd.company_id = sso.company_id
-                   AND cfd.data_type = 9
-                   AND cfd.status = 0)
-           and xsztdzb.sale_body <![CDATA[ != ]]> '品种钢'
-            <if test="flName != null and flName != ''">
-                and xsztdzb.sale_body in (${flName})
-            </if>
-           )) ht
-  left join (select PZ_NAME pzName,flName, sum(planNum) hjjhl
-             from (SELECT distinct PZ_NAME,
-                            CASE
-                            WHEN #{month} = '01' THEN
-                            JAN_MONTH
-                            WHEN #{month} = '02' THEN
-                            FEB_MONTH
-                            WHEN #{month} = '03' THEN
-                            MAR_MONTH
-                            WHEN #{month} = '04' THEN
-                            APR_MONTH
-                            WHEN #{month} = '05' THEN
-                            MAY_MONTH
-                            WHEN #{month} = '06' THEN
-                            JUN_MONTH
-                            WHEN #{month} = '07' THEN
-                            JUL_MONTH
-                            WHEN #{month} = '08' THEN
-                            AUG_MONTH
-                            WHEN #{month} = '09' THEN
-                            SEP_MONTH
-                            WHEN #{month} = '10' THEN
-                            OCT_MONTH
-                            WHEN #{month} = '11' THEN
-                            NOV_MONTH
-                            WHEN #{month} = '12' THEN
-                            DEC_MONTH
-                            END planNum,fl_Name flName
-                   FROM crm_resource_allocation
-                   where 1=1 and year = #{year}
-                      )
-             group by PZ_NAME,flName) jh
-    on ht.pzName = jh.pzName and ht.saleBody = jh.flName
-    group by ht.pzName,ht.saleBody, jh.hjjhl)
- group by pzName
-order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5)
     </select>
 
     <select id="selScheduleByCx" resultType="cn.hbis.erp.modular.system.entity.Allocation">
@@ -326,7 +339,7 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
         and sso.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type = '2'
+        where cfd.data_type in ('5', '1', '7', '9')
         and cfd.status = '0'
         and cfd.company_id = sso.company_id)
         and sso.saler_name not in
@@ -622,7 +635,7 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
                                 and sso.order_type_describe not in
                                 (select distinct cfd.data_name
                                 from crm_filter_data cfd
-                                where cfd.data_type = '2'
+                                where cfd.data_type in ('5', '1', '7', '9')
                                 and cfd.status = '0'
                                 and cfd.company_id = sso.company_id)
                                 and sso.saler_name not in
@@ -934,7 +947,7 @@ order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5
         and sso.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type = '2'
+        where cfd.data_type in ('5', '1', '7', '9')
         and cfd.status = '0'
         and cfd.company_id = sso.company_id)
         and sso.saler_name not in

@@ -24,7 +24,7 @@ public interface CrmResourceAllocationMapper extends BaseMapper<CrmResourceAlloc
       * @param flName
       * @return
       */
-     List<Allocation> selSchedule(@Param("date") String date, @Param("month") String month, @Param("year") String year,@Param("flName")String flName);
+     List<Allocation> selSchedule(@Param("date") String date, @Param("month") String month, @Param("year") String year,@Param("flName")String flName,@Param("flName1")String flName1);
      /**
       * 查询合同进度（产线）
       * @param date
