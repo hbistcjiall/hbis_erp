@@ -2157,7 +2157,8 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
 
     <select id="getzgsjswc" resultType="map">
         select companyid,companyname name ,NVL(sum(fkimg),0) jsl,NVL(sum(pzgl),0) pzgl,NVL(round(sum(pzgl)/sum(fkimg)*100,2),0) wcl from
-        (SELECT DISTINCT decode(settle.company_id,
+        (
+        SELECT DISTINCT decode(settle.company_id,
         9580,
         '唐钢',
         9727,
@@ -2203,8 +2204,17 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         where b.status = '0') rpcl
         on sso.company_id = rpcl.company_id
         and sso.product_type = rpcl.product_class
+
+        left join (select a.* from price_salebody_relation a where a.is_delete = 0 ) xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_body = xsztdzb.sale_body_des
         where settle.fkdat   &gt;= to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
-       	AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+        AND settle.fkdat   &lt;= to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+
+        AND xsztdzb.sale_body_des  &lt; &gt;'唐钢中厚板公司'  and
+        xsztdzb.sale_body_des  &lt; &gt;'唐钢不锈钢公司' and
+        xsztdzb.sale_body_des &lt; &gt; '出口'  and
+        xsztdzb.sale_body_des &lt; &gt; '唐银联营公司数据'
         )
         group by companyname,companyid
         order by decode(companyid,
