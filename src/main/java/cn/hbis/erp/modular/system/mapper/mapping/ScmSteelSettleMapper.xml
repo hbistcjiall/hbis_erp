@@ -1855,7 +1855,7 @@
         '邯钢西区镀锌'
         when sso.company_id = '7778' and
         sso.product_code = 'S' then
-        '邯宝其他'
+        '邯钢其他'
         when sso.company_id = '9727' and
         sso.product_code = '10' then
         '邯钢3000/3500'
