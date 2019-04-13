@@ -95,10 +95,12 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         }
         month = date.substring(4,6);
         year = date.substring(0,4);
-        if (sort.equals("0")){
-            sort = "DESC";
-        }else {
-            sort = "ASC";
+        if (ToolUtil.isNotEmpty(sort)){
+            if (sort.equals("0")){
+                sort = "DESC";
+            }else {
+                sort = "ASC";
+            }
         }
         List<Allocation> lists = new ArrayList<>();
         List<Allocation> list = crmResourceAllocationMapper.selScheduleByCx(date,month,year,sort,flName);

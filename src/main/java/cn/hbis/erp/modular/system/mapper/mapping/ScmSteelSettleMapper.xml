@@ -1343,7 +1343,7 @@
     </select>
 
     <select id="getpzhtjd" resultType="map">
-      select pzName,
+        select pzName,
         case
         when hjhtl is null then
         0
@@ -1392,7 +1392,7 @@
         END AS schedulexsz,
         case
         when htlzgs = 0 or htlzgs is null then
-        nvl(-planNumxsz,0)
+        nvl(-planNumxsz, 0)
         when planNumxsz = 0 or planNumxsz is null then
         htlzgs
         else
@@ -1420,7 +1420,7 @@
         END AS schedulezgs,
         case
         when zgshtl = 0 or zgshtl is null then
-        nvl(-planNumzgs,0)
+        nvl(-planNumzgs, 0)
         when planNumzgs = 0 or planNumzgs is null then
         zgshtl
         else
@@ -1448,130 +1448,149 @@
         END AS scheduleck,
         case
         when ckhtl = 0 or ckhtl is null then
-        nvl(-planNumck,0)
+        nvl(-planNumck, 0)
         when planNumck = 0 or planNumck is null then
         ckhtl
         else
         ckhtl - planNumck
         end jdck
-  from (select distinct ht.pzName pzName,
-                        sum(ht.orderMount) hjhtl,
-                        hjjhl,
-                        sum(case
-                              when ht.saleBody = '专业公司' or ht.saleBody = '分公司' then
-                               ht.orderMount
-                            end) htlzgs,
-                        sum(case
-                              when ht.saleBody = '专业公司' then
-                               ht.orderMount
-                            end) zygshtl,
-                        sum(case
-                               when ht.saleBody = '分公司' then
-                                ht.orderMount
-                             end) zyfgshtl, sum(case
-                          when ht.saleBody = '技术中心' or
-                               ht.saleBody = '事业部' or
-                               ht.saleBody = '子公司' or
-                               ht.saleBody = '自办公司' or
-                               ht.saleBody = '现货' then
-                               ht.orderMount
-                        end) zgshtl,
-                        sum(case
-                              when ht.saleBody = '出口' then
-                               ht.orderMount
-                            end) ckhtl,
-                        jh.planNumxsz planNumxsz,
-                        jh.planNumzgs planNumzgs,
-                        jh.planNumck planNumck
+        from (select distinct ht.pzName pzName,
+        sum(ht.orderMount) hjhtl,
+        hjjhl,
+        sum(case
+        when ht.saleBody = '专业公司' or ht.saleBody = '分公司' or
+        (ht.companyId = '1932' or ht.saleGroup = '销售部') or
+        (ht.companyId = '8110' and ht.ssaleBody = '分公司' and
+        ht.ssaleBody <![CDATA[ != ]]> '出口') then
+        ht.orderMount
+        end) htlzgs,
+        sum(case
+        when ht.saleBody = '专业公司' or
+        (ht.companyId = '1932' or ht.saleGroup = '销售部') or
+        (ht.companyId = '8110' and ht.ssaleBody = '分公司') then
+        ht.orderMount
+        end) zygshtl,
+        sum(case
+        when ht.saleBody = '分公司' then
+        ht.orderMount
+        end) zyfgshtl,
+        sum(case
+        when ht.saleBody = '技术中心' or ht.saleBody = '事业部' or
+        ht.saleBody = '子公司' or ht.saleBody = '自办公司' or
+        ht.saleBody = '现货' or (ht.companyId = '1932' and ht.saleGroup = '科技部') or
+        (ht.companyId = '8493' and ht.saleGroup = '营销中心' or
+        ht.saleGroup = '1000')then
+        ht.orderMount
+        end) zgshtl,
+        sum(case
+        when ht.saleBody = '出口'
+        or (ht.companyId = '1932' and ht.saleGroup = '舞钢国贸') then
+        ht.orderMount
+        end) ckhtl,
+        jh.planNumxsz planNumxsz,
+        jh.planNumzgs planNumzgs,
+        jh.planNumck planNumck
+        from (SELECT svtp.variety      pzName,
+        xsztdzb.sale_body saleBody,
+        sso.ORDER_MOUNT   orderMount,
+        sso.SALE_GROUP saleGroup,
+        sso.company_id companyId,
+        sso.sale_body ssaleBody
+        from scm_sale_order sso
+        inner join scm_variety_to_pt_gp svtp
+        on sso.company_id = svtp.company_id
+        and sso.product_code = svtp.product_group
+        left join (select a.*
+        from price_salebody_relation a
+        where a.is_delete = 0) xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_body = xsztdzb.sale_body_des
+        WHERE 1 = 1
+        <if test="pzName != null and pzName != ''">
+            and svtp.variety = #{pzName}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and instr(sso.dj_date, #{startTime})>0
+        </if>
+        and sso.order_type_describe not in
+        (select distinct cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type in ('5', '1', '7', '9')
+        and cfd.status = '0'
+        and cfd.company_id = sso.company_id)
+        and sso.saler_name not in
+        (select cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '1'
+        and cfd.status = '0'
+        and cfd.company_id = sso.company_id)
+        AND sso.sale_group NOT IN
+        (SELECT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = sso.company_id
+        AND cfd.data_type = 9
+        AND cfd.status = 0)
+        and sso.sale_group <![CDATA[ != ]]> 'C100'
+        and sso.sale_group <![CDATA[ != ]]> 'K200'
+        and sso.product_info <![CDATA[ != ]]> '连铸坯'
+        and sso.SALE_GROUP not in
+        (select ssa.sale_group
+        from scm_sale_order ssa
+        where ssa.company_id = '8493'
+        and ssa.sale_group <![CDATA[ != ]]> '营销中心'
+        and ssa.sale_group <![CDATA[ != ]]> '1000')
+        and sso.SALE_GROUP not in
+        (select ssa.sale_group
+        from scm_sale_order ssa
+        where ssa.company_id = '1932'
+        and ssa.sale_group = '进出口公司')
+        and sso.sale_body not in
+        (select ssa.sale_body
+        from scm_sale_order ssa
+        where ssa.company_id = '9196'
+        and ssa.sale_body = '河北经营部')
+        and sso.sale_body <![CDATA[ != ]]> '唐钢中厚板公司'
+        and sso.sale_body <![CDATA[ != ]]> '唐钢不锈钢公司') ht
+        left join (select PZ_NAME pzName,
+        sum(planNum) hjjhl,
+        sum(case
+        when fl_name = '销售总公司' then
+        planNum
+        end) planNumxsz,
+        sum(case
+        when fl_name = '出口' then
+        planNum
+        end) planNumck,
+        sum(case
+        when fl_name = '子公司其他' or fl_name = '技术中心、事业部' or
+        fl_name = '现货' then
+        planNum
+        end) planNumzgs
+        from (SELECT distinct PZ_NAME,
+        APR_MONTH planNum,
+        fl_name
+        FROM crm_resource_allocation
+        where year = #{year}
+        and fl_name <![CDATA[ != ]]> '品种钢')
+        group by PZ_NAME) jh
+        on ht.pzName = jh.pzName
+        group by ht.pzName,
+        hjjhl,
+        jh.planNumxsz,
+        jh.planNumzgs,
+        jh.planNumck)
+        order by decode(pzName,
+        '热板',
+        1,
+        '冷板',
+        2,
+        '宽厚板',
+        3,
+        '棒线',
+        4,
+        '型带',
+        5)
 
-          from (SELECT svtp.variety pzName,
-                                xsztdzb.sale_body saleBody,
-                                sso.ORDER_MOUNT   orderMount
-                from scm_sale_order sso
-                   inner join scm_variety_to_pt_gp svtp
-                   on sso.company_id = svtp.company_id
-                   and sso.product_code = svtp.product_group
-                 left join (select a.*
-                              from price_salebody_relation a
-                             where a.is_delete = 0) xsztdzb
-                    ON sso.company_id = xsztdzb.company_id
-                   AND sso.sale_body = xsztdzb.sale_body_des
-
-                 WHERE 1 = 1
-                    <if test="pzName != null and pzName != ''">
-                        and svtp.variety = #{pzName}
-                    </if>
-                    <if test="startTime != null and startTime != ''">
-                        and instr(sso.dj_date, #{startTime})>0
-                    </if>
-
-                   and sso.order_type_describe not in
-       (select distinct cfd.data_name
-          from crm_filter_data cfd
-         where cfd.data_type in ('5', '1', '7', '9')
-           and cfd.status = '0'
-           and cfd.company_id = sso.company_id)
-   and sso.saler_name not in
-       (select cfd.data_name
-          from crm_filter_data cfd
-         where cfd.data_type = '1'
-           and cfd.status = '0'
-           and cfd.company_id = sso.company_id)
-
-   AND sso.sale_group NOT IN (SELECT cfd.data_name
-                              FROM crm_filter_data cfd
-                             WHERE cfd.company_id = sso.company_id
-                               AND cfd.data_type = 9
-                               AND cfd.status = 0)
-                ) ht
-          left join (select PZ_NAME pzName,
-                           sum(planNum) hjjhl,
-                           sum(case
-                                 when fl_name = '销售总公司' then
-                                  planNum
-                               end) planNumxsz,
-                           sum(case
-                                 when fl_name = '出口' then
-                                  planNum
-                               end) planNumck,
-                           sum(case
-                                 when fl_name = '子公司其他' or fl_name = '技术中心、事业部' or fl_name = '现货' then
-                                  planNum
-                               end) planNumzgs
-                      from (SELECT distinct PZ_NAME, CASE
-                                                    WHEN #{month} = '01' THEN
-                                                    JAN_MONTH
-                                                    WHEN #{month} = '02' THEN
-                                                    FEB_MONTH
-                                                    WHEN #{month} = '03' THEN
-                                                    MAR_MONTH
-                                                    WHEN #{month} = '04' THEN
-                                                    APR_MONTH
-                                                    WHEN #{month} = '05' THEN
-                                                    MAY_MONTH
-                                                    WHEN #{month} = '06' THEN
-                                                    JUN_MONTH
-                                                    WHEN #{month} = '07' THEN
-                                                    JUL_MONTH
-                                                    WHEN #{month} = '08' THEN
-                                                    AUG_MONTH
-                                                    WHEN #{month} = '09' THEN
-                                                    SEP_MONTH
-                                                    WHEN #{month} = '10' THEN
-                                                    OCT_MONTH
-                                                    WHEN #{month} = '11' THEN
-                                                    NOV_MONTH
-                                                    WHEN #{month} = '12' THEN
-                                                    DEC_MONTH
-                                                    END planNum, fl_name
-                              FROM crm_resource_allocation
-                             where year = #{year}
-                              and fl_name <![CDATA[ != ]]> '品种钢'
-                              )
-                     group by PZ_NAME) jh
-            on ht.pzName = jh.pzName
-         group by ht.pzName, hjjhl, jh.planNumxsz, jh.planNumzgs, jh.planNumck)
-         order by decode(pzName,'热板',1,'冷板',2,'宽厚板',3,'棒线',4,'型带',5)
     </select>
 
     <select id="getcxhtjd" resultType="map">
@@ -2012,6 +2031,7 @@
         <if test="companyId != null and companyId != ''">
             and companyId = #{companyId}
         </if>
+        and dName <![CDATA[ != ]]> '唐钢1580热轧线' and dName <![CDATA[ != ]]> '唐钢中厚板'
         order by decode(companyId,'河钢唐钢',1,'河钢邯钢',2,'河钢宣钢',3,'河钢承钢',4,'河钢舞钢',5,'河钢石钢',6,'河钢衡板',7,'河钢邯宝',8)
     </select>
 

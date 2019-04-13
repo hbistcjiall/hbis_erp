@@ -46,7 +46,10 @@
         orderMount
         from (SELECT svtp.variety      pzName,
         xsztdzb.sale_body saleBody,
-        sso.ORDER_MOUNT   orderMount
+        sso.ORDER_MOUNT   orderMount,
+        sso.SALE_GROUP saleGroup,
+        sso.company_id companyId,
+        sso.sale_body ssaleBody
         from scm_sale_order sso
         inner join scm_variety_to_pt_gp svtp
         on sso.company_id = svtp.company_id
@@ -76,6 +79,27 @@
         WHERE cfd.company_id = sso.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        and sso.sale_group <![CDATA[ != ]]> 'C100'
+        and sso.sale_group <![CDATA[ != ]]> 'K200'
+        and sso.product_info <![CDATA[ != ]]> '连铸坯'
+        and sso.SALE_GROUP not in
+        (select ssa.sale_group
+        from scm_sale_order ssa
+        where ssa.company_id = '8493'
+        and ssa.sale_group <![CDATA[ != ]]> '营销中心'
+        and ssa.sale_group <![CDATA[ != ]]> '1000')
+        and sso.SALE_GROUP not in
+        (select ssa.sale_group
+        from scm_sale_order ssa
+        where ssa.company_id = '1932'
+        and ssa.sale_group = '进出口公司')
+        and sso.sale_body not in
+        (select ssa.sale_body
+        from scm_sale_order ssa
+        where ssa.company_id = '9196'
+        and ssa.sale_body = '河北经营部')
+        and sso.sale_body <![CDATA[ != ]]> '唐钢中厚板公司'
+        and sso.sale_body <![CDATA[ != ]]> '唐钢不锈钢公司'
         <if test = "flName != null and flName != ''" >
         and xsztdzb.sale_body in (${flName})
         </if>)) ht
@@ -399,6 +423,8 @@
 
         group by cx_NAME) jh
         on ht.dName = jh.cx_name
+        where
+        ht.dName <![CDATA[ != ]]> '唐钢1580热轧线' and ht.dName <![CDATA[ != ]]> '唐钢中厚板'
         group by ht.dName,hjjhl
         ORDER BY
         to_number(schedule) ${sort}
@@ -701,6 +727,8 @@
                                        )
                              group by CX_NAME) jh
                     on ht.dName = jh.cxName
+                  where
+                  ht.dName <![CDATA[ != ]]> '唐钢1580热轧线' and ht.dName <![CDATA[ != ]]> '唐钢中厚板'
                  group by ht.companyName, ht.dName, jh.hjjhl)
 
          GROUP BY ROLLUP(companyName)
@@ -748,7 +776,7 @@
                     '技术中心、事业部'
                     when saleBody = '子公司' or saleBody = '自办公司' or
                     (companyId = '8493' and saleGroup = '营销中心' or
-                    saleGroup = '1000') then
+                    saleGroup = '1000') or (companyId = '1932' or saleGroup = '科技部') then
                     '子公司其他'
                     else
                     saleBody
@@ -1018,6 +1046,8 @@
 
                      group by flName,cxName) jh
             on ht.saleBody = jh.flname and ht.dName = jh.cxName
+        where
+        ht.dName <![CDATA[ != ]]> '唐钢1580热轧线' and ht.dName <![CDATA[ != ]]> '唐钢中厚板'
          group by saleBody, jh.hjjhl)
  group by saleBody
         order by decode(saleBody,'销售总公司',1,'子公司',2,'出口',3)
