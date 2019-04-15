@@ -183,20 +183,31 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
         year = date.substring(0,4);
 
         if(ToolUtil.isNotEmpty(companyName)){
-            if (companyName.equals("唐钢")){
-                companyName = "9580";
-            }else if (companyName.equals("邯钢")){
-                companyName = "9727";
-            }else if (companyName.equals("宣钢")){
-                companyName = "9193";
-            }else if (companyName.equals("承钢")){
-                companyName = "9196";
-            }else if (companyName.equals("舞钢")){
-                companyName = "1932";
-            }else if (companyName.equals("石钢")){
-                companyName = "8110";
-            }else if (companyName.equals("衡板")){
-                companyName = "8493";
+            switch (companyName){
+                case "唐钢":
+                    companyName = "9580";
+                    break;
+                case "邯钢":
+                    companyName = "9727";
+                    break;
+                case "邯宝":
+                    companyName = "7778";
+                    break;
+                case "宣钢":
+                    companyName = "9193";
+                    break;
+                case "承钢":
+                    companyName = "9196";
+                    break;
+                case "舞钢":
+                    companyName = "1932";
+                    break;
+                case "石钢":
+                    companyName = "8110";
+                    break;
+                case "横板":
+                    companyName = "8493";
+                    break;
             }
         }
         List<Allocation> lists = new ArrayList<>();

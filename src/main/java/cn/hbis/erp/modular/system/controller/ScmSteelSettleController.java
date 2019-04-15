@@ -2,6 +2,7 @@ package cn.hbis.erp.modular.system.controller;
 import cn.hbis.erp.core.util.DateUtil;
 import cn.hbis.erp.modular.system.entity.ScmSteelSettle;
 import cn.hbis.erp.modular.system.service.ScmSteelSettleService;
+import cn.stylefeng.roses.core.util.ToolUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +40,34 @@ public class ScmSteelSettleController {
     @PostMapping("getcx")
     @Async
     public  List<ScmSteelSettle>  getcx(String dw,@RequestParam(required = false) List<String> cx, String startTime, String endTime) throws ParseException {
+        if(ToolUtil.isNotEmpty("dw")){
+            switch (dw){
+                case "9580":
+                    dw = "唐钢";
+                    break;
+                case "9727":
+                    dw = "邯钢";
+                    break;
+                case "7778":
+                    dw = "邯宝";
+                    break;
+                case "9193":
+                    dw = "宣钢";
+                    break;
+                case "9196":
+                    dw = "承钢";
+                    break;
+                case "1932":
+                    dw = "舞钢";
+                    break;
+                case "8110":
+                    dw = "石钢";
+                    break;
+                case "8493":
+                    dw = "横板";
+                    break;
+            }
+        }
         String  startTime1=(String)DateUtil.getFirstDayOfMonth(startTime);
         String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
         SimpleDateFormat sDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

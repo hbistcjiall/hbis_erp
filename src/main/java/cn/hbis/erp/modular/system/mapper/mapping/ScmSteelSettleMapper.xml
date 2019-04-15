@@ -409,7 +409,7 @@
         ) ) where 1=1
         and  NAME &lt; &gt; '唐钢1580热轧线'  and  name &lt; &gt; '唐钢中厚板'
 
-        <if test="dw != '' and  dw != null and  dw != 'undefined'">
+        <if test="dw != '' and  dw != null and  dw != 'undefined' and dw !='全部'">
             and COMPANYNAME = #{dw}
         </if>
         <if test="cx != null and  cx.size > 0">
