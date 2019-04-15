@@ -152,6 +152,7 @@ public class ScmSteelSettleController {
     @PostMapping("getzyjh")
     @Async
     public  List<ScmSteelSettle>  getzyjh(String nf,String yf,String pz,@RequestParam(required = false) List<String> cx,String xszt) {
+
         List<ScmSteelSettle> getzyjh=scmSteelSettleService.getzyjh(nf,yf,pz,cx,xszt);
         return getzyjh;
     }
@@ -168,7 +169,7 @@ public class ScmSteelSettleController {
 
     @ApiOperation(value = "资源计划查询条件产线")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "pz", value = "品种", dataType = "String"),
+            @ApiImplicitParam(name = "pz", value = "品种", dataType = "String")
     })
     @PostMapping("getzyjhcxtjcx")
     @Async
@@ -216,6 +217,12 @@ public class ScmSteelSettleController {
     @PostMapping("getCxName")
     @Async
     public List<ScmSteelSettle> getCxName(String companyId){
+        return  scmSteelSettleService.getCxName(companyId);
+    }
+
+    @PostMapping("getCxNamePzg")
+    @Async
+    public List<ScmSteelSettle> getCxNamePzg(String companyId){
         return  scmSteelSettleService.getCxName(companyId);
     }
 }

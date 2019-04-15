@@ -146,4 +146,8 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
         return scmSteelSettleMapper.selCx(companyId);
     }
 
+    @Async
+    public List<ScmSteelSettle> getCxNamePzg(String companyId) {
+        return scmSteelSettleMapper.getCxNamePzg(companyId);
+    }
 }

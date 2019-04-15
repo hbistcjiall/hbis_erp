@@ -2341,7 +2341,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
     <if test="yf != ''">
         and yf = #{yf}
     </if>
-    <if test="pz != '' and pz != null">
+    <if test="pz != '' and pz != null and pz !='全部' ">
         and pz = #{pz}
     </if>
         <if test="cx != null and  cx.size > 0">
@@ -2350,7 +2350,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
                 　　#{item}
             </foreach>
         </if>
-        <if test="xszt != ''and xszt != null">
+        <if test="xszt != ''and xszt != null and xszt != 'undefined' and xszt != '全部'">
         and fl_name = #{xszt}
         </if>
         ORDER BY    fl_name , cx ,
@@ -2366,7 +2366,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
     <select id="getzyjhcxtjcx" resultType="map">
         select distinct cx_name cx
         from crm_resource_allocation
-        <if test="pz != ''">
+        <if test="pz != '' and pz != null and pz !='全部'">
             where pz_name = #{pz}
         </if>
         order by cx_name
@@ -3082,4 +3082,14 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         order by decode(company_id,'9580',1,'9727',2,'7778',3,'9193',4,'9196',5,'1932',6,'8110',7,'8493',8)
     </select>
 
+    <select id="getCxNamePzg">
+        select distinct name cx,company_id
+        from CRM_RESOURCE_DATA
+        where 1=1
+        <if test="companyId != '' and companyId!= '全部' and companyId!= null">
+            and company_id = #{companyId}
+        </if>
+        and type = '3'
+        order by DECODE(company_id,'9580',1,'9727',2,'7778',3,'9193',4,'9196',5,'1932',6,'8110',7,'8493',8)
+    </select>
 </mapper>

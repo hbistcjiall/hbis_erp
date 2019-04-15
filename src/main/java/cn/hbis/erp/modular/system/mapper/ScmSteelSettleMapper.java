@@ -27,5 +27,6 @@ public interface ScmSteelSettleMapper extends BaseMapper<ScmSteelSettle> {
     List<ScmSteelSettle> getcxhtjd(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("year") String year,@Param("cxName") List cxName,@Param("companyId") String companyId,@Param("month") String month);
     List<ScmSteelSettle> getpzhtjd(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("year") String year,@Param("pzName") String pzName,@Param("month") String month);
     List<ScmSteelSettle> selCx(@Param("companyId") String companyId);
+    List<ScmSteelSettle> getCxNamePzg(@Param("companyId") String  companyId);
 
 }
