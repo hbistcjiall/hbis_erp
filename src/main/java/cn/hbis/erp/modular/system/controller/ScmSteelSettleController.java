@@ -252,7 +252,7 @@ public class ScmSteelSettleController {
     @PostMapping("getCxNamePzg")
     @Async
     public List<ScmSteelSettle> getCxNamePzg(String companyId){
-        return  scmSteelSettleService.getCxName(companyId);
+        return  scmSteelSettleService.getCxNamePzg(companyId);
     }
 }
 

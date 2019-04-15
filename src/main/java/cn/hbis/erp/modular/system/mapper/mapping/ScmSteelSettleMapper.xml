@@ -3747,14 +3747,15 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         order by decode(company_id,'9580',1,'9727',2,'7778',3,'9193',4,'9196',5,'1932',6,'8110',7,'8493',8)
     </select>
 
-    <select id="getCxNamePzg">
-        select distinct name cx,company_id
+    <select id="getCxNamePzg" resultType="map">
+        select distinct name cx
         from CRM_RESOURCE_DATA
         where 1=1
         <if test="companyId != '' and companyId!= '全部' and companyId!= null">
             and company_id = #{companyId}
         </if>
-        and type = '3'
-        order by DECODE(company_id,'9580',1,'9727',2,'7778',3,'9193',4,'9196',5,'1932',6,'8110',7,'8493',8)
+        and type = '6'
+        and name <![CDATA[ != ]]> '唐钢1580热轧线'  and  name <![CDATA[ != ]]> '唐钢中厚板'
+
     </select>
 </mapper>
