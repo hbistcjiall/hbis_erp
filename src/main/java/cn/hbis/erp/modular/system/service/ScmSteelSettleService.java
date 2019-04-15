@@ -117,6 +117,9 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
         startTime = startTime.replaceAll("[[\\s-:punct:]]","").substring(0,6);
         month = startTime.substring(4,6);
         year = startTime.substring(0,4);
+        if(companyId.equals("全部")){
+            companyId = "";
+        }
         return scmSteelSettleMapper.getcxhtjd(startTime,endTime,year,cxName,companyId,month);
     }
 
@@ -133,7 +136,14 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
         return scmSteelSettleMapper.getpzhtjd(startTime,endTime,year,pzName,month);
     }
 
-
-
+    /**
+     * 获取产线名
+     */
+    public List<ScmSteelSettle> getCxName(String companyId){
+        if(companyId.equals("全部")){
+            companyId = "";
+        }
+        return scmSteelSettleMapper.selCx(companyId);
+    }
 
 }

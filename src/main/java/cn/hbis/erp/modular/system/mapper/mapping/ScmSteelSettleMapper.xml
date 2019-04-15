@@ -2502,7 +2502,8 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         sum(case
         when ht.saleBody = '专业公司' or
         (ht.companyId = '1932' or ht.saleGroup = '销售部') or
-        (ht.companyId = '8110' and ht.ssaleBody = '分公司') then
+        (ht.companyId = '8110' and ht.ssaleBody = '分公司' and
+        ht.ssaleBody <![CDATA[ != ]]> '出口') then
         ht.orderMount
         end) zygshtl,
         sum(case
@@ -2514,7 +2515,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         ht.saleBody = '子公司' or ht.saleBody = '自办公司' or
         ht.saleBody = '现货' or (ht.companyId = '1932' and ht.saleGroup = '科技部') or
         (ht.companyId = '8493' and ht.saleGroup = '营销中心' or
-        ht.saleGroup = '1000')then
+        ht.saleGroup = '1000') then
         ht.orderMount
         end) zgshtl,
         sum(case
@@ -3068,6 +3069,17 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         </if>
         and dName <![CDATA[ != ]]> '唐钢1580热轧线' and dName <![CDATA[ != ]]> '唐钢中厚板'
         order by decode(companyId,'河钢唐钢',1,'河钢邯钢',2,'河钢宣钢',3,'河钢承钢',4,'河钢舞钢',5,'河钢石钢',6,'河钢衡板',7,'河钢邯宝',8)
+    </select>
+
+    <select id="selCx" resultType="map">
+        select
+        cx_name cx
+        from CRM_CX_NAME
+        where 1=1
+        <if test="companyId != null and companyId != ''">
+            and company_id = #{companyId}
+        </if>
+        order by decode(company_id,'9580',1,'9727',2,'7778',3,'9193',4,'9196',5,'1932',6,'8110',7,'8493',8)
     </select>
 
 </mapper>

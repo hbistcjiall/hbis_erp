@@ -1,4 +1,5 @@
 package cn.hbis.erp.modular.system.controller;
+import cn.hbis.erp.core.util.DateUtil;
 import cn.hbis.erp.modular.system.entity.ScmSteelSettle;
 import cn.hbis.erp.modular.system.service.ScmSteelSettleService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -6,17 +7,13 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import cn.hbis.erp.core.util.DateUtil;
 
 /**
  * <p>
@@ -216,5 +213,10 @@ public class ScmSteelSettleController {
         return getpzhtjd;
     }
 
+    @PostMapping("getCxName")
+    @Async
+    public List<ScmSteelSettle> getCxName(String companyId){
+        return  scmSteelSettleService.getCxName(companyId);
+    }
 }
 

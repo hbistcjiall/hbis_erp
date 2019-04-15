@@ -2,54 +2,55 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.hbis.erp.modular.system.mapper.CrmResourceAllocationMapper">
     <select id="selSchedule" resultType="cn.hbis.erp.modular.system.entity.Allocation">
-        select aa.pzName pzName,
+        select pzName,
+        yield,
+        planNum,
         case
-        when sum(orderMount) is null then
+        when planNum = 0 then
+        0
+        when yield / planNum is null then
         0
         else
-        sum(orderMount)
-        end yield,
-        case
-        when jh.hjjhl is null then
-        0
-        else
-        jh.hjjhl
-        end planNum,
-        case
-        when jh.hjjhl = 0 then
-        0
-        when sum(orderMount) / jh.hjjhl is null then
-        0
-        else
-        ROUND(sum(orderMount) / jh.hjjhl * 100, 2)
+        ROUND(yield / planNum * 100, 2)
         END AS schedule
         from (select ht.pzName pzName,
-        (case
-        when saleBody = '技术中心、事业部' or saleBody = '子公司其他' or
-        saleBody = '现货' then
-        '子公司'
-        else
-        saleBody
-        end) saleBody,
-        sum(orderMount) orderMount
-        from (select (case
-        when saleBody = '分公司' or saleBody = '专业公司' then
-        '销售总公司'
-        when saleBody = '事业部' or saleBody = '技术中心' then
-        '技术中心、事业部'
-        when saleBody = '子公司' or saleBody = '自办公司' then
-        '子公司其他'
-        else
-        saleBody
-        end) saleBody,
-        pzName,
-        orderMount
+        case
+        when #{flName} = '3' then
+        sum(case
+        when ht.saleBody = '分公司' or ht.saleBody = '专业公司' or
+        (ht.companyId = '1932' or ht.saleGroup = '销售部') or
+        (ht.companyId = '8110' and ht.ssaleBody = '分公司' and
+        ht.ssaleBody <![CDATA[ != ]]> '出口') then
+        ht.orderMount
+        end)
+        when #{flName} = '2' then
+        sum(case
+        when ht.saleBody = '出口' or
+        (ht.companyId = '1932' and ht.saleGroup = '舞钢国贸') then
+        ht.orderMount
+        end)
+        when #{flName} = '4' then
+        sum(case
+        when ht.saleBody = '技术中心' or ht.saleBody = '事业部' or
+        ht.saleBody = '子公司' or ht.saleBody = '自办公司' or
+        ht.saleBody = '现货' or
+        (ht.companyId = '1932' and ht.saleGroup = '科技部') or
+        (ht.companyId = '8493' and ht.saleGroup = '营销中心' or
+        ht.saleGroup = '1000') then
+        ht.orderMount
+        end)
+        when #{flName} = '' or #{flName} = 'null' then
+        sum(ht.orderMount)
+        end yield,
+
+        nvl(jh.hjjhl, 0) planNum
+
         from (SELECT svtp.variety      pzName,
         xsztdzb.sale_body saleBody,
         sso.ORDER_MOUNT   orderMount,
-        sso.SALE_GROUP saleGroup,
-        sso.company_id companyId,
-        sso.sale_body ssaleBody
+        sso.SALE_GROUP    saleGroup,
+        sso.company_id    companyId,
+        sso.sale_body     ssaleBody
         from scm_sale_order sso
         inner join scm_variety_to_pt_gp svtp
         on sso.company_id = svtp.company_id
@@ -81,7 +82,7 @@
         AND cfd.status = 0)
         and sso.sale_group <![CDATA[ != ]]> 'C100'
         and sso.sale_group <![CDATA[ != ]]> 'K200'
-        and sso.product_info <![CDATA[ != ]]> '连铸坯'
+        and sso.product_info <![CDATA[ != ]]>'连铸坯'
         and sso.SALE_GROUP not in
         (select ssa.sale_group
         from scm_sale_order ssa
@@ -99,11 +100,8 @@
         where ssa.company_id = '9196'
         and ssa.sale_body = '河北经营部')
         and sso.sale_body <![CDATA[ != ]]> '唐钢中厚板公司'
-        and sso.sale_body <![CDATA[ != ]]> '唐钢不锈钢公司'
-        <if test = "flName != null and flName != ''" >
-        and xsztdzb.sale_body in (${flName})
-        </if>)) ht
-        group by ht.pzName, ht.saleBody) aa
+        and sso.sale_body <![CDATA[ != ]]> '唐钢不锈钢公司') ht
+
         left join (select PZ_NAME pzName, sum(planNum) hjjhl
         from (SELECT PZ_NAME,
         CASE
@@ -135,14 +133,14 @@
         FROM crm_resource_allocation
         where 1 = 1
         and year = #{year}
-        and fl_name != '品种钢'
+        and fl_name <![CDATA[ != ]]> '品种钢'
         <if test="flName1 != null and flName1 != ''">
             and fl_name in (${flName1})
         </if>
         )
         group by PZ_NAME) jh
-        on aa.pzName = jh.pzName
-        group by aa.pzName, jh.hjjhl
+        on ht.pzName = jh.pzName
+        group by ht.pzName, jh.hjjhl)
         order by decode(pzName,
         '热板',
         1,

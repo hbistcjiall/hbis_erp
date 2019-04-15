@@ -46,16 +46,17 @@ public class CrmResourceAllocationService extends ServiceImpl<CrmResourceAllocat
 
         if(ToolUtil.isNotEmpty(flName)){
             if (flName.equals("3")){
-                flName =  "'专业公司','分公司'";
+
                 flName1 = "'销售总公司'";
             }else if (flName.equals("4")){
-                flName =  "'事业部','技术中心','子公司','自办公司','现货'";
+
                 flName1 = "'技术中心、事业部','子公司其他','现货'";
             }else if (flName.equals("2")){
-                flName =  "'出口'";
+
                 flName1 = "'出口'";
             }
-
+        }else {
+            flName = "null";
         }
         List<Allocation> lists = new ArrayList<>();
         List<Allocation> list = crmResourceAllocationMapper.selSchedule(date,month,year,flName,flName1);
