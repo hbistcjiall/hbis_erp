@@ -51,6 +51,7 @@
         <if test="steelMills != null and steelMills !=''">
             and STEEL_MILLS like CONCAT(CONCAT('%',#{steelMills}),'%')
         </if>
+        order  by  UPLOAD_TIME desc
     </select>
 
 

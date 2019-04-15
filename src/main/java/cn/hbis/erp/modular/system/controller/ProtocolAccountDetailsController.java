@@ -228,19 +228,20 @@ public class ProtocolAccountDetailsController extends BaseController {
         }
     }
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "year" ,value = "年份",dataType ="String" ),
-    })
+
     @ApiOperation(value = "协议上传", notes = "协议上传")
-    @PostMapping(value = "/importexcel",headers = "content-type=multipart/form-data",consumes = "MultipartFile/*")
-    public ResponseData execlimport(@RequestPart("file") MultipartFile file, String year) {
+    @PostMapping(value = "/importexcel")
+    public void execlimport(@RequestParam("file") MultipartFile file) {
         Map<String, ProtocolAccountDetails> map = new HashMap<String, ProtocolAccountDetails>();
+        Calendar cale = null;
+        cale = Calendar.getInstance();
+        int year =cale.get(Calendar.YEAR);
           if (!ToolUtil.isEmpty(file)) {
             try {
                 List<ProtocolAccountDetails> excelBeans = ExcelUtil.readExcel(file,ProtocolAccountDetails.class);
                 System.out.println(excelBeans.size());
                 for(ProtocolAccountDetails ep : excelBeans){
-                   ep.setProtocolYear(year);
+                   ep.setProtocolYear(String.valueOf(year));
                    ep.setUploadTime(new Date());
                    ep.setDeleteStatus("0");
                 }
@@ -251,7 +252,7 @@ public class ProtocolAccountDetailsController extends BaseController {
                 e.printStackTrace();
             }
         }
-        return SUCCESS_TIP;
+
     }
 
     private void exportXlsx(OutputStream out,String fileName,List<Map<String, Object>> headListMap,List<Map<String, Object>> dataListMap,String[] mergeCols,String[] colOrder, HttpServletResponse response) {
