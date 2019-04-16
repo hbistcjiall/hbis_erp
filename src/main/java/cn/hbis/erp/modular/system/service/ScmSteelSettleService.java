@@ -150,4 +150,12 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     public List<ScmSteelSettle> getCxNamePzg(String companyId) {
         return scmSteelSettleMapper.getCxNamePzg(companyId);
     }
+
+    /*
+品种钢结算量报表
+*/
+    @Async
+    public List<ScmSteelSettle> getyxybpz(String startTime,String endTime) {
+        return scmSteelSettleMapper.getyxybpz(startTime,endTime);
+    }
 }

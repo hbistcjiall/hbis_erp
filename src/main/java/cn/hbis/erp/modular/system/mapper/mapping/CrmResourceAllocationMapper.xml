@@ -428,7 +428,7 @@
         to_number(schedule) ${sort}
         )
         where
-        rownum <![CDATA[   <=  ]]> 10
+        rownum <![CDATA[ <= ]]> 10
     </select>
 
     <select id="selCompany" resultType="cn.hbis.erp.modular.system.entity.Allocation">
