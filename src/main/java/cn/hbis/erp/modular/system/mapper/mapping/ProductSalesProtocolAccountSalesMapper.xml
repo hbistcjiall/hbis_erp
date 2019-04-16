@@ -57,16 +57,16 @@
             and (spad.VARIETIES = '热板' or spad.VARIETIES = '酸洗')
         </if>
         <if test="varieties != null and '冷板' == varieties">
-            and (spad.VARIETIES = '彩涂' or spad.VARIETIES = '冷板' or spad.VARIETIES = '镀锌'）
+            and (spad.VARIETIES = '彩涂' or spad.VARIETIES = '冷板' or spad.VARIETIES = '镀锌')
         </if>
         <if test="varieties != null and '宽厚板' == varieties">
-            and （spad.VARIETIES = '宽厚板'）
+            and (spad.VARIETIES = '宽厚板')
         </if>
         <if test="varieties != null and '棒线' == varieties">
-            and （spad.VARIETIES = '钢筋' or spad.VARIETIES = '普线' or spad.VARIETIES = '品种线' or spad.VARIETIES = '优钢' or spad.VARIETIES = '锚杆钢'）
+            and (spad.VARIETIES = '钢筋' or spad.VARIETIES = '普线' or spad.VARIETIES = '品种线' or spad.VARIETIES = '优钢' or spad.VARIETIES = '锚杆钢')
         </if>
         <if test="varieties != null and'型带' == varieties">
-            and （spad.VARIETIES = '角钢' or spad.VARIETIES = '矿用钢'）
+            and (spad.VARIETIES = '角钢' or spad.VARIETIES = '矿用钢')
         </if>
         <if test="endTime != null and endTime != ''">
             and sso.dj_date <![CDATA[ < ]]> ${endTime}

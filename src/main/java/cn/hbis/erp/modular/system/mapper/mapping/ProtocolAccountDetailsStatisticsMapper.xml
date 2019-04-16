@@ -25,20 +25,20 @@
         where 1 = 1
         and cfd.data_type = '1'
         and cfd.status = '0'
-        <if test="varieties != null and '热板' == varieties">
+        <if test="varieties != null and '热板' == varieties and varieties !='全部'">
             and (d.VARIETIES = '热板' or d.VARIETIES = '酸洗')
         </if>
-        <if test="varieties != null and '冷板' == varieties">
+        <if test="varieties != null and '冷板' == varieties and varieties !='全部'">
             and (d.VARIETIES = '彩涂' or d.VARIETIES = '冷板' or d.VARIETIES = '镀锌')
         </if>
-        <if test="varieties != null and '宽厚板' == varieties">
+        <if test="varieties != null and '宽厚板' == varieties and varieties !='全部'">
             and d.VARIETIES = '宽厚板'
         </if>
-        <if test="varieties != null and '棒线' == varieties">
+        <if test="varieties != null and '棒线' == varieties and varieties !='全部'">
             and (d.VARIETIES = '钢筋' or d.VARIETIES = '普线' or d.VARIETIES = '品种线' or d.VARIETIES = '优钢' or d.VARIETIES =
             '锚杆钢')
         </if>
-        <if test="varieties != null and'型带' == varieties">
+        <if test="varieties != null and'型带' == varieties and varieties !='全部'">
             and (d.VARIETIES = '角钢' or d.VARIETIES = '矿用钢')
         </if>
         <if test="endTime != null and endTime != ''">
@@ -47,7 +47,7 @@
         <if test="beginTime != null and endTime != ''">
             and o.dj_date <![CDATA[ > ]]> #{beginTime}
         </if>
-        <if test="supplyMode != null and supplyMode != ''">
+        <if test="supplyMode != null and supplyMode != '' and supplyMode !='全部'">
             and d.supply_mode = #{supplyMode}
         </if>
         <if test="companyIdList != null and companyIdList.size() > 0">
@@ -77,19 +77,19 @@
         where 1 = 1
         and cfd.data_type = '1'
         and cfd.status = '0'
-        <if test="varieties != null and '热板' == varieties">
+        <if test="varieties != null and '热板' == varieties and varieties !='全部'">
             and (d.VARIETIES = '热板' or d.VARIETIES = '酸洗')
         </if>
-        <if test="varieties != null and '冷板' == varieties">
+        <if test="varieties != null and '冷板' == varieties and varieties !='全部'">
             and (d.VARIETIES = '彩涂' or d.VARIETIES = '冷板' or d.VARIETIES = '镀锌')
         </if>
-        <if test="varieties != null and '宽厚板' == varieties">
+        <if test="varieties != null and '宽厚板' == varieties and varieties !='全部'">
             and d.VARIETIES = '宽厚板'
         </if>
-        <if test="varieties != null and '棒线' == varieties">
+        <if test="varieties != null and '棒线' == varieties and varieties !='全部'">
             and (d.VARIETIES = '钢筋' or d.VARIETIES = '普线' or d.VARIETIES = '品种线' or d.VARIETIES = '优钢' or d.VARIETIES = '锚杆钢')
         </if>
-        <if test="varieties != null and'型带' == varieties">
+        <if test="varieties != null and'型带' == varieties and varieties !='全部'">
             and (d.VARIETIES = '角钢' or d.VARIETIES = '矿用钢')
         </if>
         <if test="endTime != null and endTime != ''">
@@ -98,7 +98,7 @@
         <if test="beginTime != null and endTime != ''">
             and o.dj_date <![CDATA[ > ]]> #{beginTime}
         </if>
-        <if test="supplyMode != null and supplyMode != ''">
+        <if test="supplyMode != null and supplyMode != '' and supplyMode !='全部'">
             and d.supply_mode = #{supplyMode}
         </if>
         <if test="companyIdList != null and companyIdList.size() > 0">
