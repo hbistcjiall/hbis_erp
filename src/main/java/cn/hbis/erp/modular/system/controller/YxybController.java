@@ -38,7 +38,7 @@ public class YxybController {
         if(zt.equals("1")){
             getyxyb=scmSteelSettleService.getyxybpz(startTime,endTime);
         }else{
-            //getzrbm=scmSteelSettleService.getzgsjswc(startTime,endTime);
+            getyxyb=scmSteelSettleService.getyxybgc(startTime,endTime);
         }
 
         return getyxyb;

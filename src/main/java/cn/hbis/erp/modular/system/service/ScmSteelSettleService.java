@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 结算清单信息接口 服务实现类
@@ -157,5 +159,10 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     @Async
     public List<ScmSteelSettle> getyxybpz(String startTime,String endTime) {
         return scmSteelSettleMapper.getyxybpz(startTime,endTime);
+    }
+    /*钢厂销售*/
+    @Async
+    public List<ScmSteelSettle> getyxybgc(String startTime, String endTime) {
+        return scmSteelSettleMapper.getyxybgc(startTime,endTime);
     }
 }

@@ -4,6 +4,7 @@ import cn.hbis.erp.modular.system.entity.ScmSteelSettle;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -29,5 +30,6 @@ public interface ScmSteelSettleMapper extends BaseMapper<ScmSteelSettle> {
     List<ScmSteelSettle> selCx(@Param("companyId") String companyId);
     List<ScmSteelSettle> getCxNamePzg(@Param("companyId") String  companyId);
     List<ScmSteelSettle> getyxybpz(@Param("startTime") String startTime,@Param("endTime") String endTime);
+    List<ScmSteelSettle> getyxybgc(@Param("startTime") String startTime, @Param("endTime") String endTime);
 
 }
