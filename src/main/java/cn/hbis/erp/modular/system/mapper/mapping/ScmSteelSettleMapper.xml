@@ -2116,7 +2116,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
     </select>
 
     <select id="getpzgjswc" resultType="map">
-      select name||'公司' name,sum(FKIMG) jsl,sum(pzgl) pzgl,NVL(sum(pzgl)/sum(FKIMG),0) wcl from
+      select name ,sum(FKIMG) jsl,sum(pzgl) pzgl,NVL(sum(pzgl)/sum(FKIMG),0) wcl from
 (select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl from (SELECT
 
         NAME,

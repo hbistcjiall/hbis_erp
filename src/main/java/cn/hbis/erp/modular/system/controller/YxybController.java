@@ -5,6 +5,7 @@
  */
 package cn.hbis.erp.modular.system.controller;
 
+import cn.hbis.erp.core.util.DateUtil;
 import cn.hbis.erp.modular.system.entity.ScmSteelSettle;
 import cn.hbis.erp.modular.system.service.ScmSteelSettleService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -31,14 +32,16 @@ public class YxybController {
             @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
             @ApiImplicitParam(name = "zt", value = "状态", dataType = "String"),
     })
-    @PostMapping("getyxybpz")
+    @PostMapping("/getyxybpz")
     @Async
     public List<ScmSteelSettle> getyxybpz(String zt, String startTime, String endTime) {
         List<ScmSteelSettle> getyxyb = new ArrayList<>();
+        String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
+        String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
         if(zt.equals("1")){
-            getyxyb=scmSteelSettleService.getyxybpz(startTime,endTime);
+            getyxyb=scmSteelSettleService.getyxybpz(startTime1,endTime1);
         }else{
-            getyxyb=scmSteelSettleService.getyxybgc(startTime,endTime);
+            getyxyb=scmSteelSettleService.getyxybgc(startTime1,endTime1);
         }
 
         return getyxyb;
