@@ -50,7 +50,7 @@ public class ScmSteelSettleController {
     @PostMapping("getcx")
     @Async
     public  List<ScmSteelSettle>  getcx(String dw,@RequestParam(required = false) List<String> cx, String startTime, String endTime) throws ParseException {
-        if(ToolUtil.isNotEmpty("dw")){
+        if(ToolUtil.isNotEmpty(dw)){
             switch (dw){
                 case "9580":
                     dw = "唐钢";
@@ -96,7 +96,7 @@ public class ScmSteelSettleController {
         System.out.println(lastDay);
         String startagainTime=firstDay;
         String endagainTime=lastDay;
-        List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx,startTime1+"00:00:00",endTime1+"00:00:00",startagainTime,endagainTime);
+        List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx,startTime1+" 00:00:00",endTime1+" 23:59:59",startagainTime,endagainTime);
 
         return getcx ;
     }
@@ -129,7 +129,7 @@ public class ScmSteelSettleController {
         String startagainTime=firstDay;
         String endagainTime=lastDay;
 
-        List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz,startTime1+"00:00:00",endTime1+"00:00:00",startagainTime,endagainTime);
+        List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz,startTime1+" 00:00:00",endTime1+" 23:59:59",startagainTime,endagainTime);
         return getpz;
     }
     @ApiOperation(value = "责任部门报表")
@@ -143,7 +143,7 @@ public class ScmSteelSettleController {
     public  List<ScmSteelSettle>  getzrbm(String zrbm,String startTime,String endTime) {
         String  startTime1=(String)DateUtil.getFirstDayOfMonth(startTime);
         String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
-        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getzrbm(zrbm,startTime1+"00:00:00",endTime1+"00:00:00");
+        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getzrbm(zrbm,startTime1+" 00:00:00",endTime1+" 23:59:59");
         return getzrbm;
     }
 
@@ -155,7 +155,9 @@ public class ScmSteelSettleController {
     @PostMapping("getpzjszl")
     @Async
     public  List<ScmSteelSettle>  getpzjszl(String startTime,String endTime) {
-        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getpzjszl(startTime,endTime);
+        String  startTime1=(String)DateUtil.getFirstDayOfMonth(startTime);
+        String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
+        List<ScmSteelSettle> getzrbm=scmSteelSettleService.getpzjszl(startTime1+" 00:00:00",endTime1+" 23:59:59");
         return getzrbm;
     }
 
