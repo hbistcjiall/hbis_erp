@@ -270,7 +270,6 @@ public class ScmSteelSettleController {
     @ApiOperation(value = "测试")
     @PostMapping("httpURLConnectionPOST")
     @Async
-
     public Map httpURLConnectionPOST() throws IOException {
 
 
