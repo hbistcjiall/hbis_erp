@@ -128,13 +128,13 @@ public class AppController {
 
         String parm = "";
         //根据地址不同，拼接查询条件字符串  //URLEncoder.encode()方法  为字符串进行编码
-        if(POST_URL.equals("http://price.oltest-hbistc.com:8080/priceweb/sellPrice/screwThreadDiagram.htm")){
+        if(POST_URL.equals("http://18.0.128.1:8080/priceweb/sellPrice/screwThreadDiagram.htm")){
             parm = "fkdat=" + fkdat + "&" + "companyId=" + companyId + "&" + "placementArea=" + placementArea;
-        }else if(POST_URL.equals("http://price.oltest-hbistc.com:8080/priceweb/priceSellPrice/oneSpacesPhone.htm")){
+        }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/priceSellPrice/oneSpacesPhone.htm")){
             parm = "fkdat=" + fkdat + "&" + "companyId=" + companyId + "&" + "attribute1=" + attribute1 + "&" + "attribute2=" + attribute2;
-        }else if(POST_URL.equals("http://price.oltest-hbistc.com:8080/priceweb/priceSellPrice/getVarietySubjectBody.htm")){
+        }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/priceSellPrice/getVarietySubjectBody.htm")){
             parm = "fkdat=" + fkdat + "&" + "companyId=" + companyId + "&" + "attribute1=" + attribute1;
-        }else if(POST_URL.equals("http://price.oltest-hbistc.com:8080/priceweb/priceSellPrice/phoneSecondQueryList1.htm")){
+        }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/priceSellPrice/phoneSecondQueryList1.htm")){
             parm = "fkdat=" + fkdat + "&" + "companyId=" + companyId;
         }
         // 将参数输出到连接
