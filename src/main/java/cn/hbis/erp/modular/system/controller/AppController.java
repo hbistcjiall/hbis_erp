@@ -79,9 +79,10 @@ public class AppController {
             @ApiImplicitParam(name = "companyId", value = "公司ID", dataType = "String"),
             @ApiImplicitParam(name = "placementArea", value = "区域", dataType = "String"),
             @ApiImplicitParam(name = "attribute1", value = "材质", dataType = "String"),
+            @ApiImplicitParam(name = "attribute2", value = "规格", dataType = "String"),
     })
     @Async
-    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String companyId,String placementArea,String attribute1) throws IOException {
+    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String companyId,String placementArea,String attribute1,String attribute2) throws IOException {
 
 //        String urlIP = "";
 //        // 根据接收的参数不同，拼写不同的端口地址
@@ -130,7 +131,7 @@ public class AppController {
         if(POST_URL.equals("http://price.oltest-hbistc.com:8080/priceweb/sellPrice/screwThreadDiagram.htm")){
             parm = "fkdat=" + fkdat + "&" + "companyId=" + companyId + "&" + "placementArea=" + placementArea;
         }else if(POST_URL.equals("http://price.oltest-hbistc.com:8080/priceweb/priceSellPrice/oneSpacesPhone.htm")){
-            parm = "fkdat=" + fkdat + "&" + "companyId=" + companyId;
+            parm = "fkdat=" + fkdat + "&" + "companyId=" + companyId + "&" + "attribute1=" + attribute1 + "&" + "attribute2=" + attribute2;
         }else if(POST_URL.equals("http://price.oltest-hbistc.com:8080/priceweb/priceSellPrice/getVarietySubjectBody.htm")){
             parm = "fkdat=" + fkdat + "&" + "companyId=" + companyId + "&" + "attribute1=" + attribute1;
         }else if(POST_URL.equals("http://price.oltest-hbistc.com:8080/priceweb/priceSellPrice/phoneSecondQueryList1.htm")){
