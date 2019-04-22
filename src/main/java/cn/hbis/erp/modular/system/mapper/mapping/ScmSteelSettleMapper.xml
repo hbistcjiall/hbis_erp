@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.hbis.erp.modular.system.mapper.ScmSteelSettleMapper">
+
     <select id="getcx" resultType="map">
         select COMPANYNAME, NAME,  FKIMG,(NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0)) PZGL , ZYFKIMG, ZYPZGL,  FGSFKIMG,  FGSPZGL, ZGSFKIMG,  ZGSPZGL, SYPZB, HB, CASE WHEN FKIMG=0 THEN 0 ELSE  (NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0))/FKIMG END  BZ,'1' SX,  ZYBZ, FGSBZ,ZGSBZ ZGSBZ from (select
         COMPANYNAME, NAME,  (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG, PZGL , ZYFKIMG, ZYPZGL,  FGSFKIMG,  FGSPZGL, ZGSFKIMG,  ZGSPZGL, SYPZB, HB,  BZ,'1' SX,  ZYBZ, FGSBZ,ZGSBZ ZGSBZ
         from (SELECT
+
+        <if test="zt==0">
         COMPANYNAME,
         NAME,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)pzgl,
@@ -27,6 +30,33 @@
         (sum(case when fkdat  &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))hb
+        </if>
+
+        <if test="zt==1">
+            COMPANYNAME,
+            NAME,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)pzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end)zyfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)zypzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end)fgsfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) fgspzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end) zgsfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) zgspzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end) zybz,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end) fgsbz,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end) zgsbz,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) bz,
+            sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) sypzb,
+            (sum(case when fkdat  &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))hb
+        </if>
+
         from (SELECT
         distinct decode(settle.company_id,
         9580,
@@ -138,6 +168,8 @@
         select
         COMPANYNAME, NAME,  (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG, PZGL , ZYFKIMG, ZYPZGL,  FGSFKIMG,  FGSPZGL, ZGSFKIMG,  ZGSPZGL, SYPZB, HB,  BZ,'1' SX,  ZYBZ, FGSBZ,ZGSBZ ZGSBZ
         from (SELECT
+
+        <if test="zt==0">
         COMPANYNAME,
         NAME,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)pzgl,
@@ -160,6 +192,33 @@
         (sum(case when fkdat  &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))hb
+        </if>
+
+        <if test="zt==1">
+            COMPANYNAME,
+            NAME,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)pzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end)zyfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)zypzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end)fgsfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) fgspzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end) zgsfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) zgspzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end) zybz,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end) fgsbz,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end) zgsbz,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) bz,
+            sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) sypzb,
+            (sum(case when fkdat  &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startagainTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endagainTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))hb
+        </if>
+
         from (SELECT
         distinct decode(settle.company_id,
         9580,
@@ -277,7 +336,10 @@
         (zypzgl/zyfkimg) zypzgl,
         (fgspzgl/fgsfkimg) fgsbz,
         (zgspzgl/zgsfkimg) zgsbz
-        from(select  companyname,name,
+        from(select
+
+        <if test="zt==0">
+        companyname,name,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end)
         zyfkimg,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
@@ -305,6 +367,39 @@
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date ('2019-02-01','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date ('2019-02-28','yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date ('2019-02-01','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date ('2019-02-28','yyyy-mm-dd hh24:mi:ss')then fkimg end))
         hb
+        </if>
+
+        <if test="zt==1">
+            companyname,name,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end)
+            zyfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zypzgl,
+            sum( case when company_id='8110' then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sggl = '分公司'  or sale_body &lt; &gt; '出口')  then fkimg end else null end )
+            fgsfkimg,
+            sum( case when company_id='8110' then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sggl = '分公司'  or sale_body &lt; &gt; '出口') and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end else null end )
+            fgspzgl,
+            sum(case when company_id = '1932'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部')  then fkimg end
+            when company_id ='8493'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' )  then fkimg end end)
+            zgsfkimg,
+            sum(case when company_id = '1932'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部') and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end
+            when company_id ='8493'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' ) and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end  end )
+            zgspzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end)
+            sypzb,
+            (sum(case when fkdat  &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date ('2019-02-01','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date ('2019-02-28','yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date ('2019-02-01','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date ('2019-02-28','yyyy-mm-dd hh24:mi:ss')then fkimg end))
+            hb
+        </if>
+
         from (SELECT
         distinct decode(settle.company_id,
         9580,
@@ -424,11 +519,11 @@
 
     </select>
 
-
     <select id="getpz" resultType="map">
 select x.*,x.bz-x.sybz hb from (select * from  (select name,sum(FKIMG) FKIMG,sum(pzgl) pzgl,sum(pzgl)/sum(FKIMG) bz,sum(zyfkimg) zyfkimg,sum(zypzgl) zypzgl,sum(zypzgl)/sum(zyfkimg) zybz,sum(fgsfkimg) fgsfkimg,sum(fgspzgl) fgspzgl,sum(fgspzgl)/sum(fgsfkimg) fgsbz,sum(zgsfkimg) zgsfkimg,sum(zgspzgl) zgspzgl,sum(zgspzgl)/sum(zgsfkimg) zgsbz from
 (select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl from （SELECT
 
+        <if test="zt==0">
         NAME,
         sum(case when   sale_body = '专业公司' then fkimg end)
         zyfkimg,
@@ -442,9 +537,23 @@ select x.*,x.bz-x.sybz hb from (select * from  (select name,sum(FKIMG) FKIMG,sum
          zgsfkimg,
         sum(case when   (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
          zgspzgl
+        </if>
 
-
-
+        <if test="zt==1">
+            NAME,
+            sum(case when   sale_body = '专业公司' then fkimg end)
+            zyfkimg,
+            sum(case when   sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zypzgl,
+            sum(case when   sale_body = '分公司' then fkimg end)
+            fgsfkimg,
+            sum(case when   sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            fgspzgl,
+            sum(case when   (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end)
+            zgsfkimg,
+            sum(case when   (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zgspzgl
+        </if>
 
         from (SELECT
         distinct decode(settle.company_id,
@@ -559,6 +668,7 @@ select x.*,x.bz-x.sybz hb from (select * from  (select name,sum(FKIMG) FKIMG,sum
        (
         select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl from （SELECT
 
+        <if test="zt==0">
         NAME,
        sum(case when   sale_body = '专业公司' then fkimg end)
         zyfkimg,
@@ -572,8 +682,23 @@ select x.*,x.bz-x.sybz hb from (select * from  (select name,sum(FKIMG) FKIMG,sum
          zgsfkimg,
         sum(case when   (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
          zgspzgl
+        </if>
 
-
+        <if test="zt==1">
+            NAME,
+            sum(case when   sale_body = '专业公司' then fkimg end)
+            zyfkimg,
+            sum(case when   sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zypzgl,
+            sum(case when   sale_body = '分公司' then fkimg end)
+            fgsfkimg,
+            sum(case when   sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            fgspzgl,
+            sum(case when   (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end)
+            zgsfkimg,
+            sum(case when   (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zgspzgl
+        </if>
 
         from (SELECT
         distinct decode(settle.company_id,
@@ -686,7 +811,10 @@ select x.*,x.bz-x.sybz hb from (select * from  (select name,sum(FKIMG) FKIMG,sum
         union all
 
        ( select name,nvl(zyfkimg,0)+ nvl(fgsfkimg,0) +nvl(zgsfkimg,0) fkimg,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl
-        from(select  name,
+        from(select
+
+        <if test="zt==0">
+        name,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end)
         zyfkimg,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
@@ -707,6 +835,31 @@ select x.*,x.bz-x.sybz hb from (select * from  (select name,sum(FKIMG) FKIMG,sum
         when company_id ='8493'  then
         case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' ) and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end  end )
         zgspzgl
+        </if>
+
+        <if test="zt==1">
+            name,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end)
+            zyfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zypzgl,
+            sum( case when company_id='8110' then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sggl = '分公司'  or sale_body &lt; &gt; '出口')  then fkimg end else null end )
+            fgsfkimg,
+            sum( case when company_id='8110' then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sggl = '分公司'  or sale_body &lt; &gt; '出口') and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end else null end )
+            fgspzgl,
+            sum(case when company_id = '1932'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部')  then fkimg end
+            when company_id ='8493'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' )  then fkimg end end)
+            zgsfkimg,
+            sum(case when company_id = '1932'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部') and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end
+            when company_id ='8493'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' ) and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end  end )
+            zgspzgl
+        </if>
 
         from (SELECT
         distinct decode(settle.company_id,
@@ -824,6 +977,7 @@ left join
 (select name,sum(pzgl)/sum(FKIMG) sybz from
 (select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl from （SELECT
 
+        <if test="zt==0">
         NAME,
         sum(case when   sale_body = '专业公司' then fkimg end)
         zyfkimg,
@@ -837,6 +991,24 @@ left join
         zgsfkimg,
         sum(case when   (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
         zgspzgl
+        </if>
+
+        <if test="zt==1">
+            NAME,
+            sum(case when   sale_body = '专业公司' then fkimg end)
+            zyfkimg,
+            sum(case when   sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zypzgl,
+            sum(case when   sale_body = '分公司' then fkimg end)
+            fgsfkimg,
+            sum(case when   sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            fgspzgl,
+            sum(case when   (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end)
+            zgsfkimg,
+            sum(case when   (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zgspzgl
+        </if>
+
         from (SELECT
         distinct decode(settle.company_id,
         9580,
@@ -950,6 +1122,7 @@ left join
        (
         select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl from （SELECT
 
+        <if test="zt==0">
         NAME,
         sum(case when   sale_body = '专业公司' then fkimg end)
         zyfkimg,
@@ -963,9 +1136,23 @@ left join
          zgsfkimg,
         sum(case when   (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
          zgspzgl
+        </if>
 
-
-
+        <if test="zt==1">
+            NAME,
+            sum(case when   sale_body = '专业公司' then fkimg end)
+            zyfkimg,
+            sum(case when   sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zypzgl,
+            sum(case when   sale_body = '分公司' then fkimg end)
+            fgsfkimg,
+            sum(case when   sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            fgspzgl,
+            sum(case when   (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end)
+            zgsfkimg,
+            sum(case when   (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zgspzgl
+        </if>
 
         from (SELECT
         distinct decode(settle.company_id,
@@ -1078,7 +1265,10 @@ left join
         union all
 
        ( select name,nvl(zyfkimg,0)+ nvl(fgsfkimg,0) +nvl(zgsfkimg,0) fkimg,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl
-        from(select  name,
+        from(select
+
+        <if test="zt==0">
+        name,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end)
         zyfkimg,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
@@ -1099,6 +1289,31 @@ left join
         when company_id ='8493'  then
         case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' ) and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end  end )
         zgspzgl
+        </if>
+
+        <if test="zt==1">
+            name,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end)
+            zyfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zypzgl,
+            sum( case when company_id='8110' then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sggl = '分公司'  or sale_body &lt; &gt; '出口')  then fkimg end else null end )
+            fgsfkimg,
+            sum( case when company_id='8110' then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sggl = '分公司'  or sale_body &lt; &gt; '出口') and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end else null end )
+            fgspzgl,
+            sum(case when company_id = '1932'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部')  then fkimg end
+            when company_id ='8493'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' )  then fkimg end end)
+            zgsfkimg,
+            sum(case when company_id = '1932'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部') and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end
+            when company_id ='8493'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' ) and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end  end )
+            zgspzgl
+        </if>
 
         from (SELECT
         distinct decode(settle.company_id,
@@ -1212,12 +1427,13 @@ left join
 
     </select>
 
-
     <select id="getzrbm" resultType="map">
 select companyname,"DECODE"(companyname,'热板公司','1','冷板公司','2','宽厚板公司','3','棒线公司','4','型带公司','5','特钢公司','6','薄板公司'，'7','唐钢分公司','8','邯钢分公司','9','宣钢分公司','10','承钢分公司','11','舞钢分公司','12','石钢分公司','13','衡板分公司'，'14'),
 fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl from(select COMPANYNAME||'分公司' COMPANYNAME ,FKIMG,PZGL,bz from (select COMPANYNAME,   FKIMG,(NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0)) PZGL ,CASE WHEN FKIMG=0 THEN 0 ELSE  (NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0))/FKIMG END  BZ from (select
         COMPANYNAME,  (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG, PZGL , ZYFKIMG, ZYPZGL,  FGSFKIMG,  FGSPZGL, ZGSFKIMG,  ZGSPZGL, SYPZB, HB,  BZ,'1' SX,  ZYBZ, FGSBZ,ZGSBZ ZGSBZ
         from (SELECT
+
+        <if test="zt==0">
         COMPANYNAME,
         sum(case when  product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)pzgl,
         sum(case when  sale_body = '专业公司' then fkimg end)zyfkimg,
@@ -1239,6 +1455,32 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         (sum(case when fkdat  &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))hb
+        </if>
+
+        <if test="zt==1">
+        COMPANYNAME,
+        sum(case when  product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)pzgl,
+        sum(case when  sale_body = '专业公司' then fkimg end)zyfkimg,
+        sum(case when  sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)zypzgl,
+        sum(case when  sale_body = '分公司' then fkimg end)fgsfkimg,
+        sum(case when  sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) fgspzgl,
+        sum(case when (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end) zgsfkimg,
+        sum(case when  (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) zgspzgl,
+        sum(case when  sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+        sum(case when  sale_body = '专业公司' then fkimg end) zybz,
+        sum(case when  sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+        sum(case when  sale_body = '分公司' then fkimg end) fgsbz,
+        sum(case when  (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+        sum(case when  (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end) zgsbz,
+        sum(case when  product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) bz,
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) sypzb,
+        (sum(case when fkdat  &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+        sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))hb
+    </if>
+
         from (SELECT
         distinct decode(settle.company_id,
         9580,
@@ -1350,8 +1592,9 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         select
         COMPANYNAME,   (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG, PZGL , ZYFKIMG, ZYPZGL,  FGSFKIMG,  FGSPZGL, ZGSFKIMG,  ZGSPZGL, SYPZB, HB,  BZ,'1' SX,  ZYBZ, FGSBZ,ZGSBZ ZGSBZ
         from (SELECT
-        COMPANYNAME,
 
+        <if test="zt==0">
+        COMPANYNAME,
         sum(case when product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)pzgl,
         sum(case when sale_body = '专业公司' then fkimg end)zyfkimg,
         sum(case when sale_body = '专业公司' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)zypzgl,
@@ -1372,6 +1615,32 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         (sum(case when fkdat  &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))hb
+        </if>
+
+        <if test="zt==1">
+            COMPANYNAME,
+            sum(case when product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)pzgl,
+            sum(case when sale_body = '专业公司' then fkimg end)zyfkimg,
+            sum(case when sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)zypzgl,
+            sum(case when sale_body = '分公司' then fkimg end)fgsfkimg,
+            sum(case when sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) fgspzgl,
+            sum(case when (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end) zgsfkimg,
+            sum(case when (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end) zgspzgl,
+            sum(case when sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+            sum(case when sale_body = '专业公司' then fkimg end) zybz,
+            sum(case when sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+            sum(case when sale_body = '分公司' then fkimg end) fgsbz,
+            sum(case when (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)/
+            sum(case when (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end) zgsbz,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) bz,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end) sypzb,
+            (sum(case when fkdat  &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))hb
+        </if>
+
         from (SELECT
         distinct decode(settle.company_id,
         9580,
@@ -1489,7 +1758,10 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         (zypzgl/zyfkimg) zypzgl,
         (fgspzgl/fgsfkimg) fgsbz,
         (zgspzgl/zgsfkimg) zgsbz
-        from(select  companyname,
+        from(select
+
+        <if test="zt==0">
+        companyname,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end)
         zyfkimg,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
@@ -1517,6 +1789,39 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date ('2019-02-01','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date ('2019-02-28','yyyy-mm-dd hh24:mi:ss') and product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
         sum(case when fkdat  &gt;= to_date ('2019-02-01','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date ('2019-02-28','yyyy-mm-dd hh24:mi:ss')then fkimg end))
         hb
+        </if>
+
+        <if test="zt==1">
+            companyname,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end)
+            zyfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zypzgl,
+            sum( case when company_id='8110' then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sggl = '分公司'  or sale_body &lt; &gt; '出口')  then fkimg end else null end )
+            fgsfkimg,
+            sum( case when company_id='8110' then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sggl = '分公司'  or sale_body &lt; &gt; '出口') and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end else null end )
+            fgspzgl,
+            sum(case when company_id = '1932'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部')  then fkimg end
+            when company_id ='8493'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' )  then fkimg end end)
+            zgsfkimg,
+            sum(case when company_id = '1932'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部') and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end
+            when company_id ='8493'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' ) and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end  end )
+            zgspzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt; = to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end)
+            sypzb,
+            (sum(case when fkdat  &gt; = to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')then fkimg end))-(sum(case when fkdat  &gt;= to_date ('2019-02-01','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date ('2019-02-28','yyyy-mm-dd hh24:mi:ss') and product_grade = '高端产品' OR product_grade = '特色战略产品' then fkimg end)/
+            sum(case when fkdat  &gt;= to_date ('2019-02-01','yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date ('2019-02-28','yyyy-mm-dd hh24:mi:ss')then fkimg end))
+            hb
+        </if>
+
         from (SELECT
         distinct decode(settle.company_id,
         9580,
@@ -1623,6 +1928,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         select name||'公司' COMPANYNAME,sum(FKIMG) FKIMG,sum(pzgl) pzgl,sum(pzgl)/sum(FKIMG) bz from
 (select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl from （SELECT
 
+        <if test="zt==0">
         NAME,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end)
         zyfkimg,
@@ -1636,10 +1942,23 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         zgsfkimg,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
         zgspzgl
+        </if>
 
-
-
-
+        <if test="zt==1">
+            NAME,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end)
+            zyfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zypzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end)
+            fgsfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            fgspzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end)
+            zgsfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zgspzgl
+        </if>
 
         from (SELECT
         distinct decode(settle.company_id,
@@ -1750,6 +2069,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
        (
         select NAME COMPANYNAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl from （SELECT
 
+        <if test="zt==0">
         NAME,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end)
         zyfkimg,
@@ -1763,9 +2083,23 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
          zgsfkimg,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
          zgspzgl
+        </if>
 
-
-
+        <if test="zt==1">
+            NAME,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end)
+            zyfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zypzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end)
+            fgsfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            fgspzgl,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end)
+            zgsfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')  and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zgspzgl
+        </if>
 
         from (SELECT
         distinct decode(settle.company_id,
@@ -1878,7 +2212,10 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         union all
 
        ( select name,nvl(zyfkimg,0)+ nvl(fgsfkimg,0) +nvl(zgsfkimg,0) fkimg,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl
-        from(select  name,
+        from(select
+
+        <if test="zt==0">
+        name,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end)
         zyfkimg,
         sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
@@ -1899,6 +2236,31 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         when company_id ='8493'  then
         case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' ) and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end  end )
         zgspzgl
+        </if>
+
+        <if test="zt==1">
+            name,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end)
+            zyfkimg,
+            sum(case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
+            zypzgl,
+            sum( case when company_id='8110' then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sggl = '分公司'  or sale_body &lt; &gt; '出口')  then fkimg end else null end )
+            fgsfkimg,
+            sum( case when company_id='8110' then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sggl = '分公司'  or sale_body &lt; &gt; '出口') and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end else null end )
+            fgspzgl,
+            sum(case when company_id = '1932'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部')  then fkimg end
+            when company_id ='8493'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' )  then fkimg end end)
+            zgsfkimg,
+            sum(case when company_id = '1932'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部') and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end
+            when company_id ='8493'  then
+            case when fkdat  &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' ) and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end  end )
+            zgspzgl
+        </if>
 
         from (SELECT
         distinct decode(settle.company_id,
@@ -2042,7 +2404,6 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
 
     </select>
 
-
     <select id="getjszl" resultType="map">
         SELECT decode(settle.company_id,
         9580,
@@ -2075,7 +2436,6 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         GROUP BY settle.company_id
         ORDER BY company_id
     </select>
-
 
     <select id="getpzjszl" resultType="map">
      select name VARIETY,sum(FKIMG) jsl,sum(kzwi6) jsjg,NVL(sum(kzwi6)/sum(FKIMG),0) jsjj from
@@ -3252,9 +3612,6 @@ a
         order by "DECODE"(COMPANYNAME,'唐钢','1','邯钢','2','宣钢','3','承钢','4','舞钢','5','石钢','6','衡板'，'7')
 </select>
 
-
-
-
     <select id="getzyjh" resultType="map">
     select *
     from (select '1' yf,year || '1月' rq,PZ_NAME pz,
@@ -3373,7 +3730,6 @@ a
         ORDER BY    fl_name , cx ,
         "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材')
     </select>
-
 
     <select id="getzyjhcxtjpz" resultType="map">
         select distinct pz_name pz
@@ -4485,6 +4841,7 @@ a
 
         )  group by rollup(name)
    </select>
+
     <select id="getyxybgc" resultType="map">
 select COMPANYNAME,kzwi6/10000 kzwi6 ,FKIMG,CASE WHEN FKIMG=0 THEN 0 ELSE  kzwi6/FKIMG END  sj
 from (select
@@ -4848,4 +5205,5 @@ from (select
  where 1=1
         order by "DECODE"(COMPANYNAME,'唐钢','1','邯钢','2','宣钢','3','承钢','4','舞钢','5','石钢','6','衡板'，'7')
    </select>
+
 </mapper>

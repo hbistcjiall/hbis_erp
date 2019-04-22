@@ -15,9 +15,9 @@ import java.util.Map;
  * @since 2019-03-16
  */
 public interface ScmSteelSettleMapper extends BaseMapper<ScmSteelSettle> {
-    List<ScmSteelSettle> getcx(@Param("dw") String dw,@Param("cx") List cx,@Param("startTime") String startTime,@Param("endTime")String endTime,@Param("startagainTime") String startagainTime,@Param("endagainTime")String endagainTime);
-    List<ScmSteelSettle> getpz(@Param("pz") String pz,@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("startagainTime") String startagainTime,@Param("endagainTime")String endagainTime);
-    List<ScmSteelSettle> getzrbm(@Param("zrbm") String zrbm,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    List<ScmSteelSettle> getcx(@Param("dw") String dw,@Param("cx") List cx,@Param("startTime") String startTime,@Param("endTime")String endTime,@Param("startagainTime") String startagainTime,@Param("endagainTime")String endagainTime,@Param("zt")String zt);
+    List<ScmSteelSettle> getpz(@Param("pz") String pz,@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("startagainTime") String startagainTime,@Param("endagainTime")String endagainTime,@Param("zt")String zt);
+    List<ScmSteelSettle> getzrbm(@Param("zrbm") String zrbm,@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("zt")String zt);
     List<ScmSteelSettle> getpzjszl(@Param("startTime") String startTime,@Param("endTime") String endTime);
     List<ScmSteelSettle> getpzgjswc(@Param("startTime") String startTime,@Param("endTime") String endTime);
     List<ScmSteelSettle> getzgsjswc(@Param("startTime") String startTime,@Param("endTime") String endTime);
