@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hbis.erp.modular.system.mapper.ScmFilterMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.hbis.erp.modular.system.entity.ScmFilter">
+        <id column="ID" property="id" />
+        <result column="CODE" property="code" />
+        <result column="F_NAME" property="name" />
+        <result column="TABLE_NAME" property="tableName" />
+        <result column="F_COLUMN" property="column" />
+        <result column="C_VALUE" property="cValue" />
+        <result column="REMARKS" property="remark" />
+        <result column="CREATER" property="creater" />
+        <result column="CREAT_TIME" property="creatTime" />
+        <result column="UPDATER" property="updater" />
+        <result column="UPDATE_TIME" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID,CODE, F_NAME, TABLE_NAME, F_COLUMN, C_VALUE, REMARKS, CREATER, CREAT_TIME, UPDATER, UPDATE_TIME
+    </sql>
+
+    <select id="getColumnName" resultType="map">
+        select COLUMN_NAME,COMMENTS
+        from user_col_comments
+        where
+        1=1
+        <if test="tableName !='' and tableName !=null">
+            and TABLE_NAME= #{tableName}
+        </if>
+        <if test="columnName !='' and columnName !=null">
+            and (COLUMN_NAME like #{columnName}||'%'
+            or COMMENTS like #{columnName}||'%')
+        </if>
+    </select>
+
+    <select id="getColumnValueOrder" resultType="map">
+        select distinct ${columnName}
+        from scm_sale_order
+        where 1=1
+        <if test="columnValue !='' and columnValue !=null">
+            and ${columnName} like CONCAT(#{columnValue},'%')
+        </if>
+        and dj_date between to_char(ADD_MONTHS (sysdate, -12),'YYYY-MM-DD') and to_char(ADD_MONTHS(sysdate,0),'YYYY-MM-DD')
+        and rownum <![CDATA[ <= ]]> 500
+    </select>
+
+    <select id="getColumnValueDetail" resultType="map">
+        select distinct ${columnName}
+        from SCM_DELIVERY_DETAIL
+        where 1=1
+        <if test="columnValue !='' and columnValue !=null">
+            and ${columnName} like CONCAT(#{columnValue},'%')
+        </if>
+        and DELIVERY_DATE between ADD_MONTHS (sysdate, -12) and ADD_MONTHS (sysdate, 0)
+        and rownum <![CDATA[ <= ]]> 500
+    </select>
+
+    <select id="getColumnValueSteel" resultType="map">
+        select distinct ${columnName}
+        from SCM_STEEL_SETTLE
+        where 1=1
+        <if test="columnValue !='' and columnValue !=null">
+            and ${columnName} like CONCAT(#{columnValue},'%')
+        </if>
+        and FKDAT between ADD_MONTHS (sysdate, -12) and ADD_MONTHS (sysdate, 0)
+        and rownum <![CDATA[ <= ]]> 500
+    </select>
+
+    <select id="getMaxCode" resultType="String">
+        select nvl(max(code),'00000')
+        from scm_filter
+    </select>
+
+    <select id="selFilterList" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from scm_filter
+        where 1=1
+        <if test="name !='' and name !=null">
+            and NAME like CONCAT(#{name},'%')
+        </if>
+        <if test="tableName !='' and tableName !=null">
+            and TABLE_NAME like CONCAT(#{tableName},'%')
+        </if>
+        <if test="column !='' and column !=null">
+            and COLUMN like CONCAT(#{column},'%')
+        </if>
+    </select>
+</mapper>

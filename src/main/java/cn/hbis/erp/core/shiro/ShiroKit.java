@@ -292,8 +292,10 @@ public class ShiroKit {
 
         shiroUser.setId(user.getUserId());
         shiroUser.setAccount(user.getAccount());
-        shiroUser.setDeptId(user.getDeptId());
-        shiroUser.setDeptName(ConstantFactory.me().getDeptName(user.getDeptId().toString()));
+        if (ToolUtil.isNotEmpty(user.getDeptId())){
+            shiroUser.setDeptId(user.getDeptId());
+            shiroUser.setDeptName(ConstantFactory.me().getDeptName(user.getDeptId().toString()));
+        }
         shiroUser.setName(user.getName());
         shiroUser.setEmail(user.getEmail());
         shiroUser.setAvatar(user.getAvatar());
