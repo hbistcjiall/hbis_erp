@@ -65,7 +65,7 @@
         and sso.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5', '1', '7', '9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = sso.company_id)
         and sso.saler_name not in
@@ -361,7 +361,7 @@
         and sso.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5', '1', '7', '9')
+        where cfd.data_type in ('5', '10')
         and cfd.status = '0'
         and cfd.company_id = sso.company_id)
         and sso.saler_name not in
@@ -659,7 +659,7 @@
                                 and sso.order_type_describe not in
                                 (select distinct cfd.data_name
                                 from crm_filter_data cfd
-                                where cfd.data_type in ('5', '1', '7', '9')
+                                where cfd.data_type in ('5', '10')
                                 and cfd.status = '0'
                                 and cfd.company_id = sso.company_id)
                                 and sso.saler_name not in
@@ -973,7 +973,7 @@
         and sso.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5', '1', '7', '9')
+        where cfd.data_type in ('5', '10')
         and cfd.status = '0'
         and cfd.company_id = sso.company_id)
         and sso.saler_name not in
