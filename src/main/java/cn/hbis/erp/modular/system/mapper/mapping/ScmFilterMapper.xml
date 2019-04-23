@@ -8,7 +8,7 @@
         <result column="CODE" property="code" />
         <result column="F_NAME" property="name" />
         <result column="TABLE_NAME" property="tableName" />
-        <result column="F_COLUMN" property="column" />
+        <result column="F_COLUMN" property="fColumn" />
         <result column="C_VALUE" property="cValue" />
         <result column="REMARKS" property="remark" />
         <result column="CREATER" property="creater" />

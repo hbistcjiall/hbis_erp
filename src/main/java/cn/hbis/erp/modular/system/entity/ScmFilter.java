@@ -49,7 +49,7 @@ public class ScmFilter extends Model<ScmFilter> {
 
     @ApiModelProperty(value = "过滤字段")
     @TableField("F_COLUMN")
-    private String column;
+    private String fColumn;
 
     @ApiModelProperty(value = "字段值")
     @TableField("C_VALUE")
