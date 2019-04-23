@@ -106,5 +106,20 @@ public class ScmFilterController extends BaseController {
         this.scmFilterService.deleteFilter(ids);
         return SUCCESS_TIP;
     }
+
+    /**
+     * 部门详情
+     *
+     *
+     */
+    @ApiOperation(value = "过滤详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "filterId", value = "过滤ID", dataType = "String")
+    })
+    @PostMapping("filterDetail")
+    public Object filterDetail(String filterId) {
+
+        return this.scmFilterService.getById(filterId);
+    }
 }
 
