@@ -147,7 +147,7 @@
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -311,7 +311,7 @@
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -484,7 +484,7 @@
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -643,7 +643,7 @@ select x.*,x.bz-x.sybz hb from (select * from  (select name,sum(FKIMG) FKIMG,sum
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -789,7 +789,7 @@ select x.*,x.bz-x.sybz hb from (select * from  (select name,sum(FKIMG) FKIMG,sum
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -946,7 +946,7 @@ select x.*,x.bz-x.sybz hb from (select * from  (select name,sum(FKIMG) FKIMG,sum
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -1097,7 +1097,7 @@ left join
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -1243,7 +1243,7 @@ left join
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -1400,7 +1400,7 @@ left join
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -1571,7 +1571,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -1733,7 +1733,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -1904,7 +1904,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -2048,7 +2048,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -2190,7 +2190,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -2347,7 +2347,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -2545,7 +2545,7 @@ fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl 
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -2673,7 +2673,7 @@ a
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -2803,7 +2803,7 @@ a
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -2929,7 +2929,7 @@ a
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -3056,7 +3056,7 @@ a
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -3185,7 +3185,7 @@ a
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -3321,7 +3321,7 @@ a
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -3456,7 +3456,7 @@ a
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -3591,7 +3591,7 @@ a
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -3924,7 +3924,7 @@ a
         and sso.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5', '1', '7', '9')
+        where cfd.data_type in ('5', '10')
         and cfd.status = '0'
         and cfd.company_id = sso.company_id)
         and sso.saler_name not in
@@ -4572,7 +4572,7 @@ a
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -4694,7 +4694,7 @@ a
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -4821,7 +4821,7 @@ a
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -4943,7 +4943,7 @@ from (select
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -5063,7 +5063,7 @@ from (select
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -5182,7 +5182,7 @@ from (select
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -5367,7 +5367,7 @@ xsztdzb
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -5552,7 +5552,7 @@ select  zl,cxname,"SUM"(kzwi6) kzwi6,
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7','9')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -5728,7 +5728,7 @@ ckfkimg,ckkzwi6
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
-        where cfd.data_type in ('5','1','7')
+        where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
