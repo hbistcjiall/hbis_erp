@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/yxyb")
@@ -39,11 +40,26 @@ public class YxybController {
         String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
         String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
         if(zt.equals("1")){
-            getyxyb=scmSteelSettleService.getyxybpz(startTime1,endTime1);
+            getyxyb=scmSteelSettleService.getyxybpz(startTime1 +" 00:00:00",endTime1+" 23:59:59");
         }else{
-            getyxyb=scmSteelSettleService.getyxybgc(startTime1,endTime1);
+            getyxyb=scmSteelSettleService.getyxybgc(startTime1+" 00:00:00",endTime1+" 23:59:59");
         }
 
         return getyxyb;
+    }
+    @ApiOperation(value = "销售结算完成情况报表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
+
+    })
+    @PostMapping("/getxsjswccx")
+    @Async
+    public List<Map> getxsjswccx( String startTime, String endTime) {
+        String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
+        String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
+        List<Map> list = new ArrayList<>();
+                list = scmSteelSettleService.getxsjswccx(startTime1+" 00:00:00",endTime1+" 23:59:59");
+        return  list;
     }
 }

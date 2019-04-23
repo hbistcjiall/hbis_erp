@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -164,5 +165,12 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     @Async
     public List<ScmSteelSettle> getyxybgc(String startTime, String endTime) {
         return scmSteelSettleMapper.getyxybgc(startTime,endTime);
+    }
+    /* 产线销售*/
+    @Async
+    public List<Map> getxsjswccx(String startTime, String endTime) {
+        List<Map> list = new ArrayList<>();
+        list = scmSteelSettleMapper.getxsjswc(startTime,endTime);
+        return  list;
     }
 }
