@@ -77,24 +77,11 @@ public class AppController {
             @ApiImplicitParam(name = "POST_URL", value = "端口地址", dataType = "String"),
             @ApiImplicitParam(name = "fkdat", value = "结算日期", dataType = "String"),
             @ApiImplicitParam(name = "companyId", value = "公司ID", dataType = "String"),
-            @ApiImplicitParam(name = "placementArea", value = "区域", dataType = "String"),
             @ApiImplicitParam(name = "attribute1", value = "材质", dataType = "String"),
             @ApiImplicitParam(name = "attribute2", value = "规格", dataType = "String"),
     })
     @Async
-    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String companyId,String placementArea,String attribute1,String attribute2) throws IOException {
-
-//        String urlIP = "";
-//        // 根据接收的参数不同，拼写不同的端口地址
-//        if(POST_URL.equals("1")){
-//            urlIP = "http://price.oltest-hbistc.com:8080/priceweb/sellPrice/screwThreadDiagram.htm";
-//        }else if(POST_URL.equals("2")){
-//            urlIP = "http://price.oltest-hbistc.com:8080/priceweb/priceSellPrice/oneSpacesPhone.htm";
-//        }else if(POST_URL.equals("3")){
-//            urlIP = "http://price.oltest-hbistc.com:8080/priceweb/priceSellPrice/getVarietySubjectBody.htm";
-//        }else if(POST_URL.equals("4")){
-//            urlIP = "http://price.oltest-hbistc.com:8080/priceweb/priceSellPrice/phoneSecondQueryList1.htm";
-//        }
+    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String companyId,String attribute1,String attribute2) throws IOException {
 
         URL url = new URL(POST_URL);
 
@@ -129,13 +116,42 @@ public class AppController {
         String parm = "";
         //根据地址不同，拼接查询条件字符串  //URLEncoder.encode()方法  为字符串进行编码
         if(POST_URL.equals("http://18.0.128.1:8080/priceweb/sellPrice/screwThreadDiagram.htm")){
-            parm = "fkdat=" + fkdat + "&" + "companyId=" + companyId + "&" + "placementArea=" + placementArea;
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+            if(companyId != null && companyId != ""){
+                parm = parm + "&" + "companyId=" + companyId;
+            }
         }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/priceSellPrice/oneSpacesPhone.htm")){
-            parm = "fkdat=" + fkdat + "&" + "companyId=" + companyId + "&" + "attribute1=" + attribute1 + "&" + "attribute2=" + attribute2;
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+            if(companyId != null && companyId != ""){
+                parm = parm + "&" + "companyId=" + companyId;
+            }
+            if(attribute1 != null && attribute1 != ""){
+                parm = parm + "&" + "attribute1=" + attribute1;
+            }
+            if(attribute2 != null && attribute2 != ""){
+                parm = parm + "&" + "attribute2=" + attribute2;
+            }
         }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/priceSellPrice/getVarietySubjectBody.htm")){
-            parm = "fkdat=" + fkdat + "&" + "companyId=" + companyId + "&" + "attribute1=" + attribute1;
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+            if(companyId != null && companyId != ""){
+                parm = parm + "&" + "companyId=" + companyId;
+            }
+            if(attribute1 != null && attribute1 != "") {
+                parm = parm + "&" + "attribute1=" + attribute1;
+            }
         }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/priceSellPrice/phoneSecondQueryList1.htm")){
-            parm = "fkdat=" + fkdat + "&" + "companyId=" + companyId;
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+            if(companyId != null && companyId != ""){
+                parm = parm + "&" + "companyId=" + companyId;
+            }
         }
         // 将参数输出到连接
         dataout.writeBytes(parm);
