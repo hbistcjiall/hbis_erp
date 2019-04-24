@@ -4868,8 +4868,8 @@ from (select
         from (SELECT
         COMPANYNAME,
 				"SUM"(kzwi6) kzwi6,
-        sum(case when  (sale_body = '专业公司' or sale_body = '子公司' ) then fkimg end)zyfkimg,
-				sum(case when  (sale_body = '专业公司' or sale_body = '子公司' ) then kzwi6 end)zykzwi6,
+        sum(case when  (sale_body = '专业公司'  ) then fkimg end)zyfkimg,
+				sum(case when  (sale_body = '专业公司' ) then kzwi6 end)zykzwi6,
         sum(case when  (sale_body = '分公司'  ) then fkimg end)fgsfkimg,
 				sum(case when  (sale_body = '分公司'  ) then kzwi6 end)fgskzwi6,
         sum(case when (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end)
@@ -4983,7 +4983,7 @@ from (select
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-          group by  t.companyname) a
+         group by  t.companyname) a
 
         union all (
         select
@@ -5106,7 +5106,7 @@ from (select
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        and t.name is not null group by  t.companyname) a
+         group by  t.companyname) a
         )
 
         union all
@@ -5243,8 +5243,6 @@ from (select
 )
  where 1=1
         order by "DECODE"(COMPANYNAME,'唐钢','1','邯钢','2','宣钢','3','承钢','4','舞钢','5','石钢','6','衡板'，'7')
-
-
 
  </select>
     <select  id = "getxsjswc" resultType="map">
