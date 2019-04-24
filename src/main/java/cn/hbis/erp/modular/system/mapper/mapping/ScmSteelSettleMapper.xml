@@ -3,8 +3,8 @@
 <mapper namespace="cn.hbis.erp.modular.system.mapper.ScmSteelSettleMapper">
 
     <select id="getcx" resultType="map">
-        select COMPANYNAME, NAME,  FKIMG,(NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0)) PZGL , ZYFKIMG, ZYPZGL,  FGSFKIMG,  FGSPZGL, ZGSFKIMG,  ZGSPZGL, SYPZB, HB, CASE WHEN FKIMG=0 THEN 0 ELSE  (NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0))/FKIMG END  BZ,'1' SX,  ZYBZ, FGSBZ,ZGSBZ ZGSBZ from (select
-        COMPANYNAME, NAME,  (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG, PZGL , ZYFKIMG, ZYPZGL,  FGSFKIMG,  FGSPZGL, ZGSFKIMG,  ZGSPZGL, SYPZB, HB,  BZ,'1' SX,  ZYBZ, FGSBZ,ZGSBZ ZGSBZ
+        select COMPANYNAME, NAME,NVL(FKIMG,0) FKIMG,(NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0)) PZGL ,NVL(ZYFKIMG,0) ZYFKIMG,NVL(ZYPZGL,0) ZYPZGL,NVL(FGSFKIMG,0) FGSFKIMG,NVL(FGSPZGL,0) FGSPZGL,NVL(ZGSFKIMG,0) ZGSFKIMG,NVL(ZGSPZGL,0) ZGSPZGL, SYPZB, HB, CASE WHEN FKIMG=0 THEN 0 ELSE  (NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0))/FKIMG END  BZ,'1' SX,  ZYBZ, FGSBZ,ZGSBZ ZGSBZ from (select
+        COMPANYNAME, NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG, PZGL , ZYFKIMG, ZYPZGL,  FGSFKIMG,  FGSPZGL, ZGSFKIMG,  ZGSPZGL, SYPZB, HB,  BZ,'1' SX,  ZYBZ, FGSBZ,ZGSBZ ZGSBZ
         from (SELECT
 
         <if test="zt==0">
@@ -520,7 +520,8 @@
     </select>
 
     <select id="getpz" resultType="map">
-select x.*,x.bz-x.sybz hb from (select * from  (select name,sum(FKIMG) FKIMG,sum(pzgl) pzgl,sum(pzgl)/sum(FKIMG) bz,sum(zyfkimg) zyfkimg,sum(zypzgl) zypzgl,sum(zypzgl)/sum(zyfkimg) zybz,sum(fgsfkimg) fgsfkimg,sum(fgspzgl) fgspzgl,sum(fgspzgl)/sum(fgsfkimg) fgsbz,sum(zgsfkimg) zgsfkimg,sum(zgspzgl) zgspzgl,sum(zgspzgl)/sum(zgsfkimg) zgsbz from
+select x.*,x.bz-x.sybz hb from (select * from
+        (select name,NVL(sum(FKIMG),0) FKIMG,NVL(sum(pzgl),0) pzgl,sum(pzgl)/sum(FKIMG) bz,NVL(sum(zyfkimg),0) zyfkimg,NVL(sum(zypzgl),0) zypzgl,sum(zypzgl)/sum(zyfkimg) zybz,NVL(sum(fgsfkimg),0) fgsfkimg,NVL(sum(fgspzgl),0) fgspzgl,sum(fgspzgl)/sum(fgsfkimg) fgsbz,NVL(sum(zgsfkimg),0) zgsfkimg,NVL(sum(zgspzgl),0) zgspzgl,sum(zgspzgl)/sum(zgsfkimg) zgsbz from
 (select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl from （SELECT
 
         <if test="zt==0">
@@ -1429,7 +1430,7 @@ left join
 
     <select id="getzrbm" resultType="map">
 select companyname,"DECODE"(companyname,'热板公司','1','冷板公司','2','宽厚板公司','3','棒线公司','4','型带公司','5','特钢公司','6','薄板公司'，'7','唐钢分公司','8','邯钢分公司','9','宣钢分公司','10','承钢分公司','11','舞钢分公司','12','石钢分公司','13','衡板分公司'，'14'),
-fkimg,bz,pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl from(select COMPANYNAME||'分公司' COMPANYNAME ,FKIMG,PZGL,bz from (select COMPANYNAME,   FKIMG,(NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0)) PZGL ,CASE WHEN FKIMG=0 THEN 0 ELSE  (NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0))/FKIMG END  BZ from (select
+NVL(fkimg,0) fkimg,bz,NVL(pzgl,0) pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl from(select COMPANYNAME||'分公司' COMPANYNAME ,FKIMG,PZGL,bz from (select COMPANYNAME,   FKIMG,(NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0)) PZGL ,CASE WHEN FKIMG=0 THEN 0 ELSE  (NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0))/FKIMG END  BZ from (select
         COMPANYNAME,  (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG, PZGL , ZYFKIMG, ZYPZGL,  FGSFKIMG,  FGSPZGL, ZGSFKIMG,  ZGSPZGL, SYPZB, HB,  BZ,'1' SX,  ZYBZ, FGSBZ,ZGSBZ ZGSBZ
         from (SELECT
 
