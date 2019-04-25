@@ -2439,7 +2439,7 @@ NVL(fkimg,0) fkimg,bz,NVL(pzgl,0) pzgl,mbl,wcbl from (select companyname,fkimg,b
     </select>
 
     <select id="getpzjszl" resultType="map">
-     select name VARIETY,sum(FKIMG) jsl,sum(kzwi6) jsjg,NVL(sum(kzwi6)/sum(FKIMG),0) jsjj from
+       select name VARIETY,round(sum(FKIMG),2) jsl,round(sum(kzwi6),2) jsjg,round(NVL(sum(kzwi6)/sum(FKIMG),0),2) jsjj from
 (
 select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzwi6,0)+NVL(fgskzwi6,0)+NVL(zgskzwi6,0)) kzwi6,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl from (SELECT
 
