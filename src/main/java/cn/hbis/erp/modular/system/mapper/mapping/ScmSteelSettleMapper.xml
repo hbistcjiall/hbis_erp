@@ -5246,7 +5246,9 @@ from (select
 
  </select>
     <select  id = "getxsjswc" resultType="map">
-SELECT nvl(zl,'品种')zl,nvl(cxname,'产线') cxname,fkimg,kzwi6,zsj,
+
+
+SELECT zl, cxname,fkimg,kzwi6,zsj,
 nvl(nmfkimg,0) nmfkimg,nmkzwi6,nvl(nmsj,0) nmsj,
 nvl(xszgsfkimg,0) xszgsfkimg,nvl(xszgskzwi6,0) xszgskzwi6,decode(xszgsfkimg,0,0,xszgskzwi6/xszgsfkimg) xszgssj,
 nvl(zyfkimg,0) zyfkimg, nvl(zykzwi6,0) zykzwi6,nvl(zygssj,0) zysj,
@@ -5259,7 +5261,7 @@ nvl(ckfkimg,0) ckfkimg,nvl(ckkzwi6,0) ckkzwi6,nvl(cksj,0) cksj
 from
 (
 select
-zl,cxname ,fkimg,kzwi6/10000 kzwi6, decode(fkimg,0,0,kzwi6/fkimg) zsj,
+zl,cxname,fkimg,kzwi6/10000 kzwi6, decode(fkimg,0,0,kzwi6/fkimg) zsj,
 nmfkimg ,nmkzwi6,decode(nmfkimg,0,0,nmkzwi6/nmfkimg) nmsj,
 nvl(zyfkimg,0)+nvl(fgsfkimg,0) xszgsfkimg,nvl(zykzwi6,0)+ nvl(fgskzwi6,0) xszgskzwi6,
 zyfkimg ,zykzwi6,decode(zyfkimg,0,0,zykzwi6/zyfkimg) as zygssj,
@@ -5273,7 +5275,7 @@ ckfkimg ,ckkzwi6,decode(ckfkimg,0,0,ckkzwi6/ckfkimg) as cksj
 from
 
 	(
-select zl,cxname,
+select zl, case when cxname IS null then companyname||'其他' else cxname end cxname,
 ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)+"NVL"(ckfkimg, 0)) fkimg,
  kzwi6,
 
@@ -5286,7 +5288,7 @@ sybfkimg,sybkzwi6,
 zbgsfkimg,zbgskzwi6,
 ckfkimg,ckkzwi6
         from (SELECT
-        zl,cxname,"SUM"(kzwi6) kzwi6,
+        zl,companyname,cxname,"SUM"(kzwi6) kzwi6,
         sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')and sale_body = '专业公司'  then fkimg end)
         zyfkimg,
 				sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')and sale_body = '专业公司'  then kzwi6 end)
@@ -5299,9 +5301,9 @@ ckfkimg,ckkzwi6
         xhfkimg,
 				sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body  = '现货' then kzwi6 end)
         xhkzwi6,
-        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部' or sale_body='子公司' )   then fkimg end)
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  )   then fkimg end)
         sybfkimg,
-				sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部' or sale_body='子公司' )   then kzwi6 end)
+				sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  )   then kzwi6 end)
         sybkzwi6,
 				sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body  = '自办公司') then fkimg end)
         zbgsfkimg,
@@ -5342,8 +5344,27 @@ ckfkimg,ckkzwi6
         sso.saler_name,
         sso.sale_group,
         sso.sale_body ss,
-        cx.zl,
-        cx.cxname,
+       (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+
+        where  detail.DELIV_NUMB = settle.vgbel
+        and detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
+        and ( detail.delivery_delete  &lt;&gt; 'X' or
+        detail.delivery_delete is null)) cxname,
+				 (select max(B.VARIETY)
+        from scm_sale_order sso
+        JOIN scm_variety_to_pt_gp B
+        ON sso.product_code = B.product_group
+        and sso.company_id = B.company_id
+        where sso.order_no = settle.aubel
+        and sso.ORDER_ROW = settle.AUPOS
+        AND sso.company_id = settle.company_id) zl,
         (select max(detail.ext)
         from scm_delivery_detail detail
         where settle.company_id = detail.company_id
@@ -5385,17 +5406,7 @@ xsztdzb
         on sso.company_id = rpcl.company_id
         and sso.product_type = rpcl.product_class
 
-				LEFT JOIN scm_delivery_detail detail on
-				 detail.ORDER_NO = settle.aubel
-        and detail.ORDER_ITEM = settle.aupos
-        and detail.company_id =settle.company_id
 
-        left join (
-        select distinct B.VARIETY zl,b.product_line_simplified_name cxName,b.PRODUCT_LINE_NAME pliname,b.company_id companyId
-        from
-         PRODUCT_LINE_NAME_RELATION B where b.status = 0
-        ) cx
-				on cx.companyId = settle.company_id and detail.ext = cx.pliname
 
         where
         settle.fkdat&gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
@@ -5423,7 +5434,7 @@ xsztdzb
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        group by  zl,cxname )
+        group by  zl,cxname,companyname )
         order by decode(zl,'河钢集团',1,'热板',2,'酸洗',3,'冷板',4,'镀锌',5,'中厚板',6,'螺纹钢',7,'圆钢',8,'线材',9,'型材',10,'薄板',11,'新材',12,'涂镀',13,'冷轧',14)
 
 )  a
@@ -5441,7 +5452,7 @@ sybfkimg ,sybkzwi6,decode(sybfkimg,0,0,sybkzwi6/sybfkimg) as sybsj,
 zbgsfkimg ,zbgskzwi6,decode(zbgsfkimg,0,0,zbgskzwi6/zbgsfkimg) as zbgssj,
 ckfkimg ,ckkzwi6,decode(ckfkimg,0,0,ckkzwi6/ckfkimg) as cksj
 from
-(select zl,cxname,
+(select zl, case when cxname IS null then companyname||'其他' else cxname end cxname,
 (nvl(zyfkimg,0)+nvl(fgsfkimg,0)+ nvl(xhfkimg,0)+ NVL(sybfkimg,0)+ NVL(zbgsfkimg,0)+ NVL(ckfkimg,0)) fkimg,
  kzwi6,
 ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)) nmfkimg,
@@ -5453,7 +5464,7 @@ sybfkimg,sybkzwi6,
 zbgsfkimg,zbgskzwi6,
 ckfkimg,ckkzwi6
         from(
-select  zl,cxname,"SUM"(kzwi6) kzwi6,
+select  zl, companyname, cxname,"SUM"(kzwi6) kzwi6,
         sum(case when company_id = '1932'  then
         case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;=  to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end end)
         zyfkimg,
@@ -5486,9 +5497,9 @@ select  zl,cxname,"SUM"(kzwi6) kzwi6,
 				sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;=  to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (company_id = '1932' and sale_group = '自办公司')  then kzwi6 end)
         zbgskzwi6,
 
-        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;=  to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (company_id = '1932' and sale_group = '舞钢国贸') or sggl = '出口'  then fkimg end)
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;=  to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (company_id = '1932' and sale_group = '舞钢国贸')  or sggl = '出口'  then fkimg end)
         ckfkimg,
-				sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;=  to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (company_id = '1932' and sale_group = '舞钢国贸') or sggl = '出口' then kzwi6 end)
+				sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;=  to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (company_id = '1932' and sale_group = '舞钢国贸') or sggl = '出口'   then kzwi6 end)
         ckkzwi6
 
         from (SELECT
@@ -5521,8 +5532,26 @@ select  zl,cxname,"SUM"(kzwi6) kzwi6,
         sso.order_type_describe,
         sso.saler_name,
         sso.sale_group,
-				cx.zl,
-				cx.cxname,
+				(select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+        where  detail.DELIV_NUMB = settle.vgbel
+        and detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
+        and ( detail.delivery_delete  &lt;&gt; 'X' or
+        detail.delivery_delete is null)) cxname,
+				 (select max(B.VARIETY)
+        from scm_sale_order sso
+        JOIN scm_variety_to_pt_gp B
+        ON sso.product_code = B.product_group
+        and sso.company_id = B.company_id
+        where sso.order_no = settle.aubel
+        and sso.ORDER_ROW = settle.AUPOS
+        AND sso.company_id = settle.company_id) zl,
         (select case when  B.company_id ='8110' then '特钢' when B.company_id ='8493'then '薄板' else b.variety end VARIETY
         from scm_sale_order sso
         JOIN scm_variety_to_pt_gp B
@@ -5570,17 +5599,7 @@ select  zl,cxname,"SUM"(kzwi6) kzwi6,
         where b.status = '0') rpcl
         on sso.company_id = rpcl.company_id
         and sso.product_type = rpcl.product_class
-				LEFT JOIN scm_delivery_detail detail on
-				 detail.ORDER_NO = settle.aubel
-        and detail.ORDER_ITEM = settle.aupos
-        and detail.company_id =settle.company_id
 
-        left join (
-        select distinct B.VARIETY zl,b.product_line_simplified_name cxName,b.PRODUCT_LINE_NAME pliname,b.company_id companyId
-        from
-         PRODUCT_LINE_NAME_RELATION B where b.status = 0
-        ) cx
-				on cx.companyId = settle.company_id and detail.ext = cx.pliname
 
 
         where
@@ -5608,7 +5627,7 @@ select  zl,cxname,"SUM"(kzwi6) kzwi6,
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        group by cxname,zl  ))
+         group by cxname,zl,companyname  ))
 UNION
 select
 zl,cxname ,fkimg,kzwi6/10000 kzwi6,decode(fkimg,0,0,kzwi6/fkimg) zsj,
@@ -5623,7 +5642,7 @@ sybfkimg ,sybkzwi6,decode(sybfkimg,0,0,sybkzwi6/sybfkimg) as sybsj,
 zbgsfkimg ,zbgskzwi6,decode(zbgsfkimg,0,0,zbgskzwi6/zbgsfkimg) as zbgssj,
 ckfkimg ,ckkzwi6,decode(ckfkimg,0,0,ckkzwi6/ckfkimg) as cksj
 from
- (		SELECT zl,cxname,
+ (		SELECT zl,case when cxname IS null then companyname||'其他' else cxname end cxname,
 ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)+"NVL"(ckfkimg, 0)) fkimg,
  kzwi6,
 ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)) nmfkimg,
@@ -5636,7 +5655,7 @@ zbgsfkimg,zbgskzwi6,
 ckfkimg,ckkzwi6
  FROM (
         SELECT
-				zl,cxname,
+				zl, companyname, cxname,
 				"SUM"(kzwi6) kzwi6,
         sum(case when ( sale_body = '出口') then fkimg end)ckfkimg,
 				sum(case when ( sale_body = '出口') then kzwi6 end)ckkzwi6,
@@ -5680,34 +5699,25 @@ ckfkimg,ckkzwi6
         sso.saler_name,
         sso.sale_group,
         sso.sale_body ss,
-				cx.zl,
-        cx.cxname,
-        (select max(DATA.Name)
+				(select max(DATA.Name)
         from scm_delivery_detail detail
         JOIN crm_resource_data DATA
         ON DATA.full_name = detail.ext
         AND DATA.company_id = detail.company_id
         AND (DATA.TYPE = 6 )
-
-        where  detail.DELIV_NUMB = settle.vgbel
-        and detail.ORDER_NO = settle.aubel
-        and detail.ORDER_ITEM = settle.aupos
-        and detail.company_id =settle.company_id
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
         and ( detail.delivery_delete  &lt;&gt; 'X' or
-        detail.delivery_delete is null)) name,
-				(select max(DATA.full_name)
-        from scm_delivery_detail detail
-        JOIN crm_resource_data DATA
-        ON DATA.full_name = detail.ext
-        AND DATA.company_id = detail.company_id
-        AND (DATA.TYPE = 6 )
-
-        where  detail.DELIV_NUMB = settle.vgbel
-        and detail.ORDER_NO = settle.aubel
-        and detail.ORDER_ITEM = settle.aupos
-        and detail.company_id =settle.company_id
-        and ( detail.delivery_delete  &lt;&gt; 'X' or
-        detail.delivery_delete is null)) pzname,
+        detail.delivery_delete is null)) cxname,
+         (select max(B.VARIETY)
+        from scm_sale_order sso
+        JOIN scm_variety_to_pt_gp B
+        ON sso.product_code = B.product_group
+        and sso.company_id = B.company_id
+        where sso.order_no = settle.aubel
+        and sso.ORDER_ROW = settle.AUPOS
+        AND sso.company_id = settle.company_id) zl,
         (select max(detail.ext)
         from scm_delivery_detail detail
         where settle.company_id = detail.company_id
@@ -5746,18 +5756,6 @@ ckfkimg,ckkzwi6
         where b.status = '0') rpcl
         on sso.company_id = rpcl.company_id
         and sso.product_type = rpcl.product_class
-				LEFT JOIN scm_delivery_detail detail on
-				 detail.ORDER_NO = settle.aubel
-        and detail.ORDER_ITEM = settle.aupos
-        and detail.company_id =settle.company_id
-
-        left join (
-        select distinct B.VARIETY zl,b.product_line_simplified_name cxName,b.PRODUCT_LINE_NAME pliname,b.company_id companyId
-        from
-         PRODUCT_LINE_NAME_RELATION B where b.status = 0
-        ) cx
-				on cx.companyId = settle.company_id and detail.ext = cx.pliname
-
 
         where
         settle.fkdat&gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
@@ -5784,8 +5782,10 @@ ckfkimg,ckkzwi6
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        and t.name is not null group by zl,cxname)
+         group by zl,cxname,companyname)
         )
-)
+
+) ORDER BY  "DECODE"(zl,'热板','1','冷板','2','宽厚板','3','棒线','4','型带','5','特钢','6','薄板'，'7'),cxname
+
     </select>
 </mapper>
