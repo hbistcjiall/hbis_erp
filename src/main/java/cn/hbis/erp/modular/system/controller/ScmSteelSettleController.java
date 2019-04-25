@@ -80,23 +80,23 @@ public class ScmSteelSettleController {
         }
         String  startTime1=(String)DateUtil.getFirstDayOfMonth(startTime);
         String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
-        SimpleDateFormat sDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date=sDateFormat.parse(startTime);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MONTH, -1);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        String firstDay = sDateFormat.format(calendar.getTime());
-        Calendar calendar2 = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar2.set(Calendar.DAY_OF_MONTH, 1);
-        calendar2.add(Calendar.DATE, -1);
-        String lastDay = sDateFormat.format(calendar.getTime());
-        System.out.println(firstDay);
-        System.out.println(lastDay);
-        String startagainTime=firstDay;
-        String endagainTime=lastDay;
-        List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx,startTime1+" 00:00:00",endTime1+" 23:59:59",startagainTime,endagainTime,zt);
+//        SimpleDateFormat sDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Date date=sDateFormat.parse(startTime);
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(date);
+//        calendar.add(Calendar.MONTH, -1);
+//        calendar.set(Calendar.DAY_OF_MONTH, 1);
+//        String firstDay = sDateFormat.format(calendar.getTime());
+//        Calendar calendar2 = Calendar.getInstance();
+//        calendar.setTime(date);
+//        calendar2.set(Calendar.DAY_OF_MONTH, 1);
+//        calendar2.add(Calendar.DATE, -1);
+//        String lastDay = sDateFormat.format(calendar.getTime());
+//        System.out.println(firstDay);
+//        System.out.println(lastDay);
+//        String startagainTime=firstDay;
+//        String endagainTime=lastDay;
+        List<ScmSteelSettle> getcx=scmSteelSettleService.getcx(dw,cx,startTime1+" 00:00:00",endTime1+" 23:59:59",zt);
 
         return getcx ;
     }
@@ -113,23 +113,23 @@ public class ScmSteelSettleController {
     public  List<ScmSteelSettle>  getpz(String pz,String startTime,String endTime,String zt) throws ParseException {
         String  startTime1=(String)DateUtil.getFirstDayOfMonth(startTime);
         String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
-        SimpleDateFormat sDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date=sDateFormat.parse(startTime);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MONTH, -1);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        String firstDay = sDateFormat.format(calendar.getTime());
-        Calendar calendar2 = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar2.set(Calendar.DAY_OF_MONTH, 1);
-        calendar2.add(Calendar.DATE, -1);
-        String lastDay = sDateFormat.format(calendar.getTime());
-        System.out.println(firstDay);
-        System.out.println(lastDay);
-        String startagainTime=firstDay;
-        String endagainTime=lastDay;
-        List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz,startTime1+" 00:00:00",endTime1+" 23:59:59",startagainTime,endagainTime,zt);
+//        SimpleDateFormat sDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+////        Date date=sDateFormat.parse(startTime);
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(date);
+//        calendar.add(Calendar.MONTH, -1);
+//        calendar.set(Calendar.DAY_OF_MONTH, 1);
+//        String firstDay = sDateFormat.format(calendar.getTime());
+//        Calendar calendar2 = Calendar.getInstance();
+//        calendar.setTime(date);
+//        calendar2.set(Calendar.DAY_OF_MONTH, 1);
+//        calendar2.add(Calendar.DATE, -1);
+//        String lastDay = sDateFormat.format(calendar.getTime());
+//        System.out.println(firstDay);
+//        System.out.println(lastDay);
+//        String startagainTime=firstDay;
+//        String endagainTime=lastDay;
+        List<ScmSteelSettle> getpz=scmSteelSettleService.getpz(pz,startTime1+" 00:00:00",endTime1+" 23:59:59",zt);
         return getpz;
     }
     @ApiOperation(value = "责任部门报表")
