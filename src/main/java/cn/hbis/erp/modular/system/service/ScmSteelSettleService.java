@@ -150,27 +150,27 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     }
 
     @Async
-    public List<ScmSteelSettle> getCxNamePzg(String companyId) {
-        return scmSteelSettleMapper.getCxNamePzg(companyId);
+    public List<ScmSteelSettle> getCxNamePzg(String companyId,String type) {
+        return scmSteelSettleMapper.getCxNamePzg(companyId,type);
     }
 
     /*
 品种钢结算量报表
 */
     @Async
-    public List<ScmSteelSettle> getyxybpz(String startTime,String endTime) {
-        return scmSteelSettleMapper.getyxybpz(startTime,endTime);
+    public List<ScmSteelSettle> getyxybpz(String startTime,String endTime,String pz) {
+        return scmSteelSettleMapper.getyxybpz(startTime,endTime,pz);
     }
     /*钢厂销售*/
     @Async
-    public List<ScmSteelSettle> getyxybgc(String startTime, String endTime) {
-        return scmSteelSettleMapper.getyxybgc(startTime,endTime);
+    public List<ScmSteelSettle> getyxybgc(String startTime, String endTime,String gc) {
+        return scmSteelSettleMapper.getyxybgc(startTime,endTime,gc);
     }
     /* 产线销售*/
     @Async
-    public List<Map> getxsjswccx(String startTime, String endTime) {
+    public List<Map> getxsjswccx(String startTime,  String endTime,String pz,List<String> cx) {
         List<Map> list = new ArrayList<>();
-        list = scmSteelSettleMapper.getxsjswc(startTime,endTime);
+        list = scmSteelSettleMapper.getxsjswc(startTime,endTime,pz,cx);
         return  list;
     }
 }

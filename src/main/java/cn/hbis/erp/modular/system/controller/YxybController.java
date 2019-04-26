@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -32,17 +33,19 @@ public class YxybController {
             @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
             @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
             @ApiImplicitParam(name = "zt", value = "状态", dataType = "String"),
+            @ApiImplicitParam(name = "gc", value = "钢厂", dataType = "String"),
+            @ApiImplicitParam(name = "pz", value = "品种", dataType = "String")
     })
     @PostMapping("/getyxybpz")
     @Async
-    public List<ScmSteelSettle> getyxybpz(String zt, String startTime, String endTime) {
+    public List<ScmSteelSettle> getyxybpz(String zt, String startTime, String endTime,String pz,String gc) {
         List<ScmSteelSettle> getyxyb = new ArrayList<>();
         String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
         String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
         if(zt.equals("1")){
-            getyxyb=scmSteelSettleService.getyxybpz(startTime1 +" 00:00:00",endTime1+" 23:59:59");
+            getyxyb=scmSteelSettleService.getyxybpz(startTime1 +" 00:00:00",endTime1+" 23:59:59",pz);
         }else{
-            getyxyb=scmSteelSettleService.getyxybgc(startTime1+" 00:00:00",endTime1+" 23:59:59");
+            getyxyb=scmSteelSettleService.getyxybgc(startTime1+" 00:00:00",endTime1+" 23:59:59",gc);
         }
 
         return getyxyb;
@@ -55,11 +58,11 @@ public class YxybController {
     })
     @PostMapping("/getxsjswccx")
     @Async
-    public List<Map> getxsjswccx( String startTime, String endTime) {
+    public List<Map> getxsjswccx(String startTime, @RequestParam(required = false) List<String> cx, String endTime, String pz) {
         String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
         String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
         List<Map> list = new ArrayList<>();
-                list = scmSteelSettleService.getxsjswccx(startTime1+" 00:00:00",endTime1+" 23:59:59");
+                list = scmSteelSettleService.getxsjswccx(startTime1+" 00:00:00",endTime1+" 23:59:59",pz,cx);
         return  list;
     }
 }

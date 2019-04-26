@@ -28,9 +28,9 @@ public interface ScmSteelSettleMapper extends BaseMapper<ScmSteelSettle> {
     List<ScmSteelSettle> getcxhtjd(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("year") String year,@Param("cxName") List cxName,@Param("companyId") String companyId,@Param("month") String month);
     List<ScmSteelSettle> getpzhtjd(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("year") String year,@Param("pzName") String pzName,@Param("month") String month);
     List<ScmSteelSettle> selCx(@Param("companyId") String companyId);
-    List<ScmSteelSettle> getCxNamePzg(@Param("companyId") String  companyId);
-    List<ScmSteelSettle> getyxybpz(@Param("startTime") String startTime,@Param("endTime") String endTime);
-    List<ScmSteelSettle> getyxybgc(@Param("startTime") String startTime, @Param("endTime") String endTime);
-    List<Map>getxsjswc(@Param("startTime") String startTime, @Param("endTime") String endTime);
+    List<ScmSteelSettle> getCxNamePzg(@Param("companyId") String  companyId,@Param("type") String  type);
+    List<ScmSteelSettle> getyxybpz(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("pz") String pz);
+    List<ScmSteelSettle> getyxybgc(@Param("startTime") String startTime, @Param("endTime") String endTime,@Param("gc") String gc);
+    List<Map>getxsjswc(@Param("startTime") String startTime, @Param("endTime") String endTime,@Param("pz") String pz,@Param("cx") List cx);
 
 }
