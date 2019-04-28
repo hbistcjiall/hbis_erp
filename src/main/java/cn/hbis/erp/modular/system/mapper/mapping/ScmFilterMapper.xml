@@ -37,12 +37,13 @@
     </select>
 
     <select id="getColumnValueOrder" resultType="map">
-        select distinct ${columnName}
+        select distinct ${columnName} columnValue
         from scm_sale_order
         where 1=1
         <if test="columnValue !='' and columnValue !=null">
             and ${columnName} like CONCAT(#{columnValue},'%')
         </if>
+        and ${columnName} is not null
         and dj_date between to_char(ADD_MONTHS (sysdate, -12),'YYYY-MM-DD') and to_char(ADD_MONTHS(sysdate,0),'YYYY-MM-DD')
         and rownum <![CDATA[ <= ]]> 500
     </select>
@@ -54,6 +55,7 @@
         <if test="columnValue !='' and columnValue !=null">
             and ${columnName} like CONCAT(#{columnValue},'%')
         </if>
+        and ${columnName} is not null
         and DELIVERY_DATE between ADD_MONTHS (sysdate, -12) and ADD_MONTHS (sysdate, 0)
         and rownum <![CDATA[ <= ]]> 500
     </select>
@@ -65,6 +67,7 @@
         <if test="columnValue !='' and columnValue !=null">
             and ${columnName} like CONCAT(#{columnValue},'%')
         </if>
+        and ${columnName} is not null
         and FKDAT between ADD_MONTHS (sysdate, -12) and ADD_MONTHS (sysdate, 0)
         and rownum <![CDATA[ <= ]]> 500
     </select>
@@ -79,14 +82,194 @@
         <include refid="Base_Column_List"/>
         from scm_filter
         where 1=1
-        <if test="name !='' and name !=null">
-            and NAME like CONCAT(#{name},'%')
+        <if test="name !='' and name !=null and name != '全部'">
+            and F_NAME like CONCAT(#{name},'%')
         </if>
-        <if test="tableName !='' and tableName !=null">
+        <if test="tableName !='' and tableName !=null and tableName != '全部'">
             and TABLE_NAME like CONCAT(#{tableName},'%')
         </if>
-        <if test="column !='' and column !=null">
-            and COLUMN like CONCAT(#{column},'%')
+        <if test="column !='' and column !=null and column != '全部'">
+            and F_COLUMN like CONCAT(#{column},'%')
         </if>
     </select>
+
+    <select id="getCode" resultType="cn.hbis.erp.modular.system.entity.ScmFilter" parameterType="java.lang.String">
+        select code code,f_column fColumn
+        from scm_filter
+        where f_name = #{fName}
+    </select>
+
+    <select id="selFilterByOrder" resultType="map">
+    select f_name, htl, decode(companyId,
+        9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') AS companyname
+    from(
+    select f_name, htl, company_id companyId
+      from (select sf.f_name,
+                   sum(nvl(sso.order_mount, 0)) htl,
+                   to_char(sso.company_id) company_id
+              from scm_sale_order sso
+              join (select distinct f_name,
+                                   regexp_substr(c_value, '[^,]+', 1, level) c1
+                     from scm_filter
+                    where code = #{code}
+                   connect by level <![CDATA[ <= ]]> length(c_value) -
+                              length(replace(c_value, ',', '')) + 1) sf
+                on ${column} = sf.c1
+            where sso.dj_date<![CDATA[ >= ]]>#{startTime}
+             and sso.dj_date<![CDATA[ <= ]]>#{endTime}
+             group by sf.f_name, sso.company_id)
+    union all (select sf.f_name,0 htl,company_id
+        from scm_company sc,
+        scm_filter sf
+        where sc.company_id not in
+        (select distinct sso.company_id
+        from (select regexp_substr(c_value, '[^,]+', 1, level) c_value
+        from scm_filter sf
+        where sf.code = #{code}
+        connect by level <![CDATA[ <= ]]> length(c_value) -
+        length(replace(c_value, ',', '')) + 1) sf
+
+        left join scm_sale_order sso
+        on sf.c_value = ${column}
+        where sf.code = #{code}
+        and sso.dj_date<![CDATA[ >= ]]>#{startTime}
+        and sso.dj_date<![CDATA[ <= ]]>#{endTime}
+        and company_id is not null)
+        and sf.code = #{code}
+        ))
+    where 1=1
+        <if test="companyId != null and companyId != '' and companyId !='全部'">
+            and companyId = #{companyId}
+        </if>
+    </select>
+
+    <select id="selFilterByDelivery" resultType="map">
+        select * from (
+    select f_name, htl, company_id companyId
+      from (select sf.f_name,
+                   sum(nvl(settle.fkimg, 0)) htl,
+                   settle.company_id company_id
+              from scm_steel_settle settle
+              left join scm_delivery_detail detail
+              on settle.company_id = detail.company_id
+              and settle.vgbel = detail.deliv_numb
+              and settle.vgpos = detail.deliv_item
+              join (select distinct f_name,
+                                   regexp_substr(c_value, '[^,]+', 1, level) c1
+                     from scm_filter
+                    where code = #{code}
+                   connect by level <![CDATA[ <= ]]> length(c_value) -
+                              length(replace(c_value, ',', '')) + 1) sf
+                on ${column} = sf.c1
+            where settle.fkdat<![CDATA[ >= ]]>to_date(CONCAT(#{startTime},' 00:00:00'),'yyyy-mm-dd hh24:mi:ss')
+            and settle.fkdat<![CDATA[ <= ]]>to_date(CONCAT(#{endTime},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+             group by sf.f_name, sso.company_id)
+    union all (select sf.f_name,0 htl,company_id
+        from scm_company sc,
+        scm_filter sf
+        where sc.company_id not in
+        (select distinct settle.company_id
+          from scm_steel_settle settle
+          left join scm_delivery_detail detail
+          on settle.company_id = detail.company_id
+          and settle.vgbel = detail.deliv_numb
+          and settle.vgpos = detail.deliv_item
+          join (select regexp_substr(c_value, '[^,]+', 1, level) c1
+                 from scm_filter
+                where code = #{code}
+               connect by level <![CDATA[ <= ]]> length(c_value) -
+                          length(replace(c_value, ',', '')) + 1) sf
+            on ${column} = sf.c1
+        where settle.fkdat<![CDATA[ >= ]]>to_date(CONCAT(#{startTime},' 00:00:00'),'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat<![CDATA[ <= ]]>to_date(CONCAT(#{endTime},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+        and settle.company_id is not null)
+        and sf.code = #{code})
+        ))
+        where 1=1
+        <if test="companyId != null and companyId != '' and companyId !='全部'">
+            and companyId = #{companyId}
+        </if>
+    </select>
+
+    <select id="selFilterBySteel" resultType="map">
+        select *
+        from(
+        select f_name, htl, company_id companyId
+        from (select sf.f_name,
+        sum(nvl(settle.fkimg, 0)) htl,
+        settle.company_id company_id
+        from SCM_STEEL_SETTLE SETTLE
+        join (select distinct f_name,
+        regexp_substr(c_value, '[^,]+', 1, level) c1
+        from scm_filter
+        where code = #{code}
+        connect by level <![CDATA[ <= ]]> length(c_value) -
+        length(replace(c_value, ',', '')) + 1) sf
+        on ${column} = sf.c1
+        where settle.fkdat<![CDATA[ >= ]]>to_date(CONCAT(#{startTime},' 00:00:00'),'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat<![CDATA[ <= ]]>to_date(CONCAT(#{endTime},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+        group by sf.f_name, sso.company_id)
+        union all (select sf.f_name,0 htl,company_id
+        from scm_company sc,
+        scm_filter sf
+        where sc.company_id not in
+        (select distinct SETTLE.company_id
+        from SCM_STEEL_SETTLE SETTLE
+        join (select distinct f_name,
+        regexp_substr(c_value, '[^,]+', 1, level) c1
+        from scm_filter
+        where code = #{code}
+        connect by level <![CDATA[ <= ]]> length(c_value) -
+        length(replace(c_value, ',', '')) + 1) sf
+        on ${column} = sf.c1
+        where settle.fkdat<![CDATA[ >= ]]>to_date(CONCAT(#{startTime},' 00:00:00'),'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat<![CDATA[ <= ]]>to_date(CONCAT(#{endTime},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+        and company_id is not null)
+        and sf.code = #{code}
+        ))
+        where 1=1
+        <if test="companyId != null and companyId != '' and companyId !='全部'">
+            and companyId = #{companyId}
+        </if>
+    </select>
+
+    <select id="selFilterColumn" resultType="map">
+        select f_name fName
+        from SCM_FILTER
+        where table_name = #{tableName}
+    </select>
+
+    <select id="selCondition" resultType="map">
+        select * from (
+        select ${col} sel
+        from scm_filter
+        where 1=1
+        <if test="tableName != null and tableName != '' and tableName !='全部'">
+            and table_name like CONCAT(#{tableName},'%')
+        </if>
+        union (select '全部' sel
+        from scm_filter )
+        )
+        where 1=1
+        <if test="sel != null and sel != '' and sel !='全部'">
+            and sel like CONCAT(#{sel},'%')
+        </if>
+        order by decode(sel,'全部',1)
+    </select>
+
 </mapper>

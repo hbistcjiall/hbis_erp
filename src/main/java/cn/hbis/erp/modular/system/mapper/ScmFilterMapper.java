@@ -28,4 +28,16 @@ public interface ScmFilterMapper extends BaseMapper<ScmFilter> {
     String getMaxCode();
 
     Page<Map<String, Object>> selFilterList(@Param("page") Page page,@Param("name") String name, @Param("tableName") String tableName, @Param("column") String column);
+
+    ScmFilter getCode(@Param("fName") String fName);
+
+    Page<Map<String, Object>> selFilterByOrder(@Param("page") Page page,@Param("startTime") String startTime, @Param("endTime") String endTime,@Param("code") String code, @Param("column") String column, @Param("companyId") String companyId);
+
+    Page<Map<String, Object>> selFilterByDelivery(@Param("page") Page page,@Param("startTime") String startTime, @Param("endTime") String endTime,@Param("code") String code, @Param("column") String column, @Param("companyId") String companyId);
+
+    Page<Map<String, Object>> selFilterBySteel(@Param("page") Page page,@Param("startTime") String startTime, @Param("endTime") String endTime,@Param("code") String code, @Param("column") String column, @Param("companyId") String companyId);
+
+    List selFilterColumn(@Param("tableName") String tableName);
+
+    List selCondition(@Param("col") String col,@Param("sel") String sel,@Param("tableName") String tableName);
 }

@@ -3,6 +3,7 @@ package cn.hbis.erp.modular.system.controller;
 
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
 import cn.hbis.erp.core.common.page.PageFactory;
+import cn.hbis.erp.core.util.DateUtil;
 import cn.hbis.erp.modular.system.entity.ScmFilter;
 import cn.hbis.erp.modular.system.service.ScmFilterService;
 import cn.hbis.erp.modular.system.warpper.MenuWrapper;
@@ -40,11 +41,11 @@ public class ScmFilterController extends BaseController {
 
     @ApiOperation(value = "通过表名获取字段")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "tableName", value = "表名", dataType = "String"),
+            @ApiImplicitParam(name = "tableName", value = "表名", dataType = "String",required = true),
             @ApiImplicitParam(name = "columnName", value = "字段名", dataType = "String")
     })
-    @PostMapping("/getOrder")
-    public List getOrder(String tableName, String columnName){
+    @PostMapping("/getColumnName")
+    public List getColumnName(String tableName, String columnName){
         return scmFilterService.getColumnName(tableName,columnName);
     }
 
@@ -120,6 +121,57 @@ public class ScmFilterController extends BaseController {
     public Object filterDetail(String filterId) {
 
         return this.scmFilterService.getById(filterId);
+    }
+
+    @ApiOperation(value = "过滤结果查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "companyId", value = "公司ID", dataType = "String"),
+            @ApiImplicitParam(name = "tableName", value = "表名", dataType = "String",required = true),
+            @ApiImplicitParam(name = "fName", value = "过滤类型", dataType = "String",required = true),
+            @ApiImplicitParam(name = "limit", value = "每页多少条数据", dataType = "String"),
+            @ApiImplicitParam(name = "page", value = "第几页", dataType = "String"),
+            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
+    })
+    @PostMapping("selFilterDzl")
+    public Object selFilterDzl(String companyId,String tableName,String fName,String limit,String page,String startTime,String endTime) {
+        startTime = DateUtil.getFirstDayOfMonth(startTime).replaceAll("[[\\s-:punct:]]","").substring(0,8);
+        endTime = DateUtil.getLastDayOfMonth(endTime).replaceAll("[[\\s-:punct:]]","").substring(0,8);
+        Page<Map<String, Object>> list = null;
+        Page<Map<String, Object>> wrap = null;
+        ScmFilter scmFilter = scmFilterService.getCode(fName);
+        if (tableName.equals("SCM_SALE_ORDER")){
+            list = scmFilterService.selFilterByOrder(startTime,endTime,scmFilter.getCode(),"sso."+scmFilter.getFColumn(),companyId);
+            wrap = new MenuWrapper(list).wrap();
+        }else if (tableName.equals("SCM_DELIVERY_DETAIL")){
+            list = scmFilterService.selFilterByDelivery(startTime,endTime,scmFilter.getCode(),"detail."+scmFilter.getFColumn(),companyId);
+            wrap = new MenuWrapper(list).wrap();
+        }else if (tableName.equals("SCM_STEEL_SETTLE")){
+            list = scmFilterService.selFilterBySteel(startTime,endTime,scmFilter.getCode(),"settle."+scmFilter.getFColumn(),companyId);
+            wrap = new MenuWrapper(list).wrap();
+        }
+
+        return PageFactory.createPageInfo(wrap);
+    }
+
+    @ApiOperation(value = "查询过滤类型")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "tableName", value = "表名", dataType = "String",required = true)
+    })
+    @PostMapping("selFilterColumn")
+    public Object selFilterColumn(String tableName) {
+        return this.scmFilterService.selFilterColumn(tableName);
+    }
+
+    @ApiOperation(value = "查询过滤表查询条件")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "col", value = "要查询的字段名", dataType = "String",required = true),
+            @ApiImplicitParam(name = "sel", value = "查询条件名", dataType = "String"),
+            @ApiImplicitParam(name = "tableName", value = "表名", dataType = "String")
+    })
+    @PostMapping("selCondition")
+    public Object selCondition(String col,String sel,String tableName) {
+        return this.scmFilterService.selCondition(col,sel,tableName);
     }
 }
 

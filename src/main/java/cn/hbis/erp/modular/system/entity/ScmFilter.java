@@ -41,7 +41,7 @@ public class ScmFilter extends Model<ScmFilter> {
 
     @ApiModelProperty(value = "业务名称")
     @TableField("F_NAME")
-    private String name;
+    private String fName;
 
     @ApiModelProperty(value = "过滤表")
     @TableField("TABLE_NAME")

@@ -59,7 +59,7 @@ public class ScmFilterService extends ServiceImpl<ScmFilterMapper, ScmFilter>{
     }
 
     public void addFilter(ScmFilter scmFilter){
-        if (ToolUtil.isOneEmpty(scmFilter.getCode(),scmFilter.getFColumn(),scmFilter.getTableName(),scmFilter.getName(),scmFilter.getCValue())){
+        if (ToolUtil.isOneEmpty(scmFilter.getCode(),scmFilter.getFColumn(),scmFilter.getTableName(),scmFilter.getFName(),scmFilter.getCValue())){
             throw new RequestEmptyException();
         }
         ShiroUser user = ShiroKit.getUserNotNull();
@@ -81,4 +81,30 @@ public class ScmFilterService extends ServiceImpl<ScmFilterMapper, ScmFilter>{
     public void deleteFilter(List<String> ids){
         this.removeByIds(ids);
     }
+
+    public ScmFilter getCode(String fName){
+        return scmFilterMapper.getCode(fName);
+    }
+
+    public Page<Map<String, Object>> selFilterByOrder (String startTime,String endTime,String code,String column,String companyId){
+        Page page = PageFactory.defaultPage();
+        return scmFilterMapper.selFilterByOrder(page,startTime,endTime,code,column,companyId);
+    }
+
+    public Page<Map<String, Object>> selFilterByDelivery (String startTime,String endTime,String code,String column,String companyId){
+        Page page = PageFactory.defaultPage();
+        return scmFilterMapper.selFilterByDelivery(page,startTime,endTime,code,column,companyId);
+    }
+
+    public Page<Map<String, Object>> selFilterBySteel (String startTime,String endTime,String code,String column,String companyId){
+        Page page = PageFactory.defaultPage();
+        return scmFilterMapper.selFilterBySteel(page,startTime,endTime,code,column,companyId);
+    }
+
+    public List selFilterColumn(String tableName){
+        return scmFilterMapper.selFilterColumn(tableName);
+    }
+
+    public List selCondition(String col,String sel,String tableName){
+        return scmFilterMapper.selCondition(col,sel,tableName);}
 }
