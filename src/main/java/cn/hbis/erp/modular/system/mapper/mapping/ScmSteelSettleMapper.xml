@@ -964,8 +964,11 @@
     </select>
 
     <select id="getzrbm" resultType="map">
-        select companyname,"DECODE"(companyname,'热板公司','1','冷板公司','2','宽厚板公司','3','棒线公司','4','型带公司','5','特钢公司','6','薄板公司'，'7','唐钢分公司','8','邯钢分公司','9','宣钢分公司','10','承钢分公司','11','舞钢分公司','12','石钢分公司','13','衡板分公司'，'14'),
-        NVL(fkimg,0) fkimg,bz,NVL(pzgl,0) pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl from(select COMPANYNAME||'分公司' COMPANYNAME ,FKIMG,PZGL,bz from (select COMPANYNAME,   FKIMG,(NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0)) PZGL ,CASE WHEN FKIMG=0 THEN 0 ELSE  (NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0))/FKIMG END  BZ from (select
+        select companyname,"DECODE"(companyname,'热板公司','1','冷板公司','2','宽厚板公司','3','棒线公司','4','型带公司'，'7','唐钢分公司','8','邯钢分公司','9','宣钢分公司','10','承钢分公司','11','舞钢分公司','12','石钢公司','13','衡板公司'，'14'),
+        NVL(fkimg,0) fkimg,bz,NVL(pzgl,0) pzgl,mbl,wcbl from (select companyname,fkimg,bz,pzgl,mbl,pzgl/mbl wcbl from(select
+        case when COMPANYNAME = '石钢' or COMPANYNAME = '衡板'  then COMPANYNAME||'公司' else
+        COMPANYNAME||'分公司' end COMPANYNAME ,
+        FKIMG,PZGL,bz from (select COMPANYNAME,   FKIMG,(NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0)) PZGL ,CASE WHEN FKIMG=0 THEN 0 ELSE  (NVL(ZYPZGL,0)+NVL(ZGSPZGL,0)+ NVL(FGSPZGL,0))/FKIMG END  BZ from (select
         COMPANYNAME,  (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG, PZGL , ZYFKIMG, ZYPZGL,  FGSFKIMG,  FGSPZGL, ZGSFKIMG,  ZGSPZGL, BZ,'1' SX,  ZYBZ, FGSBZ,ZGSBZ ZGSBZ
         from (SELECT
 
@@ -1795,7 +1798,7 @@
         sso.order_type_describe,
         sso.saler_name,
         sso.sale_group,
-        (select case when  B.company_id ='8110' then '特钢' when B.company_id ='8493'then '薄板' else b.variety end VARIETY
+        (select b.variety VARIETY
         from scm_sale_order sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
@@ -1899,7 +1902,7 @@
             where companyname=#{zrbm}
         </if>
 
-        order by "DECODE"(companyname,'热板公司',1,'冷板公司',2,'宽厚板公司',3,'棒线公司',4,'型带公司',5,'特钢公司',6,'薄板公司'，7,'唐钢分公司',8,'邯钢分公司',9,'宣钢分公司',10,'承钢分公司',11,'舞钢分公司',12,'石钢分公司',13,'衡板分公司'，14)
+        order by "DECODE"(companyname,'热板公司',1,'冷板公司',2,'宽厚板公司',3,'棒线公司',4,'型带公司'，7,'唐钢分公司',8,'邯钢分公司',9,'宣钢分公司',10,'承钢分公司',11,'舞钢分公司',12,'石钢公司',13,'衡板公司'，14)
 
     </select>
 
