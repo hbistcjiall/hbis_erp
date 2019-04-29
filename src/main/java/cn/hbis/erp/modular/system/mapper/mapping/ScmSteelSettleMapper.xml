@@ -243,17 +243,16 @@
         AND DATA.company_id = detail.company_id
         AND (DATA.TYPE = 6 )
 
-        where  detail.DELIV_NUMB = settle.vgbel
-        and detail.ORDER_NO = settle.aubel
+        where  detail.ORDER_NO = settle.aubel
         and detail.ORDER_ITEM = settle.aupos
         and detail.company_id =settle.company_id
         and ( detail.delivery_delete  &lt; &gt; 'X' or
         detail.delivery_delete is null)) name,
         (select max(detail.ext)
         from scm_delivery_detail detail
-        where settle.company_id = detail.company_id
-        and settle.vgbel = detail.deliv_numb
-        and settle.vgpos = detail.deliv_item
+        where detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
@@ -577,6 +576,17 @@
         where sso.order_no = settle.aubel
         and sso.ORDER_ROW = settle.AUPOS
         AND sso.company_id = settle.company_id) name,
+        (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X' or
+        detail.delivery_delete is null)) cxname,
         (select max(detail.ext)
         from scm_delivery_detail detail
         where settle.company_id = detail.company_id
@@ -644,7 +654,8 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        and t.name is not null group by  t.name ) a
+        and  t.CXNAME &lt; &gt; '唐钢1580热轧线'  and  t.cxname &lt; &gt; '唐钢中厚板'
+        and t.cxname is not null group by  t.name ) a
 
 
 
@@ -722,10 +733,20 @@
         where sso.order_no = settle.aubel
         and sso.ORDER_ROW = settle.AUPOS
         AND sso.company_id = settle.company_id) name,
+        (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+        where settle.company_id = detail.company_id
+        and detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and ( detail.delivery_delete  &lt; &gt; 'X' or
+        detail.delivery_delete is null)) cxname,
         (select max(detail.ext)
         from scm_delivery_detail detail
-        where  detail.DELIV_NUMB = settle.vgbel
-        and detail.ORDER_NO = settle.aubel
+        where detail.ORDER_NO = settle.aubel
         and detail.ORDER_ITEM = settle.aupos
         and detail.company_id =settle.company_id
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
@@ -790,7 +811,7 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        and t.name is not null group by  t.name ) )
+        and t.cxname is not null group by  t.name ) )
 
 
         union all
@@ -956,6 +977,7 @@
         group by t.name  ))
 
         )
+
         <if test="pz != '' and  pz!= null and  pz != 'undefined'">
             where name = #{pz}
         </if>
@@ -1091,6 +1113,7 @@
         where
         settle.fkdat &gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
         and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+
         AND xsztdzb.sale_body_des  &lt; &gt;'唐钢中厚板公司'  and
         xsztdzb.sale_body_des  &lt; &gt;'唐钢不锈钢公司' and
         xsztdzb.sale_body_des &lt; &gt; '出口'  and
@@ -1103,6 +1126,8 @@
         where cfd.data_type in ('5','10')
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
+        and  name &lt; &gt; '唐钢1580热轧线'
+        and  name &lt; &gt; '唐钢中厚板'
         and t.saler_name not in
         (select cfd.data_name
         from crm_filter_data cfd
@@ -1196,17 +1221,16 @@
         AND DATA.company_id = detail.company_id
         AND (DATA.TYPE = 6 )
 
-        where  detail.DELIV_NUMB = settle.vgbel
-        and detail.ORDER_NO = settle.aubel
+        where detail.ORDER_NO = settle.aubel
         and detail.ORDER_ITEM = settle.aupos
         and detail.company_id =settle.company_id
         and ( detail.delivery_delete  &lt; &gt; 'X' or
         detail.delivery_delete is null)) name,
         (select max(detail.ext)
         from scm_delivery_detail detail
-        where settle.company_id = detail.company_id
-        and settle.vgbel = detail.deliv_numb
-        and settle.vgpos = detail.deliv_item
+        where detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
@@ -1424,7 +1448,7 @@
         FROM crm_filter_data cfd
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
-        AND cfd.status = 0) and  t.NAME &lt; &gt; '唐钢1580热轧线'  and  t.name &lt; &gt; '唐钢中厚板'
+        AND cfd.status = 0)
         group by  t.companyname  )
         ) ) where 1=1
         order by "DECODE"(COMPANYNAME,'唐钢','1','邯钢','2','宣钢','3','承钢','4','舞钢','5','石钢','6','衡板'，'7'))
@@ -1503,6 +1527,17 @@
         where sso.order_no = settle.aubel
         and sso.ORDER_ROW = settle.AUPOS
         AND sso.company_id = settle.company_id) name,
+        (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X' or
+        detail.delivery_delete is null)) cxname,
         (select max(detail.ext)
         from scm_delivery_detail detail
         where settle.company_id = detail.company_id
@@ -1570,7 +1605,8 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        and t.name is not null group by  t.name ) a
+        and  t.CXNAME &lt; &gt; '唐钢1580热轧线'  and  t.cxname &lt; &gt; '唐钢中厚板'
+        and t.cxname is not null group by  t.name ) a
         union all
         (
         select NAME COMPANYNAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl from （SELECT
@@ -1645,6 +1681,17 @@
         where sso.order_no = settle.aubel
         and sso.ORDER_ROW = settle.AUPOS
         AND sso.company_id = settle.company_id) name,
+        (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+        where settle.company_id = detail.company_id
+        and detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and ( detail.delivery_delete  &lt; &gt; 'X' or
+        detail.delivery_delete is null)) cxname,
         (select max(detail.ext)
         from scm_delivery_detail detail
         where  detail.DELIV_NUMB = settle.vgbel
@@ -1713,7 +1760,7 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        and t.name is not null group by  t.name ) )
+        and t.cxname is not null group by  t.name ) )
 
 
         union all
@@ -4547,18 +4594,17 @@ from (select
         AND DATA.company_id = detail.company_id
         AND (DATA.TYPE = 6 )
 
-        where  detail.DELIV_NUMB = settle.vgbel
-        and detail.ORDER_NO = settle.aubel
+        where  detail.ORDER_NO = settle.aubel
         and detail.ORDER_ITEM = settle.aupos
         and detail.company_id =settle.company_id
         and ( detail.delivery_delete  &lt;&gt; 'X' or
         detail.delivery_delete is null)) name,
         (select max(detail.ext)
         from scm_delivery_detail detail
-        where settle.company_id = detail.company_id
-        and settle.vgbel = detail.deliv_numb
-        and settle.vgpos = detail.deliv_item
-        and ( detail.delivery_delete  &lt;&gt; 'X'  or
+        where detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
+        and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
         left join scm_sale_order sso
