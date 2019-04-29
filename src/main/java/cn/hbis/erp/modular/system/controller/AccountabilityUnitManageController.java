@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -42,7 +41,7 @@ public class AccountabilityUnitManageController extends BaseController {
                     @ApiImplicitParam(name = "companyname" ,value = "责任公司名称",dataType ="String" ),
                     @ApiImplicitParam(name = "id" ,value = "责任公司Id",dataType ="String" )
             })
-            public ResponseData addORUpdate(String companyname, String id){
+            public ResponseData addORUpdate(String companyname,String id){
                 boolean flag = accManageService.AddORUpdate(id,companyname);
                 return SUCCESS_TIP;
             }

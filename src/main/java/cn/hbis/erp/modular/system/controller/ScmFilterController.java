@@ -119,7 +119,9 @@ public class ScmFilterController extends BaseController {
     })
     @PostMapping("filterDetail")
     public Object filterDetail(String filterId) {
-
+        if (ToolUtil.isEmpty(filterId)) {
+            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        }
         return this.scmFilterService.getById(filterId);
     }
 
@@ -131,7 +133,7 @@ public class ScmFilterController extends BaseController {
             @ApiImplicitParam(name = "limit", value = "每页多少条数据", dataType = "String"),
             @ApiImplicitParam(name = "page", value = "第几页", dataType = "String"),
             @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
-            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String")
     })
     @PostMapping("selFilterDzl")
     public Object selFilterDzl(String companyId,String tableName,String fName,String limit,String page,String startTime,String endTime) {

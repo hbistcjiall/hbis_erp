@@ -1,10 +1,13 @@
 package cn.hbis.erp.modular.system.service;
 
 
+import cn.hbis.erp.core.common.exception.BizExceptionEnum;
 import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.modular.system.entity.AccountabilityUnitManage;
 import cn.hbis.erp.modular.system.mapper.AccountabilityUnitManageMapper;
 import cn.hbis.erp.modular.system.mapper.TargetQuantityManagementMapper;
+import cn.stylefeng.roses.core.util.ToolUtil;
+import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.scheduling.annotation.Async;
@@ -53,19 +56,20 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
         @Transactional(rollbackFor = Exception.class)
         public boolean AddORUpdate(String id,String name){
             boolean flag = false;
-            List<Map> list = taManagementMapper.selectscaaccnuitList();
-            for(int i=0;i<list.size();i++){
-                String names = list.get(i).get("NAME").toString();
-                if(name.equals(names)) {
-                    return false;
+            if (ToolUtil.isNotEmpty(name)){
+                List<Map> list = taManagementMapper.selectscaaccnuitList();
+                for(int i=0;i<list.size();i++){
+                    String names = list.get(i).get("NAME").toString();
+                    if(name.equals(names)) {
+                        throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+                    }
                 }
             }
             if(id != null && !id.equals("")){
-                AccountabilityUnitManage accounManage = accounUnitManageMapper.selectById(id);
-                if(!name.equals("")&&name==null){
-                    accounManage.setAccountabilityunitname(name);
-                }
 
+                AccountabilityUnitManage accounManage = accounUnitManageMapper.selectById(id);
+
+                accounManage.setAccountabilityunitname(name);
                 int sun = accounUnitManageMapper.updateById(accounManage);
                 if(sun  ==1){
                     flag= true;
