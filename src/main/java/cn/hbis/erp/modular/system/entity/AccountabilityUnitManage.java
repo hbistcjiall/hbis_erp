@@ -25,7 +25,7 @@ public class AccountabilityUnitManage implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "ACCOUNTABILITY_UNIT_ID", type = IdType.ID_WORKER_STR)
+    @TableId(value = "ACCOUNTABILITY_UNIT_ID", type = IdType.UUID)
     private String accountabilityunitid;
     /**
      * 编码

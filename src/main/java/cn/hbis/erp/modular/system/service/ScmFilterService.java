@@ -59,7 +59,7 @@ public class ScmFilterService extends ServiceImpl<ScmFilterMapper, ScmFilter>{
     }
 
     public void addFilter(ScmFilter scmFilter){
-        if (ToolUtil.isOneEmpty(scmFilter.getCode(),scmFilter.getFColumn(),scmFilter.getTableName(),scmFilter.getFName(),scmFilter.getCValue())){
+        if (ToolUtil.isOneEmpty(scmFilter.getCode(),scmFilter.getFColumn(),scmFilter.getTableName())){
             throw new RequestEmptyException();
         }
         ShiroUser user = ShiroKit.getUserNotNull();
