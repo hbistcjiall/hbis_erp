@@ -79,9 +79,10 @@ public class AppController {
             @ApiImplicitParam(name = "companyId", value = "公司ID", dataType = "String"),
             @ApiImplicitParam(name = "attribute1", value = "材质", dataType = "String"),
             @ApiImplicitParam(name = "attribute2", value = "规格", dataType = "String"),
+            @ApiImplicitParam(name = "serviceArea", value = "区域", dataType = "String"),
     })
     @Async
-    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String companyId,String attribute1,String attribute2) throws IOException {
+    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String companyId,String serviceArea,String attribute1,String attribute2) throws IOException {
 
         URL url = new URL(POST_URL);
 
@@ -151,6 +152,22 @@ public class AppController {
             }
             if(companyId != null && companyId != ""){
                 parm = parm + "&" + "companyId=" + companyId;
+            }
+        }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/priceSellPrice/saleModeDetailPhone.htm")){
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+            if(companyId != null && companyId != ""){
+                parm = parm + "&" + "companyId=" + companyId;
+            }
+            if(attribute1 != null && attribute1 != ""){
+                parm = parm + "&" + "attribute1=" + attribute1;
+            }
+            if(serviceArea != null && serviceArea != ""){
+                parm = parm + "&" + "serviceArea=" + serviceArea;
+            }
+            if(attribute2 != null && attribute2 != ""){
+                parm = parm + "&" + "attribute2=" + attribute2;
             }
         }
         // 将参数输出到连接
