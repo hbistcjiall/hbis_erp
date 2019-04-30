@@ -272,4 +272,10 @@
         order by decode(sel,'全部',1)
     </select>
 
+    <select id="selValue" resultType="map">
+        select distinct regexp_substr(c_value, '[^,]+', 1, level) COLUMNVALUE
+        from scm_filter
+        where id = #{id}
+        connect by level <![CDATA[ <= ]]> length(c_value) - length(replace(c_value, ',', '')) + 1
+    </select>
 </mapper>

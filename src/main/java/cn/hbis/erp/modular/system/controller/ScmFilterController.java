@@ -175,5 +175,17 @@ public class ScmFilterController extends BaseController {
     public Object selCondition(String col,String sel,String tableName) {
         return this.scmFilterService.selCondition(col,sel,tableName);
     }
+
+    @ApiOperation(value = "过滤值")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "filterId", value = "过滤ID", dataType = "String")
+    })
+    @PostMapping("selValue")
+    public Object selValue(String filterId) {
+        if (ToolUtil.isEmpty(filterId)) {
+            throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
+        }
+        return this.scmFilterService.selValue(filterId);
+    }
 }
 

@@ -107,4 +107,8 @@ public class ScmFilterService extends ServiceImpl<ScmFilterMapper, ScmFilter>{
 
     public List selCondition(String col,String sel,String tableName){
         return scmFilterMapper.selCondition(col,sel,tableName);}
+
+    public List selValue(String id){
+        return scmFilterMapper.selValue(id);
+    }
 }

@@ -40,4 +40,6 @@ public interface ScmFilterMapper extends BaseMapper<ScmFilter> {
     List selFilterColumn(@Param("tableName") String tableName);
 
     List selCondition(@Param("col") String col,@Param("sel") String sel,@Param("tableName") String tableName);
+
+    List selValue(@Param("id") String id);
 }
