@@ -5241,8 +5241,7 @@ from (select
         ON DATA.full_name = detail.ext
         AND DATA.company_id = detail.company_id
         AND (DATA.TYPE = 6 )
-        where detail.DELIV_NUMB = settle.vgbel
-        and detail.ORDER_NO = settle.aubel
+        where  detail.ORDER_NO = settle.aubel
         and detail.ORDER_ITEM = settle.aupos
         and detail.company_id =settle.company_id
         and ( detail.delivery_delete  &lt;&gt; 'X' or
