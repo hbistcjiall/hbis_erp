@@ -17,8 +17,8 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
     private ReportProductClassLevelMapper reportProductClassLevelMapper;
 
     @Async
-    public List<Map> getcxfb(String startTime,String endTime){
-        return reportProductClassLevelMapper.getcxfb(startTime,endTime);
+    public List<Map> getcxfb(List<String> cx, String startTime,String endTime){
+        return reportProductClassLevelMapper.getcxfb(cx,startTime,endTime);
     }
 
 }
