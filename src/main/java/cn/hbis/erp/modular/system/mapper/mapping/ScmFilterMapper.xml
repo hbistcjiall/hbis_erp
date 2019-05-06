@@ -45,7 +45,6 @@
         </if>
         and ${columnName} is not null
         and dj_date between to_char(ADD_MONTHS (sysdate, -12),'YYYY-MM-DD') and to_char(ADD_MONTHS(sysdate,0),'YYYY-MM-DD')
-        and rownum <![CDATA[ <= ]]> 500
     </select>
 
     <select id="getColumnValueDetail" resultType="map">
@@ -57,7 +56,6 @@
         </if>
         and ${columnName} is not null
         and DELIVERY_DATE between ADD_MONTHS (sysdate, -12) and ADD_MONTHS (sysdate, 0)
-        and rownum <![CDATA[ <= ]]> 500
     </select>
 
     <select id="getColumnValueSteel" resultType="map">
@@ -69,7 +67,6 @@
         </if>
         and ${columnName} is not null
         and FKDAT between ADD_MONTHS (sysdate, -12) and ADD_MONTHS (sysdate, 0)
-        and rownum <![CDATA[ <= ]]> 500
     </select>
 
     <select id="getMaxCode" resultType="String">
