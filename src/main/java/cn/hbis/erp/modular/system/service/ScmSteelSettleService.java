@@ -3,6 +3,7 @@ package cn.hbis.erp.modular.system.service;
 import cn.hbis.erp.modular.system.entity.ScmSteelSettle;
 import cn.hbis.erp.modular.system.mapper.ScmSteelSettleMapper;
 import cn.hbis.erp.modular.system.warpper.ScmSteelSettleWrapper;
+import cn.stylefeng.roses.core.util.ToolUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -120,8 +121,10 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
         startTime = startTime.replaceAll("[[\\s-:punct:]]","").substring(0,6);
         month = startTime.substring(4,6);
         year = startTime.substring(0,4);
-        if(companyId.equals("全部")){
-            companyId = "";
+        if (ToolUtil.isNotEmpty(companyId)){
+            if(companyId.equals("全部")){
+                companyId = "";
+            }
         }
         return scmSteelSettleMapper.getcxhtjd(startTime,endTime,year,cxName,companyId,month);
     }
