@@ -117,19 +117,22 @@ public class AppController {
 
         String parm = "";
         //根据地址不同，拼接查询条件字符串  //URLEncoder.encode()方法  为字符串进行编码
-        if(POST_URL.equals("http://18.0.128.1:8080/priceweb/sellPrice/screwThreadDiagram.htm")){
+        if(POST_URL.equals("http://18.0.125.35:80/priceweb/sellPrice/screwThreadDiagram.htm")){
             if(fkdat != null && fkdat != ""){
                 parm = "fkdat=" + fkdat;
             }
             if(companyId != null && companyId != ""){
                 parm = parm + "&" + "companyId=" + companyId;
             }
-        }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/priceSellPrice/oneSpacesPhone.htm")){
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/oneSpacesPhone.htm")){
             if(fkdat != null && fkdat != ""){
                 parm = "fkdat=" + fkdat;
             }
             if(companyId != null && companyId != ""){
                 parm = parm + "&" + "companyId=" + companyId;
+            }
+            if(serviceArea != null && serviceArea != ""){
+                parm = parm + "&" + "serviceArea=" + URLEncoder.encode(serviceArea,"UTF-8");
             }
             if(attribute1 != null && attribute1 != ""){
                 parm = parm + "&" + "attribute1=" + attribute1;
@@ -137,7 +140,7 @@ public class AppController {
             if(attribute2 != null && attribute2 != ""){
                 parm = parm + "&" + "attribute2=" + attribute2;
             }
-        }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/priceSellPrice/getVarietySubjectBody.htm")){
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/getVarietySubjectBody.htm")){
             if(fkdat != null && fkdat != ""){
                 parm = "fkdat=" + fkdat;
             }
@@ -150,14 +153,14 @@ public class AppController {
             if(attribute1 != null && attribute1 != "") {
                 parm = parm + "&" + "attribute1=" + attribute1;
             }
-        }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/priceSellPrice/phoneSecondQueryList1.htm")){
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/phoneSecondQueryList1.htm")){
             if(fkdat != null && fkdat != ""){
                 parm = "fkdat=" + fkdat;
             }
             if(companyId != null && companyId != ""){
                 parm = parm + "&" + "companyId=" + companyId;
             }
-        }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/priceSellPrice/saleModeDetailPhone.htm")){
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/saleModeDetailPhone.htm")){
             if(fkdat != null && fkdat != ""){
                 parm = "fkdat=" + fkdat;
             }
