@@ -9,6 +9,6 @@ import java.util.Map;
 
 public interface ReportProductClassLevelMapper extends BaseMapper<ReportProductClassLevel> {
 
-    List<Map> getcxfb(@Param("cx")List cx,@Param("startTime")String startTime,@Param("endTime")String endTime);
-
+    List<Map> getcxfb(@Param("cx")List cx,@Param("startTime")String startTime,@Param("endTime")String endTime,@Param("zl")String zl);
+    List<Map> getcxzl(@Param("cx")List cx,@Param("startTime")String startTime,@Param("endTime")String endTime,@Param("zl")String zl);
 }
