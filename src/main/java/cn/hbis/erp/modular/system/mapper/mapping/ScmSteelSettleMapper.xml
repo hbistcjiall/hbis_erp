@@ -4046,7 +4046,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
 
     <select id="getyxybpz" resultType="map">
 
-        select nvl(name,'合计') COMPANYNAME,"SUM"(kzwi6)/10000 kzwi6,sum(FKIMG) FKIMG,sum(kzwi6)/sum(FKIMG) sj from
+        select nvl(name,'合计') COMPANYNAME, "SUM"(kzwi6)/10000 kzwi6,sum(FKIMG) FKIMG,decode(sum(FKIMG),0,0,sum(kzwi6)/sum(FKIMG)) sj from
         (select NAME,kzwi6, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)+ NVL(ckfkimg,0)) FKIMG,zyfkimg,fgsfkimg,zgsfkimg,ckfkimg
         from (SELECT
         NAME,"SUM"(kzwi6) kzwi6,
@@ -4165,6 +4165,11 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        <if test="jd != '' and jd != 0 and jd!= null and jd != 'undefined'">
+
+            and t.order_type_describe like '%借%' or t.order_type_describe like '%贷%'
+
+        </if>
         and t.name is not null group by  t.name ) a
 
 
@@ -4287,6 +4292,11 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        <if test="jd != '' and jd != 0  and jd!= null and jd != 'undefined'">
+
+            and t.order_type_describe like '%借%' or t.order_type_describe like '%贷%'
+
+        </if>
         and t.name is not null group by  t.name )
         )
 
@@ -4414,6 +4424,11 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        <if test="jd != '' and jd != 0  and jd!= null and jd != 'undefined'">
+
+            and t.order_type_describe like '%借%' or t.order_type_describe like '%贷%'
+
+        </if>
         group by t.name  ))
 
         )
@@ -4427,7 +4442,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
 
     <select id="getyxybgc" resultType="map">
 
-select COMPANYNAME,kzwi6/10000 kzwi6 ,FKIMG,CASE WHEN FKIMG=0 THEN 0 ELSE  kzwi6/FKIMG END  sj
+select COMPANYNAME,kzwi6/10000 kzwi6 ,FKIMG,CASE WHEN FKIMG=0 THEN 0 ELSE decode(FKIMG,0,0,kzwi6/FKIMG)  END  sj
 from (select
         COMPANYNAME, kzwi6 ,(NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)+ NVL(ckfkimg,0)) FKIMG, ZYFKIMG,  FGSFKIMG,   ZGSFKIMG
         from (SELECT
@@ -4548,6 +4563,11 @@ from (select
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        <if test="jd != '' and jd != 0 and jd!= null and jd != 'undefined'">
+
+            and t.order_type_describe like '%借%' or t.order_type_describe like '%贷%'
+
+        </if>
          group by  t.companyname) a
 
         union all (
@@ -4670,6 +4690,11 @@ from (select
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        <if test="jd != '' and  jd!= 0 and jd!= null and jd != 'undefined'">
+
+            and t.order_type_describe like '%借%' or t.order_type_describe like '%贷%'
+
+        </if>
          group by  t.companyname) a
         )
 
@@ -4800,7 +4825,13 @@ from (select
         FROM crm_filter_data cfd
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
-        AND cfd.status = 0) and  t.NAME &lt;&gt; '唐钢1580热轧线'  and  t.name &lt;&gt; '唐钢中厚板'
+        AND cfd.status = 0)
+        <if test="jd != '' and jd != 0  and jd!= null and jd != 'undefined'">
+
+            and t.order_type_describe like '%借%' or t.order_type_describe like '%贷%'
+
+        </if>
+        and  t.NAME &lt;&gt; '唐钢1580热轧线'  and  t.name &lt;&gt; '唐钢中厚板'
         group by  t.companyname  )
         )
 
@@ -4992,6 +5023,11 @@ from (select
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        <if test="jd != '' and  jd!= '全部' and jd != 0  and jd!= null and jd != 'undefined'">
+
+            and t.order_type_describe like '%借%' or t.order_type_describe like '%贷%'
+
+        </if>
         group by  vc.VARIETY_CLASS,cxname,companyname )
         order by decode(zl,'河钢集团',1,'热板',2,'酸洗',3,'冷板',4,'镀锌',5,'中厚板',6,'螺纹钢',7,'圆钢',8,'线材',9,'型材',10,'薄板',11,'新材',12,'涂镀',13,'冷轧',14)
 
@@ -5167,6 +5203,11 @@ from (select
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        <if test="jd != '' and jd!= '全部' and jd !=0  and jd!= null and jd != 'undefined'">
+
+            and t.order_type_describe like '%借%' or t.order_type_describe like '%贷%'
+
+        </if>
         group by zl,cxname,companyname  ))
 
 
@@ -5186,7 +5227,7 @@ from (select
         ckfkimg ,ckkzwi6,decode(ckfkimg,0,0,ckkzwi6/ckfkimg) as cksj
         from
         (
-        SELECT  nvl(zl,'螺纹') zl,case when cxname IS null then companyname||'其他' else cxname end cxname,
+        SELECT  nvl(zl,'螺纹钢') zl,case when cxname IS null then companyname||'其他' else cxname end cxname,
         ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)+"NVL"(ckfkimg, 0)) fkimg,
         kzwi6,
         ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)) nmfkimg,
@@ -5321,6 +5362,11 @@ from (select
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        <if test="jd != '' and jd!= '全部' and jd !=0  and jd!= null and jd != 'undefined'">
+
+            and t.order_type_describe like '%借%' or t.order_type_describe like '%贷%'
+
+        </if>
         group by vc.VARIETY_CLASS,cxname,companyname)
         )
         )   where 1 = 1

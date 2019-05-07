@@ -79,10 +79,11 @@ public class AppController {
             @ApiImplicitParam(name = "companyId", value = "公司ID", dataType = "String"),
             @ApiImplicitParam(name = "attribute1", value = "材质", dataType = "String"),
             @ApiImplicitParam(name = "attribute2", value = "规格", dataType = "String"),
-            @ApiImplicitParam(name = "serviceArea", value = "区域", dataType = "String"),
+            @ApiImplicitParam(name = "serviceArea", value = "区域1", dataType = "String"),
+            @ApiImplicitParam(name = "placementArea", value = "区域2", dataType = "String"),
     })
     @Async
-    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String companyId,String serviceArea,String attribute1,String attribute2) throws IOException {
+    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String placementArea,String companyId,String serviceArea,String attribute1,String attribute2) throws IOException {
 
         URL url = new URL(POST_URL);
 
@@ -142,6 +143,9 @@ public class AppController {
             }
             if(companyId != null && companyId != ""){
                 parm = parm + "&" + "companyId=" + companyId;
+            }
+            if(placementArea != null && placementArea != ""){
+                parm = parm + "&" + "placementArea=" + URLEncoder.encode(placementArea,"UTF-8");
             }
             if(attribute1 != null && attribute1 != "") {
                 parm = parm + "&" + "attribute1=" + attribute1;

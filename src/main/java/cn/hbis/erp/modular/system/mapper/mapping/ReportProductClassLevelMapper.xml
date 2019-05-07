@@ -38,7 +38,526 @@
 
         (
         select  zl , case when cxname IS null then companyname||'其他' else cxname end cxname,nvl(product_grade,'其他') product_grade,
-        ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)+"NVL"(ckfkimg, 0)) fkimg,
+        ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)) fkimg,
+        kzwi6,
+
+        ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)) nmfkimg,
+        ("NVL"(zykzwi6, 0)+"NVL"(fgskzwi6, 0)+"NVL"(xhkzwi6, 0)+"NVL"(sybkzwi6, 0)+"NVL"(zbgskzwi6, 0) )   nmkzwi6,
+        zyfkimg,zykzwi6,
+        fgsfkimg,fgskzwi6,
+        xhfkimg,xhkzwi6,
+        sybfkimg,sybkzwi6,
+        zbgsfkimg,zbgskzwi6,
+        ckfkimg,ckkzwi6
+        from (SELECT
+        vc.VARIETY_CLASS zl,companyname,cxname,product_grade,"SUM"(kzwi6) kzwi6,
+        sum(case when  sale_body = '专业公司'  then fkimg end)
+        zyfkimg,
+        sum(case when  sale_body = '专业公司'  then kzwi6 end)
+        zykzwi6,
+        sum(case when  sale_body = '分公司' then fkimg end)
+        fgsfkimg,
+        sum(case when  sale_body = '分公司' then kzwi6 end)
+        fgskzwi6,
+        sum(case when  sale_body  = '现货' then fkimg end)
+        xhfkimg,
+        sum(case when   sale_body  = '现货' then kzwi6 end)
+        xhkzwi6,
+        sum(case when  (sale_body ='事业部' or sale_body='子公司' )   then fkimg end)
+        sybfkimg,
+        sum(case when  (sale_body ='事业部'or sale_body='子公司' )   then kzwi6 end)
+        sybkzwi6,
+        sum(case when  sale_body  = '自办公司' then fkimg end)
+        zbgsfkimg,
+        sum(case when  sale_body  = '自办公司'  then kzwi6 end)
+        zbgskzwi6,
+        sum(case when  sale_body ='出口'  then fkimg end)
+        ckfkimg,
+        sum(case when  sale_body ='出口'  then kzwi6 end)
+        ckkzwi6
+
+        from (SELECT
+        distinct decode(settle.company_id,
+        9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') AS companyname,
+        settle.company_id,
+        xsztdzb.sale_body,
+        rpcl.product_grade,
+        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
+        settle.id,
+        settle.fkdat,
+        settle.kzwi6,
+        sso.order_mount,
+        sso.order_type_describe,
+        sso.saler_name,
+        sso.sale_group,
+        sso.sale_body ss,
+        (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+
+        where  settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt;&gt; 'X' or
+        detail.delivery_delete is null)) cxname,
+
+        (select max(detail.ext)
+        from scm_delivery_detail detail
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  != 'X'  or
+        detail.delivery_delete is null))product_line
+        FROM scm_steel_settle settle
+        left join scm_sale_order sso
+        on settle.company_id = sso.company_id
+        and settle.aubel = sso.order_no
+        and settle.aupos = sso.order_row
+        left join (select a.* from price_salebody_relation a where a.is_delete = 0 )xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_body = xsztdzb.sale_body_des
+        inner join scm_variety_to_pt_gp svtp
+        on sso.company_id = svtp.company_id
+        and sso.product_code = svtp.product_group
+
+        left join (SELECT a.company_id,
+        a.product_class,
+        a.product_line_class,
+        a.product_class_crude,
+        a.product_class_fine,
+        a.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL a
+        where a.status = '0'
+        union all
+        SELECT b.company_id,
+        b.second_code,
+        b.product_line_class,
+        b.product_class_crude,
+        b.product_class_fine,
+        b.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL b
+        where b.status = '0') rpcl
+        on sso.company_id = rpcl.company_id
+        and sso.product_type = rpcl.product_class
+
+        where
+        settle.fkdat&gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+
+        and  settle.company_id in ('9580','9727','9193')
+
+        order by settle.id desc) t
+        LEFT JOIN SCM_VARIETY_CLASS vc
+        on  t.cxname =  vc.name
+        where t.order_type_describe not in
+        (select distinct cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type in ('5','10')
+        and cfd.status = '0'
+        and cfd.company_id = t.company_id)
+        and t.saler_name not in
+        (select cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '1'
+        and cfd.status = '0'
+        and cfd.company_id = t.company_id
+        and instr(concat(t.product_line, t.company_id),
+        concat(cfd.product_line, cfd.company_id)) &gt; 0)
+        AND t.sale_group NOT IN (SELECT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = t.company_id
+        AND cfd.data_type = 9
+        AND cfd.status = 0)
+        group by  vc.VARIETY_CLASS,cxname,companyname,product_grade )
+        order by decode(zl,'河钢集团',1,'热板',2,'酸洗',3,'冷板',4,'镀锌',5,'中厚板',6,'螺纹钢',7,'圆钢',8,'线材',9,'型材',10,'薄板',11,'新材',12,'涂镀',13,'冷轧',14)
+
+        )  a
+
+
+
+        UNION
+        select
+        zl,cxname ,product_grade,fkimg,kzwi6/10000 kzwi6,decode(fkimg,0,0,kzwi6/fkimg) zsj,
+        nmfkimg ,nmkzwi6,decode(nmfkimg,0,0,nmkzwi6/nmfkimg) nmsj,
+        nvl(zyfkimg,0)+nvl(fgsfkimg,0) xszgsfkimg,nvl(zykzwi6,0)+ nvl(fgskzwi6,0) xszgskzwi6,
+        zyfkimg ,zykzwi6,decode(zyfkimg,0,0,zykzwi6/zyfkimg) as zygssj,
+        fgsfkimg ,fgskzwi6,decode(fgsfkimg,0,0,fgskzwi6/fgsfkimg) as fgssj,
+        nvl(xhfkimg,0)+ nvl(sybfkimg,0) zgsfkimg,
+        nvl(xhkzwi6,0)+ nvl(sybkzwi6,0) zgskzwi6,
+        xhfkimg ,xhkzwi6,decode(xhfkimg,0,0,xhkzwi6/xhfkimg) as xhsj,
+        sybfkimg ,sybkzwi6,decode(sybfkimg,0,0,sybkzwi6/sybfkimg) as sybsj,
+        zbgsfkimg ,zbgskzwi6,decode(zbgsfkimg,0,0,zbgskzwi6/zbgsfkimg) as zbgssj,
+        ckfkimg ,ckkzwi6,decode(ckfkimg,0,0,ckkzwi6/ckfkimg) as cksj
+        from
+        (select  zl,case when cxname IS null then companyname||'其他' else cxname end cxname,nvl(product_grade,'其他') product_grade,
+        (nvl(zyfkimg,0)+nvl(fgsfkimg,0)+ nvl(xhfkimg,0)+ NVL(sybfkimg,0)+ NVL(zbgsfkimg,0)) fkimg,
+        kzwi6,
+        ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)) nmfkimg,
+        ("NVL"(zykzwi6, 0)+"NVL"(fgskzwi6, 0)+"NVL"(xhkzwi6, 0)+"NVL"(sybkzwi6, 0)+"NVL"(zbgskzwi6, 0) )   nmkzwi6,
+        zyfkimg,zykzwi6,
+        fgsfkimg,fgskzwi6,
+        xhkzwi6,xhfkimg,
+        sybfkimg,sybkzwi6,
+        zbgsfkimg,zbgskzwi6,
+        ckfkimg,ckkzwi6
+        from(
+        select   zl,companyname, cxname,t.product_grade,"SUM"(kzwi6) kzwi6,
+        sum(case when company_id='8110' then
+        case when sggl = '分公司' or sggl = '出口'  then fkimg end else
+        case when company_id = '1932'  then
+        case when sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end end end)
+        zyfkimg,
+        sum(case when company_id='8110' then
+        case when sggl = '分公司' or sggl = '出口' then kzwi6 end else
+        case when company_id = '1932'  then
+        case when sale_group = '销售部' then case when kzwi6 is null then '0' else kzwi6 end end end end)
+        zykzwi6,
+        0
+        fgsfkimg,
+        0
+        fgskzwi6,
+        sum(case when company_id = '1932'  then
+        case when (sale_group = '科技部')  then fkimg end
+        when company_id ='8493'  then
+        case when (sale_group = '营销中心' or sale_group ='1000' )  then fkimg end end)
+        sybfkimg,
+        sum(case when company_id = '1932'  then
+        case when (sale_group = '科技部')  then kzwi6 end
+        when company_id ='8493'  then
+        case when (sale_group = '营销中心' or sale_group ='1000' )  then kzwi6 end end)
+        sybkzwi6,
+        sum(case when (company_id = '1932' and sale_group = '现货')  then fkimg end)
+        xhfkimg,
+        sum(case when (company_id = '1932' and sale_group = '现货')  then kzwi6 end)
+        xhkzwi6,
+
+        sum(case when (company_id = '1932' and sale_group = '自办公司')  then fkimg end)
+        zbgsfkimg,
+        sum(case when (company_id = '1932' and sale_group = '自办公司')  then kzwi6 end)
+        zbgskzwi6,
+
+        sum(case when (company_id = '1932' and sale_group = '舞钢国贸')  or sggl = '出口'  then fkimg end)
+        ckfkimg,
+        sum(case when (company_id = '1932' and sale_group = '舞钢国贸') or sggl = '出口'   then kzwi6 end)
+        ckkzwi6
+
+        from (SELECT
+        distinct decode(settle.company_id,
+        9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') AS companyname,
+        settle.company_id,
+        xsztdzb.sale_body,
+        sso.sale_body sggl,
+        rpcl.product_grade,
+        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
+        settle.id,
+        settle.fkdat,
+        settle.kzwi6,
+        sso.order_mount,
+        sso.order_type_describe,
+        sso.saler_name,
+        sso.sale_group,
+        case when  settle.company_id ='1932' then '中厚板' when  settle.company_id ='8110' then '圆钢' when settle.company_id ='8493'then '薄板'  end  zl,
+
+        (select case when  B.company_id ='1932' then '舞钢中厚板' when  B.company_id ='8110' then '石钢圆钢' when B.company_id ='8493'then '衡板薄板' else b.variety end VARIETY
+        from scm_sale_order sso
+        JOIN scm_variety_to_pt_gp B
+        ON sso.product_code = B.product_group
+        and sso.company_id = B.company_id
+        where sso.order_no = settle.aubel
+        and sso.ORDER_ROW = settle.AUPOS
+        AND sso.company_id = settle.company_id) cxname,
+        (select max(detail.ext)
+        from scm_delivery_detail detail
+
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  != 'X'  or
+        detail.delivery_delete is null))product_line
+        FROM scm_steel_settle settle
+        left join scm_sale_order sso
+        on settle.company_id = sso.company_id
+        and settle.aubel = sso.order_no
+        and settle.aupos = sso.order_row
+        left join (select a.* from price_salebody_relation a where a.is_delete = 0 ) xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_body = xsztdzb.sale_body_des
+        inner join scm_variety_to_pt_gp svtp
+        on sso.company_id = svtp.company_id
+        and sso.product_code = svtp.product_group
+
+        left join (SELECT a.company_id,
+        a.product_class,
+        a.product_line_class,
+        a.product_class_crude,
+        a.product_class_fine,
+        a.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL a
+        where a.status = '0'
+        union all
+        SELECT b.company_id,
+        b.second_code,
+        b.product_line_class,
+        b.product_class_crude,
+        b.product_class_fine,
+        b.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL b
+        where b.status = '0') rpcl
+        on sso.company_id = rpcl.company_id
+        and sso.product_type = rpcl.product_class
+        where
+        settle.fkdat&gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat &lt;=  to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+        and  settle.company_id in ('8110','8493','1932')
+
+        order by settle.id desc) t
+        where t.order_type_describe not in
+        (select distinct cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type in ('5','10')
+        and cfd.status = '0'
+        and cfd.company_id = t.company_id)
+        and t.saler_name not in
+        (select cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '1'
+        and cfd.status = '0'
+        and cfd.company_id = t.company_id
+        and instr(concat(t.product_line, t.company_id),
+        concat(cfd.product_line, cfd.company_id)) &gt; 0)
+        AND t.sale_group NOT IN (SELECT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = t.company_id
+        AND cfd.data_type = 9
+        AND cfd.status = 0)
+        group by zl,cxname,companyname,product_grade  ))
+
+
+
+        UNION
+        select
+        zl,cxname,product_grade,fkimg,kzwi6/10000 kzwi6,decode(fkimg,0,0,kzwi6/fkimg) zsj,
+        nmfkimg ,nmkzwi6,decode(nmfkimg,0,0,nmkzwi6/nmfkimg) nmsj,
+        nvl(zyfkimg,0)+nvl(fgsfkimg,0) xszgsfkimg,nvl(zykzwi6,0)+ nvl(fgskzwi6,0) xszgskzwi6,
+        zyfkimg ,zykzwi6,decode(zyfkimg,0,0,zykzwi6/zyfkimg) as zygssj,
+        fgsfkimg ,fgskzwi6,decode(fgsfkimg,0,0,fgskzwi6/fgsfkimg) as fgssj,
+        nvl(xhfkimg,0)+ nvl(sybfkimg,0) zgsfkimg,
+        nvl(xhkzwi6,0)+ nvl(sybkzwi6,0) zgskzwi6,
+        xhfkimg ,xhkzwi6,decode(xhfkimg,0,0,xhkzwi6/xhfkimg) as xhsj,
+        sybfkimg ,sybkzwi6,decode(sybfkimg,0,0,sybkzwi6/sybfkimg) as sybsj,
+        zbgsfkimg ,zbgskzwi6,decode(zbgsfkimg,0,0,zbgskzwi6/zbgsfkimg) as zbgssj,
+        ckfkimg ,ckkzwi6,decode(ckfkimg,0,0,ckkzwi6/ckfkimg) as cksj
+        from
+        (
+        SELECT  nvl(zl,'螺纹钢') zl,case when cxname IS null then companyname||'其他' else cxname end cxname,nvl(product_grade,'其他') product_grade,
+        ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)) fkimg,
+        kzwi6,
+        ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)) nmfkimg,
+        ("NVL"(zykzwi6, 0)+"NVL"(fgskzwi6, 0)+"NVL"(xhkzwi6, 0)+"NVL"(sybkzwi6, 0)+"NVL"(zbgskzwi6, 0) )  nmkzwi6,
+        zyfkimg,zykzwi6,
+        fgsfkimg,fgskzwi6,
+        xhfkimg,xhkzwi6,
+        sybfkimg,sybkzwi6,
+        zbgsfkimg,zbgskzwi6,
+        ckfkimg,ckkzwi6
+        FROM (
+        SELECT
+        vc.VARIETY_CLASS zl, companyname, cxname,t.product_grade,
+        "SUM"(kzwi6) kzwi6,
+        sum(case when ( sale_body = '出口') then fkimg end)ckfkimg,
+        sum(case when ( sale_body = '出口') then kzwi6 end)ckkzwi6,
+        sum(case when (sale_body = '专业公司') then fkimg end)zyfkimg,
+        sum(case when (sale_body = '专业公司') then kzwi6 end)zykzwi6,
+        sum(case when sale_body = '分公司'  then fkimg end)fgsfkimg,
+        sum(case when sale_body = '分公司'  then kzwi6 end)fgskzwi6,
+        sum(case when sale_body  = '现货'  then fkimg end)xhfkimg,
+        sum(case when sale_body  = '现货'  then kzwi6 end)xhkzwi6,
+        sum(case when (sale_body ='自办公司' )  then fkimg end)zbgsfkimg,
+        sum(case when (sale_body ='自办公司' )  then kzwi6 end)zbgskzwi6,
+        sum(case when (sale_body ='事业部')    then fkimg end) sybfkimg,
+        sum(case when (sale_body ='事业部' )    then kzwi6 end) sybkzwi6
+        from (SELECT
+        distinct decode(settle.company_id,
+        9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') AS companyname,
+        settle.company_id,
+        xsztdzb.sale_body,
+        rpcl.product_grade,
+        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
+        settle.id,
+        settle.fkdat,
+        settle.kzwi6,
+        sso.order_mount,
+        sso.order_type_describe,
+        sso.saler_name,
+        sso.sale_group,
+        sso.sale_body ss,
+        (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+        where  detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
+        and ( detail.delivery_delete  &lt;&gt; 'X' or
+        detail.delivery_delete is null)) cxname,
+
+        (select max(detail.ext)
+        from scm_delivery_detail detail
+        where detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
+        and ( detail.delivery_delete &lt;&gt; 'X'  or
+        detail.delivery_delete is null))product_line
+        FROM scm_steel_settle settle
+        left join scm_sale_order sso
+        on settle.company_id = sso.company_id
+        and settle.aubel = sso.order_no
+        and settle.aupos = sso.order_row
+        left join (select a.* from price_salebody_relation a where a.is_delete = 0 ) xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_body = xsztdzb.sale_body_des
+        inner join scm_variety_to_pt_gp svtp
+        on sso.company_id = svtp.company_id
+        and sso.product_code = svtp.product_group
+
+        left join (SELECT a.company_id,
+        a.product_class,
+        a.product_line_class,
+        a.product_class_crude,
+        a.product_class_fine,
+        a.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL a
+        where a.status = '0'
+        union all
+        SELECT b.company_id,
+        b.second_code,
+        b.product_line_class,
+        b.product_class_crude,
+        b.product_class_fine,
+        b.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL b
+        where b.status = '0') rpcl
+        on sso.company_id = rpcl.company_id
+        and sso.product_type = rpcl.product_class
+
+        where
+        settle.fkdat&gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+
+        and  settle.company_id in ('9196')
+        order by settle.id desc) t
+        LEFT JOIN SCM_VARIETY_CLASS vc
+        on t.cxname = vc.name
+        where t.order_type_describe not in
+        (select distinct cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type in ('5','10')
+        and cfd.status = '0'
+        and cfd.company_id = t.company_id)
+        and t.saler_name not in
+        (select cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '1'
+        and cfd.status = '0'
+        and cfd.company_id = t.company_id
+        and instr(concat(t.product_line, t.company_id),
+        concat(cfd.product_line, cfd.company_id)) &gt; 0)
+        AND t.sale_group NOT IN (SELECT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = t.company_id
+        AND cfd.data_type = 9
+        AND cfd.status = 0)
+        group by vc.VARIETY_CLASS,cxname,companyname,t.product_grade)
+        )
+        )   where 1 = 1
+
+        <if test="zl != '' and  zl != null and  zl != 'undefined' and zl !='全部'">
+            and ZL = #{zl}
+        </if>
+        <if test="cx != null and  cx.size > 0">
+            and   CXNAME in
+            <foreach item="item" index="index" collection="cx" open="(" separator="," close=")">
+                　　#{item}
+            </foreach>
+        </if>
+        ORDER BY   "DECODE"(zl,'热板','1','酸洗','2','冷板','3','镀锌','4','中厚板','5','螺纹','6','圆钢','7','线材','8','型材','9','薄板'),cxname,
+        "DECODE"(product_grade,'普材','1','品种钢','2','高端产品','3','特色战略产品','4')
+
+    </select>
+
+    <select id="getcxzl" resultType="map">
+
+        SELECT distinct cxname,zl
+        from
+        (
+        select
+        CASE when cxname = '邯钢其他' THEN '热板' WHEN cxname = '宣钢其他' then '型材' ELSE zl END zl ,
+        cxname,product_grade,fkimg,kzwi6/10000 kzwi6, decode(fkimg,0,0,kzwi6/fkimg) zsj,
+        nmfkimg ,nmkzwi6,decode(nmfkimg,0,0,nmkzwi6/nmfkimg) nmsj,
+        nvl(zyfkimg,0)+nvl(fgsfkimg,0) xszgsfkimg,nvl(zykzwi6,0)+ nvl(fgskzwi6,0) xszgskzwi6,
+        zyfkimg ,zykzwi6,decode(zyfkimg,0,0,zykzwi6/zyfkimg) as zygssj,
+        fgsfkimg ,fgskzwi6,decode(fgsfkimg,0,0,fgskzwi6/fgsfkimg) as fgssj,
+        nvl(xhfkimg,0)+ nvl(sybfkimg,0) zgsfkimg,
+        nvl(xhkzwi6,0)+ nvl(sybkzwi6,0) zgskzwi6,
+        xhfkimg ,xhkzwi6,decode(xhfkimg,0,0,xhkzwi6/xhfkimg)  as xhsj,
+        sybfkimg ,sybkzwi6,decode(sybfkimg,0,0,sybkzwi6/sybfkimg) as sybsj,
+        zbgsfkimg ,zbgskzwi6,decode(zbgsfkimg,0,0,zbgskzwi6/zbgsfkimg) as zbgssj,
+        ckfkimg ,ckkzwi6,decode(ckfkimg,0,0,ckkzwi6/ckfkimg) as cksj
+        from
+
+        (
+        select  zl , case when cxname IS null then companyname||'其他' else cxname end cxname,nvl(product_grade,'其他') product_grade,
+        ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)) fkimg,
         kzwi6,
 
         ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)) nmfkimg,
@@ -382,7 +901,7 @@
         ckfkimg ,ckkzwi6,decode(ckfkimg,0,0,ckkzwi6/ckfkimg) as cksj
         from
         (
-        SELECT  nvl(zl,'螺纹') zl,case when cxname IS null then companyname||'其他' else cxname end cxname,nvl(product_grade,'其他') product_grade,
+        SELECT  nvl(zl,'螺纹钢') zl,case when cxname IS null then companyname||'其他' else cxname end cxname,nvl(product_grade,'其他') product_grade,
         ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)+"NVL"(ckfkimg, 0)) fkimg,
         kzwi6,
         ("NVL"(zyfkimg, 0)+"NVL"(fgsfkimg, 0)+"NVL"(xhfkimg, 0)+"NVL"(sybfkimg, 0)+"NVL"(zbgsfkimg, 0)) nmfkimg,
@@ -521,15 +1040,15 @@
         )
         )   where 1 = 1
 
-        <if test="cx != null and  cx.size > 0">
+        <if test="zl != '' and  zl != null and  zl != 'undefined' and zl !='全部'">
+            and ZL = #{zl}
+        </if>
+        <if test="cx != null and  cx.size > 0 ">
             and   cxname in
             <foreach item="item" index="index" collection="cx" open="(" separator="," close=")">
                 　　#{item}
             </foreach>
         </if>
-
-        ORDER BY   "DECODE"(zl,'热板','1','酸洗','2','冷板','3','镀锌','4','中厚板','5','螺纹','6','圆钢','7','线材','8','型材','9','薄板'),cxname,
-        "DECODE"(product_grade,'普材','1','品种钢','2','高端产品','3','特色战略产品','4')
 
     </select>
 
