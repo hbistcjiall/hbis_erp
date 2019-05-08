@@ -26,7 +26,7 @@
             and (CREATE_TIME between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
         </if>
         <if test="logName != null and logName !=''">
-            and LOG_NAME like CONCAT('%',#{logName},'%')
+            and LOG_NAME like CONCAT(CONCAT('%',#{logName}),'%')
         </if>
     </select>
 

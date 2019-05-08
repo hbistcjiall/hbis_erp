@@ -31,8 +31,8 @@
             and TABLE_NAME= #{tableName}
         </if>
         <if test="columnName !='' and columnName !=null">
-            and (COLUMN_NAME like #{columnName}||'%'
-            or COMMENTS like #{columnName}||'%')
+            and (COLUMN_NAME like CONCAT(CONCAT('%',#{columnName}),'%')
+            or COMMENTS like CONCAT(CONCAT('%',#{columnName}),'%'))
         </if>
     </select>
 
@@ -41,7 +41,7 @@
         from scm_sale_order
         where 1=1
         <if test="columnValue !='' and columnValue !=null">
-            and ${columnName} like CONCAT(#{columnValue},'%')
+            and ${columnName} like CONCAT(CONCAT('%',#{columnValue}),'%')
         </if>
         and ${columnName} is not null
         and dj_date between to_char(ADD_MONTHS (sysdate, -12),'YYYY-MM-DD') and to_char(ADD_MONTHS(sysdate,0),'YYYY-MM-DD')
@@ -52,7 +52,7 @@
         from SCM_DELIVERY_DETAIL
         where 1=1
         <if test="columnValue !='' and columnValue !=null">
-            and ${columnName} like CONCAT(#{columnValue},'%')
+            and ${columnName} like CONCAT(CONCAT('%',#{columnValue}),'%')
         </if>
         and ${columnName} is not null
         and DELIVERY_DATE between ADD_MONTHS (sysdate, -12) and ADD_MONTHS (sysdate, 0)
@@ -63,7 +63,7 @@
         from SCM_STEEL_SETTLE
         where 1=1
         <if test="columnValue !='' and columnValue !=null">
-            and ${columnName} like CONCAT(#{columnValue},'%')
+            and ${columnName} like CONCAT(CONCAT('%',#{columnValue}),'%')
         </if>
         and ${columnName} is not null
         and FKDAT between ADD_MONTHS (sysdate, -12) and ADD_MONTHS (sysdate, 0)
@@ -80,13 +80,13 @@
         from scm_filter
         where 1=1
         <if test="name !='' and name !=null and name != '全部'">
-            and F_NAME like CONCAT(#{name},'%')
+            and F_NAME like CONCAT(CONCAT('%',#{name}),'%')
         </if>
         <if test="tableName !='' and tableName !=null and tableName != '全部'">
-            and TABLE_NAME like CONCAT(#{tableName},'%')
+            and TABLE_NAME like CONCAT(CONCAT('%',#{tableName}),'%')
         </if>
         <if test="column !='' and column !=null and column != '全部'">
-            and F_COLUMN like CONCAT(#{column},'%')
+            and F_COLUMN like CONCAT(CONCAT('%',#{column}),'%')
         </if>
     </select>
 
@@ -257,14 +257,14 @@
         from scm_filter
         where 1=1
         <if test="tableName != null and tableName != '' and tableName !='全部'">
-            and table_name like CONCAT(#{tableName},'%')
+            and table_name like CONCAT(CONCAT('%',#{tableName}),'%')
         </if>
         union (select '全部' sel
         from scm_filter )
         )
         where 1=1
         <if test="sel != null and sel != '' and sel !='全部'">
-            and sel like CONCAT(#{sel},'%')
+            and sel like CONCAT(CONCAT('%',#{sel}),'%')
         </if>
         order by decode(sel,'全部',1)
     </select>

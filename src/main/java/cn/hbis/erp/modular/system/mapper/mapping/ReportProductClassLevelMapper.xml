@@ -1054,7 +1054,19 @@
 
 
     <select id="cxexcel" resultType="map">
-        SELECT * from
+        SELECT COMPANYNAME,
+       COMPANY_ID,
+       nvl(SALE_BODY,'null') SALE_BODY,
+       nvl(PRODUCT_GRADE,'null') PRODUCT_GRADE,
+       nvl(FKIMG,0) FKIMG,
+       FKDAT,
+       ORDER_MOUNT,
+       nvl(ORDER_TYPE_DESCRIBE,'null') ORDER_TYPE_DESCRIBE,
+       nvl(SALER_NAME,'null') SALER_NAME,
+       nvl(SALE_GROUP,'null') SALE_GROUP,
+       nvl(SS,'null') SS,
+       nvl(NAME,'null') NAME,
+       nvl(PRODUCT_LINE,'null') PRODUCT_LINE from
 (SELECT
         distinct decode(settle.company_id,
         9580,
@@ -1077,7 +1089,6 @@
         xsztdzb.sale_body,
         rpcl.product_grade,
         case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
-        settle.id,
         settle.fkdat,
         sso.order_mount,
         sso.order_type_describe,
@@ -1162,7 +1173,19 @@
         AND cfd.data_type = 9
         AND cfd.status = 0)
 UNION
-SELECT * from (
+SELECT COMPANYNAME,
+       COMPANY_ID,
+       nvl(SALE_BODY,'null') SALE_BODY,
+       nvl(PRODUCT_GRADE,'null') PRODUCT_GRADE,
+       nvl(FKIMG,0) FKIMG,
+       FKDAT,
+       ORDER_MOUNT,
+       nvl(ORDER_TYPE_DESCRIBE,'null') ORDER_TYPE_DESCRIBE,
+       nvl(SALER_NAME,'null') SALER_NAME,
+       nvl(SALE_GROUP,'null') SALE_GROUP,
+       nvl(SS,'null') SS,
+       nvl(NAME,'null') NAME,
+       nvl(PRODUCT_LINE,'null') PRODUCT_LINE from (
 SELECT
         distinct decode(settle.company_id,
         9580,
@@ -1185,7 +1208,6 @@ SELECT
         xsztdzb.sale_body,
         rpcl.product_grade,
         case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
-        settle.id,
         settle.fkdat,
         sso.order_mount,
         sso.order_type_describe,
@@ -1271,7 +1293,19 @@ SELECT
         AND cfd.data_type = 9
         AND cfd.status = 0)
 UNION
-SELECT * from (
+SELECT COMPANYNAME,
+       COMPANY_ID,
+       nvl(SALE_BODY,'null') SALE_BODY,
+       nvl(PRODUCT_GRADE,'null') PRODUCT_GRADE,
+       nvl(FKIMG,0) FKIMG,
+       FKDAT,
+       ORDER_MOUNT,
+       nvl(ORDER_TYPE_DESCRIBE,'null') ORDER_TYPE_DESCRIBE,
+       nvl(SALER_NAME,'null') SALER_NAME,
+       nvl(SALE_GROUP,'null') SALE_GROUP,
+       nvl(SS,'null') SS,
+       nvl(NAME,'null') NAME,
+       nvl(PRODUCT_LINE,'null') PRODUCT_LINE from (
 SELECT
         distinct decode(settle.company_id,
         9580,
@@ -1295,7 +1329,6 @@ SELECT
 
         rpcl.product_grade,
         case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
-        settle.id,
         settle.fkdat,
         sso.order_mount,
         sso.order_type_describe,

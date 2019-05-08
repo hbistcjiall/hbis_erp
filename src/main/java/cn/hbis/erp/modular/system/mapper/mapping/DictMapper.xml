@@ -41,7 +41,7 @@
         from sys_dict
         where PID = '0'
         <if test="condition != null and condition != ''">
-            AND NAME like CONCAT(#{condition},'%')
+            AND NAME like CONCAT(CONCAT('%',#{condition}),'%')
         </if>
         order by SORT ASC
     </select>

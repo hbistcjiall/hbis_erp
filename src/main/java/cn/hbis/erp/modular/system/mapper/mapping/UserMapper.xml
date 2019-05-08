@@ -45,12 +45,12 @@
         from sys_user
         where STATUS != 'DELETED'
         <if test="name != null and name != ''">
-            and (PHONE like CONCAT(#{name},'%')
-            or ACCOUNT like CONCAT(#{name},'%')
-            or NAME like CONCAT(#{name},'%'))
+            and (PHONE like CONCAT(CONCAT('%',#{name}),'%')
+            or ACCOUNT like CONCAT(CONCAT('%',#{name}),'%')
+            or NAME like CONCAT(CONCAT('%',#{name}),'%'))
         </if>
         <if test="deptId != null and deptId != 0">
-            and (DEPT_ID = #{deptId} or DEPT_ID in ( select DEPT_ID from sys_dept where PIDS like CONCAT(#{deptId}, ']%') ))
+            and (DEPT_ID = #{deptId} or DEPT_ID in ( select DEPT_ID from sys_dept where PIDS like CONCAT('%[', #{deptId}, ']%') ))
         </if>
         <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
             and (CREATE_TIME between TO_DATE(#{beginTime},'yyyy-MM-dd HH24:MI:SS') and TO_DATE(#{endTime},'yyyy-MM-dd HH24:MI:SS'))

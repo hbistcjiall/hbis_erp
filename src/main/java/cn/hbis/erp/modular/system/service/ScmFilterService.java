@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -37,12 +36,6 @@ public class ScmFilterService extends ServiceImpl<ScmFilterMapper, ScmFilter>{
     }
 
     public List getColumnValue(String tableName,String columnName,String columnValue){
-        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
-        if (ToolUtil.isNotEmpty(columnValue)){
-            if (pattern.matcher(columnValue).matches()){
-                columnValue = '%'+columnValue;
-            }
-        }
         List list = new ArrayList();
         if (tableName.equals("SCM_SALE_ORDER")){
             list = scmFilterMapper.getColumnValueOrder(columnName,columnValue);

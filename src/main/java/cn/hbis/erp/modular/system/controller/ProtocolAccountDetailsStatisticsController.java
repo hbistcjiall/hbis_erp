@@ -2,24 +2,24 @@ package cn.hbis.erp.modular.system.controller;
 
 import cn.hbis.erp.core.common.page.PageFactory;
 import cn.hbis.erp.core.util.DateUtil;
-import cn.hbis.erp.core.util.ExcelNewUtil;
 import cn.hbis.erp.modular.system.service.ProtocolAccountDetailsStatisticsService;
 import cn.hbis.erp.modular.system.warpper.ProtocolAccountDetailsStatisticsWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.io.IOUtils;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
+
+import static cn.hbis.erp.modular.system.controller.ExportController.export;
 
 /**
  * 协议户明细统计控制器
@@ -184,24 +184,8 @@ public class ProtocolAccountDetailsStatisticsController {
         }
     }
 
-    private void exportXlsx(OutputStream out, String fileName, List<Map<String, Object>> headListMap, List<Map<String, Object>> dataListMap, String[] mergeCols, String[] colOrder, HttpServletResponse response) {
+    public void exportXlsx(OutputStream out, String fileName, List<Map<String, Object>> headListMap, List<Map<String, Object>> dataListMap, String[] mergeCols, String[] colOrder, HttpServletResponse response) {
         XSSFWorkbook wb = new XSSFWorkbook();
-        try {
-            Map<String,Object> map=new HashMap<String,Object>();
-            XSSFSheet sheet1 = wb.createSheet(fileName);
-            //创建表头
-            ExcelNewUtil.createExcelHeader(wb, sheet1, headListMap);
-            //填入表内容
-            ExcelNewUtil.fillExcel(headListMap.size(),mergeCols,colOrder,wb,sheet1,dataListMap);
-            //导出
-            wb.write(out);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            IOUtils.closeQuietly(wb);
-            IOUtils.closeQuietly(out);
-        }
+        export(out, fileName, headListMap, dataListMap, mergeCols, colOrder, wb);
     }
 }

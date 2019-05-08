@@ -26,7 +26,7 @@
         <include refid="Base_Column_List"/>
         from sys_role
         <if test="condition != null">
-            where NAME like CONCAT(#{condition},'%')
+            where NAME like CONCAT(CONCAT('%',#{condition}),'%')
         </if>
         order by SORT asc
     </select>

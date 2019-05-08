@@ -140,6 +140,8 @@ public class ExcelNewUtil {
      * @param list 表内容集合
      */
     public static void fillExcel(int startRow,String[] mergeCols,String[] colOrder,XSSFWorkbook wb,XSSFSheet sheet,List<Map<String,Object>> list) {
+        CellStyle style = wb.createCellStyle();
+        style = createBorderStyle(wb);
         @SuppressWarnings("deprecation")
         XSSFRow sr = null;
         XSSFCell sc = null;
@@ -167,10 +169,10 @@ public class ExcelNewUtil {
                                 if(!isBold){
                                     if(ArrayUtils.contains(setRowStyle,map.get(colOrder[k]).toString())){
                                         isBold=true;
-                                        sc.setCellStyle(createBorderBoldStyle(wb));
+                                        sc.setCellStyle(style);
                                     }
                                 }else{
-                                    sc.setCellStyle(createBorderBoldStyle(wb));
+                                    sc.setCellStyle(style);
                                 }
                                 mer+=map.get(colOrder[k]).toString()+",";//记录
                             }else{
@@ -210,14 +212,14 @@ public class ExcelNewUtil {
                                     sc = sr.createCell(k);
                                     sc.setCellValue(map.get(colOrder[k])+"");
                                     //设置单元格样式
-                                    sc.setCellStyle(createBorderStyle(wb));
+                                    sc.setCellStyle(style);
                                     if(!isBold){
                                         if(ArrayUtils.contains(setRowStyle,map.get(colOrder[k]).toString())){
                                             isBold=true;
-                                            sc.setCellStyle(createBorderBoldStyle(wb));
+                                            sc.setCellStyle(style);
                                         }
                                     }else{
-                                        sc.setCellStyle(createBorderBoldStyle(wb));
+                                        sc.setCellStyle(style);
                                     }
                                 }
                             }
@@ -228,14 +230,14 @@ public class ExcelNewUtil {
                     sc = sr.createCell(k);
                     sc.setCellValue(map.get(colOrder[k]).toString());
                     //设置单元格样式
-                    sc.setCellStyle(createBorderStyle(wb));
+                    sc.setCellStyle(style);
                     if(!isBold){
                         if(ArrayUtils.contains(setRowStyle,map.get(colOrder[k]).toString())){
                             isBold=true;
-                            sc.setCellStyle(createBorderBoldStyle(wb));
+                            sc.setCellStyle(style);
                         }
                     }else{
-                        sc.setCellStyle(createBorderBoldStyle(wb));
+                        sc.setCellStyle(style);
                     }
                 }
             }
@@ -248,7 +250,7 @@ public class ExcelNewUtil {
             //设置跨行或跨列
             sheet.addMergedRegion(new CellRangeAddress(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]), Integer.parseInt(arr[3])));
             for (int j = Integer.parseInt(arr[0])+1; j <= Integer.parseInt(arr[1]); j++) {
-                setCellBorder(Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),sheet.getRow(j),createBorderStyle(wb));
+                setCellBorder(Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),sheet.getRow(j),style);
             }
         }
     }

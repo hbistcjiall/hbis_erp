@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +31,7 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
      * @return
      */
     @Async
-    public List<Map> cxexcel( String startTime,String endTime){
+    public List cxexcel( String startTime,String endTime){
         return reportProductClassLevelMapper.cxexcel(startTime,endTime);
     }
     /**
@@ -42,7 +41,7 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
      * @return
      */
     @Async
-    public List<Map> pzexcel( String startTime,String endTime){
+    public List pzexcel( String startTime,String endTime){
         return reportProductClassLevelMapper.pzexcel(startTime,endTime);
     }
 }
