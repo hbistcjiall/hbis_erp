@@ -39,16 +39,18 @@ public class ExportController {
     @ApiOperation(value="品种钢完成情况导出")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startTime", value = "开始日期", dataType = "String"),
+            @ApiImplicitParam(name = "dw", value = "钢厂", dataType = "String"),
+            @ApiImplicitParam(name = "cx", value = "产线", dataType = "String"),
             @ApiImplicitParam(name = "endTime", value = "结束日期", dataType = "String")
     })
-    @GetMapping(value = "exportPzgCx")
-    public void exportPzgCx(String startTime,String endTime, HttpServletResponse response){
+    @GetMapping("exportPzgCx")
+    public void exportPzgCx(String dw, List cx ,String startTime,String endTime, HttpServletResponse response){
         DateFormat format = new SimpleDateFormat("yyyy");
         DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
         startTime=(String) DateUtil.getFirstDayOfMonth(startTime);
         endTime=(String)DateUtil.getLastDayOfMonth(endTime);
         System.out.println("进查"+format1.format(new Date()));
-        List<Map<String, Object>> list=reportProductClassLevelService.cxexcel(startTime +" 00:00:00",endTime+" 23:59:59");//表内容集合，从数据库查，需要合并的列要进行分组，否则需要做合并的时候可能达不到理想结果
+        List<Map<String, Object>> list=reportProductClassLevelService.cxexcel(dw,cx,startTime +" 00:00:00",endTime+" 23:59:59");//表内容集合，从数据库查，需要合并的列要进行分组，否则需要做合并的时候可能达不到理想结果
         System.out.println("出查"+format1.format(new Date()));
         List<Map<String, Object>> listmap=new ArrayList<Map<String, Object>>();
         Map<String,Object> map=new LinkedHashMap<String,Object>();
