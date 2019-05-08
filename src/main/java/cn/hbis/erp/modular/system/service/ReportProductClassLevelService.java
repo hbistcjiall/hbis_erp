@@ -31,8 +31,8 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
      * @return
      */
     @Async
-    public List cxexcel( String startTime,String endTime){
-        return reportProductClassLevelMapper.cxexcel(startTime,endTime);
+    public List cxexcel(String dw, List cx ,String startTime,String endTime){
+        return reportProductClassLevelMapper.cxexcel(dw,cx,startTime,endTime);
     }
     /**
      * 品种导出

@@ -1054,6 +1054,21 @@
 
 
     <select id="cxexcel" resultType="map">
+        select
+        COMPANYNAME,
+        COMPANY_ID,
+        nvl(SALE_BODY,'null') SALE_BODY,
+        nvl(PRODUCT_GRADE,'null') PRODUCT_GRADE,
+        nvl(FKIMG,0) FKIMG,
+        FKDAT,
+        ORDER_MOUNT,
+        nvl(ORDER_TYPE_DESCRIBE,'null') ORDER_TYPE_DESCRIBE,
+        nvl(SALER_NAME,'null') SALER_NAME,
+        nvl(SALE_GROUP,'null') SALE_GROUP,
+        nvl(SS,'null') SS,
+        nvl(NAME,'null') NAME,
+        nvl(PRODUCT_LINE,'null') PRODUCT_LINE
+        from (
         SELECT COMPANYNAME,
        COMPANY_ID,
        nvl(SALE_BODY,'null') SALE_BODY,
@@ -1407,7 +1422,17 @@ SELECT
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-
+        )
+        where 1 = 1
+        <if test="dw != '' and  dw != null and  dw != 'undefined' and dw !='全部'">
+            and COMPANYNAME = #{dw}
+        </if>
+        <if test="cx != null and  cx.size > 0">
+            and   NAME in
+            <foreach item="item" index="index" collection="cx" open="(" separator="," close=")">
+                　　#{item}
+            </foreach>
+        </if>
     </select>
 
     <select id="pzexcel" resultType="map">
