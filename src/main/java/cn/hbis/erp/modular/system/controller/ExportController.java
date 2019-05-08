@@ -17,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -40,11 +41,10 @@ public class ExportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startTime", value = "开始日期", dataType = "String"),
             @ApiImplicitParam(name = "dw", value = "钢厂", dataType = "String"),
-            @ApiImplicitParam(name = "cx", value = "产线", dataType = "String"),
             @ApiImplicitParam(name = "endTime", value = "结束日期", dataType = "String")
     })
-    @GetMapping("exportPzgCx")
-    public void exportPzgCx(String dw, List cx ,String startTime,String endTime, HttpServletResponse response){
+    @GetMapping(value = "exportPzgCx")
+    public void exportPzgCx(String dw, @RequestParam(required = false) List<String> cx , String startTime, String endTime, HttpServletResponse response){
         DateFormat format = new SimpleDateFormat("yyyy");
         DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
         startTime=(String) DateUtil.getFirstDayOfMonth(startTime);
