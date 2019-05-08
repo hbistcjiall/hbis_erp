@@ -25,5 +25,24 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
         return reportProductClassLevelMapper.getcxzl(cx,startTime,endTime,zl);
     }
 
-
+    /**
+     * 产线导出
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Async
+    public List<Map> cxexcel( String startTime,String endTime){
+        return reportProductClassLevelMapper.cxexcel(startTime,endTime);
+    }
+    /**
+     * 品种导出
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Async
+    public List<Map> pzexcel( String startTime,String endTime){
+        return reportProductClassLevelMapper.pzexcel(startTime,endTime);
+    }
 }
