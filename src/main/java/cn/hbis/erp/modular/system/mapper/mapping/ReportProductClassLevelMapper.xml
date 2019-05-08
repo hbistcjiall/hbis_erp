@@ -1378,8 +1378,8 @@ SELECT
     </select>
 
     <select id="pzexcel" resultType="map">
-        SELECT * from
-(SELECT
+
+        select * from(SELECT
         distinct decode(settle.company_id,
         9580,
         '唐钢',
@@ -1400,7 +1400,7 @@ SELECT
         settle.company_id,
         xsztdzb.sale_body,
         rpcl.product_grade,
-        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
+        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg,
         settle.id,
         settle.fkdat,
         sso.order_mount,
@@ -1408,6 +1408,14 @@ SELECT
         sso.saler_name,
         sso.sale_group,
         sso.sale_body ss,
+        (select max(B.VARIETY)
+        from scm_sale_order sso
+        JOIN scm_variety_to_pt_gp B
+        ON sso.product_code = B.product_group
+        and sso.company_id = B.company_id
+        where sso.order_no = settle.aubel
+        and sso.ORDER_ROW = settle.AUPOS
+        AND sso.company_id = settle.company_id) name,
         (select max(DATA.Name)
         from scm_delivery_detail detail
         JOIN crm_resource_data DATA
@@ -1418,7 +1426,7 @@ SELECT
         and settle.vgbel = detail.deliv_numb
         and settle.vgpos = detail.deliv_item
         and ( detail.delivery_delete  &lt; &gt; 'X' or
-        detail.delivery_delete is null)) name,
+        detail.delivery_delete is null)) cxname,
         (select max(detail.ext)
         from scm_delivery_detail detail
         where settle.company_id = detail.company_id
@@ -1465,8 +1473,9 @@ SELECT
         xsztdzb.sale_body_des &lt; &gt; '出口'  and
         xsztdzb.sale_body_des &lt; &gt; '唐银联营公司数据'
         and  settle.company_id in ('9580','9727','9193')
+
         order by settle.id desc) t
-        where t.order_type_describe not in
+				where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
         where cfd.data_type in ('5','10')
@@ -1485,9 +1494,11 @@ SELECT
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-UNION
-SELECT * from (
-SELECT
+
+        union
+
+				select * from
+        (SELECT
         distinct decode(settle.company_id,
         9580,
         '唐钢',
@@ -1516,18 +1527,25 @@ SELECT
         sso.saler_name,
         sso.sale_group,
         sso.sale_body ss,
+        (select max(B.VARIETY)
+        from scm_sale_order sso
+        JOIN scm_variety_to_pt_gp B
+        ON sso.product_code = B.product_group
+        and sso.company_id = B.company_id
+        where sso.order_no = settle.aubel
+        and sso.ORDER_ROW = settle.AUPOS
+        AND sso.company_id = settle.company_id) name,
         (select max(DATA.Name)
         from scm_delivery_detail detail
         JOIN crm_resource_data DATA
         ON DATA.full_name = detail.ext
         AND DATA.company_id = detail.company_id
         AND (DATA.TYPE = 6 )
-
-        where  detail.ORDER_NO = settle.aubel
+        where settle.company_id = detail.company_id
+        and detail.ORDER_NO = settle.aubel
         and detail.ORDER_ITEM = settle.aupos
-        and detail.company_id =settle.company_id
         and ( detail.delivery_delete  &lt; &gt; 'X' or
-        detail.delivery_delete is null)) name,
+        detail.delivery_delete is null)) cxname,
         (select max(detail.ext)
         from scm_delivery_detail detail
         where detail.ORDER_NO = settle.aubel
@@ -1574,8 +1592,9 @@ SELECT
         xsztdzb.sale_body_des &lt; &gt; '出口'  and
         xsztdzb.sale_body_des &lt; &gt; '唐银联营公司数据'
         and  settle.company_id in ('9196')
+
         order by settle.id desc) t
-        where t.order_type_describe not in
+				where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
         where cfd.data_type in ('5','10')
@@ -1594,9 +1613,12 @@ SELECT
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-UNION
-SELECT * from (
-SELECT
+
+
+        union
+
+				select * from
+        (SELECT
         distinct decode(settle.company_id,
         9580,
         '唐钢',
@@ -1616,7 +1638,6 @@ SELECT
         '邯宝') AS companyname,
         settle.company_id,
         xsztdzb.sale_body,
-
         rpcl.product_grade,
         case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
         settle.id,
@@ -1624,16 +1645,27 @@ SELECT
         sso.order_mount,
         sso.order_type_describe,
         sso.saler_name,
-
         sso.sale_group,
 				sso.sale_body ss,
-        decode(settle.company_id,
-        1932,
-        '宽厚板',
-        8110,
-        '特钢',
-        8493,
-        '薄板') AS name,
+        (select case when  B.company_id ='8110' then '特钢' when B.company_id ='8493'then '薄板' else b.variety end VARIETY
+        from scm_sale_order sso
+        JOIN scm_variety_to_pt_gp B
+        ON sso.product_code = B.product_group
+        and sso.company_id = B.company_id
+        where sso.order_no = settle.aubel
+        and sso.ORDER_ROW = settle.AUPOS
+        AND sso.company_id = settle.company_id) name,
+				(select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X' or
+        detail.delivery_delete is null)) cxname,
         (select max(detail.ext)
         from scm_delivery_detail detail
 
@@ -1679,7 +1711,7 @@ SELECT
         and  settle.company_id in ('8110','8493','1932')
 
         order by settle.id desc) t
-        where t.order_type_describe not in
+				where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
         where cfd.data_type in ('5','10')
@@ -1698,6 +1730,7 @@ SELECT
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+
 
     </select>
 </mapper>

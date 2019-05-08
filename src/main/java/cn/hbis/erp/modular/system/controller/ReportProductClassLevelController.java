@@ -1,9 +1,7 @@
 package cn.hbis.erp.modular.system.controller;
 
 import cn.hbis.erp.core.util.DateUtil;
-import cn.hbis.erp.modular.system.entity.ScmSteelSettle;
 import cn.hbis.erp.modular.system.service.ReportProductClassLevelService;
-import cn.hbis.erp.modular.system.service.ScmSteelSettleService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
