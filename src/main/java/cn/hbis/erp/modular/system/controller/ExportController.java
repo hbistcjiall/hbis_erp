@@ -36,12 +36,12 @@ public class ExportController {
     @Autowired
     private ReportProductClassLevelService reportProductClassLevelService;
 
-    @ApiOperation(value="品种钢完成情况导出",produces="application/octet-stream")
+    @ApiOperation(value="品种钢完成情况导出")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startTime", value = "开始日期", dataType = "String"),
             @ApiImplicitParam(name = "endTime", value = "结束日期", dataType = "String")
     })
-    @GetMapping("exportPzgCx")
+    @GetMapping(value = "exportPzgCx")
     public void exportPzgCx(String startTime,String endTime, HttpServletResponse response){
         DateFormat format = new SimpleDateFormat("yyyy");
         DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
