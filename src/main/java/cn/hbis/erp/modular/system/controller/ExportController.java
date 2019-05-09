@@ -49,9 +49,7 @@ public class ExportController {
         DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
         startTime=(String) DateUtil.getFirstDayOfMonth(startTime);
         endTime=(String)DateUtil.getLastDayOfMonth(endTime);
-        System.out.println("进查"+format1.format(new Date()));
         List<Map<String, Object>> list=reportProductClassLevelService.cxexcel(dw,cx,startTime +" 00:00:00",endTime+" 23:59:59");//表内容集合，从数据库查，需要合并的列要进行分组，否则需要做合并的时候可能达不到理想结果
-        System.out.println("出查"+format1.format(new Date()));
         List<Map<String, Object>> listmap=new ArrayList<Map<String, Object>>();
         Map<String,Object> map=new LinkedHashMap<String,Object>();
         map.put("head_C13", "品种钢完成情况(产线)");
@@ -98,14 +96,59 @@ public class ExportController {
         }
     }
 
+    @ApiOperation(value="协议户明细列表模板")
+    @GetMapping(value = "exportAgreement")
+    public void exportAgreement(HttpServletResponse response){
+        DateFormat format = new SimpleDateFormat("yyyy");
+        DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
+        List<Map<String, Object>> list=new ArrayList<>();
+        List<Map<String, Object>> listmap=new ArrayList<Map<String, Object>>();
+        Map<String,Object> map=new LinkedHashMap<String,Object>();
+        map.put("head_C10", "协议户明细列表");
+        listmap.add(map);
+        map=new LinkedHashMap<String,Object>();
+        map.put("column1", "序号");
+        map.put("column2", "上传时间");
+        map.put("column3", "协议年份");
+        map.put("column4", "用户名称(全称)");
+        map.put("column5", "品种");
+        map.put("column6", "主销售区域");
+        map.put("column7", "辅助销售区域一");
+        map.put("column8", "辅助销售区域二");
+        map.put("column9", "钢厂");
+        map.put("column10", "年协议量(吨)");
+        listmap.add(map);
+        //sql语句查询的顺序
+        String[] colOrder={};
+        //可能需要做跨行合并的行，将某一列中相同内容的行进行合并
+        String[] mergeCols={};
+
+        String fileName = "协议户明细列表模板";
+        fileName = fileName.concat(format1.format(new Date()).substring(0,8));
+        StringBuffer stringB = new StringBuffer();
+        stringB.append(EXPORT_XLSX_FILE_SUFFIX);
+        fileName+=stringB;
+        OutputStream out = null;
+        try {
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+            response.setHeader("Content-disposition", "attachment;filename= "+new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
+            out = response.getOutputStream();
+            exportXlsx(out,fileName,listmap,list,mergeCols,colOrder,response);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void exportXlsx(OutputStream out, String fileName, List<Map<String, Object>> headListMap, List<Map<String, Object>> dataListMap, String[] mergeCols, String[] colOrder, HttpServletResponse response) {
         XSSFWorkbook wb = new XSSFWorkbook();
         export(out, fileName, headListMap, dataListMap, mergeCols, colOrder, wb);
     }
 
     static void export(OutputStream out, String fileName, List<Map<String, Object>> headListMap, List<Map<String, Object>> dataListMap, String[] mergeCols, String[] colOrder, XSSFWorkbook wb) {
-        DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
-        System.out.println("进导"+format1.format(new Date()));
         try {
             Map<String,Object> map=new HashMap<String,Object>();
             XSSFSheet sheet1 = wb.createSheet(fileName);
@@ -113,10 +156,11 @@ public class ExportController {
             //创建表头
             ExcelNewUtil.createExcelHeader(wb, sheet1, headListMap);
             //填入表内容
-            ExcelNewUtil.fillExcel(headListMap.size(),mergeCols,colOrder,wb,sheet1,dataListMap);
+            if (dataListMap.size()>0){
+                ExcelNewUtil.fillExcel(headListMap.size(),mergeCols,colOrder,wb,sheet1,dataListMap);
+            }
             //导出
             wb.write(out);
-            System.out.println("出导"+format1.format(new Date()));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

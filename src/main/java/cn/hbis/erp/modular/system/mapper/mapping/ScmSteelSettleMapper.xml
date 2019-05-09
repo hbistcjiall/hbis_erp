@@ -3181,7 +3181,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
 
     <select id="getzyjh" resultType="map">
     select *
-    from (select '1' yf,year || '1月' rq,PZ_NAME pz,
+    from (select '1' yf,year || '年' || '1月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(JAN_MONTH) jhl
@@ -3189,7 +3189,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '2' yf,year || '2月' rq,PZ_NAME pz,
+    select '2' yf,year || '年' || '2月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(FEB_MONTH) jhl
@@ -3197,7 +3197,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '3' yf,year || '3月' rq,PZ_NAME pz,
+    select '3' yf,year || '年' || '3月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(MAR_MONTH) jhl
@@ -3205,7 +3205,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '4' yf,year || '4月' rq,PZ_NAME pz,
+    select '4' yf,year || '年' || '4月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(APR_MONTH) jhl
@@ -3213,7 +3213,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '5' yf,year || '5月' rq,PZ_NAME pz,
+    select '5' yf,year || '年' || '5月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(MAY_MONTH) jhl
@@ -3221,7 +3221,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '6' yf,year || '6月' rq,PZ_NAME pz,
+    select '6' yf,year || '年' || '6月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(JUN_MONTH) jhl
@@ -3229,7 +3229,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '7' yf,year || '7月' rq,PZ_NAME pz,
+    select '7' yf,year || '年' || '7月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(JUL_MONTH) jhl
@@ -3237,7 +3237,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '8' yf,year || '8月' rq,PZ_NAME pz,
+    select '8' yf,year || '年' || '8月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(AUG_MONTH) jhl
@@ -3245,7 +3245,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '9' yf,year || '9月' rq,PZ_NAME pz,
+    select '9' yf,year || '年' || '9月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(SEP_MONTH) jhl
@@ -3253,7 +3253,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '10' yf,year || '10月' rq,PZ_NAME pz,
+    select '10' yf,year || '年' || '10月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(OCT_MONTH) jhl
@@ -3261,7 +3261,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '11' yf,year || '11月' rq,PZ_NAME pz,
+    select '11' yf,year || '年' || '11月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(NOV_MONTH) jhl
@@ -3269,7 +3269,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '12' yf,year || '12月' rq,PZ_NAME pz,
+    select '12' yf,year || '年' || '12月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(DEC_MONTH) jhl
