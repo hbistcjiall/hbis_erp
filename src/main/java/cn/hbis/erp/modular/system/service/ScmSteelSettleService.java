@@ -173,9 +173,7 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     @Async
     public List<Map> getxsjswccx(String startTime,  String endTime,String pz,List<String> cx,String jd) {
         List<Map> list = new ArrayList<>();
-        if (jd.equals("全部")){
-            list = scmSteelSettleMapper.getxsjswc(startTime,endTime,pz,cx,"0");
-        }
+
         list = scmSteelSettleMapper.getxsjswc(startTime,endTime,pz,cx,jd);
         return  list;
     }
