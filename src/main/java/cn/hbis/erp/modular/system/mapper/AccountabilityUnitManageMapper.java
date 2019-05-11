@@ -29,5 +29,6 @@ public interface AccountabilityUnitManageMapper extends BaseMapper<Accountabilit
    List<Map<String,Object>> xsegcexcel(@Param("companyname") String companyname,@Param("jd") String jd,@Param("startTime")String startTime,@Param("endTime")String endTime);
    List<Map<String,Object>> xsecxexcel(@Param("pz") String pz,@Param("cx") List cx,@Param("jd") String jd,@Param("startTime")String startTime,@Param("endTime")String endTime);
    List<Map<String,Object>> xsepzexcel(@Param("jd") String jd,@Param("pz") String pz,@Param("startTime")String startTime,@Param("endTime")String endTime);
+   List<Map<String,Object>> xsecxfbexcel(@Param("cx")List cx,@Param("zl") String zl,@Param("startTime")String startTime,@Param("endTime")String endTime);
 
 }

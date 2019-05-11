@@ -160,4 +160,12 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
         List<Map<String ,Object>> list = accounUnitManageMapper.xsepzexcel(jd,pz,startTime1+" 00:00:00",endTime1+" 23:59:59");
         return  list;
     }
+
+    @Async
+    public  List<Map<String ,Object>> xsecxfb ( List<String> cx,String zl, String startTime,String endTime){
+        String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
+        String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
+        List<Map<String ,Object>> list = accounUnitManageMapper.xsecxfbexcel(cx,zl,startTime1+" 00:00:00",endTime1+" 23:59:59");
+        return  list;
+    }
 }
