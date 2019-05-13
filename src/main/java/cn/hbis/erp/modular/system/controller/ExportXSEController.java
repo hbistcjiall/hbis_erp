@@ -25,7 +25,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/exportcx")
-public class ExportXSE {
+public class ExportXSEController {
     @Autowired
     private ScmSteelSettleService scmSteelSettleService;
 
