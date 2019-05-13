@@ -527,12 +527,12 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
             return newlist;
         }
 
-    public List<Map> xsjswccxexport(String startTime, String endTime, String pz, @RequestParam(required = false) List<String> cx, String jd) {
+    public List<Map<String,Object>> xsjswccxexport(String startTime, String endTime, String pz, @RequestParam(required = false) List<String> cx, String jd) {
         String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
         String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
-        List<Map> list = new ArrayList<>();
-        list = scmSteelSettleMapper.getxsjswc(startTime1+" 00:00:00",endTime1+" 23:59:59",pz,cx,jd);
-        List<Map>  thelist = new ArrayList<>();
+        List<Map<String,Object>> list = new ArrayList<>();
+        list = scmSteelSettleMapper.getxsjswcs(startTime1+" 00:00:00",endTime1+" 23:59:59",pz,cx,jd);
+        List<Map<String,Object>>  thelist = new ArrayList<Map<String,Object>>();
         Map map = new HashMap();
         String zl ="河钢集团";
         String cxname = "合计";
@@ -750,14 +750,14 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         for (int i = 0;i<list.size();i++){
             thelist.add(list.get(i));
         }
-        List<Map> newlist = xiaoji(list);
+        List<Map<String,Object>> newlist = xiaoji(list);
         for (int i = 0;i<newlist.size();i++){
             thelist.add(newlist.get(i));
         }
         return  thelist;
     }
-    public  List<Map> xiaoji (List<Map> list){
-        List<Map> xiaoj = new ArrayList<>();
+    public  List<Map<String,Object>> xiaoji (List<Map<String,Object>> list){
+        List<Map<String,Object>> xiaoj = new ArrayList<>();
 
         List pz = new ArrayList<>();
         pz.add("热板");
