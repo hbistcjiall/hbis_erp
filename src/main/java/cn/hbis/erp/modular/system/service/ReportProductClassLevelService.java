@@ -567,5 +567,9 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
     public List jtgczybgqk (String pz,String name,String htdw,String startTime,String endTime){
         return reportProductClassLevelMapper.jtgczybgqk(pz,name,htdw,startTime,endTime);
     }
+    @Async
+    public List jtgczybgqkpz (String name,String startTime,String endTime){
+        return reportProductClassLevelMapper.jtgczybgqkpz(name,startTime,endTime);
+    }
 
 }

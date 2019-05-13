@@ -3791,8 +3791,12 @@
     select t.company_id,t.order_no,t.order_item,sum(t.TOTAL_WEIGHT) TOTAL_WEIGHT
     from hbistc_ol.scm_delivery_detail t
     where (t.delivery_delete != 'X' or t.delivery_delete is null)
-    and t.actual_date &gt;= to_date(#{startTime},'yyyy-mm-dd')
-    and to_date(to_char(t.actual_date,'yyyy-mm-dd'), 'yyyy-mm-dd') &lt;=to_date(#{endTime},'yyyy-mm-dd')
+        <if test="startTime != '' and startTime!= '全部' and startTime!= null and startTime != 'undefined'">
+            and t.actual_date &gt;= to_date(#{startTime},'yyyy-mm-dd')
+        </if>
+        <if test="endTime != '' and endTime!= '全部' and endTime!= null and endTime != 'undefined'">
+            and to_date(to_char(t.actual_date,'yyyy-mm-dd'), 'yyyy-mm-dd') &lt;=to_date(#{endTime},'yyyy-mm-dd')
+        </if>
     group by t.company_id,t.order_no,t.order_item
   ) t,
   hbistc_ol.scm_sale_order sso,
@@ -3821,8 +3825,12 @@ select sso.company_id,sv.variety,sso.SALER_NAME,sso.TRANSPORT_NAME,sso.DZ_NAME,
     select t.company_id,t.order_no,t.order_item,sum(t.TOTAL_WEIGHT) TOTAL_WEIGHT
     from hbistc_ol.scm_delivery_detail t
     where (t.delivery_delete != 'X' or t.delivery_delete is null)
-    and t.actual_date &gt;= to_date(#{startTime},'yyyy-mm-dd')
-    and to_date(to_char(t.actual_date,'yyyy-mm-dd'), 'yyyy-mm-dd') &lt;=to_date(#{endTime},'yyyy-mm-dd')
+        <if test="startTime != '' and startTime!= '全部' and startTime!= null and startTime != 'undefined'">
+            and t.actual_date &gt;= to_date(#{startTime},'yyyy-mm-dd')
+        </if>
+        <if test="endTime != '' and endTime!= '全部' and endTime!= null and endTime != 'undefined'">
+            and to_date(to_char(t.actual_date,'yyyy-mm-dd'), 'yyyy-mm-dd') &lt;=to_date(#{endTime},'yyyy-mm-dd')
+        </if>
     group by t.company_id,t.order_no,t.order_item
   ) t,
   hbistc_ol.scm_sale_order sso,
@@ -3849,8 +3857,12 @@ select sso.company_id,sv.variety,sso.SALER_NAME,sso.TRANSPORT_NAME,sso.DZ_NAME,
     select t.company_id,t.order_no,t.order_item,sum(t.TOTAL_WEIGHT) TOTAL_WEIGHT
     from hbistc_ol.scm_delivery_detail t
     where (t.delivery_delete != 'X' or t.delivery_delete is null)
-    and t.actual_date &gt;= to_date(#{startTime},'yyyy-mm-dd')
-    and to_date(to_char(t.actual_date,'yyyy-mm-dd'), 'yyyy-mm-dd') &lt;=to_date(#{endTime},'yyyy-mm-dd')
+        <if test="startTime != '' and startTime!= '全部' and startTime!= null and startTime != 'undefined'">
+            and t.actual_date &gt;= to_date(#{startTime},'yyyy-mm-dd')
+        </if>
+        <if test="endTime != '' and endTime!= '全部' and endTime!= null and endTime != 'undefined'">
+            and to_date(to_char(t.actual_date,'yyyy-mm-dd'), 'yyyy-mm-dd') &lt;=to_date(#{endTime},'yyyy-mm-dd')
+        </if>
     group by t.company_id,t.order_no,t.order_item
   ) t,
   hbistc_ol.scm_sale_order sso,
@@ -3885,6 +3897,121 @@ order by sv.variety
 
             and SALER_NAME like  CONCAT(CONCAT('%',#{htdw}),'%')
         </if>
+
+
+    </select>
+
+    <select id="jtgczybgqkpz" resultType="map">
+        select variety from  (select *
+        from ( select sso.company_id,sv.variety,sso.SALER_NAME,sso.TRANSPORT_NAME,sso.DZ_NAME,
+        sum(sso.ORDER_MOUNT)DDL,nvl(sum(to_number(t.TOTAL_WEIGHT)),0)FHL,
+        sum(sso.ORDER_MOUNT)-nvl(sum(to_number(t.TOTAL_WEIGHT)),0)QFL
+        from(
+        select t.company_id,t.order_no,t.order_item,sum(t.TOTAL_WEIGHT) TOTAL_WEIGHT
+        from hbistc_ol.scm_delivery_detail t
+        where (t.delivery_delete != 'X' or t.delivery_delete is null)
+        <if test="startTime != '' and startTime!= '全部' and startTime!= null and startTime != 'undefined'">
+        and t.actual_date &gt;= to_date(#{startTime},'yyyy-mm-dd')
+        </if>
+        <if test="endTime != '' and endTime!= '全部' and endTime!= null and endTime != 'undefined'">
+        and to_date(to_char(t.actual_date,'yyyy-mm-dd'), 'yyyy-mm-dd') &lt;=to_date(#{endTime},'yyyy-mm-dd')
+        </if>
+        group by t.company_id,t.order_no,t.order_item
+        ) t,
+        hbistc_ol.scm_sale_order sso,
+        hbistc_ol.scm_variety_to_pt_gp sv
+        where t.order_no=sso.order_no
+        and t.order_item=sso.order_row
+        and sso.company_id = '9196'
+        and (sso.deleted != 'X' or sso.deleted is null)
+        and sv.company_id='9196'
+        and sso.product_code=sv.product_group
+        and sso.ORDER_TYPE_DESCRIBE not in
+        (SELECT s.data_name FROM hbistc_ol.crm_filter_data s where s.company_id='9196'
+        and s.data_type='2')
+        and sso.SALER_NAME not in (SELECT s.data_name FROM hbistc_ol.crm_filter_data s
+        where s.company_id='9196' and s.data_type='1')
+        and sso.DZ_NAME like '%港%'
+        group by sso.company_id,sv.variety,sso.SALER_NAME,sso.TRANSPORT_NAME,sso.DZ_NAME
+        order by sv.variety
+
+        ) a  union  all
+        select * from (
+        select sso.company_id,sv.variety,sso.SALER_NAME,sso.TRANSPORT_NAME,sso.DZ_NAME,
+        sum(sso.ORDER_MOUNT)DDL,nvl(sum(to_number(t.TOTAL_WEIGHT)),0)FHL,
+        sum(sso.ORDER_MOUNT)-nvl(sum(to_number(t.TOTAL_WEIGHT)),0)QFL
+        from(
+        select t.company_id,t.order_no,t.order_item,sum(t.TOTAL_WEIGHT) TOTAL_WEIGHT
+        from hbistc_ol.scm_delivery_detail t
+        where (t.delivery_delete != 'X' or t.delivery_delete is null)
+        <if test="startTime != '' and startTime!= '全部' and startTime!= null and startTime != 'undefined'">
+        and t.actual_date &gt;= to_date(#{startTime},'yyyy-mm-dd')
+        </if>
+        <if test="endTime != '' and endTime!= '全部' and endTime!= null and endTime != 'undefined'">
+        and to_date(to_char(t.actual_date,'yyyy-mm-dd'), 'yyyy-mm-dd') &lt;=to_date(#{endTime},'yyyy-mm-dd')
+        </if>
+        group by t.company_id,t.order_no,t.order_item
+        ) t,
+        hbistc_ol.scm_sale_order sso,
+        hbistc_ol.scm_variety_to_pt_gp sv
+        where t.order_no=sso.order_no
+        and t.order_item=sso.order_row
+        and sso.company_id in ('9727','7778')
+        and (sso.deleted != 'X' or sso.deleted is null)
+        and sv.company_id in ('9727','7778')
+        and sso.product_code=sv.product_group
+        and sso.ORDER_TYPE_DESCRIBE not in
+        (SELECT s.data_name FROM hbistc_ol.crm_filter_data s
+        where s.company_id in ('9727','7778') and s.data_type='2')
+        and sso.SALER_NAME not in (SELECT s.data_name FROM hbistc_ol.crm_filter_data s
+        where s.company_id in ('9727','7778') and s.data_type='1')
+        and (sso.DZ_NAME like '%港%' or  sso.transport_name like '%水%')
+        group by sso.company_id,sv.variety,sso.SALER_NAME,sso.TRANSPORT_NAME,sso.DZ_NAME
+        order by sv.variety
+        )  union all select * from  (
+        select sso.company_id,sv.variety,sso.SALER_NAME,sso.TRANSPORT_NAME,sso.DZ_NAME,
+        sum(sso.ORDER_MOUNT)DDL,nvl(sum(to_number(t.TOTAL_WEIGHT)),0)FHL,
+        sum(sso.ORDER_MOUNT)-nvl(sum(to_number(t.TOTAL_WEIGHT)),0)QFL
+        from(
+        select t.company_id,t.order_no,t.order_item,sum(t.TOTAL_WEIGHT) TOTAL_WEIGHT
+        from hbistc_ol.scm_delivery_detail t
+        where (t.delivery_delete != 'X' or t.delivery_delete is null)
+        <if test="startTime != '' and startTime!= '全部' and startTime!= null and startTime != 'undefined'">
+        and t.actual_date &gt;= to_date(#{startTime},'yyyy-mm-dd')
+        </if>
+        <if test="endTime != '' and endTime!= '全部' and endTime!= null and endTime != 'undefined'">
+        and to_date(to_char(t.actual_date,'yyyy-mm-dd'), 'yyyy-mm-dd') &lt;=to_date(#{endTime},'yyyy-mm-dd')
+        </if>
+        group by t.company_id,t.order_no,t.order_item
+        ) t,
+        hbistc_ol.scm_sale_order sso,
+        hbistc_ol.scm_variety_to_pt_gp sv
+        where t.order_no=sso.order_no
+        and t.order_item=sso.order_row
+        and sso.company_id = '9580'
+        and (sso.deleted != 'X' or sso.deleted is null)
+        and sv.company_id='9580'
+        and sso.product_code=sv.product_group
+        and sso.ORDER_TYPE_DESCRIBE not in
+        (SELECT s.data_name FROM hbistc_ol.crm_filter_data s where s.company_id='9580'
+        and s.data_type='2')
+        and sso.SALER_NAME not in (SELECT s.data_name FROM hbistc_ol.crm_filter_data s
+        where s.company_id='9580' and s.data_type='1')
+        and sso.transport_name like '%水路联运%'
+        group by sso.company_id,sv.variety,sso.SALER_NAME,sso.TRANSPORT_NAME,sso.DZ_NAME
+        order by sv.variety
+        ))
+        where 1 = 1
+
+        <if test="name != '' and name!= '全部' and name!= null and name != 'undefined'">
+
+            and company_id = #{name}
+
+        </if>
+
+        group by variety
+        ORDER BY   "DECODE"(variety,'热板','1','冷板','2','棒线','3','宽厚板','4','型带','5')
+
 
 
     </select>
