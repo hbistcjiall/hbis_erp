@@ -8,19 +8,13 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.List;
 
 /**
  * <p>
@@ -185,16 +179,15 @@ public class ScmSteelSettleController {
 
     @ApiOperation(value = "资源计划报表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "nf", value = "年份", dataType = "String"),
-            @ApiImplicitParam(name = "yf", value = "月份", dataType = "String"),
+            @ApiImplicitParam(name = "startTime", value = "时间", dataType = "String"),
             @ApiImplicitParam(name = "pz", value = "品种", dataType = "String"),
-
-            @ApiImplicitParam(name = "xszt", value = "销售主题", dataType = "String"),
+            @ApiImplicitParam(name = "xszt", value = "销售主题", dataType = "String")
     })
     @PostMapping("getzyjh")
     @Async
-    public  List<ScmSteelSettle>  getzyjh(String nf,String yf,String pz,@RequestParam(required = false) List<String> cx,String xszt) {
-
+    public  List<ScmSteelSettle>  getzyjh(String startTime,String pz,@RequestParam(required = false) List<String> cx,String xszt) {
+        String nf = startTime.substring(0,4);
+        String yf = startTime.substring(5,7);
         List<ScmSteelSettle> getzyjh=scmSteelSettleService.getzyjh(nf,yf,pz,cx,xszt);
         return getzyjh;
     }

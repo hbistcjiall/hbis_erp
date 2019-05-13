@@ -3181,7 +3181,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
 
     <select id="getzyjh" resultType="map">
     select *
-    from (select '1' yf,year || '年' || '1月' rq,PZ_NAME pz,
+    from (select '01' yf,year || '年' || '1月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(JAN_MONTH) jhl
@@ -3189,7 +3189,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '2' yf,year || '年' || '2月' rq,PZ_NAME pz,
+    select '02' yf,year || '年' || '2月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(FEB_MONTH) jhl
@@ -3197,7 +3197,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '3' yf,year || '年' || '3月' rq,PZ_NAME pz,
+    select '03' yf,year || '年' || '3月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(MAR_MONTH) jhl
@@ -3205,7 +3205,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '4' yf,year || '年' || '4月' rq,PZ_NAME pz,
+    select '04' yf,year || '年' || '4月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(APR_MONTH) jhl
@@ -3213,7 +3213,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '5' yf,year || '年' || '5月' rq,PZ_NAME pz,
+    select '05' yf,year || '年' || '5月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(MAY_MONTH) jhl
@@ -3221,7 +3221,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '6' yf,year || '年' || '6月' rq,PZ_NAME pz,
+    select '06' yf,year || '年' || '6月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(JUN_MONTH) jhl
@@ -3229,7 +3229,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '7' yf,year || '年' || '7月' rq,PZ_NAME pz,
+    select '07' yf,year || '年' || '7月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(JUL_MONTH) jhl
@@ -3237,7 +3237,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '8' yf,year || '年' || '8月' rq,PZ_NAME pz,
+    select '08' yf,year || '年' || '8月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(AUG_MONTH) jhl
@@ -3245,7 +3245,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     where STATUS = '0'
     group by year, PZ_NAME, cx_name, fl_name
     union all
-    select '9' yf,year || '年' || '9月' rq,PZ_NAME pz,
+    select '09' yf,year || '年' || '9月' rq,PZ_NAME pz,
     cx_name cx,
     fl_name,
     sum(SEP_MONTH) jhl
