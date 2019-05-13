@@ -3294,6 +3294,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         <if test="xszt != ''and xszt != null and xszt != 'undefined' and xszt != '全部'">
         and fl_name = #{xszt}
         </if>
+        and  fl_name != '品种钢'
         ORDER BY    fl_name , cx ,
         "DECODE"(pz,'热板','冷板','宽厚板','棒线','型材')
     </select>
