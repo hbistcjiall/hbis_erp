@@ -739,7 +739,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         map.put("FGSFKIMG",df.format(fgsfkimg));
         map.put("FGSSJ",df.format(fgssj));
 
-        map.put("ZBGSFKIMG",df.format(zgsfkimg));
+        map.put("ZGSFKIMG",df.format(zgsfkimg));
         map.put("ZGSSJ",df.format(zgssj));
         map.put("SYBFKIMG",df.format(sybfkimg));
         map.put("SYBSJ",df.format(sybsj));
@@ -984,7 +984,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 map.put("ZGSFKIMG", df.format(zgsfkimg));
                 map.put("ZGSSJ",df.format(zgssj) );
                 map.put("SYBFKIMG", df.format(sybfkimg));
-                map.put("SYBJS", df.format(sybsj));
+                map.put("SYBSJ", df.format(sybsj));
                 map.put("XHFKIMG", df.format(xhfkimg));
                 map.put("XHSJ", df.format(xhsj));
                 map.put("ZBGSFKIMG",df.format( zbgsfkimg));
