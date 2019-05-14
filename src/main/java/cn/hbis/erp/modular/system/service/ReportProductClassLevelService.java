@@ -490,7 +490,7 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
                 m.put("FGSXSZB", Double.parseDouble(String.format("%.2f",fgsxszb*100))+"%");
                 m.put("SYBFKIMG", Double.parseDouble(String.format("%.2f",sybfkimg)));
                 m.put("SYBSJ", Double.parseDouble(String.format("%.2f",sybsj)));
-                m.put("ZYBXSZB", Double.parseDouble(String.format("%.2f",sybxszb*100))+"%");
+                m.put("SYBXSZB", Double.parseDouble(String.format("%.2f",sybxszb*100))+"%");
                 m.put("XHFKIMG", Double.parseDouble(String.format("%.2f",xhfkimg)));
                 m.put("XHSJ", Double.parseDouble(String.format("%.2f",xhsj)));
                 m.put("XHXSZB", Double.parseDouble(String.format("%.2f",xhxszb*100))+"%");
