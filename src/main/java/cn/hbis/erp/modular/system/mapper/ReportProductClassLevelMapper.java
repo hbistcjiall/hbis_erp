@@ -10,7 +10,7 @@ import java.util.Map;
 public interface ReportProductClassLevelMapper extends BaseMapper<ReportProductClassLevel> {
 
     List<Map> getcxfb(@Param("cx")List cx,@Param("startTime")String startTime,@Param("endTime")String endTime,@Param("zl")String zl);
-    List<Map> getcxfb01(@Param("cx")List cx,@Param("startTime")String startTime,@Param("endTime")String endTime,@Param("zl")String zl);
+    List<Map<String,Object>> getcxfb01(@Param("cx")List cx,@Param("startTime")String startTime,@Param("endTime")String endTime,@Param("zl")String zl);
     List<Map> getcxzl(@Param("cx")List cx,@Param("startTime")String startTime,@Param("endTime")String endTime,@Param("zl")String zl);
     List<Map> getcxzl01(@Param("cx")List cx,@Param("startTime")String startTime,@Param("endTime")String endTime,@Param("zl")String zl);
     List<Map> getcxzl02(@Param("cx")List cx,@Param("startTime")String startTime,@Param("endTime")String endTime,@Param("zl")String zl);

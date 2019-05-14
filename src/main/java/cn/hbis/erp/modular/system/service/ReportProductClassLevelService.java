@@ -29,12 +29,12 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
         return reportProductClassLevelMapper.getcxzl(cx,startTime,endTime,zl);
     }
     @Async
-    public List<Map> getcxfb01(List<String> cx, String startTime,String endTime,String zl){
+    public List<Map<String,Object>> getcxfb01(List<String> cx, String startTime,String endTime,String zl){
 
         String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
         String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
 
-        List<Map> getcxfb = reportProductClassLevelMapper.getcxfb01(cx,startTime1+" 00:00:00",endTime1+" 23:59:59",zl);
+        List<Map<String,Object>> getcxfb = reportProductClassLevelMapper.getcxfb01(cx,startTime1+" 00:00:00",endTime1+" 23:59:59",zl);
         List<Map> getCxNamePzg01 = reportProductClassLevelMapper.getcxzl01(cx,startTime1+" 00:00:00",endTime1+" 23:59:59",zl);
         List<Map> getCxNamePzg = reportProductClassLevelMapper.getcxzl(cx,startTime1+" 00:00:00",endTime1+" 23:59:59",zl);
         List<Map> getCxNamePzg02 = reportProductClassLevelMapper.getcxzl02(cx,startTime1+" 00:00:00",endTime1+" 23:59:59",zl);
@@ -61,7 +61,7 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
         double zbgsxszb=0;
         double zsj=0;
         int i= 0;
-        List<Map> list = new ArrayList<>();
+        List<Map<String,Object>> list = new ArrayList<>();
         if(i==0) {
             for (Map m2 : getcxfb) {
                 fkimg = fkimg + Double.parseDouble(m2.get("FKIMG").toString());
@@ -132,7 +132,7 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
             }else{
                 zsj = 0;
             }
-            Map<Object, Object> m = new HashMap<>();
+            Map<String, Object> m = new HashMap<>();
             m.put("ZL", "内贸");
             m.put("CXNAME", "总计");
             m.put("PRODUCT_GRADE", "总计");
@@ -246,7 +246,7 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
                 }else{
                     zsj = 0;
                 }
-                Map<Object, Object> m = new HashMap<>();
+                Map<String, Object> m = new HashMap<>();
                 m.put("ZL", m1.get("ZL"));
                 m.put("CXNAME", m1.get("ZL")+"小计");
                 m.put("PRODUCT_GRADE", "内贸合计");
@@ -361,7 +361,7 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
                 }else{
                     zsj = 0;
                 }
-                Map<Object, Object> m = new HashMap<>();
+                Map<String, Object> m = new HashMap<>();
                 m.put("ZL", m1.get("ZL"));
                 m.put("CXNAME", m1.get("ZL")+"小计");
                 m.put("PRODUCT_GRADE",m1.get("PRODUCT_GRADE"));
@@ -476,7 +476,7 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
                 }else{
                     zsj = 0;
                 }
-                Map<Object, Object> m = new HashMap<>();
+                Map<String, Object> m = new HashMap<>();
                 m.put("ZL", map.get("ZL"));
                 m.put("PRODUCT_GRADE", "内贸合计");
                 m.put("CXNAME", map.get("CXNAME"));
@@ -513,7 +513,7 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
             }
         }
         for (Map m1:getcxfb) {
-            Map<Object, Object> m = new HashMap<>();
+            Map<String, Object> m = new HashMap<>();
             m.put("ZL", m1.get("ZL"));
             m.put("PRODUCT_GRADE", m1.get("PRODUCT_GRADE"));
             m.put("CXNAME", m1.get("CXNAME"));
