@@ -146,7 +146,7 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
             m.put("FGSXSZB", Double.parseDouble(String.format("%.2f",fgsxszb*100))+"%");
             m.put("SYBFKIMG", Double.parseDouble(String.format("%.2f",sybfkimg)));
             m.put("SYBSJ", Double.parseDouble(String.format("%.2f",sybsj)));
-            m.put("ZYBXSZB", Double.parseDouble(String.format("%.2f",sybxszb*100))+"%");
+            m.put("SYBXSZB", Double.parseDouble(String.format("%.2f",sybxszb*100))+"%");
             m.put("XHFKIMG", Double.parseDouble(String.format("%.2f",xhfkimg)));
             m.put("XHSJ", Double.parseDouble(String.format("%.2f",xhsj)));
             m.put("XHXSZB", Double.parseDouble(String.format("%.2f",xhxszb*100))+"%");
@@ -260,7 +260,7 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
                 m.put("FGSXSZB", Double.parseDouble(String.format("%.2f",fgsxszb*100))+"%");
                 m.put("SYBFKIMG", Double.parseDouble(String.format("%.2f",sybfkimg)));
                 m.put("SYBSJ", Double.parseDouble(String.format("%.2f",sybsj)));
-                m.put("ZYBXSZB", Double.parseDouble(String.format("%.2f",sybxszb*100))+"%");
+                m.put("SYBXSZB", Double.parseDouble(String.format("%.2f",sybxszb*100))+"%");
                 m.put("XHFKIMG", Double.parseDouble(String.format("%.2f",xhfkimg)));
                 m.put("XHSJ", Double.parseDouble(String.format("%.2f",xhsj)));
                 m.put("XHXSZB", Double.parseDouble(String.format("%.2f",xhxszb*100))+"%");
@@ -375,7 +375,7 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
                 m.put("FGSXSZB", Double.parseDouble(String.format("%.2f",fgsxszb*100))+"%");
                 m.put("SYBFKIMG", Double.parseDouble(String.format("%.2f",sybfkimg)));
                 m.put("SYBSJ", Double.parseDouble(String.format("%.2f",sybsj)));
-                m.put("ZYBXSZB", Double.parseDouble(String.format("%.2f",sybxszb*100))+"%");
+                m.put("SYBXSZB", Double.parseDouble(String.format("%.2f",sybxszb*100))+"%");
                 m.put("XHFKIMG", Double.parseDouble(String.format("%.2f",xhfkimg)));
                 m.put("XHSJ", Double.parseDouble(String.format("%.2f",xhsj)));
                 m.put("XHXSZB", Double.parseDouble(String.format("%.2f",xhxszb*100))+"%");
@@ -517,10 +517,6 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
             m.put("ZL", m1.get("ZL"));
             m.put("PRODUCT_GRADE", m1.get("PRODUCT_GRADE"));
             m.put("CXNAME", m1.get("CXNAME"));
-
-            m.put("ZBGSSJ", (String.format("%.2f",zbgssj)));
-            m.put("ZBGSXSZB", (String.format("%.2f",zbgsxszb*100))+"%");
-
             m.put("FKIMG", Double.parseDouble(String.format("%.2f",Double.parseDouble(m1.get("FKIMG").toString()))));
             m.put("ZSJ", Double.parseDouble(String.format("%.2f",Double.parseDouble(m1.get("ZSJ").toString()))));
             m.put("ZYFKIMG", Double.parseDouble(String.format("%.2f",Double.parseDouble(m1.get("ZYFKIMG").toString()))));
