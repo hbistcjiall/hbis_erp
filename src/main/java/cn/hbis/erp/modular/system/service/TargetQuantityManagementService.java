@@ -531,7 +531,6 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
     public List<Map<String,Object>> xsjswccxexport(String startTime, String endTime, String pz, @RequestParam(required = false) List<String> cx, String jd) {
         String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
         String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
-        DecimalFormat df = new DecimalFormat("#.00");
         List<Map<String,Object>> list = new ArrayList<>();
         list = scmSteelSettleMapper.getxsjswcs(startTime1+" 00:00:00",endTime1+" 23:59:59",pz,cx,jd);
         List<Map<String,Object>>  thelist = new ArrayList<Map<String,Object>>();
@@ -727,28 +726,28 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         }
         map.put("ZL",zl);
         map.put("CXNAME",cxname);
-        map.put("FKIMG",df.format(fkimg));
-        map.put("ZSJ",df.format(zsj));
-        map.put("KZWI6",df.format(kzwi6));
-        map.put("NMFKIMG",df.format(nmfkimg));
-        map.put("NMSJ",df.format(nmsj));
-        map.put("XSZGSFKIMG",df.format(xszgsfkimg));
-        map.put("XSZGSSJ",df.format(xszgssj));
-        map.put("ZYFKIMG",df.format(zyfkimg));
-        map.put("ZYSJ",df.format(zysj));
-        map.put("FGSFKIMG",df.format(fgsfkimg));
-        map.put("FGSSJ",df.format(fgssj));
+        map.put("FKIMG",Double.valueOf(String.format("%.2f", fkimg) ));
+        map.put("ZSJ",Double.valueOf(String.format("%.2f", zsj) ));
+        map.put("KZWI6",Double.valueOf(String.format("%.2f", kzwi6) ));
+        map.put("NMFKIMG",Double.valueOf(String.format("%.2f", nmfkimg) ) );
+        map.put("NMSJ",Double.valueOf(String.format("%.2f", nmsj) ) );
+        map.put("XSZGSFKIMG",Double.valueOf(String.format("%.2f", xszgsfkimg) ));
+        map.put("XSZGSSJ",Double.valueOf(String.format("%.2f", xszgssj) ));
+        map.put("ZYFKIMG",Double.valueOf(String.format("%.2f", zyfkimg) ) );
+        map.put("ZYSJ",Double.valueOf(String.format("%.2f", zysj) ) );
+        map.put("FGSFKIMG", Double.valueOf(String.format("%.2f", fgsfkimg) ));
+        map.put("FGSSJ",Double.valueOf(String.format("%.2f", fgssj) ) );
 
-        map.put("ZGSFKIMG",df.format(zgsfkimg));
-        map.put("ZGSSJ",df.format(zgssj));
-        map.put("SYBFKIMG",df.format(sybfkimg));
-        map.put("SYBSJ",df.format(sybsj));
-        map.put("XHFKIMG",df.format(xhfkimg));
-        map.put("XHSJ",df.format(xhsj));
-        map.put("ZBGSFKIMG",df.format(zbgsfkimg));
-        map.put("ZBGSSJ",df.format(zbgssj));
-        map.put("CKFKIMG",df.format(ckfkimg));
-        map.put("CKSJ",df.format(cksj));
+        map.put("ZGSFKIMG",Double.valueOf(String.format("%.2f", zgsfkimg) ) );
+        map.put("ZGSSJ",Double.valueOf(String.format("%.2f", zgssj) ));
+        map.put("SYBFKIMG",Double.valueOf(String.format("%.2f", sybfkimg) ));
+        map.put("SYBSJ",Double.valueOf(String.format("%.2f", sybsj) ));
+        map.put("XHFKIMG",Double.valueOf(String.format("%.2f", xhfkimg) ) );
+        map.put("XHSJ",Double.valueOf(String.format("%.2f", xhsj) ) );
+        map.put("ZBGSFKIMG",Double.valueOf(String.format("%.2f", zbgsfkimg) ) );
+        map.put("ZBGSSJ",Double.valueOf(String.format("%.2f", zbgssj) ));
+        map.put("CKFKIMG",Double.valueOf(String.format("%.2f", ckfkimg) ) );
+        map.put("CKSJ",Double.valueOf(String.format("%.2f", cksj) ) );
         thelist.add(map);
         for (int i = 0;i<list.size();i++){
             thelist.add(list.get(i));
@@ -761,7 +760,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
     }
     public  List<Map<String,Object>> xiaoji (List<Map<String,Object>> list){
         List<Map<String,Object>> xiaoj = new ArrayList<>();
-        DecimalFormat df = new DecimalFormat("#.00");
+
         List pz = new ArrayList<>();
         pz.add("热板");
         pz.add("酸洗");
@@ -969,28 +968,28 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 }
                 map.put("ZL", zl);
                 map.put("CXNAME", zl + cxname);
-                map.put("FKIMG", df.format(fkimg));
-                map.put("ZSJ", df.format(zsj));
-                map.put("KZWI6", df.format(kzwi6));
-                map.put("NMFKIMG", df.format(nmfkimg));
-                map.put("NMSJ", df.format(nmsj));
-                map.put("XSZGSFKIMG", df.format(xszgsfkimg));
-                map.put("XSZGSSJ", df.format(xszgssj));
-                map.put("ZYFKIMG", df.format(zyfkimg));
-                map.put("ZYSJ", df.format(zysj));
-                map.put("FGSFKIMG", df.format(fgsfkimg));
-                map.put("FGSSJ", df.format(fgssj));
+                map.put("FKIMG",Double.valueOf(String.format("%.2f", fkimg) ));
+                map.put("ZSJ", Double.valueOf(String.format("%.2f", zsj) ));
+                map.put("KZWI6",Double.valueOf(String.format("%.2f", kzwi6) ) );
+                map.put("NMFKIMG",Double.valueOf(String.format("%.2f", nmfkimg) ) );
+                map.put("NMSJ",Double.valueOf(String.format("%.2f", nmsj) ) );
+                map.put("XSZGSFKIMG",Double.valueOf(String.format("%.2f", xszgsfkimg) ) );
+                map.put("XSZGSSJ",Double.valueOf(String.format("%.2f", xszgssj) ) );
+                map.put("ZYFKIMG",Double.valueOf(String.format("%.2f", zyfkimg) ) );
+                map.put("ZYSJ",Double.valueOf(String.format("%.2f", zysj) ));
+                map.put("FGSFKIMG",Double.valueOf(String.format("%.2f", fgsfkimg) ) );
+                map.put("FGSSJ",Double.valueOf(String.format("%.2f", fgssj) ) );
 
-                map.put("ZGSFKIMG", df.format(zgsfkimg));
-                map.put("ZGSSJ",df.format(zgssj) );
-                map.put("SYBFKIMG", df.format(sybfkimg));
-                map.put("SYBSJ", df.format(sybsj));
-                map.put("XHFKIMG", df.format(xhfkimg));
-                map.put("XHSJ", df.format(xhsj));
-                map.put("ZBGSFKIMG",df.format( zbgsfkimg));
-                map.put("ZBGSSJ",df.format(zbgssj) );
-                map.put("CKFKIMG", df.format(ckfkimg));
-                map.put("CKSJ", df.format(cksj));
+                map.put("ZGSFKIMG",Double.valueOf(String.format("%.2f", zgsfkimg) ) );
+                map.put("ZGSSJ", Double.valueOf(String.format("%.2f", zgssj) )  );
+                map.put("SYBFKIMG",Double.valueOf(String.format("%.2f", sybfkimg) ));
+                map.put("SYBSJ",Double.valueOf(String.format("%.2f", sybsj) ) );
+                map.put("XHFKIMG",Double.valueOf(String.format("%.2f", xhfkimg) ) );
+                map.put("XHSJ",Double.valueOf(String.format("%.2f", xhsj) ) );
+                map.put("ZBGSFKIMG",Double.valueOf(String.format("%.2f", zbgsfkimg) ));
+                map.put("ZBGSSJ",Double.valueOf(String.format("%.2f", zbgssj) ));
+                map.put("CKFKIMG",Double.valueOf(String.format("%.2f", ckfkimg) ));
+                map.put("CKSJ",Double.valueOf(String.format("%.2f", cksj) ));
 
             }
             xiaoj.add(map);
