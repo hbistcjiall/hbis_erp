@@ -1059,7 +1059,7 @@
         COMPANY_ID,
         nvl(SALE_BODY,'null') SALE_BODY,
         nvl(PRODUCT_GRADE,'null') PRODUCT_GRADE,
-        nvl(FKIMG,0) FKIMG,
+        round(nvl(FKIMG,0),2) FKIMG,
         FKDAT,
         ORDER_MOUNT,
         nvl(ORDER_TYPE_DESCRIBE,'null') ORDER_TYPE_DESCRIBE,
