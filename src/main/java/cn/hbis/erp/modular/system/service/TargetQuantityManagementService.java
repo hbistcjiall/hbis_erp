@@ -725,30 +725,30 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         }else {
             sybsj = 0;
         }
-        map.put("zl",zl);
-        map.put("cxname",cxname);
-        map.put("fkimg",df.format(fkimg));
-        map.put("zsj",df.format(zsj));
-        map.put("kzwi6",df.format(kzwi6));
-        map.put("nmfkimg",df.format(nmfkimg));
-        map.put("nmsj",df.format(nmsj));
-        map.put("xszgsfkimg",df.format(xszgsfkimg));
-        map.put("xszgssj",df.format(xszgssj));
-        map.put("zyfkimg",df.format(zyfkimg));
-        map.put("zysj",df.format(zysj));
-        map.put("fgsfkimg",df.format(fgsfkimg));
-        map.put("fgssj",df.format(fgssj));
+        map.put("ZL",zl);
+        map.put("CXNAME",cxname);
+        map.put("FKIMG",df.format(fkimg));
+        map.put("ZSJ",df.format(zsj));
+        map.put("KZWI6",df.format(kzwi6));
+        map.put("NMFKIMG",df.format(nmfkimg));
+        map.put("NMSJ",df.format(nmsj));
+        map.put("XSZGSFKIMG",df.format(xszgsfkimg));
+        map.put("XSZGSSJ",df.format(xszgssj));
+        map.put("ZYFKIMG",df.format(zyfkimg));
+        map.put("ZYSJ",df.format(zysj));
+        map.put("FGSFKIMG",df.format(fgsfkimg));
+        map.put("FGSSJ",df.format(fgssj));
 
-        map.put("zgsfkimg",df.format(zgsfkimg));
-        map.put("zgssj",df.format(zgssj));
-        map.put("sybfkimg",df.format(sybfkimg));
-        map.put("sybsj",df.format(sybsj));
-        map.put("xhfkimg",df.format(xhfkimg));
-        map.put("xhsj",df.format(xhsj));
-        map.put("zbgsfkimg",df.format(zbgsfkimg));
-        map.put("zbgssj",df.format(zbgssj));
-        map.put("ckfkimg",df.format(ckfkimg));
-        map.put("cksj",df.format(cksj));
+        map.put("ZBGSFKIMG",df.format(zgsfkimg));
+        map.put("ZGSSJ",df.format(zgssj));
+        map.put("SYBFKIMG",df.format(sybfkimg));
+        map.put("SYBSJ",df.format(sybsj));
+        map.put("XHFKIMG",df.format(xhfkimg));
+        map.put("XHSJ",df.format(xhsj));
+        map.put("ZBGSFKIMG",df.format(zbgsfkimg));
+        map.put("ZBGSSJ",df.format(zbgssj));
+        map.put("CKFKIMG",df.format(ckfkimg));
+        map.put("CKSJ",df.format(cksj));
         thelist.add(map);
         for (int i = 0;i<list.size();i++){
             thelist.add(list.get(i));
@@ -967,30 +967,30 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 } else {
                     sybsj = 0;
                 }
-                map.put("zl", zl);
-                map.put("cxname", zl + cxname);
-                map.put("fkimg", df.format(fkimg));
-                map.put("zsj", df.format(zsj));
-                map.put("kzwi6", df.format(kzwi6));
-                map.put("nmfkimg", df.format(nmfkimg));
-                map.put("nmsj", df.format(nmsj));
-                map.put("xszgsfkimg", df.format(xszgsfkimg));
-                map.put("xszgssj", df.format(xszgssj));
-                map.put("zyfkimg", df.format(zyfkimg));
-                map.put("zysj", df.format(zysj));
-                map.put("fgsfkimg", df.format(fgsfkimg));
-                map.put("fgssj", df.format(fgssj));
+                map.put("ZL", zl);
+                map.put("CXNAME", zl + cxname);
+                map.put("FKIMG", df.format(fkimg));
+                map.put("ZSJ", df.format(zsj));
+                map.put("KZWI6", df.format(kzwi6));
+                map.put("NMFKIMG", df.format(nmfkimg));
+                map.put("NMSJ", df.format(nmsj));
+                map.put("XSZGSFKIMG", df.format(xszgsfkimg));
+                map.put("XSZGSSJ", df.format(xszgssj));
+                map.put("ZYFKIMG", df.format(zyfkimg));
+                map.put("ZYSJ", df.format(zysj));
+                map.put("FGSFKIMG", df.format(fgsfkimg));
+                map.put("FGSSJ", df.format(fgssj));
 
-                map.put("zgsfkimg", df.format(zgsfkimg));
-                map.put("zgssj",df.format(zgssj) );
-                map.put("sybfkimg", df.format(sybfkimg));
-                map.put("sybsj", df.format(sybsj));
-                map.put("xhfkimg", df.format(xhfkimg));
-                map.put("xhsj", df.format(xhsj));
-                map.put("zbgsfkimg",df.format( zbgsfkimg));
-                map.put("zbgssj",df.format(zbgssj) );
-                map.put("ckfkimg", df.format(ckfkimg));
-                map.put("cksj", df.format(cksj));
+                map.put("ZGSFKIMG", df.format(zgsfkimg));
+                map.put("ZGSSJ",df.format(zgssj) );
+                map.put("SYBFKIMG", df.format(sybfkimg));
+                map.put("SYBJS", df.format(sybsj));
+                map.put("XHFKIMG", df.format(xhfkimg));
+                map.put("XHSJ", df.format(xhsj));
+                map.put("ZBGSFKIMG",df.format( zbgsfkimg));
+                map.put("ZBGSSJ",df.format(zbgssj) );
+                map.put("CKFKIMG", df.format(ckfkimg));
+                map.put("CKSJ", df.format(cksj));
 
             }
             xiaoj.add(map);
