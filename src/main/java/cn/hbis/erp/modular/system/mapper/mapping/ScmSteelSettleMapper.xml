@@ -4897,7 +4897,7 @@ from (select
         from
         (
         select
-        CASE when cxname = '邯钢其他' THEN '热板' WHEN cxname = '宣钢其他' then '型材' ELSE zl END zl ,
+        CASE when cxname = '唐钢其他' THEN '热板' when cxname = '邯钢其他' THEN '热板' WHEN cxname = '宣钢其他' then '型材' ELSE zl END zl ,
         cxname,fkimg,kzwi6/10000 kzwi6, decode(fkimg,0,0,kzwi6/fkimg) zsj,
         nmfkimg ,nmkzwi6,decode(nmfkimg,0,0,nmkzwi6/nmfkimg) nmsj,
         nvl(zyfkimg,0)+nvl(fgsfkimg,0) xszgsfkimg,nvl(zykzwi6,0)+ nvl(fgskzwi6,0) xszgskzwi6,
@@ -5458,7 +5458,7 @@ from (select
         from
         (
         select
-        CASE when cxname = '邯钢其他' THEN '热板' WHEN cxname = '宣钢其他' then '型材' ELSE zl END zl ,
+        CASE when cxname = '唐钢其他' THEN '热板' when cxname = '邯钢其他' THEN '热板' WHEN cxname = '宣钢其他' then '型材' ELSE zl END zl ,
         cxname,fkimg,kzwi6/10000 kzwi6, decode(fkimg,0,0,kzwi6/fkimg) zsj,
         nmfkimg ,nmkzwi6,decode(nmfkimg,0,0,nmkzwi6/nmfkimg) nmsj,
         nvl(zyfkimg,0)+nvl(fgsfkimg,0) xszgsfkimg,nvl(zykzwi6,0)+ nvl(fgskzwi6,0) xszgskzwi6,

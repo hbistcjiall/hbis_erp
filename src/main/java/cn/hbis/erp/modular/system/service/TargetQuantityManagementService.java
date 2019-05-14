@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -530,6 +531,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
     public List<Map<String,Object>> xsjswccxexport(String startTime, String endTime, String pz, @RequestParam(required = false) List<String> cx, String jd) {
         String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
         String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
+        DecimalFormat df = new DecimalFormat("#.00");
         List<Map<String,Object>> list = new ArrayList<>();
         list = scmSteelSettleMapper.getxsjswcs(startTime1+" 00:00:00",endTime1+" 23:59:59",pz,cx,jd);
         List<Map<String,Object>>  thelist = new ArrayList<Map<String,Object>>();
@@ -672,6 +674,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         }
         if(kzwi6/fkimg>0){
             zsj = kzwi6*10000/fkimg;
+
         }else {
             zsj = 0;
         }
@@ -724,28 +727,28 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         }
         map.put("zl",zl);
         map.put("cxname",cxname);
-        map.put("fkimg",fkimg);
-        map.put("zsj",zsj);
-        map.put("kzwi6",kzwi6);
-        map.put("nmfkimg",nmfkimg);
-        map.put("nmsj",nmsj);
-        map.put("xszgsfkimg",xszgsfkimg);
-        map.put("xszgssj",xszgssj);
-        map.put("zyfkimg",zyfkimg);
-        map.put("zysj",zysj);
-        map.put("fgsfkimg",fgsfkimg);
-        map.put("fgssj",fgssj);
+        map.put("fkimg",df.format(fkimg));
+        map.put("zsj",df.format(zsj));
+        map.put("kzwi6",df.format(kzwi6));
+        map.put("nmfkimg",df.format(nmfkimg));
+        map.put("nmsj",df.format(nmsj));
+        map.put("xszgsfkimg",df.format(xszgsfkimg));
+        map.put("xszgssj",df.format(xszgssj));
+        map.put("zyfkimg",df.format(zyfkimg));
+        map.put("zysj",df.format(zysj));
+        map.put("fgsfkimg",df.format(fgsfkimg));
+        map.put("fgssj",df.format(fgssj));
 
-        map.put("zgsfkimg",zgsfkimg);
-        map.put("zgssj",zgssj);
-        map.put("sybfkimg",sybfkimg);
-        map.put("sybsj",sybsj);
-        map.put("xhfkimg",xhfkimg);
-        map.put("xhsj",xhsj);
-        map.put("zbgsfkimg",zbgsfkimg);
-        map.put("zbgssj",zbgssj);
-        map.put("ckfkimg",ckfkimg);
-        map.put("cksj",cksj);
+        map.put("zgsfkimg",df.format(zgsfkimg));
+        map.put("zgssj",df.format(zgssj));
+        map.put("sybfkimg",df.format(sybfkimg));
+        map.put("sybsj",df.format(sybsj));
+        map.put("xhfkimg",df.format(xhfkimg));
+        map.put("xhsj",df.format(xhsj));
+        map.put("zbgsfkimg",df.format(zbgsfkimg));
+        map.put("zbgssj",df.format(zbgssj));
+        map.put("ckfkimg",df.format(ckfkimg));
+        map.put("cksj",df.format(cksj));
         thelist.add(map);
         for (int i = 0;i<list.size();i++){
             thelist.add(list.get(i));
@@ -758,7 +761,7 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
     }
     public  List<Map<String,Object>> xiaoji (List<Map<String,Object>> list){
         List<Map<String,Object>> xiaoj = new ArrayList<>();
-
+        DecimalFormat df = new DecimalFormat("#.00");
         List pz = new ArrayList<>();
         pz.add("热板");
         pz.add("酸洗");
@@ -966,28 +969,28 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
                 }
                 map.put("zl", zl);
                 map.put("cxname", zl + cxname);
-                map.put("fkimg", fkimg);
-                map.put("zsj", zsj);
-                map.put("kzwi6", kzwi6);
-                map.put("nmfkimg", nmfkimg);
-                map.put("nmsj", nmsj);
-                map.put("xszgsfkimg", xszgsfkimg);
-                map.put("xszgssj", xszgssj);
-                map.put("zyfkimg", zyfkimg);
-                map.put("zysj", zysj);
-                map.put("fgsfkimg", fgsfkimg);
-                map.put("fgssj", fgssj);
+                map.put("fkimg", df.format(fkimg));
+                map.put("zsj", df.format(zsj));
+                map.put("kzwi6", df.format(kzwi6));
+                map.put("nmfkimg", df.format(nmfkimg));
+                map.put("nmsj", df.format(nmsj));
+                map.put("xszgsfkimg", df.format(xszgsfkimg));
+                map.put("xszgssj", df.format(xszgssj));
+                map.put("zyfkimg", df.format(zyfkimg));
+                map.put("zysj", df.format(zysj));
+                map.put("fgsfkimg", df.format(fgsfkimg));
+                map.put("fgssj", df.format(fgssj));
 
-                map.put("zgsfkimg", zgsfkimg);
-                map.put("zgssj", zgssj);
-                map.put("sybfkimg", sybfkimg);
-                map.put("sybsj", sybsj);
-                map.put("xhfkimg", xhfkimg);
-                map.put("xhsj", xhsj);
-                map.put("zbgsfkimg", zbgsfkimg);
-                map.put("zbgssj", zbgssj);
-                map.put("ckfkimg", ckfkimg);
-                map.put("cksj", cksj);
+                map.put("zgsfkimg", df.format(zgsfkimg));
+                map.put("zgssj",df.format(zgssj) );
+                map.put("sybfkimg", df.format(sybfkimg));
+                map.put("sybsj", df.format(sybsj));
+                map.put("xhfkimg", df.format(xhfkimg));
+                map.put("xhsj", df.format(xhsj));
+                map.put("zbgsfkimg",df.format( zbgsfkimg));
+                map.put("zbgssj",df.format(zbgssj) );
+                map.put("ckfkimg", df.format(ckfkimg));
+                map.put("cksj", df.format(cksj));
 
             }
             xiaoj.add(map);
