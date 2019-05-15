@@ -171,7 +171,7 @@ public class AppController {
                 parm = parm + "&" + "attribute1=" + attribute1;
             }
             if(serviceArea != null && serviceArea != ""){
-                parm = parm + "&" + "serviceArea=" + serviceArea;
+                parm = parm + "&" + "serviceArea=" + URLEncoder.encode(serviceArea,"UTF-8");
             }
             if(attribute2 != null && attribute2 != ""){
                 parm = parm + "&" + "attribute2=" + attribute2;
