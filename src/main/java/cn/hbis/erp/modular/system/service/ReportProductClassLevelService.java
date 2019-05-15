@@ -557,9 +557,9 @@ public class ReportProductClassLevelService extends ServiceImpl<ReportProductCla
      * @return
      */
     @Async
-    public List pzexcel(String pz, List<String> cx , String startTime,String endTime){
+    public List pzexcel(String pz,String startTime,String endTime){
         String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
         String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
-        return reportProductClassLevelMapper.pzexcel(pz,cx,startTime1+" 00:00:00",endTime1+" 23:59:59");
+        return reportProductClassLevelMapper.pzexcel(pz,startTime1+" 00:00:00",endTime1+" 23:59:59");
     }
 }
