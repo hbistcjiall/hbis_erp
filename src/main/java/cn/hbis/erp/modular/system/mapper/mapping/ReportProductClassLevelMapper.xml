@@ -2625,36 +2625,82 @@
 
 
     <select id="cxexcel" resultType="map">
-        select
-        COMPANYNAME,
-        COMPANY_ID,
-        nvl(SALE_BODY,'null') SALE_BODY,
-        nvl(PRODUCT_GRADE,'null') PRODUCT_GRADE,
-        nvl(FKIMG,0) FKIMG,
-        FKDAT,
-        ORDER_MOUNT,
-        nvl(ORDER_TYPE_DESCRIBE,'null') ORDER_TYPE_DESCRIBE,
-        nvl(SALER_NAME,'null') SALER_NAME,
-        nvl(SALE_GROUP,'null') SALE_GROUP,
-        nvl(SS,'null') SS,
-        nvl(NAME,'null') NAME,
-        nvl(PRODUCT_LINE,'null') PRODUCT_LINE
-        from (
-        SELECT COMPANYNAME,
-        COMPANY_ID,
-        nvl(SALE_BODY,'null') SALE_BODY,
-        nvl(PRODUCT_GRADE,'null') PRODUCT_GRADE,
-        nvl(FKIMG,0) FKIMG,
-        FKDAT,
-        ORDER_MOUNT,
-        nvl(ORDER_TYPE_DESCRIBE,'null') ORDER_TYPE_DESCRIBE,
-        nvl(SALER_NAME,'null') SALER_NAME,
-        nvl(SALE_GROUP,'null') SALE_GROUP,
-        nvl(SS,'null') SS,
-        nvl(NAME,'null') NAME,
-        nvl(PRODUCT_LINE,'null') PRODUCT_LINE from
+        SELECT
+        company_id,
+        nvl(companyname,'null')companyname,
+        "TO_CHAR"(FKDAT,'yyyy-mm') month,
+        fkdat,
+        nvl(fkimg,0)fkimg,
+        nvl(kzwi6,0) kzwi6,
+        kzwi6*fkimg money,
+        nvl(FKART,'null') FKART,
+        nvl(order_type_describe,'null') order_type_describe,
+        nvl(product_grade,'null') product_grade,
+        nvl(sale_group,'null') sale_group,
+        nvl(sale_body,'null') sale_body,
+        nvl(ORDER_MOUNT,0) ORDER_MOUNT,
+        DESTINATION_NAME,
+        CONTRACT_NO,
+        nvl(DJ_DATE,'null')DJ_DATE,
+        nvl(PRODUCT_TYPE,'null') PRODUCT_TYPE,
+        nvl(name,'null') name,
+        nvl(VARIETY,'null')VARIETY,
+        nvl(kzwi6,0) kzwi6,
+        ACTUAL_DATE,
+        nvl(product_line,'null') product_line,
+        nvl(ATTRIBUTE1,'null') ATTRIBUTE1,
+        nvl(ATTRIBUTE2,'null') ATTRIBUTE2,
+        nvl(ATTRIBUTE9,'null') ATTRIBUTE9,
+        nvl(MATERIAL_INFO,'null') MATERIAL_INFO,
+        nvl(PAYER_NAME,'null') PAYER_NAME,
+        nvl(SALE_PRICE,0) SALE_PRICE,
+        nvl(VBELN,'null') VBELN,
+        nvl(VGBEL,'null') VGBEL,
+        nvl(VGPOS,'null') VGPOS,
+        nvl(ORDER_NO,'null') ORDER_NO,
+        nvl(ORDER_ROW,'null') ORDER_ROW,
+        nvl(DZ_NAME,'null') DZ_NAME,
+        nvl(PRODUCT_CODE,'null') PRODUCT_CODE,
+        nvl(ORDER_NOTE,'null') ORDER_NOTE
+        from
         (SELECT
-        distinct decode(settle.company_id,
+        company_id,
+        nvl(companyname,'null')companyname,
+        fkdat,
+        fkimg,
+        nvl(FKART,'null') FKART,
+        nvl(order_type_describe,'null') order_type_describe,
+        nvl(product_grade,'null') product_grade,
+        nvl(sale_group,'null') sale_group,
+        nvl(sale_body,'null') sale_body,
+        nvl(ORDER_MOUNT,0) ORDER_MOUNT,
+        DESTINATION_NAME,
+        CONTRACT_NO,
+        DJ_DATE,
+        nvl(PRODUCT_TYPE,'null') PRODUCT_TYPE,
+        nvl(name,'null') name,
+        nvl(VARIETY,'null')VARIETY,
+        nvl(kzwi6,0) kzwi6,
+        ACTUAL_DATE,
+        nvl(product_line,'null') product_line,
+        nvl(ATTRIBUTE1,'null') ATTRIBUTE1,
+        nvl(ATTRIBUTE2,'null') ATTRIBUTE2,
+        nvl(ATTRIBUTE9,'null') ATTRIBUTE9,
+        nvl(MATERIAL_INFO,'null') MATERIAL_INFO,
+        nvl(PAYER_NAME,'null') PAYER_NAME,
+        nvl(SALE_PRICE,0) SALE_PRICE,
+        nvl(VBELN,'null') VBELN,
+        nvl(VGBEL,'null') VGBEL,
+        nvl(VGPOS,'null') VGPOS,
+        nvl(ORDER_NO,'null') ORDER_NO,
+        nvl(ORDER_ROW,'null') ORDER_ROW,
+        nvl(DZ_NAME,'null') DZ_NAME,
+
+        nvl(PRODUCT_CODE,'null') PRODUCT_CODE,
+        nvl(ORDER_NOTE,'null') ORDER_NOTE
+        from
+        (SELECT
+        decode(settle.company_id,
         9580,
         '唐钢',
         9727,
@@ -2676,11 +2722,32 @@
         rpcl.product_grade,
         case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
         settle.fkdat,
+        settle.FKART,
+        settle.kzwi6,
+        settle.VBELN,
+        settle.VGBEL,
+        settle.VGPOS,
+        sso.DESTINATION_NAME,
+        sso.CONTRACT_NO,
+        sso.MATERIAL_INFO,
         sso.order_mount,
         sso.order_type_describe,
         sso.saler_name,
         sso.sale_group,
+        sso.DJ_DATE,
+        sso.ATTRIBUTE1,
+        sso.ATTRIBUTE2,
+        sso.ATTRIBUTE9,
+        sso.ORDER_NO,
+        sso.ORDER_ROW,
+        sso.ORDER_NOTE,
+        sso.PRODUCT_TYPE,
+        sso.PAYER_NAME,
+        sso.DZ_NAME,
+        sso.PRODUCT_CODE,
         sso.sale_body ss,
+        sso.SALE_PRICE,
+        svtp.VARIETY,
         (select max(DATA.Name)
         from scm_delivery_detail detail
         JOIN crm_resource_data DATA
@@ -2692,6 +2759,13 @@
         and settle.vgpos = detail.deliv_item
         and ( detail.delivery_delete  &lt; &gt; 'X' or
         detail.delivery_delete is null)) name,
+        (select max(detail.ACTUAL_DATE)
+        from scm_delivery_detail detail
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X'  or
+        detail.delivery_delete is null))ACTUAL_DATE,
         (select max(detail.ext)
         from scm_delivery_detail detail
         where settle.company_id = detail.company_id
@@ -2700,13 +2774,17 @@
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
+
         left join scm_sale_order sso
+
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
         left join (select a.* from price_salebody_relation a where a.is_delete = 0 ) xsztdzb
+
         ON sso.company_id = xsztdzb.company_id
         AND sso.sale_body = xsztdzb.sale_body_des
+
         inner join scm_variety_to_pt_gp svtp
         on sso.company_id = svtp.company_id
         and sso.product_code = svtp.product_group
@@ -2759,21 +2837,44 @@
         AND cfd.data_type = 9
         AND cfd.status = 0)
         UNION
-        SELECT COMPANYNAME,
-        COMPANY_ID,
-        nvl(SALE_BODY,'null') SALE_BODY,
-        nvl(PRODUCT_GRADE,'null') PRODUCT_GRADE,
-        nvl(FKIMG,0) FKIMG,
-        FKDAT,
-        ORDER_MOUNT,
-        nvl(ORDER_TYPE_DESCRIBE,'null') ORDER_TYPE_DESCRIBE,
-        nvl(SALER_NAME,'null') SALER_NAME,
-        nvl(SALE_GROUP,'null') SALE_GROUP,
-        nvl(SS,'null') SS,
-        nvl(NAME,'null') NAME,
-        nvl(PRODUCT_LINE,'null') PRODUCT_LINE from (
         SELECT
-        distinct decode(settle.company_id,
+        company_id ,
+        nvl(companyname,'null')companyname,
+        fkdat,
+        fkimg,
+        nvl(FKART,'null') FKART,
+        nvl(order_type_describe,'null') order_type_describe,
+        nvl(product_grade,'null') product_grade,
+        nvl(sale_group,'null') sale_group,
+        nvl(sale_body,'null') sale_body,
+        nvl(ORDER_MOUNT,0) ORDER_MOUNT,
+        DESTINATION_NAME,
+        CONTRACT_NO,
+        DJ_DATE,
+        nvl(PRODUCT_TYPE,'null')  PRODUCT_TYPE,
+        nvl(name,'null') name,
+        nvl(VARIETY,'null')VARIETY,
+        nvl(kzwi6,0) kzwi6,
+        ACTUAL_DATE,
+
+        nvl(product_line,'null') product_line,
+        nvl(ATTRIBUTE1,'null') ATTRIBUTE1,
+        nvl(ATTRIBUTE2,'null') ATTRIBUTE2,
+        nvl(ATTRIBUTE9,'null') ATTRIBUTE9,
+        nvl(MATERIAL_INFO,'null')  MATERIAL_INFO,
+        nvl(PAYER_NAME,'null') PAYER_NAME,
+        nvl(SALE_PRICE,0) SALE_PRICE,
+        nvl(VBELN,'null')  VBELN,
+        nvl(VGBEL,'null') VGBEL,
+        nvl(VGPOS,'null')  VGPOS,
+        nvl(ORDER_NO,'null')  ORDER_NO,
+        nvl(ORDER_ROW,'null') ORDER_ROW,
+        nvl(DZ_NAME,'null') DZ_NAME,
+        nvl(PRODUCT_CODE,'null') PRODUCT_CODE,
+        nvl(ORDER_NOTE,'null') ORDER_NOTE
+        from (
+        SELECT
+        decode(settle.company_id,
         9580,
         '唐钢',
         9727,
@@ -2795,28 +2896,55 @@
         rpcl.product_grade,
         case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
         settle.fkdat,
+        settle.FKART,
+        settle.kzwi6,
+        sso.DJ_DATE,
+        settle.VBELN,
+        sso.DESTINATION_NAME,
+        sso.CONTRACT_NO,
+        settle.VGBEL,
+        settle.VGPOS,
+        sso.MATERIAL_INFO,
         sso.order_mount,
         sso.order_type_describe,
         sso.saler_name,
         sso.sale_group,
+        sso.ATTRIBUTE1,
+        sso.ATTRIBUTE2,
+        sso.ATTRIBUTE9,
+        sso.ORDER_NO,
+        sso.ORDER_ROW,
+        sso.ORDER_NOTE,
+        sso.PRODUCT_TYPE,
+        sso.PAYER_NAME,
+        sso.DZ_NAME,
+        sso.PRODUCT_CODE,
         sso.sale_body ss,
+        sso.SALE_PRICE,
+        svtp.VARIETY,
         (select max(DATA.Name)
         from scm_delivery_detail detail
         JOIN crm_resource_data DATA
         ON DATA.full_name = detail.ext
         AND DATA.company_id = detail.company_id
         AND (DATA.TYPE = 6 )
-
-        where  detail.ORDER_NO = settle.aubel
-        and detail.ORDER_ITEM = settle.aupos
-        and detail.company_id =settle.company_id
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
         and ( detail.delivery_delete  &lt; &gt; 'X' or
         detail.delivery_delete is null)) name,
+        (select max(detail.ACTUAL_DATE)
+        from scm_delivery_detail detail
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X'  or
+        detail.delivery_delete is null))ACTUAL_DATE,
         (select max(detail.ext)
         from scm_delivery_detail detail
-        where detail.ORDER_NO = settle.aubel
-        and detail.ORDER_ITEM = settle.aupos
-        and detail.company_id =settle.company_id
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
@@ -2879,21 +3007,43 @@
         AND cfd.data_type = 9
         AND cfd.status = 0)
         UNION
-        SELECT COMPANYNAME,
-        COMPANY_ID,
-        nvl(SALE_BODY,'null') SALE_BODY,
-        nvl(PRODUCT_GRADE,'null') PRODUCT_GRADE,
-        nvl(FKIMG,0) FKIMG,
-        FKDAT,
-        ORDER_MOUNT,
-        nvl(ORDER_TYPE_DESCRIBE,'null') ORDER_TYPE_DESCRIBE,
-        nvl(SALER_NAME,'null') SALER_NAME,
-        nvl(SALE_GROUP,'null') SALE_GROUP,
-        nvl(SS,'null') SS,
-        nvl(NAME,'null') NAME,
-        nvl(PRODUCT_LINE,'null') PRODUCT_LINE from (
         SELECT
-        distinct decode(settle.company_id,
+        company_id,
+        nvl(companyname,'null')companyname,
+        fkdat,
+        fkimg,
+        nvl(FKART,'null') FKART,
+        nvl(order_type_describe,'null') order_type_describe,
+        nvl(product_grade,'null') product_grade,
+        nvl(sale_group,'null') sale_group,
+        nvl(sale_body,'null') sale_body,
+        nvl(ORDER_MOUNT,0) ORDER_MOUNT,
+        DESTINATION_NAME,
+        CONTRACT_NO,
+        DJ_DATE,
+        nvl(PRODUCT_TYPE,'null')  PRODUCT_TYPE,
+        nvl(name,'null')  name,
+        nvl(VARIETY,'null')VARIETY,
+        nvl(kzwi6,0) kzwi6,
+        ACTUAL_DATE,
+        nvl(product_line,'null') product_line,
+        nvl(ATTRIBUTE1,'null') ATTRIBUTE1,
+        nvl(ATTRIBUTE2,'null') ATTRIBUTE2,
+        nvl(ATTRIBUTE9,'null') ATTRIBUTE9,
+        nvl(MATERIAL_INFO,'null')  MATERIAL_INFO,
+        nvl(PAYER_NAME,'null')  PAYER_NAME,
+        nvl(SALE_PRICE,0) SALE_PRICE,
+        nvl(VBELN,'null') VBELN,
+        nvl(VGBEL,'null')  VGBEL,
+        nvl(VGPOS,'null')  VGPOS,
+        nvl(ORDER_NO,'null')  ORDER_NO,
+        nvl(ORDER_ROW,'null') ORDER_ROW,
+        nvl(DZ_NAME,'null') DZ_NAME,
+        nvl(PRODUCT_CODE,'null') PRODUCT_CODE,
+        nvl(ORDER_NOTE,'null') ORDER_NOTE
+        from (
+        SELECT
+        decode(settle.company_id,
         9580,
         '唐钢',
         9727,
@@ -2911,27 +3061,56 @@
         7778,
         '邯宝') AS companyname,
         settle.company_id,
-        xsztdzb.sale_body,
-
+        sso.sale_body ,
         rpcl.product_grade,
         case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
         settle.fkdat,
+        settle.FKART,
+        settle.kzwi6,
+        settle.VBELN,
+        settle.VGBEL,
+        settle.VGPOS,
+        sso.MATERIAL_INFO,
         sso.order_mount,
+        sso.DESTINATION_NAME,
+        sso.CONTRACT_NO,
         sso.order_type_describe,
         sso.saler_name,
-
         sso.sale_group,
-        sso.sale_body ss,
-        decode(settle.company_id,
-        1932,
-        '宽厚板',
-        8110,
-        '特钢',
-        8493,
-        '薄板') AS name,
+
+        sso.DJ_DATE,
+        sso.ATTRIBUTE1,
+        sso.ATTRIBUTE2,
+        sso.ATTRIBUTE9,
+        sso.ORDER_NO,
+        sso.ORDER_ROW,
+        sso.ORDER_NOTE,
+        sso.PRODUCT_TYPE,
+        sso.PAYER_NAME,
+        sso.DZ_NAME,
+        sso.PRODUCT_CODE,
+        sso.SALE_PRICE,
+        svtp.VARIETY,
+        (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X' or
+        detail.delivery_delete is null)) name,
+        (select max(detail.ACTUAL_DATE)
+        from scm_delivery_detail detail
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X'  or
+        detail.delivery_delete is null))ACTUAL_DATE,
         (select max(detail.ext)
         from scm_delivery_detail detail
-
         where settle.company_id = detail.company_id
         and settle.vgbel = detail.deliv_numb
         and settle.vgpos = detail.deliv_item
@@ -2994,6 +3173,7 @@
         AND cfd.data_type = 9
         AND cfd.status = 0)
         )
+
         where 1 = 1
         <if test="dw != '' and  dw != null and  dw != 'undefined' and dw !='全部'">
             and COMPANY_ID = #{dw}
@@ -3004,6 +3184,8 @@
                 　　#{item}
             </foreach>
         </if>
+        ORDER BY decode(companyname,'唐钢','邯钢','宣钢','承钢','舞钢','石钢','衡板','邯宝')
+
     </select>
 
     <select id="pzexcel" resultType="map">
