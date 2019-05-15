@@ -119,7 +119,6 @@ public class ReportProductClassLevelController {
                 zbgskzwi6=0;
             }
         }
-        System.out.println(list);
         List<List> list1 = new ArrayList<>();
         list1.add(list);
         list1.add(getcxfb);
