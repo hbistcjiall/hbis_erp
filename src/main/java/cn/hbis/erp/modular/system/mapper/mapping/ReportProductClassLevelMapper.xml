@@ -3761,12 +3761,6 @@
             and VARIETY = #{pz}
 
         </if>
-        <if test="cx != null and  cx.size > 0">
-            and   cxname in
-            <foreach item="item" index="index" collection="cx" open="(" separator="," close=")">
-                　　#{item}
-            </foreach>
-        </if>
         ORDER BY decode(companyname,'唐钢','邯钢','宣钢','承钢','舞钢','石钢','衡板','邯宝')
 
 
