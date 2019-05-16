@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -185,7 +185,7 @@ public class ProtocolAccountDetailsStatisticsController {
     }
 
     public void exportXlsx(OutputStream out, String fileName, List<Map<String, Object>> headListMap, List<Map<String, Object>> dataListMap, String[] mergeCols, String[] colOrder, HttpServletResponse response) {
-        XSSFWorkbook wb = new XSSFWorkbook();
+        SXSSFWorkbook wb = new SXSSFWorkbook();
         export(out, fileName, headListMap, dataListMap, mergeCols, colOrder, wb);
     }
 }

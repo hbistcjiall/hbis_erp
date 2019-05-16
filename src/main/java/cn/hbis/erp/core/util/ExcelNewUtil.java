@@ -7,11 +7,12 @@ package cn.hbis.erp.core.util;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.*;
 
 import java.util.List;
@@ -26,10 +27,10 @@ public class ExcelNewUtil {
      * CellRangeAddress(起始行号，结束行号，起始列号，结束列号)
      * 合并行或列
      */
-    public static void createExcelHeader(XSSFWorkbook wb, XSSFSheet sheet, List<Map<String, Object>> headListMap){
+    public static void createExcelHeader(SXSSFWorkbook wb, SXSSFSheet sheet, List<Map<String, Object>> headListMap){
         sheet.setDefaultColumnWidth(7);
-        XSSFRow sr = null;
-        XSSFCell sc = null;
+        SXSSFRow sr = null;
+        SXSSFCell sc = null;
 
         int j=0;//行
         //遍历表头集合
@@ -139,12 +140,12 @@ public class ExcelNewUtil {
      * @param sheet
      * @param list 表内容集合
      */
-    public static void fillExcel(int startRow,String[] mergeCols,String[] colOrder,XSSFWorkbook wb,XSSFSheet sheet,List<Map<String,Object>> list) {
+    public static void fillExcel(int startRow, String[] mergeCols, String[] colOrder, SXSSFWorkbook wb, SXSSFSheet sheet, List<Map<String,Object>> list) {
         CellStyle style = wb.createCellStyle();
         style = createBorderStyle(wb);
         @SuppressWarnings("deprecation")
-        XSSFRow sr = null;
-        XSSFCell sc = null;
+        SXSSFRow sr = null;
+        SXSSFCell sc = null;
         Map<String, Object> frontMap=null;//上一行的数据
         JSONObject merge=new JSONObject();//需要合并的位置
         String mer="";//记录首次出现的行
@@ -259,7 +260,7 @@ public class ExcelNewUtil {
      * @param wb
      * @return
      */
-    public static CellStyle createAlignStyle(XSSFWorkbook wb){
+    public static CellStyle createAlignStyle(SXSSFWorkbook wb){
         CellStyle style = wb.createCellStyle();
         style.setWrapText(true);
         style.setAlignment(HorizontalAlignment.CENTER);
@@ -272,7 +273,7 @@ public class ExcelNewUtil {
      * @param wb
      * @return
      */
-    public static CellStyle createBorderStyle(XSSFWorkbook wb){
+    public static CellStyle createBorderStyle(SXSSFWorkbook wb){
         CellStyle style = wb.createCellStyle();
         style.setWrapText(true);
         style.setBorderBottom(BorderStyle.THIN);
@@ -282,7 +283,7 @@ public class ExcelNewUtil {
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
 
-        XSSFFont font = wb.createFont();
+        Font font = wb.createFont();
         font.setFontName("宋体");
         font.setFontHeightInPoints((short) 10);//设置字体大小
         style.setFont(font);
@@ -317,9 +318,9 @@ public class ExcelNewUtil {
      * @param row 行
      * @param style
      */
-    public static void setCellBorder(int start, int end, XSSFRow row,  CellStyle style) {
+    public static void setCellBorder(int start, int end, SXSSFRow row,  CellStyle style) {
         for(int i=start;i<=end;i++){
-            XSSFCell cell = row.createCell(i);
+            SXSSFCell cell = row.createCell(i);
             cell.setCellValue("");
             cell.setCellStyle(style);
         }
@@ -331,9 +332,9 @@ public class ExcelNewUtil {
      * @param row 行
      * @param style
      */
-    public static void setCellBorder1(int start, int end, XSSFRow row,  CellStyle style) {
+    public static void setCellBorder1(int start, int end, SXSSFRow row,  CellStyle style) {
         for(int i=end+1;i>=start;i--){
-            XSSFCell cell = row.createCell(i);
+            SXSSFCell cell = row.createCell(i);
             cell.setCellValue("");
             cell.setCellStyle(style);
         }
@@ -344,8 +345,8 @@ public class ExcelNewUtil {
      * @param val 值
      * @param style
      */
-    public static void setCellBorder(int i, XSSFRow row,  CellStyle style, String val) {
-        XSSFCell cell = row.createCell(i);
+    public static void setCellBorder(int i, SXSSFRow row,  CellStyle style, String val) {
+        SXSSFCell cell = row.createCell(i);
         cell.setCellValue(val);
         cell.setCellStyle(style);
     }
@@ -354,7 +355,7 @@ public class ExcelNewUtil {
      * @param wb
      * @return
      */
-    public static CellStyle createHeaderStyle(XSSFWorkbook wb){
+    public static CellStyle createHeaderStyle(SXSSFWorkbook wb){
         CellStyle style = wb.createCellStyle();
 		/*style.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
 		style.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
@@ -362,7 +363,7 @@ public class ExcelNewUtil {
 		style.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
 */		style.setAlignment(HorizontalAlignment.CENTER); //字体居中
         style.setVerticalAlignment(VerticalAlignment.CENTER);//垂直
-        XSSFFont font = wb.createFont();
+        Font font = wb.createFont();
         font.setFontName("黑体");
         font.setBold(true);//粗体显示
         font.setFontHeightInPoints((short) 16);//设置字体大小
@@ -375,7 +376,7 @@ public class ExcelNewUtil {
      * @param size 字体大小
      * @return
      */
-    public static CellStyle createHeaderStyle(XSSFWorkbook wb,int size){
+    public static CellStyle createHeaderStyle(SXSSFWorkbook wb,int size){
         CellStyle style = wb.createCellStyle();
 		/*style.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
 		style.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
@@ -383,7 +384,7 @@ public class ExcelNewUtil {
 		style.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
 */		style.setAlignment(HorizontalAlignment.CENTER); //字体居中
         style.setVerticalAlignment(VerticalAlignment.CENTER);//垂直
-        XSSFFont font = wb.createFont();
+        Font font = wb.createFont();
         font.setFontName("黑体");
         font.setBold(true);//粗体显示
         font.setFontHeightInPoints((short) size);//设置字体大小

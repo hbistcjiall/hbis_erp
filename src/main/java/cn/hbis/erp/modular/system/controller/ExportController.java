@@ -13,8 +13,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.util.IOUtils;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -368,14 +368,14 @@ public class ExportController {
     }
 
     public void exportXlsx(OutputStream out, String fileName, List<Map<String, Object>> headListMap, List<Map<String, Object>> dataListMap, String[] mergeCols, String[] colOrder, HttpServletResponse response) {
-        XSSFWorkbook wb = new XSSFWorkbook();
+        SXSSFWorkbook wb = new SXSSFWorkbook();
         export(out, fileName, headListMap, dataListMap, mergeCols, colOrder, wb);
     }
 
-    static void export(OutputStream out, String fileName, List<Map<String, Object>> headListMap, List<Map<String, Object>> dataListMap, String[] mergeCols, String[] colOrder, XSSFWorkbook wb) {
+    static void export(OutputStream out, String fileName, List<Map<String, Object>> headListMap, List<Map<String, Object>> dataListMap, String[] mergeCols, String[] colOrder, SXSSFWorkbook wb) {
         try {
             Map<String,Object> map=new HashMap<String,Object>();
-            XSSFSheet sheet1 = wb.createSheet(fileName);
+            SXSSFSheet sheet1 = wb.createSheet(fileName);
 
             //创建表头
             ExcelNewUtil.createExcelHeader(wb, sheet1, headListMap);
