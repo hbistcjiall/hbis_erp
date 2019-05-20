@@ -508,7 +508,7 @@
         (select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl from （SELECT
 
         <if test="zt==0">
-            NAME,
+            vc.VARIETY_CLASS name,
             sum(case when   sale_body = '专业公司' then fkimg end)
             zyfkimg,
             sum(case when   sale_body = '专业公司' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
@@ -524,7 +524,7 @@
         </if>
 
         <if test="zt==1">
-            NAME,
+            vc.VARIETY_CLASS name,
             sum(case when   sale_body = '专业公司' then fkimg end)
             zyfkimg,
             sum(case when   sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
@@ -635,6 +635,8 @@
         and  settle.company_id in ('9580','9727','9193')
 
         order by settle.id desc) t
+        LEFT JOIN SCM_VARIETY_CLASS vc
+        on t.cxname = vc.name
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
@@ -655,7 +657,7 @@
         AND cfd.data_type = 9
         AND cfd.status = 0)
         and  t.CXNAME &lt; &gt; '唐钢1580热轧线'  and  t.cxname &lt; &gt; '唐钢中厚板'
-        and t.cxname is not null group by  t.name ) a
+        and t.cxname is not null group by  vc.VARIETY_CLASS ) a
 
 
 
@@ -665,7 +667,7 @@
         select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zypzgl,0)+NVL(fgspzgl,0)+NVL(zgspzgl,0)) pzgl,zyfkimg,zypzgl,fgsfkimg,fgspzgl,zgsfkimg,zgspzgl from （SELECT
 
         <if test="zt==0">
-            NAME,
+            vc.VARIETY_CLASS name,
             sum(case when   sale_body = '专业公司' then fkimg end)
             zyfkimg,
             sum(case when   sale_body = '专业公司' and (product_grade = '品种钢' OR product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
@@ -681,7 +683,7 @@
         </if>
 
         <if test="zt==1">
-            NAME,
+            vc.VARIETY_CLASS name,
             sum(case when   sale_body = '专业公司' then fkimg end)
             zyfkimg,
             sum(case when   sale_body = '专业公司' and (product_grade = '高端产品' OR product_grade = '特色战略产品') then fkimg end)
@@ -792,6 +794,8 @@
         and  settle.company_id in ('9196')
 
         order by settle.id desc) t
+        LEFT JOIN SCM_VARIETY_CLASS vc
+        on t.cxname = vc.name
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
@@ -811,7 +815,7 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        and t.cxname is not null group by  t.name ) )
+        and t.cxname is not null group by  vc.VARIETY_CLASS ) )
 
 
         union all
