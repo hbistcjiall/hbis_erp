@@ -4051,18 +4051,18 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         select nvl(name,'合计') COMPANYNAME, "SUM"(kzwi6)/10000 kzwi6,sum(FKIMG) FKIMG,decode(sum(FKIMG),0,0,sum(kzwi6)/sum(FKIMG)) sj from
         (select NAME,kzwi6, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)+ NVL(ckfkimg,0)) FKIMG,zyfkimg,fgsfkimg,zgsfkimg,ckfkimg
         from (SELECT
-        NAME,"SUM"(kzwi6) kzwi6,
-        sum(case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')
+        vc.VARIETY_CLASS NAME,"SUM"(kzwi6) kzwi6,
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss')
         and sale_body = '专业公司' or sale_body = '专业公司' then fkimg end)
         zyfkimg,
 
-        sum(case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end)
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end)
         fgsfkimg,
 
-        sum(case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部' or sale_body='子公司' or sale_body  = '现货' or sale_body='自办公司')   then fkimg end)
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部' or sale_body='子公司' or sale_body  = '现货' or sale_body='自办公司')   then fkimg end)
         zgsfkimg,
 
-        sum(case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='出口')  then fkimg end)
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='出口')  then fkimg end)
         ckfkimg
 
         from (SELECT
@@ -4094,15 +4094,18 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         sso.order_type_describe,
         sso.saler_name,
         sso.sale_group,
+        (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+        where  detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
+        and ( detail.delivery_delete  &lt;&gt; 'X' or
+        detail.delivery_delete is null)) cxname,
         sso.sale_body ss,
-        (select max(B.VARIETY)
-        from scm_sale_order sso
-        JOIN scm_variety_to_pt_gp B
-        ON sso.product_code = B.product_group
-        and sso.company_id = B.company_id
-        where sso.order_no = settle.aubel
-        and sso.ORDER_ROW = settle.AUPOS
-        AND sso.company_id = settle.company_id) name,
         (select max(detail.ext)
         from scm_delivery_detail detail
         where settle.company_id = detail.company_id
@@ -4142,12 +4145,14 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         on sso.company_id = rpcl.company_id
         and sso.product_type = rpcl.product_class
         where
-        settle.fkdat<![CDATA[ >= ]]> to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
-        and settle.fkdat <![CDATA[ <= ]]> to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+        settle.fkdat&gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
 
         and  settle.company_id in ('9580','9727','9193')
 
         order by settle.id desc) t
+        LEFT JOIN SCM_VARIETY_CLASS vc
+        on t.cxname = vc.name
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
@@ -4162,6 +4167,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
 
 
         </if>
+
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -4171,14 +4177,14 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         and cfd.status = '0'
         and cfd.company_id = t.company_id
         and instr(concat(t.product_line, t.company_id),
-        concat(cfd.product_line, cfd.company_id)) > 0)
+        concat(cfd.product_line, cfd.company_id)) &gt; 0)
         AND t.sale_group NOT IN (SELECT cfd.data_name
         FROM crm_filter_data cfd
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
 
-        and t.name is not null group by  t.name ) a
+        and vc.VARIETY_CLASS is not null group by  vc.VARIETY_CLASS ) a
 
 
 
@@ -4187,15 +4193,15 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         from (
         SELECT
 
-        NAME,
+        vc.VARIETY_CLASS NAME,
         "SUM"(kzwi6) kzwi6,
-        sum(case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end)
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '专业公司' then fkimg end)
         zyfkimg,
-        sum(case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end)
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_body = '分公司' then fkimg end)
         fgsfkimg,
-        sum(case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end)
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='事业部'  or sale_body  = '现货' or sale_body='自办公司')   then fkimg end)
         zgsfkimg,
-        sum(case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='出口')  then fkimg end)
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_body ='出口')  then fkimg end)
         ckfkimg
 
         from (SELECT
@@ -4228,14 +4234,18 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         sso.saler_name,
         sso.sale_group,
         sso.sale_body ss,
-        (select max(B.VARIETY)
-        from scm_sale_order sso
-        JOIN scm_variety_to_pt_gp B
-        ON sso.product_code = B.product_group
-        and sso.company_id = B.company_id
-        where sso.order_no = settle.aubel
-        and sso.ORDER_ROW = settle.AUPOS
-        AND sso.company_id = settle.company_id) name,
+        (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+        where  detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
+        and ( detail.delivery_delete  &lt;&gt; 'X' or
+        detail.delivery_delete is null)) cxname,
+
         (select max(detail.ext)
         from scm_delivery_detail detail
         where  detail.DELIV_NUMB = settle.vgbel
@@ -4276,14 +4286,17 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         on sso.company_id = rpcl.company_id
         and sso.product_type = rpcl.product_class
         where
-        settle.fkdat<![CDATA[ >= ]]> to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
-        and settle.fkdat <![CDATA[ <= ]]> to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+        settle.fkdat&gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
         and  settle.company_id in ('9196')
 
         order by settle.id desc) t
+        LEFT JOIN SCM_VARIETY_CLASS vc
+        on t.cxname = vc.name
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
+
         <if test="jd != '' and jd == 0 and jd!= null and jd != 'undefined'">
             where cfd.data_type in ('5','10')
 
@@ -4295,6 +4308,7 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
 
 
         </if>
+
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -4304,36 +4318,38 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         and cfd.status = '0'
         and cfd.company_id = t.company_id
         and instr(concat(t.product_line, t.company_id),
-        concat(cfd.product_line, cfd.company_id)) > 0)
+        concat(cfd.product_line, cfd.company_id)) &gt; 0)
         AND t.sale_group NOT IN (SELECT cfd.data_name
         FROM crm_filter_data cfd
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
 
-        and t.name is not null group by  t.name )
+        and vc.VARIETY_CLASS is not null group by  vc.VARIETY_CLASS )
         )
 
 
         union all
 
         ( select name,kzwi6,(nvl(zyfkimg,0)+ nvl(fgsfkimg,0) +nvl(zgsfkimg,0)+nvl(ckfkimg,0)) fkimg,zyfkimg,fgsfkimg,zgsfkimg,ckfkimg
-        from(select  name,"SUM"(kzwi6) kzwi6,
+        from
+        (
+        select VARIETY_CLASS name,"SUM"(kzwi6) kzwi6,
         sum(case when company_id = '1932'  then
-        case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end end)
+        case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sale_group = '销售部' then case when fkimg is null then 0 else fkimg end end end)
         zyfkimg,
 
         sum( case when company_id='8110' then
-        case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sggl = '分公司'  or sggl = '出口'  then fkimg end else null end )
+        case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and sggl = '分公司'  or sggl = '出口'  then fkimg end else null end )
         fgsfkimg,
 
         sum(case when company_id = '1932'  then
-        case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部')  then fkimg end
+        case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '科技部')  then fkimg end
         when company_id ='8493'  then
-        case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' )  then fkimg end end)
+        case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (sale_group = '营销中心' or sale_group ='1000' )  then fkimg end end)
         zgsfkimg,
 
-        sum(case when fkdat <![CDATA[ >= ]]> to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  <![CDATA[ <= ]]> to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (company_id = '1932' and sale_group = '舞钢国贸') or sggl ='出口' then fkimg end)
+        sum(case when fkdat &gt;= to_date (#{startTime},'yyyy-mm-dd hh24:mi:ss') and fkdat  &lt;= to_date (#{endTime},'yyyy-mm-dd hh24:mi:ss') and (company_id = '1932' and sale_group = '舞钢国贸') or sggl ='出口' then fkimg end)
         ckfkimg
 
         from (SELECT
@@ -4366,14 +4382,16 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         sso.order_type_describe,
         sso.saler_name,
         sso.sale_group,
-        (select case when  B.company_id ='8110' then '特钢' when B.company_id ='8493'then '薄板' else b.variety end VARIETY
+        case when  settle.company_id ='1932' then '中厚板' when  settle.company_id ='8110' then '圆钢' when settle.company_id ='8493'then '薄板'  end  VARIETY_CLASS,
+
+        (select case when  B.company_id ='1932' then '舞钢中厚板' when  B.company_id ='8110' then '石钢圆钢' when B.company_id ='8493'then '衡板薄板' else b.variety end VARIETY
         from scm_sale_order sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
         where sso.order_no = settle.aubel
         and sso.ORDER_ROW = settle.AUPOS
-        AND sso.company_id = settle.company_id) name,
+        AND sso.company_id = settle.company_id) cxname,
         (select max(detail.ext)
         from scm_delivery_detail detail
 
@@ -4414,14 +4432,16 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         on sso.company_id = rpcl.company_id
         and sso.product_type = rpcl.product_class
         where
-        settle.fkdat<![CDATA[ >= ]]> to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
-        and settle.fkdat <![CDATA[ <= ]]> to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+        settle.fkdat&gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
         and  settle.company_id in ('8110','8493','1932')
 
         order by settle.id desc) t
+
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
+
         <if test="jd != '' and jd == 0 and jd!= null and jd != 'undefined'">
             where cfd.data_type in ('5','10')
 
@@ -4433,6 +4453,10 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
 
 
         </if>
+
+
+
+
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -4442,16 +4466,18 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
         and cfd.status = '0'
         and cfd.company_id = t.company_id
         and instr(concat(t.product_line, t.company_id),
-        concat(cfd.product_line, cfd.company_id)) > 0)
+        concat(cfd.product_line, cfd.company_id)) &gt; 0)
         AND t.sale_group NOT IN (SELECT cfd.data_name
         FROM crm_filter_data cfd
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
 
-        group by t.name  ))
+        group by t.VARIETY_CLASS  )
+        )
 
         )
+
         <if test="pz != '' and pz!= '全部' and pz!= null and pz != 'undefined'">
 
             where NAME = #{pz}
