@@ -4051,8 +4051,8 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
     </select>
 
     <select id="getyxybpz" resultType="map">
-
-        select nvl(name,'合计') COMPANYNAME, "SUM"(kzwi6)/10000 kzwi6,sum(FKIMG) FKIMG,decode(sum(FKIMG),0,0,sum(kzwi6)/sum(FKIMG)) sj from
+        select COMPANYNAME, kzwi6, FKIMG, sj from
+        (select nvl(name,'合计') COMPANYNAME, "SUM"(kzwi6)/10000 kzwi6,sum(FKIMG) FKIMG,decode(sum(FKIMG),0,0,sum(kzwi6)/sum(FKIMG)) sj from
         (select NAME,kzwi6, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)+ NVL(ckfkimg,0)) FKIMG,zyfkimg,fgsfkimg,zgsfkimg,ckfkimg
         from (SELECT
         vc.VARIETY_CLASS NAME,"SUM"(kzwi6) kzwi6,
@@ -4488,8 +4488,8 @@ select NAME, (NVL(ZYFKIMG,0)+ NVL(FGSFKIMG,0)+ NVL(ZGSFKIMG,0)) FKIMG,(NVL(zykzw
 
         </if>
 
-         group by rollup(name)
-        order by "DECODE"(name,'热板','1','冷板','2','宽厚板','3','棒线','4','型带','5','特钢','6','薄板'，'7')
+         group by rollup(name) )
+        order by "DECODE"(companyname,'合计','1','热板','2','冷板','3','宽厚板','4','棒线','5','型带','6','特钢','7','薄板','8')
    </select>
 
     <select id="getyxybgc" resultType="map">
