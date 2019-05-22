@@ -176,6 +176,17 @@ public class AppController {
             if(attribute2 != null && attribute2 != ""){
                 parm = parm + "&" + "attribute2=" + attribute2;
             }
+        }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/sellPrice/everyCompanyPort.htm")){
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+        }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/sellPrice/oneCompanyDividArea.htm")){
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+            if(companyId != null && companyId != ""){
+                parm = parm + "&" + "companyId=" + companyId;
+            }
         }
         // 将参数输出到连接
         dataout.writeBytes(parm);
