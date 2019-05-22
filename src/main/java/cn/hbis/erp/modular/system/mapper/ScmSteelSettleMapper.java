@@ -31,7 +31,7 @@ public interface ScmSteelSettleMapper extends BaseMapper<ScmSteelSettle> {
     List<ScmSteelSettle> getCxNamePzg(@Param("companyId") String  companyId,@Param("type") String  type);
     List<ScmSteelSettle> getyxybpz(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("pz") String pz,@Param("jd") String jd);
     List<ScmSteelSettle> getyxybgc(@Param("startTime") String startTime, @Param("endTime") String endTime,@Param("gc") String gc,@Param("jd") String jd);
-    List<Map>getxsjswc(@Param("startTime") String startTime, @Param("endTime") String endTime,@Param("pz") String pz,@Param("cx") List cx,@Param("jd") String jd);
+    List<Map> getxsjswc(@Param("startTime") String startTime, @Param("endTime") String endTime,@Param("pz") String pz,@Param("cx") List cx,@Param("jd") String jd);
     List<Map<String,Object>>getxsjswcs(@Param("startTime") String startTime, @Param("endTime") String endTime,@Param("pz") String pz,@Param("cx") List cx,@Param("jd") String jd);
 
 }
