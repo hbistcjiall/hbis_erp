@@ -30,6 +30,8 @@
 		select sa.ACCOUNTABILITY_UNIT_CODE code,sa.ACCOUNTABILITY_UNIT_NAME NAME
 		from SCM_ACCOUNTABILITY_UNIT_MANAGE  sa
 		WHERE sa.DELETESTATUS = '0'
+		order by decode(sa.ACCOUNTABILITY_UNIT_NAME,'热板公司',1,'冷板公司',2,'宽厚板公司',3,'棒线公司',4,'型带公司',5,'唐钢分公司',6
+		,'邯钢分公司',7,'宣钢分公司',8,'承钢分公司',9,'舞钢分公司',10,'石钢公司',11,'衡板公司',12)
 	</select>
     <select id="selectscaaccnuitList" resultType="map">
         select ACCOUNTABILITY_UNIT_ID AS ID,ACCOUNTABILITY_UNIT_CODE AS CODE,ACCOUNTABILITY_UNIT_NAME AS "NAME"
