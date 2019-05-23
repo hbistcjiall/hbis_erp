@@ -120,4 +120,20 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
                 }
             return flag;
         }
+
+    /**
+     * 销售额钢厂导出
+     * @param companyname
+     * @param jd
+     * @param pz
+     * @param cx
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+        @Async
+        public  List<Map<String ,Object>> xsegc ( String companyname, String jd, String startTime,String endTime){
+            List<Map<String ,Object>> list = accounUnitManageMapper.xsecxexcel( companyname,jd, startTime, endTime);
+            return  list;
+        }
 }
