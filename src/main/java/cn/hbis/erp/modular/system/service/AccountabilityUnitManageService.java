@@ -124,17 +124,17 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
 
     /**
      * 销售额钢厂导出
-     * @param companyname
+     * @param companyName
      * @param jd
      * @param startTime
      * @param endTime
      * @return
      */
         @Async
-        public  List<Map<String ,Object>> xsegc ( String companyname, String jd, String startTime,String endTime){
+        public  List<Map<String ,Object>> xsegc ( String companyName, String jd, String startTime,String endTime){
             String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
             String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
-            List<Map<String ,Object>> list = accounUnitManageMapper.xsegcexcel( companyname,jd, startTime1, endTime1);
+            List<Map<String ,Object>> list = accounUnitManageMapper.xsegcexcel( companyName,jd, startTime1, endTime1);
             return  list;
         }
     /**
