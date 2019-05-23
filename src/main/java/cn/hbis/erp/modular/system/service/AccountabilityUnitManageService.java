@@ -3,6 +3,7 @@ package cn.hbis.erp.modular.system.service;
 
 import cn.hbis.erp.core.common.exception.BizExceptionEnum;
 import cn.hbis.erp.core.common.page.PageFactory;
+import cn.hbis.erp.core.util.DateUtil;
 import cn.hbis.erp.modular.system.entity.AccountabilityUnitManage;
 import cn.hbis.erp.modular.system.mapper.AccountabilityUnitManageMapper;
 import cn.hbis.erp.modular.system.mapper.TargetQuantityManagementMapper;
@@ -125,15 +126,31 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
      * 销售额钢厂导出
      * @param companyname
      * @param jd
-     * @param pz
-     * @param cx
      * @param startTime
      * @param endTime
      * @return
      */
         @Async
         public  List<Map<String ,Object>> xsegc ( String companyname, String jd, String startTime,String endTime){
-            List<Map<String ,Object>> list = accounUnitManageMapper.xsecxexcel( companyname,jd, startTime, endTime);
+            String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
+            String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
+            List<Map<String ,Object>> list = accounUnitManageMapper.xsegcexcel( companyname,jd, startTime1, endTime1);
             return  list;
         }
+    /**
+     * 销售额钢厂导出
+     *
+     * @param jd
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Async
+    public  List<Map<String ,Object>> xsecx ( String pz,List cx,String jd, String startTime,String endTime){
+        String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
+        String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
+        List<Map<String ,Object>> list = accounUnitManageMapper.xsecxexcel( pz,cx,jd, startTime1, endTime1);
+        return  list;
+    }
+
 }
