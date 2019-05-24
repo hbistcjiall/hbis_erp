@@ -162,6 +162,7 @@ public class ShiroConfig {
         hashMap.put("/v2/**", "anon");
         hashMap.put("/appAllocation/**", "anon");
         hashMap.put("/AppLogin/**", "anon");
+        hashMap.put("/appwfwAllocation/**", "anon");
         hashMap.put("/**", "user");
 
         shiroFilter.setFilterChainDefinitionMap(hashMap);
