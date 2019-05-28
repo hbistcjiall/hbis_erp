@@ -65,7 +65,7 @@ public class AppWFWController {
 
         String parm = "";
         //根据地址不同，拼接查询条件字符串  //URLEncoder.encode()方法  为字符串进行编码
-        if(POST_URL.equals("http://18.0.128.1:8080/priceweb/VarietyPricePort/VarietyPrice.htm")) {
+        if(POST_URL.equals("http://18.0.125.35:80/priceweb/VarietyPricePort/VarietyPrice.htm")) {
             if (!variety.equals("")) {
                 parm = "variety=" + URLEncoder.encode(variety,"UTF-8");
             }
@@ -73,7 +73,7 @@ public class AppWFWController {
             if (!area.equals("")) {
                 parm = parm+"&area=" + URLEncoder.encode(area,"UTF-8");
             }
-        }else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/VarietyPricePort/VarietyPriceArea.htm")){
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/VarietyPricePort/VarietyPriceArea.htm")){
             if (!variety.equals("")) {
                 parm = "variety=" + URLEncoder.encode(variety,"UTF-8");
             }
