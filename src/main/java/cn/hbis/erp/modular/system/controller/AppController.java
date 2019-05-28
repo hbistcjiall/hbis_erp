@@ -82,10 +82,10 @@ public class AppController {
             @ApiImplicitParam(name = "serviceArea", value = "区域1", dataType = "String"),
             @ApiImplicitParam(name = "placementArea", value = "区域2", dataType = "String"),
             @ApiImplicitParam(name = "grade", value = "产品等级", dataType = "String"),
-            @ApiImplicitParam(name = "Area", value = "公司ID", dataType = "String"),
+            @ApiImplicitParam(name = "area", value = "公司ID", dataType = "String"),
     })
     @Async
-    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String placementArea,String companyId,String serviceArea,String attribute1,String attribute2,String grade,String Area) throws IOException {
+    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String placementArea,String companyId,String serviceArea,String attribute1,String attribute2,String grade,String area) throws IOException {
 
         URL url = new URL(POST_URL);
 
@@ -142,7 +142,10 @@ public class AppController {
             if(attribute2 != null && attribute2 != ""){
                 parm = parm + "&" + "attribute2=" + attribute2;
             }
-        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/getVarietySubjectBody.htm")){
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/getVarietySubjectBody.htm")||
+                POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/getVarietySubjectBodyHan.htm")||
+                POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/getVarietySubjectBodyXuan.htm")||
+                POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/getVarietySubjectBodyTang.htm")){
             if(fkdat != null && fkdat != ""){
                 parm = "fkdat=" + fkdat;
             }
@@ -225,8 +228,8 @@ public class AppController {
             if(fkdat != null && fkdat != ""){
                 parm = "fkdat=" + fkdat;
             }
-            if(Area != null && Area != ""){
-                parm = parm + "&" + "Area=" + Area;
+            if(area != null && area != ""){
+                parm = parm + "&" + "area=" + area;
             }
         }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/companyBodyTotal.htm")){
             if(fkdat != null && fkdat != ""){
