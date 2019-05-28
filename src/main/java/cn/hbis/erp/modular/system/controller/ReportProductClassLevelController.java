@@ -124,4 +124,21 @@ public class ReportProductClassLevelController {
         list1.add(getcxfb);
         return list1;
     }
+
+
+    @ApiOperation(value = "集团钢材资源布港情况")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
+            @ApiImplicitParam(name = "pz", value = "品种", dataType = "String"),
+            @ApiImplicitParam(name = "name", value = "子公司ID", dataType = "String"),
+            @ApiImplicitParam(name = "htdw", value = "合同单位", dataType = "String"),
+
+    })
+    @PostMapping("jtgczybgqk")
+    @Async
+    public List jtgczybgqk (String pz,String name,String htdw,String startTime,String endTime){
+        return reportProductClassLevelService.jtgczybgqk(pz,name,htdw,startTime,endTime);
+    }
+
 }

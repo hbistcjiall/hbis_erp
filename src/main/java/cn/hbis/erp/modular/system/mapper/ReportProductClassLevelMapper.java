@@ -17,4 +17,6 @@ public interface ReportProductClassLevelMapper extends BaseMapper<ReportProductC
 
     List cxexcel(@Param("dw") String dw,@Param("cx") List<String> cx,@Param("startTime")String startTime,@Param("endTime")String endTime);
     List pzexcel (@Param("pz") String pz,@Param("startTime")String startTime,@Param("endTime")String endTime);
+
+    List jtgczybgqk(@Param("pz") String pz,@Param("name") String name,@Param("htdw") String htdw,@Param("startTime")String startTime,@Param("endTime")String endTime);
 }
