@@ -15,7 +15,6 @@ import cn.hbis.erp.modular.system.factory.UserFactory;
 import cn.hbis.erp.modular.system.mapper.UserMapper;
 import cn.hbis.erp.modular.system.model.UserDto;
 import cn.hutool.core.bean.BeanUtil;
-import cn.stylefeng.roses.core.datascope.DataScope;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -49,7 +48,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      *
      *
      */
-    public void addUser(UserDto user) {
+    public void addUser(UserDto user)  {
 
         // 判断账号是否重复
         User theUser = this.getByAccount(user.getAccount());
