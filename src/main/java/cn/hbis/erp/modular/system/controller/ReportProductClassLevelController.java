@@ -5,6 +5,7 @@ import cn.hbis.erp.modular.system.service.ReportProductClassLevelService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import javafx.scene.input.DataFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.xml.crypto.Data;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -141,4 +144,24 @@ public class ReportProductClassLevelController {
         return reportProductClassLevelService.jtgczybgqk(pz,name,htdw,startTime,endTime);
     }
 
+    @ApiOperation(value = "集团钢材资源布港情况查询品种")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
+            @ApiImplicitParam(name = "name", value = "子公司ID", dataType = "String"),
+
+    })
+    @PostMapping("jtgczybgqkpz")
+    @Async
+    public List jtgczybgqkpz (String name,String startTime,String endTime){
+        List<Map<String,Object>>  one = reportProductClassLevelService.jtgczybgqkpz(name,startTime,endTime);
+        Map two = new HashMap();
+        two.put("VARIETY","全部");
+        List list = new ArrayList();
+        list.add(two);
+        for (int i =0;i<one.size();i++){
+            list.add(one.get(i));
+        }
+        return list;
+    }
 }

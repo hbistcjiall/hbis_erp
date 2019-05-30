@@ -37,8 +37,8 @@ public class AppController {
 
     @Autowired
     private CrmResourceAllocationService crmResourceAllocationService;
-    public static final String GET_URL = "http://price.oltest-hbistc.com:8080/priceweb/priceSellPrice/oneSpacesPhone.htm";
-    public static final String GET_URL1 = "http://price.oltest-hbistc.com:8080/priceweb/dologin.htm?account=10100050&password=123456";
+//    public static final String GET_URL = "http://price.oltest-hbistc.com:8080/priceweb/priceSellPrice/oneSpacesPhone.htm";
+//    public static final String GET_URL1 = "http://price.oltest-hbistc.com:8080/priceweb/dologin.htm?account=10100050&password=123456";
 //    public static final String POST_URL = "http://price.oltest-hbistc.com:8080/priceweb/priceSellPrice/oneSpacesPhone.htm";
 
     @ApiOperation(value = "通过品种获取合同进度")
@@ -81,9 +81,11 @@ public class AppController {
             @ApiImplicitParam(name = "attribute2", value = "规格", dataType = "String"),
             @ApiImplicitParam(name = "serviceArea", value = "区域1", dataType = "String"),
             @ApiImplicitParam(name = "placementArea", value = "区域2", dataType = "String"),
+            @ApiImplicitParam(name = "grade", value = "产品等级", dataType = "String"),
+            @ApiImplicitParam(name = "area", value = "公司ID", dataType = "String"),
     })
     @Async
-    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String placementArea,String companyId,String serviceArea,String attribute1,String attribute2) throws IOException {
+    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String placementArea,String companyId,String serviceArea,String attribute1,String attribute2,String grade,String area) throws IOException {
 
         URL url = new URL(POST_URL);
 
@@ -140,7 +142,10 @@ public class AppController {
             if(attribute2 != null && attribute2 != ""){
                 parm = parm + "&" + "attribute2=" + attribute2;
             }
-        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/getVarietySubjectBody.htm")){
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/getVarietySubjectBody.htm")||
+                POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/getVarietySubjectBodyHan.htm")||
+                POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/getVarietySubjectBodyXuan.htm")||
+                POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/getVarietySubjectBodyTang.htm")){
             if(fkdat != null && fkdat != ""){
                 parm = "fkdat=" + fkdat;
             }
@@ -181,6 +186,52 @@ public class AppController {
                 parm = "fkdat=" + fkdat;
             }
         }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/sellPrice/oneCompanyDividArea.htm")){
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+            if(companyId != null && companyId != ""){
+                parm = parm + "&" + "companyId=" + companyId;
+            }
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/screwThreadPort/companyGrade.htm")){
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+            if(companyId != null && companyId != ""){
+                parm = parm + "&" + "companyId=" + companyId;
+            }
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/screwThreadPort/oneGradeComPercent.htm")){
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+            if(grade != null && grade != ""){
+                parm = parm + "&" + "grade=" + URLEncoder.encode(grade,"UTF-8");
+            }
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/screwThreadPort/gradeAndBody.htm")){
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+            if(grade != null && grade != ""){
+                parm = parm + "&" + "grade=" + URLEncoder.encode(grade,"UTF-8");
+            }
+            if(companyId != null && companyId != ""){
+                parm = parm + "&" + "companyId=" + companyId;
+            }
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/screwThreadPort/firstFourArea.htm")){
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/screwThreadPort/allComAllArea.htm")){
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/screwThreadPort/allComOneArea.htm")){
+            if(fkdat != null && fkdat != ""){
+                parm = "fkdat=" + fkdat;
+            }
+            if(area != null && area != ""){
+                parm = parm + "&" + "area=" + URLEncoder.encode(area,"UTF-8");
+            }
+        }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/companyBodyTotal.htm")){
             if(fkdat != null && fkdat != ""){
                 parm = "fkdat=" + fkdat;
             }
