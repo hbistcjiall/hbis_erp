@@ -19,7 +19,6 @@ import cn.hbis.erp.modular.system.model.UserDto;
 import cn.hbis.erp.modular.system.service.UserService;
 import cn.hbis.erp.modular.system.warpper.UserWrapper;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.stylefeng.roses.core.base.controller.BaseController;
 import cn.stylefeng.roses.core.reqres.response.ResponseData;
 import cn.stylefeng.roses.core.util.ToolUtil;
@@ -161,12 +160,13 @@ public class UserMgrController extends BaseController {
             @ApiImplicitParam(name = "deptId" ,value = "部门ID",dataType ="String" ),
             @ApiImplicitParam(name = "avatar" ,value = "头像",dataType ="String" )
     })
-    public ResponseData add(@Valid UserDto user, BindingResult result) {
+    public int add(@Valid UserDto user, BindingResult result) {
         if (result.hasErrors()) {
             throw new ServiceException(BizExceptionEnum.REQUEST_NULL);
         }
-        this.userService.addUser(user);
-        return SUCCESS_TIP;
+            int a=this.userService.addUser(user);
+            return a;
+
     }
 
     /**

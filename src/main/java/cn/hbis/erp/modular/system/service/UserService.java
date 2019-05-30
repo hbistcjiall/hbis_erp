@@ -15,7 +15,6 @@ import cn.hbis.erp.modular.system.factory.UserFactory;
 import cn.hbis.erp.modular.system.mapper.UserMapper;
 import cn.hbis.erp.modular.system.model.UserDto;
 import cn.hutool.core.bean.BeanUtil;
-import cn.stylefeng.roses.core.datascope.DataScope;
 import cn.stylefeng.roses.core.util.ToolUtil;
 import cn.stylefeng.roses.kernel.model.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -49,19 +48,21 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      *
      *
      */
-    public void addUser(UserDto user) {
+    public int addUser(UserDto user) {
 
         // 判断账号是否重复
         User theUser = this.getByAccount(user.getAccount());
+
         if (theUser != null) {
-            throw new ServiceException(BizExceptionEnum.USER_ALREADY_REG);
+            return 0;
         }
 
         // 完善账号信息
         String salt = ShiroKit.getRandomSalt(5);
         String password = ShiroKit.md5(user.getPassword(), salt);
-
+        
         this.save(UserFactory.createUser(user, password, salt));
+        return 1;
     }
 
     /**
