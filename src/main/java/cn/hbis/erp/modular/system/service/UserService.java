@@ -54,7 +54,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         User theUser = this.getByAccount(user.getAccount());
 
         if (theUser != null) {
-            return 0;
+            return  0;
         }
 
         // 完善账号信息
