@@ -229,7 +229,7 @@ public class AppController {
                 parm = "fkdat=" + fkdat;
             }
             if(area != null && area != ""){
-                parm = parm + "&" + "area=" + area;
+                parm = parm + "&" + "area=" + URLEncoder.encode(area,"UTF-8");
             }
         }else if(POST_URL.equals("http://18.0.125.35:80/priceweb/priceSellPrice/companyBodyTotal.htm")){
             if(fkdat != null && fkdat != ""){
