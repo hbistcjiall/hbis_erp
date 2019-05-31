@@ -71,6 +71,7 @@ public class LoginController extends BaseController {
 
         List<MenuNode> menus = userService.getUserMenuNodes(roleList);
         map.put("menus", menus);
+        map.put("id",user.getId());
         map.put("page","index");
 
         return map;
