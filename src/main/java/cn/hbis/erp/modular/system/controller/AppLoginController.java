@@ -30,12 +30,14 @@ public class AppLoginController {
     @PostMapping("appLogin")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "account", value = "登录名", dataType = "String"),
-            @ApiImplicitParam(name = "password", value = "密码", dataType = "String")
+            @ApiImplicitParam(name = "password", value = "密码", dataType = "String"),
+            @ApiImplicitParam(name = "openId", value = "openId", dataType = "String")
+
     })
     @Async
-    public Map<String, Object> appLogin(String account, String password) throws IOException {
+    public Map<String, Object> appLogin(String account, String password,String openId) throws IOException {
 
-        URL url = new URL("http://18.0.125.35:80/priceweb/loginPort/doLogin.htm");
+        URL url = new URL("http://18.0.128.1:8080/priceweb/loginPort/doLogin.htm");
 
         // 将url 以 open方法返回的urlConnection  连接强转为HttpURLConnection连接  (标识一个url所引用的远程对象连接)
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();// 此时cnnection只是为一个连接对象,待连接中
@@ -67,7 +69,7 @@ public class AppLoginController {
 
         String parm = "";
         //拼接查询条件字符串  //URLEncoder.encode()方法  为字符串进行编码
-        parm = "account=" + URLEncoder.encode(account,"UTF-8") + "&" + "password=" + password;
+        parm = "account=" + URLEncoder.encode(account,"UTF-8") + "&" + "password=" + password + "&" + "openId=" + openId;
         // 将参数输出到连接
         dataout.writeBytes(parm);
 

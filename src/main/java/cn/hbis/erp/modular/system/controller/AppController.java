@@ -8,6 +8,7 @@ package cn.hbis.erp.modular.system.controller;
 import cn.hbis.erp.modular.system.entity.Allocation;
 import cn.hbis.erp.modular.system.service.CrmResourceAllocationService;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.swagger.annotations.ApiImplicitParam;
@@ -15,16 +16,12 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -83,9 +80,14 @@ public class AppController {
             @ApiImplicitParam(name = "placementArea", value = "区域2", dataType = "String"),
             @ApiImplicitParam(name = "grade", value = "产品等级", dataType = "String"),
             @ApiImplicitParam(name = "area", value = "公司ID", dataType = "String"),
+            @ApiImplicitParam(name = "openid", value = "openId", dataType = "openid"),
+            @ApiImplicitParam(name = "account", value = "账号", dataType = "account"),
+            @ApiImplicitParam(name = "tradeAccount", value = "账号", dataType = "tradeAccount"),
+
+
     })
     @Async
-    public Map<String, Object> httpURLConnectionPOST(String POST_URL,String fkdat,String placementArea,String companyId,String serviceArea,String attribute1,String attribute2,String grade,String area) throws IOException {
+    public Map<String, Object> httpURLConnectionPOST(String openId,String account,String tradeAccount,String POST_URL,String fkdat,String placementArea,String companyId,String serviceArea,String attribute1,String attribute2,String grade,String area) throws IOException {
 
         URL url = new URL(POST_URL);
 
@@ -118,8 +120,46 @@ public class AppController {
         DataOutputStream dataout = new DataOutputStream(connection.getOutputStream());
 
         String parm = "";
+        System.out.println(POST_URL);
         //根据地址不同，拼接查询条件字符串  //URLEncoder.encode()方法  为字符串进行编码
-        if(POST_URL.equals("http://18.0.125.35:80/priceweb/sellPrice/screwThreadDiagram.htm")){
+        if(POST_URL.equals("http://18.0.128.1:8080/priceweb/loginPort/openIdLogin.htm")){
+            if(openId != null && openId != ""){
+                parm = "openId=" + openId;
+            }
+
+        }
+        else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/loginPort/removeBoundOpenId.htm")){
+            if(account != null && account != ""){
+                parm = "account=" + account;
+            }
+            if(tradeAccount != null && tradeAccount != ""){
+                parm = parm + "&" + "tradeAccount=" + tradeAccount;
+            }
+            if(openId != null && openId != ""){
+                parm = parm + "&" + "openId=" + openId;
+            }
+
+        }
+
+
+        else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/loginPort/boundOpenId.htm")){
+            if(account != null && account != ""){
+                parm = "account=" + account;
+            }
+            if(tradeAccount != null && tradeAccount != ""){
+                parm = parm + "&" + "tradeAccount=" + tradeAccount;
+            }
+            if(openId != null && openId != ""){
+                parm = parm + "&" + "openId=" + openId;
+            }
+        }
+       else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/loginPort/searchOpenId.htm")){
+            if(openId != null && openId != ""){
+                parm = "openId=" + openId;
+            }
+
+        }
+        else if(POST_URL.equals("http://18.0.125.35:80/priceweb/sellPrice/screwThreadDiagram.htm")){
             if(fkdat != null && fkdat != ""){
                 parm = "fkdat=" + fkdat;
             }
@@ -278,6 +318,56 @@ public class AppController {
             }.getType());
 
         return res;
+    }
+
+
+
+    @ApiOperation(value = "getOpenId")
+    @ApiImplicitParams({
+
+    })
+
+    @PostMapping("getOpenId")
+    @Async
+    public @ResponseBody
+    String getOpenId(String code, String echostr, HttpServletResponse res ) throws IOException{
+
+        if(echostr==null){
+            String url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxe436959600c68407&secret=6c2a1cdcdd0820b0ef10cebcf5d38efb&code="+code+"&grant_type=authorization_code";
+            System.out.println(code);
+            String openId="";
+            try {
+                URL getUrl=new URL(url);
+                HttpURLConnection http=(HttpURLConnection)getUrl.openConnection();
+                http.setRequestMethod("GET");
+                http.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+                http.setDoOutput(true);
+                http.setDoInput(true);
+
+
+                http.connect();
+                InputStream is = http.getInputStream();
+                int size = is.available();
+                byte[] b = new byte[size];
+                is.read(b);
+
+
+                String message = new String(b, "UTF-8");
+
+                JSONObject json = JSONObject.parseObject(message);
+                openId = json.getString("openid");
+                System.out.println(openId);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return openId;
+        }else{
+            PrintWriter out = res.getWriter();
+            out.print(echostr);
+            return null;
+        }
     }
 
 }
