@@ -122,13 +122,13 @@ public class AppController {
         String parm = "";
         System.out.println(POST_URL);
         //根据地址不同，拼接查询条件字符串  //URLEncoder.encode()方法  为字符串进行编码
-        if(POST_URL.equals("http://18.0.128.1:8080/priceweb/loginPort/openIdLogin.htm")){
+        if(POST_URL.equals("http://18.0.125.35:80/priceweb/loginPort/openIdLogin.htm")){
             if(openId != null && openId != ""){
                 parm = "openId=" + openId;
             }
 
         }
-        else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/loginPort/removeBoundOpenId.htm")){
+        else if(POST_URL.equals("http://18.0.125.35:80/priceweb/loginPort/removeBoundOpenId.htm")){
             if(account != null && account != ""){
                 parm = "account=" + account;
             }
@@ -142,7 +142,7 @@ public class AppController {
         }
 
 
-        else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/loginPort/boundOpenId.htm")){
+        else if(POST_URL.equals("http://18.0.125.35:80/priceweb/loginPort/boundOpenId.htm")){
             if(account != null && account != ""){
                 parm = "account=" + account;
             }
@@ -153,7 +153,7 @@ public class AppController {
                 parm = parm + "&" + "openId=" + openId;
             }
         }
-       else if(POST_URL.equals("http://18.0.128.1:8080/priceweb/loginPort/searchOpenId.htm")){
+       else if(POST_URL.equals("http://18.0.125.35:80/priceweb/loginPort/searchOpenId.htm")){
             if(openId != null && openId != ""){
                 parm = "openId=" + openId;
             }
