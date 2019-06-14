@@ -2698,7 +2698,7 @@
         nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
         nvl(ORDER_NOTE,'-') ORDER_NOTE
         from
-        (SELECT
+        (SELECT distinct
         decode(settle.company_id,
         9580,
         '唐钢',
@@ -2835,6 +2835,8 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        and t.name is not null
+        and t.sale_body &lt; &gt; '出口'
         UNION
         SELECT
         company_id ,
@@ -2872,7 +2874,7 @@
         nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
         nvl(ORDER_NOTE,'-') ORDER_NOTE
         from (
-        SELECT
+        SELECT distinct
         decode(settle.company_id,
         9580,
         '唐钢',
@@ -3005,6 +3007,8 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        and t.name is not null
+        and t.sale_body &lt; &gt; '出口'
         UNION
         SELECT
         company_id,
@@ -3041,7 +3045,7 @@
         nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
         nvl(ORDER_NOTE,'-') ORDER_NOTE
         from (
-        SELECT
+        SELECT distinct
         decode(settle.company_id,
         9580,
         '唐钢',
@@ -3060,7 +3064,8 @@
         7778,
         '邯宝') AS companyname,
         settle.company_id,
-        sso.sale_body ,
+        case when  settle.company_id='8110' then  sso.sale_body  else '' end  sggl,
+        xsztdzb.sale_body，
         rpcl.product_grade,
         case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
         settle.fkdat,
@@ -3171,6 +3176,13 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        and (
+        t.sggl = '分公司'
+        or t.sale_group = '销售部'
+        or  t.sale_group = '营销中心'
+        or  t.sale_group ='1000'
+        or  t.sale_group = '科技部')
+
         )
 
         where 1 = 1
