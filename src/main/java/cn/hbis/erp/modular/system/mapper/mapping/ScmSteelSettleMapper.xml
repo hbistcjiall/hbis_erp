@@ -4681,8 +4681,8 @@ from (select
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-
-         group by  t.companyname) a
+        and  t.NAME &lt;&gt; '唐钢1580热轧线'  and  t.NAME &lt;&gt; '唐钢中厚板'
+        group by  t.companyname) a
 
         union all (
         select
@@ -4956,8 +4956,6 @@ from (select
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-
-        and  t.NAME &lt;&gt; '唐钢1580热轧线'  and  t.name &lt;&gt; '唐钢中厚板'
         group by  t.companyname  )
         )
 
