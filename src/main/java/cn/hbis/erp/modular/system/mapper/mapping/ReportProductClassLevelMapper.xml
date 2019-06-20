@@ -127,7 +127,7 @@
         and ( detail.delivery_delete  != 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -292,7 +292,7 @@
         case when  settle.company_id ='1932' then '中厚板' when  settle.company_id ='8110' then '圆钢' when settle.company_id ='8493'then '薄板'  end  zl,
 
         (select case when  B.company_id ='1932' then '舞钢中厚板' when  B.company_id ='8110' then '石钢圆钢' when B.company_id ='8493'then '衡板薄板' else b.variety end VARIETY
-        from scm_sale_order sso
+        from (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
@@ -308,7 +308,7 @@
         and ( detail.delivery_delete  != 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -459,7 +459,7 @@
         and ( detail.delivery_delete &lt;&gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -660,7 +660,7 @@
         and ( detail.delivery_delete  != 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -825,7 +825,7 @@
         case when  settle.company_id ='1932' then '中厚板' when  settle.company_id ='8110' then '圆钢' when settle.company_id ='8493'then '薄板'  end  zl,
 
         (select case when  B.company_id ='1932' then '舞钢中厚板' when  B.company_id ='8110' then '石钢圆钢' when B.company_id ='8493'then '衡板薄板' else b.variety end VARIETY
-        from scm_sale_order sso
+        from (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
@@ -841,7 +841,7 @@
         and ( detail.delivery_delete  != 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -992,7 +992,7 @@
         and ( detail.delivery_delete &lt;&gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -1179,7 +1179,7 @@
         and ( detail.delivery_delete  != 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -1344,7 +1344,7 @@
         case when  settle.company_id ='1932' then '中厚板' when  settle.company_id ='8110' then '圆钢' when settle.company_id ='8493'then '薄板'  end  zl,
 
         (select case when  B.company_id ='1932' then '舞钢中厚板' when  B.company_id ='8110' then '石钢圆钢' when B.company_id ='8493'then '衡板薄板' else b.variety end VARIETY
-        from scm_sale_order sso
+        from (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
@@ -1360,7 +1360,7 @@
         and ( detail.delivery_delete  != 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -1511,7 +1511,7 @@
         and ( detail.delivery_delete &lt;&gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -1696,7 +1696,7 @@
         and ( detail.delivery_delete  != 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -1861,7 +1861,7 @@
         case when  settle.company_id ='1932' then '中厚板' when  settle.company_id ='8110' then '圆钢' when settle.company_id ='8493'then '薄板'  end  zl,
 
         (select case when  B.company_id ='1932' then '舞钢中厚板' when  B.company_id ='8110' then '石钢圆钢' when B.company_id ='8493'then '衡板薄板' else b.variety end VARIETY
-        from scm_sale_order sso
+        from (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
@@ -1877,7 +1877,7 @@
         and ( detail.delivery_delete  != 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -2028,7 +2028,7 @@
         and ( detail.delivery_delete &lt;&gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -2215,7 +2215,7 @@
         and ( detail.delivery_delete  != 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -2380,7 +2380,7 @@
         case when  settle.company_id ='1932' then '中厚板' when  settle.company_id ='8110' then '圆钢' when settle.company_id ='8493'then '薄板'  end  zl,
 
         (select case when  B.company_id ='1932' then '舞钢中厚板' when  B.company_id ='8110' then '石钢圆钢' when B.company_id ='8493'then '衡板薄板' else b.variety end VARIETY
-        from scm_sale_order sso
+        from (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
@@ -2396,7 +2396,7 @@
         and ( detail.delivery_delete  != 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -2547,7 +2547,7 @@
         and ( detail.delivery_delete &lt;&gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -2698,7 +2698,7 @@
         nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
         nvl(ORDER_NOTE,'-') ORDER_NOTE
         from
-        (SELECT distinct
+        (SELECT
         decode(settle.company_id,
         9580,
         '唐钢',
@@ -2774,7 +2774,7 @@
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
 
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
 
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
@@ -2835,8 +2835,6 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        and t.name is not null
-        and t.sale_body &lt; &gt; '出口'
         UNION
         SELECT
         company_id ,
@@ -2874,7 +2872,7 @@
         nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
         nvl(ORDER_NOTE,'-') ORDER_NOTE
         from (
-        SELECT distinct
+        SELECT
         decode(settle.company_id,
         9580,
         '唐钢',
@@ -2949,7 +2947,7 @@
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -3007,8 +3005,7 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        and t.name is not null
-        and t.sale_body &lt; &gt; '出口'
+        and t.sale_body&lt; &gt; '出口'
         UNION
         SELECT
         company_id,
@@ -3121,7 +3118,7 @@
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -3321,7 +3318,7 @@
         sso.sale_body ss,
         sso.SALE_PRICE,
         (select max(B.VARIETY)
-        from scm_sale_order sso
+        from (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
@@ -3355,7 +3352,7 @@
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
 
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
 
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
@@ -3501,7 +3498,7 @@
         sso.sale_body ss,
         sso.SALE_PRICE,
         (select max(B.VARIETY)
-        from scm_sale_order sso
+        from (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
@@ -3534,7 +3531,7 @@
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -3676,7 +3673,7 @@
         sso.PRODUCT_CODE,
         sso.SALE_PRICE,
         (select case when  B.company_id ='8110' then '特钢' when B.company_id ='8493'then '薄板' else b.variety end VARIETY
-        from scm_sale_order sso
+        from (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
@@ -3709,7 +3706,7 @@
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -3811,7 +3808,7 @@
         </if>
     group by t.company_id,t.order_no,t.order_item
   ) t,
-  hbistc_ol.scm_sale_order sso,
+  hbistc_ol.(select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso,
   hbistc_ol.scm_variety_to_pt_gp sv
  where t.order_no=sso.order_no
    and t.order_item=sso.order_row
@@ -3845,7 +3842,7 @@ select sso.company_id,sv.variety,sso.SALER_NAME,sso.TRANSPORT_NAME,sso.DZ_NAME,
         </if>
     group by t.company_id,t.order_no,t.order_item
   ) t,
-  hbistc_ol.scm_sale_order sso,
+  hbistc_ol.(select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso,
   hbistc_ol.scm_variety_to_pt_gp sv
  where t.order_no=sso.order_no
    and t.order_item=sso.order_row
@@ -3877,7 +3874,7 @@ select sso.company_id,sv.variety,sso.SALER_NAME,sso.TRANSPORT_NAME,sso.DZ_NAME,
         </if>
     group by t.company_id,t.order_no,t.order_item
   ) t,
-  hbistc_ol.scm_sale_order sso,
+  hbistc_ol.(select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso,
   hbistc_ol.scm_variety_to_pt_gp sv
  where t.order_no=sso.order_no
    and t.order_item=sso.order_row
@@ -3930,7 +3927,7 @@ order by sv.variety
         </if>
         group by t.company_id,t.order_no,t.order_item
         ) t,
-        hbistc_ol.scm_sale_order sso,
+        hbistc_ol.(select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso,
         hbistc_ol.scm_variety_to_pt_gp sv
         where t.order_no=sso.order_no
         and t.order_item=sso.order_row
@@ -3964,7 +3961,7 @@ order by sv.variety
         </if>
         group by t.company_id,t.order_no,t.order_item
         ) t,
-        hbistc_ol.scm_sale_order sso,
+        hbistc_ol.(select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso,
         hbistc_ol.scm_variety_to_pt_gp sv
         where t.order_no=sso.order_no
         and t.order_item=sso.order_row
@@ -3996,7 +3993,7 @@ order by sv.variety
         </if>
         group by t.company_id,t.order_no,t.order_item
         ) t,
-        hbistc_ol.scm_sale_order sso,
+        hbistc_ol.(select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso,
         hbistc_ol.scm_variety_to_pt_gp sv
         where t.order_no=sso.order_no
         and t.order_item=sso.order_row

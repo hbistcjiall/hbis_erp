@@ -99,7 +99,7 @@
     nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
     nvl(ORDER_NOTE,'-') ORDER_NOTE
     from
-    (SELECT
+    (SELECT distinct
     decode(settle.company_id,
     9580,
     '唐钢',
@@ -175,7 +175,7 @@
     detail.delivery_delete is null))product_line
     FROM scm_steel_settle settle
 
-    left join scm_sale_order sso
+    left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
 
     on settle.company_id = sso.company_id
     and settle.aubel = sso.order_no
@@ -211,10 +211,6 @@
     where
     settle.fkdat &gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
     and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
-    AND xsztdzb.sale_body_des  &lt; &gt;'唐钢中厚板公司'  and
-    xsztdzb.sale_body_des  &lt; &gt;'唐钢不锈钢公司' and
-    xsztdzb.sale_body_des &lt; &gt; '出口'  and
-    xsztdzb.sale_body_des &lt; &gt; '唐银联营公司数据'
     and  settle.company_id in ('9580','9727','9193')
     order by settle.id desc) t
     where t.order_type_describe not in
@@ -246,6 +242,12 @@
     WHERE cfd.company_id = t.company_id
     AND cfd.data_type = 9
     AND cfd.status = 0)
+    and t.sale_body is not null
+        <if test="companyname != '' and companyname!= '全部' and companyname!= null and companyname != 'undefined'">
+
+            and t.company_id = #{companyname}
+
+        </if>
     UNION
     SELECT
     company_id ,
@@ -283,7 +285,7 @@
     nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
     nvl(ORDER_NOTE,'-') ORDER_NOTE
     from (
-    SELECT
+    SELECT distinct
     decode(settle.company_id,
     9580,
     '唐钢',
@@ -332,17 +334,18 @@
     sso.sale_body ss,
     sso.SALE_PRICE,
     svtp.VARIETY,
-    (select max(DATA.Name)
-    from scm_delivery_detail detail
-    JOIN crm_resource_data DATA
-    ON DATA.full_name = detail.ext
-    AND DATA.company_id = detail.company_id
-    AND (DATA.TYPE = 6 )
-    where settle.company_id = detail.company_id
-    and settle.vgbel = detail.deliv_numb
-    and settle.vgpos = detail.deliv_item
-    and ( detail.delivery_delete  &lt; &gt; 'X' or
-    detail.delivery_delete is null)) name,
+   (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 6 )
+
+        where  detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
+        and ( detail.delivery_delete  &lt;&gt; 'X' or
+        detail.delivery_delete is null)) name,
     (select max(detail.ACTUAL_DATE)
     from scm_delivery_detail detail
     where settle.company_id = detail.company_id
@@ -351,14 +354,14 @@
     and ( detail.delivery_delete  &lt; &gt; 'X'  or
     detail.delivery_delete is null))ACTUAL_DATE,
     (select max(detail.ext)
-    from scm_delivery_detail detail
-    where settle.company_id = detail.company_id
-    and settle.vgbel = detail.deliv_numb
-    and settle.vgpos = detail.deliv_item
-    and ( detail.delivery_delete  &lt; &gt; 'X'  or
-    detail.delivery_delete is null))product_line
+        from scm_delivery_detail detail
+        where detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
+        and ( detail.delivery_delete  &lt; &gt; 'X'  or
+        detail.delivery_delete is null))product_line
     FROM scm_steel_settle settle
-    left join scm_sale_order sso
+    left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
     on settle.company_id = sso.company_id
     and settle.aubel = sso.order_no
     and settle.aupos = sso.order_row
@@ -391,10 +394,7 @@
     where
     settle.fkdat &gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
     and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
-    AND xsztdzb.sale_body_des  &lt; &gt;'唐钢中厚板公司'  and
-    xsztdzb.sale_body_des  &lt; &gt;'唐钢不锈钢公司' and
-    xsztdzb.sale_body_des &lt; &gt; '出口'  and
-    xsztdzb.sale_body_des &lt; &gt; '唐银联营公司数据'
+
     and  settle.company_id in ('9196')
     order by settle.id desc) t
     where t.order_type_describe not in
@@ -426,6 +426,12 @@
     WHERE cfd.company_id = t.company_id
     AND cfd.data_type = 9
     AND cfd.status = 0)
+    and t.sale_body is not null
+        <if test="companyname != '' and companyname!= '全部' and companyname!= null and companyname != 'undefined'">
+
+            and t.company_id = #{companyname}
+
+        </if>
     UNION
     SELECT
     company_id,
@@ -462,7 +468,7 @@
     nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
     nvl(ORDER_NOTE,'-') ORDER_NOTE
     from (
-    SELECT
+    SELECT distinct
     decode(settle.company_id,
     9580,
     '唐钢',
@@ -481,7 +487,8 @@
     7778,
     '邯宝') AS companyname,
     settle.company_id,
-    sso.sale_body ,
+    case when  settle.company_id='8110' then  sso.sale_body  else '' end  sggl,
+    xsztdzb.sale_body ,
     rpcl.product_grade,
     case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
     settle.fkdat,
@@ -511,17 +518,13 @@
     sso.PRODUCT_CODE,
     sso.SALE_PRICE,
     svtp.VARIETY,
-    (select max(DATA.Name)
-    from scm_delivery_detail detail
-    JOIN crm_resource_data DATA
-    ON DATA.full_name = detail.ext
-    AND DATA.company_id = detail.company_id
-    AND (DATA.TYPE = 6 )
-    where settle.company_id = detail.company_id
-    and settle.vgbel = detail.deliv_numb
-    and settle.vgpos = detail.deliv_item
-    and ( detail.delivery_delete  &lt; &gt; 'X' or
-    detail.delivery_delete is null)) name,
+    decode(settle.company_id,
+    1932,
+    '宽厚板',
+    8110,
+    '特钢',
+    8493,
+    '薄板') AS name,
     (select max(detail.ACTUAL_DATE)
     from scm_delivery_detail detail
     where settle.company_id = detail.company_id
@@ -537,7 +540,7 @@
     and ( detail.delivery_delete  &lt; &gt; 'X'  or
     detail.delivery_delete is null))product_line
     FROM scm_steel_settle settle
-    left join scm_sale_order sso
+    left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
     on settle.company_id = sso.company_id
     and settle.aubel = sso.order_no
     and settle.aupos = sso.order_row
@@ -578,8 +581,6 @@
     from crm_filter_data cfd
     <if test="jd != '' and jd == 0 and jd!= null and jd != 'undefined'">
         where cfd.data_type in ('5','10')
-
-
     </if>
 
     <if test="jd != '' and jd != 0 and jd!= null and jd != 'undefined'">
@@ -602,14 +603,21 @@
     WHERE cfd.company_id = t.company_id
     AND cfd.data_type = 9
     AND cfd.status = 0)
+    and (
+        t.sggl = '分公司'
+        or t.sggl = '出口'
+        or t.sale_group = '销售部'
+        or  t.sale_group = '营销中心'
+        or  t.sale_group ='1000'
+        or  t.sale_group = '科技部'
+        or  t.sale_group = '舞钢国贸')
+
+        <if test="companyname != '' and companyname!= '全部' and companyname!= null and companyname != 'undefined'">
+
+            and t.company_id = #{companyname}
+
+        </if>
     )
-
-    where 1 = 1
-    <if test="companyname != '' and companyname!= '全部' and companyname!= null and companyname != 'undefined'">
-
-        and companyname = #{companyname}
-
-    </if>
     ORDER BY decode(companyname,'唐钢','邯钢','宣钢','承钢','舞钢','石钢','衡板','邯宝')
 
 </select>
@@ -666,7 +674,7 @@
         CONTRACT_NO,
         DJ_DATE,
         nvl(PRODUCT_TYPE,'-') PRODUCT_TYPE,
-        nvl(cxname,'-') name,
+        case when cxname is null then  '其他' end name,
         vc.VARIETY_CLASS VARIETY,
         nvl(kzwi6,0) kzwi6,
         ACTUAL_DATE,
@@ -683,11 +691,10 @@
         nvl(ORDER_NO,'-') ORDER_NO,
         nvl(ORDER_ROW,'-') ORDER_ROW,
         nvl(DZ_NAME,'-') DZ_NAME,
-
         nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
         nvl(ORDER_NOTE,'-') ORDER_NOTE
         from
-        (SELECT
+        (SELECT distinct
         decode(settle.company_id,
         9580,
         '唐钢',
@@ -735,6 +742,7 @@
         sso.PRODUCT_CODE,
         sso.sale_body ss,
         sso.SALE_PRICE,
+        svtp.VARIETY,
         (select max(DATA.Name)
         from scm_delivery_detail detail
         JOIN crm_resource_data DATA
@@ -762,7 +770,7 @@
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
 
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt; &gt; 'X'  or  deleted is  null) sso
 
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
@@ -798,17 +806,14 @@
         where
         settle.fkdat &gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
         and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
-        AND xsztdzb.sale_body_des  &lt; &gt;'唐钢中厚板公司'  and
-        xsztdzb.sale_body_des  &lt; &gt;'唐钢不锈钢公司' and
-        xsztdzb.sale_body_des &lt; &gt; '出口'  and
-        xsztdzb.sale_body_des &lt; &gt; '唐银联营公司数据'
         and  settle.company_id in ('9580','9727','9193')
-        order by settle.id desc) t
-        LEFT JOIN SCM_VARIETY_CLASS vc
+        ) t
+        right JOIN SCM_VARIETY_CLASS vc
         on t.cxname = vc.name
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
+
         <if test="jd != '' and jd == 0 and jd!= null and jd != 'undefined'">
             where cfd.data_type in ('5','10')
 
@@ -820,6 +825,13 @@
 
 
         </if>
+
+
+
+
+
+
+
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -835,6 +847,8 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+
+
         UNION
         SELECT
         company_id ,
@@ -872,7 +886,7 @@
         nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
         nvl(ORDER_NOTE,'-') ORDER_NOTE
         from (
-        SELECT
+        SELECT distinct
         decode(settle.company_id,
         9580,
         '唐钢',
@@ -920,15 +934,17 @@
         sso.PRODUCT_CODE,
         sso.sale_body ss,
         sso.SALE_PRICE,
+        svtp.VARIETY,
         (select max(DATA.Name)
         from scm_delivery_detail detail
         JOIN crm_resource_data DATA
         ON DATA.full_name = detail.ext
         AND DATA.company_id = detail.company_id
         AND (DATA.TYPE = 6 )
-        where settle.company_id = detail.company_id
-        and settle.vgbel = detail.deliv_numb
-        and settle.vgpos = detail.deliv_item
+
+        where  detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
         and ( detail.delivery_delete  &lt; &gt; 'X' or
         detail.delivery_delete is null)) cxname,
         (select max(detail.ACTUAL_DATE)
@@ -940,13 +956,13 @@
         detail.delivery_delete is null))ACTUAL_DATE,
         (select max(detail.ext)
         from scm_delivery_detail detail
-        where settle.company_id = detail.company_id
-        and settle.vgbel = detail.deliv_numb
-        and settle.vgpos = detail.deliv_item
+        where detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt; &gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -979,17 +995,14 @@
         where
         settle.fkdat &gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
         and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
-        AND xsztdzb.sale_body_des  &lt; &gt;'唐钢中厚板公司'  and
-        xsztdzb.sale_body_des  &lt; &gt;'唐钢不锈钢公司' and
-        xsztdzb.sale_body_des &lt; &gt; '出口'  and
-        xsztdzb.sale_body_des &lt; &gt; '唐银联营公司数据'
-        and  settle.company_id in ('9196')
-        order by settle.id desc) t
-        LEFT JOIN SCM_VARIETY_CLASS vc
+
+        and  settle.company_id in ('9196')) t
+        right JOIN SCM_VARIETY_CLASS vc
         on t.cxname = vc.name
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
+
         <if test="jd != '' and jd == 0 and jd!= null and jd != 'undefined'">
             where cfd.data_type in ('5','10')
 
@@ -1001,6 +1014,11 @@
 
 
         </if>
+
+
+
+
+
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -1016,6 +1034,8 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
+        and t.sale_body is not null
+
         UNION
         SELECT
         company_id,
@@ -1033,7 +1053,9 @@
         DJ_DATE,
         nvl(PRODUCT_TYPE,'-')  PRODUCT_TYPE,
         nvl(cxname,'-')  name,
-        vc.VARIETY_CLASS VARIETY,
+        case when  company_id ='1932' then '中厚板'
+        when  company_id ='8110' then  '圆钢'
+        when  company_id ='8493' then '薄板' end  VARIETY,
         nvl(kzwi6,0) kzwi6,
         ACTUAL_DATE,
         nvl(product_line,'-') product_line,
@@ -1052,7 +1074,7 @@
         nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
         nvl(ORDER_NOTE,'-') ORDER_NOTE
         from (
-        SELECT
+        SELECT distinct
         decode(settle.company_id,
         9580,
         '唐钢',
@@ -1071,9 +1093,10 @@
         7778,
         '邯宝') AS companyname,
         settle.company_id,
-        sso.sale_body ,
+        case when  settle.company_id='8110' then  sso.sale_body  else '' end  sggl,
+        xsztdzb.sale_body,
         rpcl.product_grade,
-        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
+        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg,
         settle.fkdat,
         settle.FKART,
         settle.kzwi6,
@@ -1100,18 +1123,14 @@
         sso.DZ_NAME,
         sso.PRODUCT_CODE,
         sso.SALE_PRICE,
-
-        (select max(DATA.Name)
-        from scm_delivery_detail detail
-        JOIN crm_resource_data DATA
-        ON DATA.full_name = detail.ext
-        AND DATA.company_id = detail.company_id
-        AND (DATA.TYPE = 6 )
-        where settle.company_id = detail.company_id
-        and settle.vgbel = detail.deliv_numb
-        and settle.vgpos = detail.deliv_item
-        and ( detail.delivery_delete  &lt; &gt; 'X' or
-        detail.delivery_delete is null)) cxname,
+        svtp.VARIETY,
+        decode(settle.company_id,
+        1932,
+        '舞钢中厚板',
+        8110,
+        '石钢圆钢',
+        8493,
+        '衡板薄板') AS cxname,
         (select max(detail.ACTUAL_DATE)
         from scm_delivery_detail detail
         where settle.company_id = detail.company_id
@@ -1127,7 +1146,7 @@
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt; &gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -1162,12 +1181,13 @@
         and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
         and  settle.company_id in ('8110','8493','1932')
 
-        order by settle.id desc) t
-        LEFT JOIN SCM_VARIETY_CLASS vc
+        ) t
+        right JOIN SCM_VARIETY_CLASS vc
         on t.cxname = vc.name
         where t.order_type_describe not in
         (select distinct cfd.data_name
         from crm_filter_data cfd
+
         <if test="jd != '' and jd == 0 and jd!= null and jd != 'undefined'">
             where cfd.data_type in ('5','10')
 
@@ -1179,6 +1199,11 @@
 
 
         </if>
+
+
+
+
+
         and cfd.status = '0'
         and cfd.company_id = t.company_id)
         and t.saler_name not in
@@ -1194,9 +1219,18 @@
         WHERE cfd.company_id = t.company_id
         AND cfd.data_type = 9
         AND cfd.status = 0)
-        )
+        and (
+        t.sggl = '分公司'
+        or t.sggl = '出口'
+        or t.sale_group = '销售部'
+        or  t.sale_group = '营销中心'
+        or  t.sale_group ='1000'
+        or  t.sale_group = '科技部'
+        or  t.sale_group = '舞钢国贸')
 
-        where 1 = 1
+
+        )
+        where 1=1
         <if test="pz != '' and pz!= '全部' and pz!= null and pz != 'undefined'">
 
             and VARIETY = #{pz}
@@ -1208,7 +1242,12 @@
                 　　#{item}
             </foreach>
         </if>
-        ORDER BY   "DECODE"(VARIETY,'热板','1','酸洗','2','冷板','3','镀锌','4','中厚板','5','螺纹','6','圆钢','7','线材','8','型材','9','薄板'),name
+
+        ORDER BY decode(companyname,'唐钢','邯钢','宣钢','承钢','舞钢','石钢','衡板','邯宝')
+
+
+
+
 
     </select>
     <select id="xsepzexcel" resultType="map">
@@ -1359,7 +1398,7 @@
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
 
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
 
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
@@ -1542,7 +1581,7 @@
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -1696,7 +1735,7 @@
         sso.PRODUCT_CODE,
         sso.SALE_PRICE,
         (select case when  B.company_id ='8110' then '特钢' when B.company_id ='8493'then '薄板' else b.variety end VARIETY
-        from scm_sale_order sso
+        from (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
@@ -1729,7 +1768,7 @@
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -1928,7 +1967,7 @@
         sso.sale_body ss,
         sso.SALE_PRICE,
         (select max(B.VARIETY)
-        from scm_sale_order sso
+        from (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
@@ -1962,7 +2001,7 @@
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
 
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
 
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
@@ -2108,7 +2147,7 @@
         sso.sale_body ss,
         sso.SALE_PRICE,
         (select max(B.VARIETY)
-        from scm_sale_order sso
+        from (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
@@ -2141,7 +2180,7 @@
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row
@@ -2283,7 +2322,7 @@
         sso.PRODUCT_CODE,
         sso.SALE_PRICE,
         (select case when  B.company_id ='8110' then '特钢' when B.company_id ='8493'then '薄板' else b.variety end VARIETY
-        from scm_sale_order sso
+        from (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         JOIN scm_variety_to_pt_gp B
         ON sso.product_code = B.product_group
         and sso.company_id = B.company_id
@@ -2316,7 +2355,7 @@
         and ( detail.delivery_delete  &lt; &gt; 'X'  or
         detail.delivery_delete is null))product_line
         FROM scm_steel_settle settle
-        left join scm_sale_order sso
+        left join (select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso
         on settle.company_id = sso.company_id
         and settle.aubel = sso.order_no
         and settle.aupos = sso.order_row

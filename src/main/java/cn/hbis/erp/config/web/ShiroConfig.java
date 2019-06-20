@@ -43,6 +43,7 @@ public class ShiroConfig {
         securityManager.setCacheManager(cacheShiroManager);
         securityManager.setRememberMeManager(rememberMeManager);
         securityManager.setSessionManager(sessionManager);
+
         return securityManager;
     }
 
@@ -52,6 +53,7 @@ public class ShiroConfig {
     @Bean
     @ConditionalOnProperty(prefix = "hbis", name = "spring-session-open", havingValue = "true")
     public ServletContainerSessionManager servletContainerSessionManager() {
+
         return new ServletContainerSessionManager();
     }
 
@@ -64,13 +66,14 @@ public class ShiroConfig {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setCacheManager(cacheShiroManager);
         sessionManager.setSessionValidationInterval(hbisProperties.getSessionValidationInterval() * 1000);
-        sessionManager.setGlobalSessionTimeout(hbisProperties.getSessionInvalidateTime() * 1000);
+        sessionManager.setGlobalSessionTimeout(72000000L);
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionValidationSchedulerEnabled(true);
         Cookie cookie = new SimpleCookie(ShiroHttpSession.DEFAULT_SESSION_ID_NAME);
         cookie.setName("shiroCookie");
         cookie.setHttpOnly(true);
         sessionManager.setSessionIdCookie(cookie);
+
         return sessionManager;
     }
 
