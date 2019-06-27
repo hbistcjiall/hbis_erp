@@ -3808,7 +3808,7 @@
         </if>
     group by t.company_id,t.order_no,t.order_item
   ) t,
-  hbistc_ol.(select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso,
+  hbistc_ol.scm_sale_order sso,
   hbistc_ol.scm_variety_to_pt_gp sv
  where t.order_no=sso.order_no
    and t.order_item=sso.order_row
@@ -3842,7 +3842,7 @@ select sso.company_id,sv.variety,sso.SALER_NAME,sso.TRANSPORT_NAME,sso.DZ_NAME,
         </if>
     group by t.company_id,t.order_no,t.order_item
   ) t,
-  hbistc_ol.(select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso,
+  hbistc_ol.scm_sale_order sso,
   hbistc_ol.scm_variety_to_pt_gp sv
  where t.order_no=sso.order_no
    and t.order_item=sso.order_row
@@ -3874,7 +3874,7 @@ select sso.company_id,sv.variety,sso.SALER_NAME,sso.TRANSPORT_NAME,sso.DZ_NAME,
         </if>
     group by t.company_id,t.order_no,t.order_item
   ) t,
-  hbistc_ol.(select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso,
+  hbistc_ol.scm_sale_order sso,
   hbistc_ol.scm_variety_to_pt_gp sv
  where t.order_no=sso.order_no
    and t.order_item=sso.order_row
@@ -3927,7 +3927,7 @@ order by sv.variety
         </if>
         group by t.company_id,t.order_no,t.order_item
         ) t,
-        hbistc_ol.(select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso,
+        hbistc_ol.scm_sale_order sso,
         hbistc_ol.scm_variety_to_pt_gp sv
         where t.order_no=sso.order_no
         and t.order_item=sso.order_row
@@ -3961,7 +3961,7 @@ order by sv.variety
         </if>
         group by t.company_id,t.order_no,t.order_item
         ) t,
-        hbistc_ol.(select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso,
+        hbistc_ol.scm_sale_order sso,
         hbistc_ol.scm_variety_to_pt_gp sv
         where t.order_no=sso.order_no
         and t.order_item=sso.order_row
@@ -3993,7 +3993,7 @@ order by sv.variety
         </if>
         group by t.company_id,t.order_no,t.order_item
         ) t,
-        hbistc_ol.(select * from scm_sale_order where  deleted &lt;&gt; 'X'  or  deleted is  null) sso,
+        hbistc_ol.scm_sale_order sso,
         hbistc_ol.scm_variety_to_pt_gp sv
         where t.order_no=sso.order_no
         and t.order_item=sso.order_row
