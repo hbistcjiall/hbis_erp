@@ -125,11 +125,11 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(securityManager);
         /**
-         * 默认的登陆访问url
+         * 默认的登陆访问url  正式系统为index  本地系统为docs
          */
         shiroFilter.setLoginUrl("/index.html");
         /**
-         * 登陆成功后跳转的url
+         * 登陆成功后跳转的url  正式系统为index  本地系统为docs
          */
         shiroFilter.setSuccessUrl("/index.html");
         /**
