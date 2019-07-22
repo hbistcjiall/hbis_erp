@@ -2426,4 +2426,686 @@
 
 
     </select>
+
+
+	<select id="jtxsjsmxcxexcel" resultType="map">
+        SELECT
+        company_id,
+        nvl(companyname,'-')companyname,
+        nvl("TO_CHAR"(FKDAT,'yyyy-mm'),'-') month,
+        nvl("TO_CHAR"(fkdat,'yyyy-mm-dd'),'-')fkdat,
+        nvl(fkimg,0)fkimg,
+        nvl(kzwi6,0) kzwi6,
+        nvl(kzwi6*fkimg,0) money,
+        nvl(FKART,'-') FKART,
+        nvl(order_type_describe,'-') order_type_describe,
+        nvl(product_grade,'-') product_grade,
+        nvl(sale_group,'-') sale_group,
+        nvl(sale_body,'-') sale_body,
+        nvl(ORDER_MOUNT,0) ORDER_MOUNT,
+        nvl(DESTINATION_NAME,'-')DESTINATION_NAME,
+        nvl(CONTRACT_NO,0)CONTRACT_NO,
+        nvl(DJ_DATE,'-')DJ_DATE,
+        nvl(PRODUCT_TYPE,'-') PRODUCT_TYPE,
+        nvl(name,'-') name,
+        nvl(VARIETY,'-')VARIETY,
+        nvl("TO_CHAR"(ACTUAL_DATE),'-')ACTUAL_DATE,
+        nvl(product_line,'-') product_line,
+        nvl(ATTRIBUTE1,'-') ATTRIBUTE1,
+        nvl(ATTRIBUTE2,'-') ATTRIBUTE2,
+        nvl(ATTRIBUTE9,'-') ATTRIBUTE9,
+        nvl(MATERIAL_INFO,'-') MATERIAL_INFO,
+        nvl(PAYER_NAME,'-') PAYER_NAME,
+        nvl(SALE_PRICE,0) SALE_PRICE,
+        nvl(VBELN,'-') VBELN,
+        nvl(VGBEL,'-') VGBEL,
+        nvl(VGPOS,'空') VGPOS,
+        nvl(ORDER_NO,'-') ORDER_NO,
+        nvl(ORDER_ROW,'-') ORDER_ROW,
+        nvl(DZ_NAME,'-') DZ_NAME,
+        nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
+        nvl(ORDER_NOTE,'-') ORDER_NOTE
+        from
+        (SELECT
+        company_id,
+        nvl(companyname,'-')companyname,
+        fkdat,
+        fkimg,
+        nvl(FKART,'-') FKART,
+        nvl(order_type_describe,'-') order_type_describe,
+        nvl(product_grade,'-') product_grade,
+        nvl(sale_group,'-') sale_group,
+        nvl(sale_body,'-') sale_body,
+        nvl(ORDER_MOUNT,0) ORDER_MOUNT,
+        DESTINATION_NAME,
+        CONTRACT_NO,
+        DJ_DATE,
+        nvl(PRODUCT_TYPE,'-') PRODUCT_TYPE,
+        nvl(cxname,'-') name,
+        case
+        when cxname is not null then
+        (select max(data.parent_name)
+        from crm_resource_data DATA
+        where DATA.NAME = cxname
+        AND DATA.TYPE = 7 )
+        end  VARIETY,
+        nvl(kzwi6,0) kzwi6,
+        ACTUAL_DATE,
+        nvl(product_line,'-') product_line,
+        nvl(ATTRIBUTE1,'-') ATTRIBUTE1,
+        nvl(ATTRIBUTE2,'-') ATTRIBUTE2,
+        nvl(ATTRIBUTE9,'-') ATTRIBUTE9,
+        nvl(MATERIAL_INFO,'-') MATERIAL_INFO,
+        nvl(PAYER_NAME,'-') PAYER_NAME,
+        nvl(SALE_PRICE,0) SALE_PRICE,
+        nvl(VBELN,'-') VBELN,
+        nvl(VGBEL,'-') VGBEL,
+        nvl(VGPOS,'-') VGPOS,
+        nvl(ORDER_NO,'-') ORDER_NO,
+        nvl(ORDER_ROW,'-') ORDER_ROW,
+        nvl(DZ_NAME,'-') DZ_NAME,
+
+        nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
+        nvl(ORDER_NOTE,'-') ORDER_NOTE
+        from
+        (SELECT
+        decode(settle.company_id,
+        9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') AS companyname,
+        settle.company_id,
+        xsztdzb.sale_body,
+        rpcl.product_grade,
+        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
+        settle.fkdat,
+        settle.FKART,
+        settle.kzwi6,
+        settle.VBELN,
+        settle.VGBEL,
+        settle.VGPOS,
+        sso.DESTINATION_NAME,
+        sso.CONTRACT_NO,
+        sso.MATERIAL_INFO,
+        sso.order_mount,
+        sso.order_type_describe,
+        sso.saler_name,
+        sso.sale_group,
+        sso.DJ_DATE,
+        sso.ATTRIBUTE1,
+        sso.ATTRIBUTE2,
+        sso.ATTRIBUTE9,
+        sso.ORDER_NO,
+        sso.ORDER_ROW,
+        sso.ORDER_NOTE,
+        sso.PRODUCT_TYPE,
+        sso.PAYER_NAME,
+        sso.DZ_NAME,
+        sso.PRODUCT_CODE,
+        sso.sale_body ss,
+        sso.SALE_PRICE,
+        (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 7 )
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X' or
+        detail.delivery_delete is null)) cxname,
+        (select max(detail.ACTUAL_DATE)
+        from scm_delivery_detail detail
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X'  or
+        detail.delivery_delete is null))ACTUAL_DATE,
+        (select max(detail.ext)
+        from scm_delivery_detail detail
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X'  or
+        detail.delivery_delete is null))product_line
+        FROM  (select * from scm_steel_settle sss
+        where (sss.prey1 is null or sss.prey1 !='X')
+        ) settle
+        left join scm_sale_order sso
+        on settle.company_id = sso.company_id
+        and (sso.deleted is null or sso.deleted != 'X')
+        and settle.aubel = sso.order_no
+        and settle.aupos = sso.order_row
+        left join (select a.* from price_salebody_relation a where a.is_delete = 0 ) xsztdzb
+
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_body = xsztdzb.sale_body_des
+
+        inner join scm_variety_to_pt_gp svtp
+        on sso.company_id = svtp.company_id
+        and sso.product_code = svtp.product_group
+        left join (
+        select
+        ORDER_NO,
+        ORDER_ITEM,
+        company_id,
+        (select clcr.product_class
+        from CRM_LINE_CLASS_RELATION clcr
+        where clcr.COMPANY_ID = detail.COMPANY_ID
+        and clcr.product_line = detail.ext) as ProductLineClass
+        from scm_delivery_detail detail
+        where ( detail.delivery_delete &lt;&gt; 'X' or
+        detail.delivery_delete is null)) detail
+        on detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
+        left join (SELECT a.company_id,
+        a.product_class,
+        a.product_line_class,
+        a.product_class_crude,
+        a.product_class_fine,
+        a.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL a
+        where a.status = '0'
+        union all
+        SELECT b.company_id,
+        b.second_code,
+        b.product_line_class,
+        b.product_class_crude,
+        b.product_class_fine,
+        b.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL b
+        where b.status = '0') rpcl
+        on sso.company_id = rpcl.company_id
+        and sso.product_type = rpcl.product_class
+        and detail.ProductLineClass=rpcl.product_line_class
+        where
+
+        <if test="pzg != '' and pzg == '品种钢' and pzg!= null and pzg != 'undefined'">
+            rpcl.product_grade is not null
+            and rpcl.product_grade!='普材'  and
+        </if>
+
+        settle.fkdat &gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+        AND xsztdzb.sale_body_des  &lt; &gt;'唐钢中厚板公司'  and
+        xsztdzb.sale_body_des  &lt; &gt;'唐钢不锈钢公司' and
+        xsztdzb.sale_body_des &lt; &gt; '出口'  and
+        xsztdzb.sale_body_des &lt; &gt; '唐银联营公司数据'
+        and  settle.company_id in ('9580','9727','9193')
+        order by settle.id desc) t
+        where t.order_type_describe not in
+        (select distinct cfd.data_name
+        from crm_filter_data cfd
+        <if test="jd != '' and jd == 0 and jd!= null and jd != 'undefined'">
+            where cfd.data_type in ('5','10')
+
+
+        </if>
+
+        <if test="jd != '' and jd != 0 and jd!= null and jd != 'undefined'">
+            where cfd.data_type in ('10')
+
+
+        </if>
+        and cfd.status = '0'
+        and cfd.company_id = t.company_id)
+        and t.saler_name not in
+        (select cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '1'
+        and cfd.status = '0'
+        and cfd.company_id = t.company_id
+        and instr(concat(t.product_line, t.company_id),
+        concat(cfd.product_line, cfd.company_id))  &gt; 0)
+        AND t.sale_group NOT IN (SELECT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = t.company_id
+        AND cfd.data_type = 9
+        AND cfd.status = 0)
+        UNION
+        SELECT
+        company_id ,
+        nvl(companyname,'-')companyname,
+        fkdat,
+        fkimg,
+        nvl(FKART,'-') FKART,
+        nvl(order_type_describe,'-') order_type_describe,
+        nvl(product_grade,'-') product_grade,
+        nvl(sale_group,'-') sale_group,
+        nvl(sale_body,'-') sale_body,
+        nvl(ORDER_MOUNT,0) ORDER_MOUNT,
+        DESTINATION_NAME,
+        CONTRACT_NO,
+        DJ_DATE,
+        nvl(PRODUCT_TYPE,'-')  PRODUCT_TYPE,
+        nvl(cxname,'-') name,
+        case
+        when cxname is not null then
+        (select max(data.parent_name)
+        from crm_resource_data DATA
+        where DATA.NAME = cxname
+        AND DATA.TYPE = 7 )
+        end  VARIETY,
+        nvl(kzwi6,0) kzwi6,
+        ACTUAL_DATE,
+
+        nvl(product_line,'-') product_line,
+        nvl(ATTRIBUTE1,'-') ATTRIBUTE1,
+        nvl(ATTRIBUTE2,'-') ATTRIBUTE2,
+        nvl(ATTRIBUTE9,'-') ATTRIBUTE9,
+        nvl(MATERIAL_INFO,'-')  MATERIAL_INFO,
+        nvl(PAYER_NAME,'-') PAYER_NAME,
+        nvl(SALE_PRICE,0) SALE_PRICE,
+        nvl(VBELN,'-')  VBELN,
+        nvl(VGBEL,'-') VGBEL,
+        nvl(VGPOS,'-')  VGPOS,
+        nvl(ORDER_NO,'-')  ORDER_NO,
+        nvl(ORDER_ROW,'-') ORDER_ROW,
+        nvl(DZ_NAME,'-') DZ_NAME,
+        nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
+        nvl(ORDER_NOTE,'-') ORDER_NOTE
+        from (
+        SELECT
+        decode(settle.company_id,
+        9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') AS companyname,
+        settle.company_id,
+        xsztdzb.sale_body,
+        rpcl.product_grade,
+        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
+        settle.fkdat,
+        settle.FKART,
+        settle.kzwi6,
+        sso.DJ_DATE,
+        settle.VBELN,
+        sso.DESTINATION_NAME,
+        sso.CONTRACT_NO,
+        settle.VGBEL,
+        settle.VGPOS,
+        sso.MATERIAL_INFO,
+        sso.order_mount,
+        sso.order_type_describe,
+        sso.saler_name,
+        sso.sale_group,
+        sso.ATTRIBUTE1,
+        sso.ATTRIBUTE2,
+        sso.ATTRIBUTE9,
+        sso.ORDER_NO,
+        sso.ORDER_ROW,
+        sso.ORDER_NOTE,
+        sso.PRODUCT_TYPE,
+        sso.PAYER_NAME,
+        sso.DZ_NAME,
+        sso.PRODUCT_CODE,
+        sso.sale_body ss,
+        sso.SALE_PRICE,
+        (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 7 )
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X' or
+        detail.delivery_delete is null)) cxname,
+        (select max(detail.ACTUAL_DATE)
+        from scm_delivery_detail detail
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X'  or
+        detail.delivery_delete is null))ACTUAL_DATE,
+        (select max(detail.ext)
+        from scm_delivery_detail detail
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X'  or
+        detail.delivery_delete is null))product_line
+        FROM (select * from scm_steel_settle sss
+        where (sss.prey1 is null or sss.prey1 !='X')
+        ) settle
+        left join scm_sale_order sso
+        on settle.company_id = sso.company_id
+        and (sso.deleted is null or sso.deleted != 'X')
+        and settle.aubel = sso.order_no
+        and settle.aupos = sso.order_row
+        left join (select a.* from price_salebody_relation a where a.is_delete = 0 ) xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_body = xsztdzb.sale_body_des
+        inner join scm_variety_to_pt_gp svtp
+        on sso.company_id = svtp.company_id
+        and sso.product_code = svtp.product_group
+        left join (
+        select
+        ORDER_NO,
+        ORDER_ITEM,
+        company_id,
+        (select clcr.product_class
+        from CRM_LINE_CLASS_RELATION clcr
+        where clcr.COMPANY_ID = detail.COMPANY_ID
+        and clcr.product_line = detail.ext) as ProductLineClass
+        from scm_delivery_detail detail
+        where ( detail.delivery_delete &lt;&gt; 'X' or
+        detail.delivery_delete is null)) detail
+        on detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
+        left join (SELECT a.company_id,
+        a.product_class,
+        a.product_line_class,
+        a.product_class_crude,
+        a.product_class_fine,
+        a.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL a
+        where a.status = '0'
+        union all
+        SELECT b.company_id,
+        b.second_code,
+        b.product_line_class,
+        b.product_class_crude,
+        b.product_class_fine,
+        b.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL b
+        where b.status = '0') rpcl
+        on sso.company_id = rpcl.company_id
+        and sso.product_type = rpcl.product_class
+        and detail.ProductLineClass=rpcl.product_line_class
+        where
+
+        <if test="pzg != '' and pzg == '品种钢' and pzg!= null and pzg != 'undefined'">
+            rpcl.product_grade is not null
+            and rpcl.product_grade!='普材'  and
+        </if>
+        settle.fkdat &gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+        AND xsztdzb.sale_body_des  &lt; &gt;'唐钢中厚板公司'  and
+        xsztdzb.sale_body_des  &lt; &gt;'唐钢不锈钢公司' and
+        xsztdzb.sale_body_des &lt; &gt; '出口'  and
+        xsztdzb.sale_body_des &lt; &gt; '唐银联营公司数据'
+        and  settle.company_id in ('9196')
+        order by settle.id desc) t
+
+        where t.order_type_describe not in
+        (select distinct cfd.data_name
+        from crm_filter_data cfd
+        <if test="jd != '' and jd == 0 and jd!= null and jd != 'undefined'">
+            where cfd.data_type in ('5','10')
+
+
+        </if>
+
+        <if test="jd != '' and jd != 0 and jd!= null and jd != 'undefined'">
+            where cfd.data_type in ('10')
+
+
+        </if>
+        and cfd.status = '0'
+        and cfd.company_id = t.company_id)
+        and t.saler_name not in
+        (select cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '1'
+        and cfd.status = '0'
+        and cfd.company_id = t.company_id
+        and instr(concat(t.product_line, t.company_id),
+        concat(cfd.product_line, cfd.company_id))  &gt; 0)
+        AND t.sale_group NOT IN (SELECT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = t.company_id
+        AND cfd.data_type = 9
+        AND cfd.status = 0)
+
+        UNION
+
+        select
+        company_id,
+        nvl(companyname,'-')companyname,
+        fkdat,
+        fkimg,
+        nvl(FKART,'-') FKART,
+        nvl(order_type_describe,'-') order_type_describe,
+        nvl(product_grade,'-') product_grade,
+        nvl(sale_group,'-') sale_group,
+        nvl(sale_body,'-') sale_body,
+        nvl(ORDER_MOUNT,0) ORDER_MOUNT,
+        DESTINATION_NAME,
+        CONTRACT_NO,
+        DJ_DATE,
+        nvl(PRODUCT_TYPE,'-')  PRODUCT_TYPE,
+        nvl(cxname,'-')  name,
+        case
+        when cxname is not null then
+        (select max(data.parent_name)
+        from crm_resource_data DATA
+        where DATA.NAME = cxname
+        AND DATA.TYPE = 7 )
+        end  VARIETY,
+        nvl(kzwi6,0) kzwi6,
+        ACTUAL_DATE,
+        nvl(product_line,'-') product_line,
+        nvl(ATTRIBUTE1,'-') ATTRIBUTE1,
+        nvl(ATTRIBUTE2,'-') ATTRIBUTE2,
+        nvl(ATTRIBUTE9,'-') ATTRIBUTE9,
+        nvl(MATERIAL_INFO,'-')  MATERIAL_INFO,
+        nvl(PAYER_NAME,'-')  PAYER_NAME,
+        nvl(SALE_PRICE,0) SALE_PRICE,
+        nvl(VBELN,'-') VBELN,
+        nvl(VGBEL,'-')  VGBEL,
+        nvl(VGPOS,'-')  VGPOS,
+        nvl(ORDER_NO,'-')  ORDER_NO,
+        nvl(ORDER_ROW,'-') ORDER_ROW,
+        nvl(DZ_NAME,'-') DZ_NAME,
+        nvl(PRODUCT_CODE,'-') PRODUCT_CODE,
+        nvl(ORDER_NOTE,'-') ORDER_NOTE
+        from (
+        SELECT
+        decode(settle.company_id,
+        9580,
+        '唐钢',
+        9727,
+        '邯钢',
+        9193,
+        '宣钢',
+        9196,
+        '承钢',
+        1932,
+        '舞钢',
+        8110,
+        '石钢',
+        8493,
+        '衡板',
+        7778,
+        '邯宝') AS companyname,
+        settle.company_id,
+        sso.sale_body ,
+        rpcl.product_grade,
+        case when settle.fkimg='0.00' then null else settle.fkimg end fkimg  ,
+        settle.fkdat,
+        settle.FKART,
+        settle.kzwi6,
+        settle.VBELN,
+        settle.VGBEL,
+        settle.VGPOS,
+        sso.MATERIAL_INFO,
+        sso.order_mount,
+        sso.DESTINATION_NAME,
+        sso.CONTRACT_NO,
+        sso.order_type_describe,
+        sso.saler_name,
+        sso.sale_group,
+
+        sso.DJ_DATE,
+        sso.ATTRIBUTE1,
+        sso.ATTRIBUTE2,
+        sso.ATTRIBUTE9,
+        sso.ORDER_NO,
+        sso.ORDER_ROW,
+        sso.ORDER_NOTE,
+        sso.PRODUCT_TYPE,
+        sso.PAYER_NAME,
+        sso.DZ_NAME,
+        sso.PRODUCT_CODE,
+        sso.SALE_PRICE,
+
+        (select max(DATA.Name)
+        from scm_delivery_detail detail
+        JOIN crm_resource_data DATA
+        ON DATA.full_name = detail.ext
+        AND DATA.company_id = detail.company_id
+        AND (DATA.TYPE = 7 )
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X' or
+        detail.delivery_delete is null)) cxname,
+        (select max(detail.ACTUAL_DATE)
+        from scm_delivery_detail detail
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X'  or
+        detail.delivery_delete is null))ACTUAL_DATE,
+        (select max(detail.ext)
+        from scm_delivery_detail detail
+        where settle.company_id = detail.company_id
+        and settle.vgbel = detail.deliv_numb
+        and settle.vgpos = detail.deliv_item
+        and ( detail.delivery_delete  &lt; &gt; 'X'  or
+        detail.delivery_delete is null))product_line
+        FROM  (select * from scm_steel_settle sss
+        where (sss.prey1 is null or sss.prey1 !='X')
+        ) settle
+        left join scm_sale_order sso
+        on settle.company_id = sso.company_id
+        and (sso.deleted is null or sso.deleted != 'X')
+        and settle.aubel = sso.order_no
+        and settle.aupos = sso.order_row
+        left join (select a.* from price_salebody_relation a where a.is_delete = 0 ) xsztdzb
+        ON sso.company_id = xsztdzb.company_id
+        AND sso.sale_body = xsztdzb.sale_body_des
+        inner join scm_variety_to_pt_gp svtp
+        on sso.company_id = svtp.company_id
+        and sso.product_code = svtp.product_group
+        left join (
+        select
+        ORDER_NO,
+        ORDER_ITEM,
+        company_id,
+        (select clcr.product_class
+        from CRM_LINE_CLASS_RELATION clcr
+        where clcr.COMPANY_ID = detail.COMPANY_ID
+        and clcr.product_line = detail.ext) as ProductLineClass
+        from scm_delivery_detail detail
+        where ( detail.delivery_delete &lt;&gt; 'X' or
+        detail.delivery_delete is null)) detail
+        on detail.ORDER_NO = settle.aubel
+        and detail.ORDER_ITEM = settle.aupos
+        and detail.company_id =settle.company_id
+        left join (SELECT a.company_id,
+        a.product_class,
+        a.product_line_class,
+        a.product_class_crude,
+        a.product_class_fine,
+        a.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL a
+        where a.status = '0'
+        union all
+        SELECT b.company_id,
+        b.second_code,
+        b.product_line_class,
+        b.product_class_crude,
+        b.product_class_fine,
+        b.product_grade
+        FROM REPORT_PRODUCT_CLASS_LEVEL b
+        where b.status = '0') rpcl
+        on sso.company_id = rpcl.company_id
+        and sso.product_type = rpcl.product_class
+        and detail.ProductLineClass=rpcl.product_line_class
+        where
+        <if test="pzg != '' and pzg == '品种钢' and pzg!= null and pzg != 'undefined'">
+            rpcl.product_grade is not null
+            and rpcl.product_grade!='普材'  and
+        </if>
+
+
+        settle.fkdat &gt;= to_date(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
+        and settle.fkdat &lt;= to_date(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+        and  settle.company_id in ('8110','8493','1932')
+
+        order by settle.id desc) t
+
+        where t.order_type_describe not in
+        (select distinct cfd.data_name
+        from crm_filter_data cfd
+        <if test="jd != '' and jd == 0 and jd!= null and jd != 'undefined'">
+            where cfd.data_type in ('5','10')
+        </if>
+
+        <if test="jd != '' and jd != 0 and jd!= null and jd != 'undefined'">
+            where cfd.data_type in ('10')
+        </if>
+        and cfd.status = '0'
+        and cfd.company_id = t.company_id)
+        and t.saler_name not in
+        (select cfd.data_name
+        from crm_filter_data cfd
+        where cfd.data_type = '1'
+        and cfd.status = '0'
+        and cfd.company_id = t.company_id
+        and instr(concat(t.product_line, t.company_id),
+        concat(cfd.product_line, cfd.company_id))  &gt; 0)
+        AND t.sale_group NOT IN (SELECT cfd.data_name
+        FROM crm_filter_data cfd
+        WHERE cfd.company_id = t.company_id
+        AND cfd.data_type = 9
+        AND cfd.status = 0)
+        )
+
+        where 1 = 1
+        <if test="pz != '' and pz!= '全部' and pz!= null and pz != 'undefined'">
+
+            and VARIETY = #{pz}
+
+        </if>
+        <if test="cx != null and  cx.size > 0">
+            and   name in
+            <foreach item="item" index="index" collection="cx" open="(" separator="," close=")">
+                　　#{item}
+            </foreach>
+        </if>
+        ORDER BY   "DECODE"(VARIETY,'热板','1','酸洗','2','冷板','3','镀锌','4','中厚板','5','螺纹','6','圆钢','7','线材','8','型材','9','薄板'),name
+
+    </select>
+
 </mapper>

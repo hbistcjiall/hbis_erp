@@ -261,5 +261,11 @@ public class ScmSteelSettleController {
         return  scmSteelSettleService.getCxNamePzg(companyId,type);
     }
 
+	@PostMapping("getCxNameN")
+    @Async
+    public List<ScmSteelSettle> getCxNameN(String companyId,String type){
+        return  scmSteelSettleService.getCxNameN(companyId,type);
+    }
+
 }
 

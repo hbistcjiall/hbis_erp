@@ -177,4 +177,17 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
         list = scmSteelSettleMapper.getxsjswc(startTime,endTime,pz,cx,jd);
         return  list;
     }
+
+	@Async
+    public List<ScmSteelSettle> getCxNameN(String companyId,String type) {
+        return scmSteelSettleMapper.getCxNameN(companyId,type);
+    }
+
+	@Async
+    public List<Map> getjtxsjscx(String startTime,  String endTime,String pz,List<String> cx,String jd,String pzg) {
+        List<Map> list = new ArrayList<>();
+
+        list = scmSteelSettleMapper.getjtxsjscx(startTime,endTime,pz,cx,jd,pzg);
+        return  list;
+    }
 }

@@ -758,6 +758,275 @@ public class TargetQuantityManagementService extends ServiceImpl<TargetQuantityM
         }
         return  thelist;
     }
+
+	public List<Map<String,Object>> xsjsjtwccxexport(String startTime, String endTime, String pz, @RequestParam(required = false) List<String> cx, String jd,String pzg) {
+        String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
+        String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
+        List<Map<String,Object>> list = new ArrayList<>();
+        list = scmSteelSettleMapper.getjtxsjswcs(startTime1+" 00:00:00",endTime1+" 23:59:59",pz,cx,jd,pzg);
+        List<Map<String,Object>>  thelist = new ArrayList<Map<String,Object>>();
+        Map map = new HashMap();
+        String zl ="河钢集团";
+        String cxname = "合计";
+        double fkimg=0.00;
+        double kzwi6 = 0.00;
+        double zsj = 0;
+        double nmfkimg = 0.00;
+        double nmkzwi6 = 0.00;
+        double nmsj = 0;
+        double xszgsfkimg = 0.00;
+        double xszgskzwi6 = 0.00;
+        double xszgssj = 0;
+        double zgsfkimg = 0.00;
+        double zgskzwi6 = 0.00;
+        double zgssj =0;
+        double ckfkimg = 0.00;
+        double ckkzwi6 = 0.00;
+        double  cksj = 0;
+        for (int i =0; i<list.size() ;i++ ){
+            if(!list.get(i).get("FKIMG").toString().equals("0")){
+                fkimg = fkimg + Double.parseDouble(list.get(i).get("FKIMG").toString());
+            }else {
+                fkimg = fkimg +0;
+            }
+            if(!list.get(i).get("KZWI6").toString().equals("0")){
+                kzwi6 = kzwi6 + Double.parseDouble(list.get(i).get("KZWI6").toString());
+            }else {
+                kzwi6 = kzwi6 +0;
+            }
+            if(!list.get(i).get("NMFKIMG").toString().equals("0")){
+                nmfkimg = nmfkimg + Double.parseDouble(list.get(i).get("NMFKIMG").toString());
+            }else {
+                nmfkimg = nmfkimg +0;
+            }
+            if(!list.get(i).get("NMKZWI6").toString().equals("0")){
+                nmkzwi6 = nmkzwi6 + Double.parseDouble(list.get(i).get("NMKZWI6").toString());
+            }else {
+                nmkzwi6 = nmkzwi6 +0;
+            }
+            if(!list.get(i).get("XSZGSFKIMG").toString().equals("0")){
+                xszgsfkimg = xszgsfkimg + Double.parseDouble(list.get(i).get("XSZGSFKIMG").toString());
+            }else {
+                xszgsfkimg = xszgsfkimg +0;
+            }
+            if(!list.get(i).get("XSZGSKZWI6").toString().equals("0")){
+                xszgskzwi6 = xszgskzwi6 + Double.parseDouble(list.get(i).get("XSZGSKZWI6").toString());
+            }else {
+                xszgskzwi6 = xszgskzwi6 +0;
+            }
+            if(!list.get(i).get("ZGSFKIMG").toString().equals("0")){
+                zgsfkimg = zgsfkimg + Double.parseDouble(list.get(i).get("ZGSFKIMG").toString());
+            }else {
+                zgsfkimg = zgsfkimg +0;
+            }
+            if(!list.get(i).get("ZGSKZWI6").toString().equals("0")){
+                zgskzwi6 = zgskzwi6 + Double.parseDouble(list.get(i).get("ZGSKZWI6").toString());
+            }else {
+                zgskzwi6 = zgskzwi6 +0;
+            }
+            if(!list.get(i).get("CKFKIMG").toString().equals("0")){
+                ckfkimg = ckfkimg + Double.parseDouble(list.get(i).get("CKFKIMG").toString());
+            }else {
+                ckfkimg = ckfkimg +0;
+            }
+            if(!list.get(i).get("CKKZWI6").toString().equals("0")){
+                ckkzwi6 = ckkzwi6 + Double.parseDouble(list.get(i).get("CKKZWI6").toString());
+            }else {
+                ckkzwi6 = ckkzwi6 +0;
+            }
+        }
+        if(kzwi6/fkimg>0){
+            zsj = kzwi6*10000/fkimg;
+
+        }else {
+            zsj = 0;
+        }
+        if(nmkzwi6/nmfkimg>0){
+            nmsj = nmkzwi6/nmfkimg;
+        }else {
+            nmsj = 0;
+        }
+        if(xszgskzwi6/xszgsfkimg>0){
+            xszgssj = xszgskzwi6/xszgsfkimg;
+        }else {
+            xszgssj = 0;
+        }
+
+        if(zgskzwi6/zgsfkimg>0){
+            zgssj = zgskzwi6/zgsfkimg;
+        }else {
+            zgssj = 0;
+        }
+        if(ckkzwi6/ckfkimg>0){
+            cksj = ckkzwi6/ckfkimg;
+        }else {
+            cksj = 0;
+        }
+
+        map.put("ZL",zl);
+        map.put("CXNAME",cxname);
+        map.put("FKIMG",Double.valueOf(String.format("%.2f", fkimg) ));
+        map.put("ZSJ",Double.valueOf(String.format("%.2f", zsj) ));
+        map.put("KZWI6",Double.valueOf(String.format("%.2f", kzwi6) ));
+        map.put("NMFKIMG",Double.valueOf(String.format("%.2f", nmfkimg) ) );
+        map.put("NMSJ",Double.valueOf(String.format("%.2f", nmsj) ) );
+        map.put("XSZGSFKIMG",Double.valueOf(String.format("%.2f", xszgsfkimg) ));
+        map.put("XSZGSSJ",Double.valueOf(String.format("%.2f", xszgssj) ));
+        map.put("ZGSFKIMG",Double.valueOf(String.format("%.2f", zgsfkimg) ) );
+        map.put("ZGSSJ",Double.valueOf(String.format("%.2f", zgssj) ));
+        map.put("CKFKIMG",Double.valueOf(String.format("%.2f", ckfkimg) ) );
+        map.put("CKSJ",Double.valueOf(String.format("%.2f", cksj) ) );
+        thelist.add(map);
+
+        List<Map<String,Object>> newlist = xiaojiAndAll(list);
+        for (int i = 0;i<newlist.size();i++){
+            thelist.add(newlist.get(i));
+        }
+        return  thelist;
+    }
+
+    public  List<Map<String,Object>> xiaojiAndAll (List<Map<String,Object>> list){
+        List<Map<String,Object>> xiaoj = new ArrayList<>();
+        List pz = new ArrayList<>();
+        pz.add("热板");
+        pz.add("酸洗");
+        pz.add("冷板");
+        pz.add("镀锌");
+        pz.add("中厚板");
+        pz.add("螺纹钢");
+        pz.add("圆钢");
+        pz.add("线材");
+        pz.add("型材");
+        pz.add("薄板");
+        for(int j=0;j<pz.size();j++){
+            Map map = new HashMap();
+            List<Map<String,Object>> thelist=new ArrayList<>();
+            String zl ="";
+            String cxname = "小计";
+            double fkimg = 0.00;
+            double kzwi6 = 0.00;
+            double zsj = 0;
+            double nmfkimg = 0.00;
+            double nmkzwi6 = 0.00;
+            double nmsj = 0;
+            double xszgsfkimg = 0.00;
+            double xszgskzwi6 = 0.00;
+            double xszgssj = 0;
+            double zgsfkimg = 0.00;
+            double zgskzwi6 = 0.00;
+            double zgssj = 0;
+            double ckfkimg = 0.00;
+            double ckkzwi6 = 0.00;
+            double cksj = 0;
+            for (int i = 0; i < list.size(); i++) {
+                if (pz.get(j).equals(list.get(i).get("ZL").toString())) {
+                    thelist.add(list.get(i));
+                    zl = list.get(i).get("ZL").toString();
+                    if (!list.get(i).get("FKIMG").toString().equals("0")) {
+                        fkimg = fkimg + Double.parseDouble(list.get(i).get("FKIMG").toString());
+                    } else {
+                        fkimg = fkimg + 0;
+                    }
+                    if (!list.get(i).get("KZWI6").toString().equals("0")) {
+                        kzwi6 = kzwi6 + Double.parseDouble(list.get(i).get("KZWI6").toString());
+                    } else {
+                        kzwi6 = kzwi6 + 0;
+                    }
+
+                    if (!list.get(i).get("NMFKIMG").toString().equals("0")) {
+                        nmfkimg = nmfkimg + Double.parseDouble(list.get(i).get("NMFKIMG").toString());
+                    } else {
+                        nmfkimg = nmfkimg + 0;
+                    }
+                    if (!list.get(i).get("NMKZWI6").toString().equals("0")) {
+                        nmkzwi6 = nmkzwi6 + Double.parseDouble(list.get(i).get("NMKZWI6").toString());
+                    } else {
+                        nmkzwi6 = nmkzwi6 + 0;
+                    }
+                    if (!list.get(i).get("XSZGSFKIMG").toString().equals("0")) {
+                        xszgsfkimg = xszgsfkimg + Double.parseDouble(list.get(i).get("XSZGSFKIMG").toString());
+                    } else {
+                        xszgsfkimg = xszgsfkimg + 0;
+                    }
+                    if (!list.get(i).get("XSZGSKZWI6").toString().equals("0")) {
+                        xszgskzwi6 = xszgskzwi6 + Double.parseDouble(list.get(i).get("XSZGSKZWI6").toString());
+                    } else {
+                        xszgskzwi6 = xszgskzwi6 + 0;
+                    }
+                    if (!list.get(i).get("ZGSFKIMG").toString().equals("0")) {
+                        zgsfkimg = zgsfkimg + Double.parseDouble(list.get(i).get("ZGSFKIMG").toString());
+                    } else {
+                        zgsfkimg = zgsfkimg + 0;
+                    }
+                    if (!list.get(i).get("ZGSKZWI6").toString().equals("0")) {
+                        zgskzwi6 = zgskzwi6 + Double.parseDouble(list.get(i).get("ZGSKZWI6").toString());
+                    } else {
+                        zgskzwi6 = zgskzwi6 + 0;
+                    }
+                    if (!list.get(i).get("CKFKIMG").toString().equals("0")) {
+                        ckfkimg = ckfkimg + Double.parseDouble(list.get(i).get("CKFKIMG").toString());
+                    } else {
+                        ckfkimg = ckfkimg + 0;
+                    }
+                    if (!list.get(i).get("CKKZWI6").toString().equals("0")) {
+                        ckkzwi6 = ckkzwi6 + Double.parseDouble(list.get(i).get("CKKZWI6").toString());
+                    } else {
+                        ckkzwi6 = ckkzwi6 + 0;
+                    }
+                }
+
+                if (kzwi6 / fkimg > 0) {
+                    zsj = kzwi6 * 10000 / fkimg;
+                } else {
+                    zsj = 0;
+                }
+                if (nmkzwi6 / nmfkimg > 0) {
+                    nmsj = nmkzwi6 / nmfkimg;
+                } else {
+                    nmsj = 0;
+                }
+                if (xszgskzwi6 / xszgsfkimg > 0) {
+                    xszgssj = xszgskzwi6 / xszgsfkimg;
+                } else {
+                    xszgssj = 0;
+                }
+                if (zgskzwi6 / zgsfkimg > 0) {
+                    zgssj = zgskzwi6 / zgsfkimg;
+                } else {
+                    zgssj = 0;
+                }
+                if (ckkzwi6 / ckfkimg > 0) {
+                    cksj = ckkzwi6 / ckfkimg;
+                } else {
+                    cksj = 0;
+                }
+                map.put("ZL", zl);
+                map.put("CXNAME", zl + cxname);
+                map.put("FKIMG", Double.valueOf(String.format("%.2f", fkimg)));
+                map.put("ZSJ", Double.valueOf(String.format("%.2f", zsj)));
+                map.put("KZWI6", Double.valueOf(String.format("%.2f", kzwi6)));
+                map.put("NMFKIMG", Double.valueOf(String.format("%.2f", nmfkimg)));
+                map.put("NMSJ", Double.valueOf(String.format("%.2f", nmsj)));
+                map.put("XSZGSFKIMG", Double.valueOf(String.format("%.2f", xszgsfkimg)));
+                map.put("XSZGSSJ", Double.valueOf(String.format("%.2f", xszgssj)));
+                map.put("ZGSFKIMG", Double.valueOf(String.format("%.2f", zgsfkimg)));
+                map.put("ZGSSJ", Double.valueOf(String.format("%.2f", zgssj)));
+                map.put("CKFKIMG", Double.valueOf(String.format("%.2f", ckfkimg)));
+                map.put("CKSJ", Double.valueOf(String.format("%.2f", cksj)));
+            }
+            xiaoj.add(map);
+            if(thelist.size()>1) {
+                for (int i = 0; i < thelist.size(); i++) {
+                    xiaoj.add(thelist.get(i));
+                }
+            }
+        }
+
+
+        return  xiaoj;
+    }
+
+
     public  List<Map<String,Object>> xiaoji (List<Map<String,Object>> list){
         List<Map<String,Object>> xiaoj = new ArrayList<>();
 

@@ -371,6 +371,61 @@ public class ExportController {
         setResponse(response, list, listmap, colOrder, mergeCols, fileName);
     }
 
+	 @ApiOperation(value="销售结算情况（产线）")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
+            @ApiImplicitParam(name = "jd", value = "借贷", dataType = "String"),
+            @ApiImplicitParam(name = "pzg", value = "品种钢", dataType = "String")
+    })
+    @GetMapping(value = "exportJTXSJS")
+    public void exportJTXSJS(String startTime, @RequestParam(required = false) List<String> cx, String endTime, String pz,String jd, String pzg,HttpServletResponse response){
+        DateFormat format = new SimpleDateFormat("yyyy");
+        DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
+        List<Map<String, Object>> list=targetQuantityManagementService.xsjsjtwccxexport(startTime,endTime,pz,cx,jd,pzg);//表内容集合，从数据库查，需要合并的列要进行分组，否则需要做合并的时候可能达不到理想结果
+        List<Map<String, Object>> listmap=new ArrayList<Map<String, Object>>();
+        Map<String,Object> map=new LinkedHashMap<String,Object>();
+        map.put("head_C13", "销售结算情况（产线）");
+        listmap.add(map);
+        map=new LinkedHashMap<String,Object>();
+        map.put("column1_R2", "产品大类");
+        map.put("column2_R2", "产线");
+        map.put("column3_C3", "集团");
+        map.put("column4_C2", "内贸");
+        map.put("column5_C2", "销售总公司");
+        map.put("column6_C2", "子公司");
+        map.put("column7_C2", "出口");
+        listmap.add(map);
+        map=new LinkedHashMap<String,Object>();
+        map.put("column9_2", "销售量(吨)");
+        map.put("column10_3", "平均售价(元/吨)");
+        map.put("column11_4", "销售额(万元)");
+        map.put("column12_5", "销售量(吨)");
+        map.put("column13_6", "平均售价(元/吨)");
+        map.put("column14_7", "销售量(吨)");
+        map.put("column12_8", "平均售价(元/吨)");
+        map.put("column13_9", "销售量(吨)");
+        map.put("column14_10", "平均售价(元/吨)");
+        map.put("column15_11", "销售量(吨)");
+        map.put("column16_12", "平均售价(元/吨)");
+
+        listmap.add(map);
+        //sql语句查询的顺序
+        String[] colOrder={"ZL","CXNAME","FKIMG","ZSJ","KZWI6","NMFKIMG","NMSJ",
+                "XSZGSFKIMG","XSZGSSJ","ZGSFKIMG",
+                "ZGSSJ","CKFKIMG","CKSJ"};
+        //可能需要做跨行合并的行，将某一列中相同内容的行进行合并
+        String[] mergeCols={};
+
+        String fileName = "销售结算情况（产线）";
+        fileName = fileName.concat(format1.format(new Date()).substring(0,8));
+        StringBuffer stringB = new StringBuffer();
+        stringB.append(EXPORT_XLSX_FILE_SUFFIX);
+        fileName+=stringB;
+        OutputStream out = null;
+        setResponse(response, list, listmap, colOrder, mergeCols, fileName);
+    }
+
     public void exportXlsx(OutputStream out, String fileName, List<Map<String, Object>> headListMap, List<Map<String, Object>> dataListMap, String[] mergeCols, String[] colOrder, HttpServletResponse response) {
         SXSSFWorkbook wb = new SXSSFWorkbook();
         export(out, fileName, headListMap, dataListMap, mergeCols, colOrder, wb);
@@ -694,4 +749,79 @@ public class ExportController {
         OutputStream out = null;
         setResponse(response, list, listmap, colOrder, mergeCols, fileName);
     }
+    @ApiOperation(value="销售结算情况(产线)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "开始日期", dataType = "String"),
+            @ApiImplicitParam(name = "pz", value = "品种", dataType = "String"),
+            @ApiImplicitParam(name = "pzg", value = "品种钢", dataType = "String"),
+            @ApiImplicitParam(name = "jd", value = "借贷", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "结束日期", dataType = "String")
+    })
+    @GetMapping(value = "exportJTXSJSCx")
+    public void exportJTXSJSCx(String pzg,String pz,@RequestParam(required = false) List<String> cx,String jd,String startTime, String endTime, HttpServletResponse response){
+        DateFormat format = new SimpleDateFormat("yyyy");
+        DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
+        startTime=(String) DateUtil.getFirstDayOfMonth(startTime);
+        endTime=(String)DateUtil.getLastDayOfMonth(endTime);
+        List<Map<String, Object>> list=accountabilityUnitManageService.jtxsecx(pzg,pz,cx,jd,startTime,endTime);//表内容集合，从数据库查，需要合并的列要进行分组，否则需要做合并的时候可能达不到理想结果
+        List<Map<String, Object>> listmap=new ArrayList<Map<String, Object>>();
+        Map<String,Object> map=new LinkedHashMap<String,Object>();
+        map.put("head_C34", "销售结算情况(产线)明细");
+        listmap.add(map);
+        map=new LinkedHashMap<String,Object>();
+        map.put("column1", "公司名称");
+        map.put("column2", "报表月");
+        map.put("column3", "开票日期");
+        map.put("column4", "结算量");
+        map.put("column5", "结算价格");
+        map.put("column6", "结算金额");
+        map.put("column7", "发票类型");
+        map.put("column8", "订单类型描述");
+        map.put("column9", "产品等级");
+        map.put("column10", "销售组织");
+        map.put("column11", "销售主体");
+        map.put("column12", "订单数量");
+        map.put("column13", "合同单位");
+        map.put("column14", "合同号");
+        map.put("column15", "定价日期");
+        map.put("column16", "产品类别");
+        map.put("column17", "产线");
+        map.put("column18", "品种");
+        map.put("column19", "实际发货日期");
+        map.put("column20", "原产线");
+        map.put("column21", "材质");
+        map.put("column22", "规格");
+        map.put("column23", "镀层代码");
+        map.put("column24", "物料描述");
+        map.put("column25", "付款方名称");
+        map.put("column26", "订单金额");
+        map.put("column27", "系统发票号");
+        map.put("column28", "交货单号");
+        map.put("column29", "交货单行");
+        map.put("column30", "订单号");
+        map.put("column31", "订单行");
+        map.put("column32", "到站名称");
+        map.put("column33", "产品组编码");
+        map.put("column34", "合同备注");
+        listmap.add(map);
+        //sql语句查询的顺序
+        String[] colOrder={"COMPANYNAME","MONTH","FKDAT","FKIMG",
+                "KZWI6","MONEY","FKART","ORDER_TYPE_DESCRIBE","PRODUCT_GRADE",
+                "SALE_GROUP","SALE_BODY","ORDER_MOUNT","DESTINATION_NAME","CONTRACT_NO",
+                "DJ_DATE","PRODUCT_TYPE","NAME","VARIETY","ACTUAL_DATE",
+                "PRODUCT_LINE","ATTRIBUTE1","ATTRIBUTE2","ATTRIBUTE9","MATERIAL_INFO",
+                "PAYER_NAME","SALE_PRICE","VBELN","VGBEL","VGPOS",
+                "ORDER_NO","ORDER_ROW","DZ_NAME","PRODUCT_CODE","ORDER_NOTE"};
+        //可能需要做跨行合并的行，将某一列中相同内容的行进行合并
+        String[] mergeCols={};
+
+        String fileName = "销售结算情况（产线）明细";
+        fileName = fileName.concat(format1.format(new Date()).substring(0,8));
+        StringBuffer stringB = new StringBuffer();
+        stringB.append(EXPORT_XLSX_FILE_SUFFIX);
+        fileName+=stringB;
+        OutputStream out = null;
+        setResponse(response, list, listmap, colOrder, mergeCols, fileName);
+    }
+
 }
