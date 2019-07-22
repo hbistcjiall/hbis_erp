@@ -153,23 +153,6 @@ public class AccountabilityUnitManageService extends ServiceImpl<AccountabilityU
         return  list;
     }
 
-    /**
-     * 集团销售结算明细导出
-     *
-     * @param jd
-     * @param startTime
-     * @param endTime
-     * @return
-     */
-    @Async
-    public  List<Map<String ,Object>> jtxsecx ( String pzg,String pz,List cx,String jd, String startTime,String endTime){
-        String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);
-        String  endTime1=(String)DateUtil.getLastDayOfMonth(endTime);
-        List<Map<String ,Object>> list = accounUnitManageMapper.jtxsjsmxcxexcel( pz,cx,jd, startTime1, endTime1,pzg);
-        return  list;
-    }
-
-
     @Async
     public  List<Map<String ,Object>> xsepz ( String jd,String pz, String startTime,String endTime){
         String  startTime1=(String) DateUtil.getFirstDayOfMonth(startTime);

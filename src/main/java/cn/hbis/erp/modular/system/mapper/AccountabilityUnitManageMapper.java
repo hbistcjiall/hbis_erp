@@ -31,6 +31,4 @@ public interface AccountabilityUnitManageMapper extends BaseMapper<Accountabilit
    List<Map<String,Object>> xsepzexcel(@Param("jd") String jd,@Param("pz") String pz,@Param("startTime")String startTime,@Param("endTime")String endTime);
    List<Map<String,Object>> xsecxfbexcel(@Param("cx")List cx,@Param("zl") String zl,@Param("startTime")String startTime,@Param("endTime")String endTime);
 
-   List<Map<String,Object>> jtxsjsmxcxexcel(@Param("pz") String pz,@Param("cx") List cx,@Param("jd") String jd,@Param("startTime")String startTime,@Param("endTime")String endTime,@Param("pzg")String pzg);
-
 }

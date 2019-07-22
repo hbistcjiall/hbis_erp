@@ -229,10 +229,6 @@ public class ExcelNewUtil {
                 }else{
                     //创建单元格
                     sc = sr.createCell(k);
-//                    System.out.println(colOrder[k]);
-//                    System.out.println(map.get(colOrder[k]));
-                 //   System.out.println(map.get(colOrder[k]).toString());
-                  //  System.out.println(map.get("actualDate"));
                     sc.setCellValue(map.get(colOrder[k]).toString());
                     //设置单元格样式
                     sc.setCellStyle(style);
