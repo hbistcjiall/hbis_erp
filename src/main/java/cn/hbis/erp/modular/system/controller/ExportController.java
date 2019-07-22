@@ -8,6 +8,7 @@ package cn.hbis.erp.modular.system.controller;
 import cn.hbis.erp.core.util.DateUtil;
 import cn.hbis.erp.core.util.ExcelNewUtil;
 import cn.hbis.erp.modular.system.service.AccountabilityUnitManageService;
+import cn.hbis.erp.modular.system.service.BasicDataExportService;
 import cn.hbis.erp.modular.system.service.ReportProductClassLevelService;
 import cn.hbis.erp.modular.system.service.TargetQuantityManagementService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,6 +45,10 @@ public class ExportController {
 
     @Autowired
     private AccountabilityUnitManageService accountabilityUnitManageService;
+
+    @Autowired
+    private BasicDataExportService  basicDataExportService;
+
 
     @ApiOperation(value="品种钢完成情况导出(产线)")
     @ApiImplicitParams({
@@ -371,8 +376,64 @@ public class ExportController {
         setResponse(response, list, listmap, colOrder, mergeCols, fileName);
     }
 
+
+    @ApiOperation(value="销售结算情况（产线）")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "起始日期", dataType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "终止日期", dataType = "String"),
+            @ApiImplicitParam(name = "jd", value = "借贷", dataType = "String"),
+            @ApiImplicitParam(name = "pzg", value = "品种钢", dataType = "String")
+    })
+    @GetMapping(value = "exportJTXSJS")
+    public void exportJTXSJS(String startTime, @RequestParam(required = false) List<String> cx, String endTime, String pz,String jd, String pzg,HttpServletResponse response){
+        DateFormat format = new SimpleDateFormat("yyyy");
+        DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
+        List<Map<String, Object>> list=targetQuantityManagementService.xsjsjtwccxexport(startTime,endTime,pz,cx,jd,pzg);//表内容集合，从数据库查，需要合并的列要进行分组，否则需要做合并的时候可能达不到理想结果
+        List<Map<String, Object>> listmap=new ArrayList<Map<String, Object>>();
+        Map<String,Object> map=new LinkedHashMap<String,Object>();
+        map.put("head_C13", "销售结算情况（产线）");
+        listmap.add(map);
+        map=new LinkedHashMap<String,Object>();
+        map.put("column1_R2", "产品大类");
+        map.put("column2_R2", "产线");
+        map.put("column3_C3", "集团");
+        map.put("column4_C2", "内贸");
+        map.put("column5_C2", "销售总公司");
+        map.put("column6_C2", "子公司");
+        map.put("column7_C2", "出口");
+        listmap.add(map);
+        map=new LinkedHashMap<String,Object>();
+        map.put("column9_2", "销售量(吨)");
+        map.put("column10_3", "平均售价(元/吨)");
+        map.put("column11_4", "销售额(万元)");
+        map.put("column12_5", "销售量(吨)");
+        map.put("column13_6", "平均售价(元/吨)");
+        map.put("column14_7", "销售量(吨)");
+        map.put("column12_8", "平均售价(元/吨)");
+        map.put("column13_9", "销售量(吨)");
+        map.put("column14_10", "平均售价(元/吨)");
+        map.put("column15_11", "销售量(吨)");
+        map.put("column16_12", "平均售价(元/吨)");
+
+        listmap.add(map);
+        //sql语句查询的顺序
+        String[] colOrder={"ZL","CXNAME","FKIMG","ZSJ","KZWI6","NMFKIMG","NMSJ",
+                "XSZGSFKIMG","XSZGSSJ","ZGSFKIMG",
+                "ZGSSJ","CKFKIMG","CKSJ"};
+        //可能需要做跨行合并的行，将某一列中相同内容的行进行合并
+        String[] mergeCols={};
+
+        String fileName = "销售结算情况（产线）";
+        fileName = fileName.concat(format1.format(new Date()).substring(0,8));
+        StringBuffer stringB = new StringBuffer();
+        stringB.append(EXPORT_XLSX_FILE_SUFFIX);
+        fileName+=stringB;
+        OutputStream out = null;
+        setResponse(response, list, listmap, colOrder, mergeCols, fileName);
+    }
+
     public void exportXlsx(OutputStream out, String fileName, List<Map<String, Object>> headListMap, List<Map<String, Object>> dataListMap, String[] mergeCols, String[] colOrder, HttpServletResponse response) {
-        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFWorkbook wb = new SXSSFWorkbook(500);
         export(out, fileName, headListMap, dataListMap, mergeCols, colOrder, wb);
     }
 
@@ -552,16 +613,17 @@ public class ExportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startTime", value = "开始日期", dataType = "String"),
             @ApiImplicitParam(name = "pz", value = "品种", dataType = "String"),
+            @ApiImplicitParam(name = "pzg", value = "品种钢", dataType = "String"),
             @ApiImplicitParam(name = "jd", value = "借贷", dataType = "String"),
             @ApiImplicitParam(name = "endTime", value = "结束日期", dataType = "String")
     })
     @GetMapping(value = "exportXSJSCx")
-    public void exportXSJSCx(String pz,@RequestParam(required = false) List<String> cx,String jd,String startTime, String endTime, HttpServletResponse response){
+    public void exportXSJSCx(String pzg,String pz,@RequestParam(required = false) List<String> cx,String jd,String startTime, String endTime, HttpServletResponse response){
         DateFormat format = new SimpleDateFormat("yyyy");
         DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
         startTime=(String) DateUtil.getFirstDayOfMonth(startTime);
         endTime=(String)DateUtil.getLastDayOfMonth(endTime);
-        List<Map<String, Object>> list=accountabilityUnitManageService.xsecx(pz,cx,jd,startTime,endTime);//表内容集合，从数据库查，需要合并的列要进行分组，否则需要做合并的时候可能达不到理想结果
+        List<Map<String, Object>> list=accountabilityUnitManageService.jtxsecx(pzg,pz,cx,jd,startTime,endTime);//表内容集合，从数据库查，需要合并的列要进行分组，否则需要做合并的时候可能达不到理想结果
         List<Map<String, Object>> listmap=new ArrayList<Map<String, Object>>();
         Map<String,Object> map=new LinkedHashMap<String,Object>();
         map.put("head_C34", "销售结算情况(产线)明细");
@@ -694,4 +756,98 @@ public class ExportController {
         OutputStream out = null;
         setResponse(response, list, listmap, colOrder, mergeCols, fileName);
     }
+
+
+
+    @ApiOperation(value="发货数据")
+    @ApiImplicitParams({
+
+            @ApiImplicitParam(name = "companyName", value = "钢厂", dataType = "String"),
+            @ApiImplicitParam(name = "variety", value = "品种", dataType = "String"),
+            @ApiImplicitParam(name = "actualStartTime", value = "实际发货开始日期", dataType = "String"),
+            @ApiImplicitParam(name = "actualEndTime", value = "实际发货结束日期", dataType = "String"),
+            @ApiImplicitParam(name = "delivNumb", value = "交货单号", dataType = "String"),
+            @ApiImplicitParam(name = "delivItem", value = "交货单行号", dataType = "String"),
+            @ApiImplicitParam(name = "ModifyStartTime", value = "插入开始日期", dataType = "String"),
+            @ApiImplicitParam(name = "ModifyEndTime", value = "插入结束日期", dataType = "String")
+    })
+    @GetMapping(value = "exportFHSJ")
+    public String exportFHSJ(String companyName, String variety, String actualStartTime,String actualEndTime,String delivNumb,String delivItem,String ModifyStartTime,String ModifyEndTime, HttpServletResponse response)
+    {
+        DateFormat format = new SimpleDateFormat("yyyy");
+       DateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
+//        actualStartTime=(String) DateUtil.getFirstDayOfMonth(actualStartTime);
+//        actualEndTime=(String)DateUtil.getLastDayOfMonth(actualEndTime);
+        List<Map<String, Object>> list= basicDataExportService.fhsj(companyName,variety,actualStartTime,actualEndTime,delivNumb,delivItem,ModifyStartTime,ModifyEndTime);//表内容集合，从数据库查，需要合并的列要进行分组，否则需要做合并的时候可能达不到理想结果
+        List<Map<String, Object>> listmap=new ArrayList<Map<String, Object>>();
+        Map<String,Object> map=new LinkedHashMap<String,Object>();
+        map.put("head_C41", "发货数据明细");
+        listmap.add(map);
+        map=new LinkedHashMap<String,Object>();
+        map.put("column1", "实际发货日期");
+        map.put("column2", "产品等级");
+        map.put("column3", "合同单位");
+        map.put("column4", "订单类型编码");
+        map.put("column5", "订单类型描述");
+        map.put("column6", "价格类型");
+        map.put("column7", "公司id");
+        map.put("column8", "销售组织");
+        map.put("column9", "送达方");
+        map.put("column10", "终端用户");
+        map.put("column11", "物料描述");
+        map.put("column12", "交货单");
+        map.put("column13", "交货单行");
+        map.put("column14", "订单号");
+        map.put("column15", "订单行");
+        map.put("column16", "订单连接状态");
+        map.put("column17", "客户组4");
+        map.put("column18", "销售主体");
+        map.put("column19", "例会主体");
+        map.put("column20", "采购订单编号");
+        map.put("column21", "产品分类");
+        map.put("column22", "到站");
+        map.put("column23", "运输方式");
+        map.put("column24", "定价日期");
+        map.put("column25", "产品组编码");
+        map.put("column26", "产线");
+        map.put("column27", "原产线名");
+        map.put("column28", "公司名");
+        map.put("column29", "品种");
+        map.put("column30", "材质");
+        map.put("column31", "规格");
+        map.put("column32", "镀层代码");
+        map.put("column33", "表面质量等级");
+        map.put("column34", "加工费");
+        map.put("column35", "价政编号");
+        map.put("column36", "订单原因描述");
+        map.put("column37", "合同备注");
+        map.put("column38", "订单量");
+        map.put("column39", "订单金额");
+        map.put("column40", "发货量");
+        map.put("column41", "插入数据库时间");
+        listmap.add(map);
+        //sql语句查询的顺序
+        String[] colOrder={"ACTUALDATE","PRODUCTGRADE","SALERNAME","ORDERTYPENUM",
+                "ORDERTYPEDESCRIBE","PRICETYPE","COMPANYID","SALEGROUP","DESTINATIONNAME",
+                "ENDUSER","MATERIALINFO","DELIVNUMB","DELIVITEM","ORDERNO","ORDERROW",
+                "STATUS","CUSTOMERSALEBODY","SALEBODY","SESSIONBODY","CONTRACTNO",
+                "PRODUCTTYPE","DZNAME","TRANSPORTNAME","DJDATE","PRODUCTCODE",
+                "PRODUCTLINE","EXT","COMPANYNAME","VARIETY","ATTRIBUTE1",
+                "ATTRIBUTE2","ATTRIBUTE9","ATTRIBUTE11","FARE","JZBH",
+                "ORDERREASONNAME","ORDERNOTE","ORDERMOUNT","SALEPRICE",
+                "TOTALWEIGHT","GMTMODIFY"};
+
+        //可能需要做跨行合并的行，将某一列中相同内容的行进行合并
+        String[] mergeCols={};
+
+        String fileName = "发货数据明细";
+        fileName = fileName.concat(format1.format(new Date()).substring(0,8));
+        StringBuffer stringB = new StringBuffer();
+        stringB.append(EXPORT_XLSX_FILE_SUFFIX);
+        fileName+=stringB;
+        OutputStream out = null;
+        setResponse(response, list, listmap, colOrder, mergeCols, fileName);
+        return "success";
+    }
+
 }

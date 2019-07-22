@@ -156,6 +156,11 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
     public List<ScmSteelSettle> getCxNamePzg(String companyId,String type) {
         return scmSteelSettleMapper.getCxNamePzg(companyId,type);
     }
+    @Async
+    public List<ScmSteelSettle> getCxNameN(String companyId,String type) {
+        return scmSteelSettleMapper.getCxNameN(companyId,type);
+    }
+
 
     /*
 品种钢结算量报表
@@ -177,4 +182,13 @@ public class ScmSteelSettleService extends ServiceImpl<ScmSteelSettleMapper, Scm
         list = scmSteelSettleMapper.getxsjswc(startTime,endTime,pz,cx,jd);
         return  list;
     }
+    /* 产线销售*/
+    @Async
+    public List<Map> getjtxsjscx(String startTime,  String endTime,String pz,List<String> cx,String jd,String pzg) {
+        List<Map> list = new ArrayList<>();
+
+        list = scmSteelSettleMapper.getjtxsjscx(startTime,endTime,pz,cx,jd,pzg);
+        return  list;
+    }
+
 }

@@ -260,6 +260,10 @@ public class ScmSteelSettleController {
     public List<ScmSteelSettle> getCxNamePzg(String companyId,String type){
         return  scmSteelSettleService.getCxNamePzg(companyId,type);
     }
-
+    @PostMapping("getCxNameN")
+    @Async
+    public List<ScmSteelSettle> getCxNameN(String companyId,String type){
+        return  scmSteelSettleService.getCxNameN(companyId,type);
+    }
 }
 

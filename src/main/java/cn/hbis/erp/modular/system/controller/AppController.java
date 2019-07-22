@@ -88,15 +88,9 @@ public class AppController {
     })
     @Async
     public Map<String, Object> httpURLConnectionPOST(String openId,String account,String tradeAccount,String POST_URL,String fkdat,String placementArea,String companyId,String serviceArea,String attribute1,String attribute2,String grade,String area) throws IOException {
-        String tok = URLEncoder.encode(POST_URL,"utf-8");
-
 
         URL url = new URL(POST_URL);
-        POST_URL = POST_URL.replaceAll("%3A", ":").replaceAll("%2F", "/")  //过滤URL 包含中文
-                .replaceAll("%3F", "?").replaceAll("%3D", "=").replaceAll(
-                        "%26", "&");
 
-        System.out.println(POST_URL);
         // 将url 以 open方法返回的urlConnection  连接强转为HttpURLConnection连接  (标识一个url所引用的远程对象连接)
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();// 此时cnnection只是为一个连接对象,待连接中
 
@@ -349,6 +343,8 @@ public class AppController {
                 http.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
                 http.setDoOutput(true);
                 http.setDoInput(true);
+
+
                 http.connect();
                 InputStream is = http.getInputStream();
                 int size = is.available();
@@ -360,7 +356,6 @@ public class AppController {
 
                 JSONObject json = JSONObject.parseObject(message);
                 openId = json.getString("openid");
-                System.out.println(json);
                 System.out.println(openId);
             } catch (MalformedURLException e) {
                 e.printStackTrace();

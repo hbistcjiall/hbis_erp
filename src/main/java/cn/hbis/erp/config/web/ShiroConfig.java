@@ -43,7 +43,6 @@ public class ShiroConfig {
         securityManager.setCacheManager(cacheShiroManager);
         securityManager.setRememberMeManager(rememberMeManager);
         securityManager.setSessionManager(sessionManager);
-
         return securityManager;
     }
 
@@ -53,7 +52,6 @@ public class ShiroConfig {
     @Bean
     @ConditionalOnProperty(prefix = "hbis", name = "spring-session-open", havingValue = "true")
     public ServletContainerSessionManager servletContainerSessionManager() {
-
         return new ServletContainerSessionManager();
     }
 
@@ -66,14 +64,13 @@ public class ShiroConfig {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setCacheManager(cacheShiroManager);
         sessionManager.setSessionValidationInterval(hbisProperties.getSessionValidationInterval() * 1000);
-        sessionManager.setGlobalSessionTimeout(72000000L);
+        sessionManager.setGlobalSessionTimeout(hbisProperties.getSessionInvalidateTime() * 1000);
         sessionManager.setDeleteInvalidSessions(true);
         sessionManager.setSessionValidationSchedulerEnabled(true);
         Cookie cookie = new SimpleCookie(ShiroHttpSession.DEFAULT_SESSION_ID_NAME);
         cookie.setName("shiroCookie");
         cookie.setHttpOnly(true);
         sessionManager.setSessionIdCookie(cookie);
-
         return sessionManager;
     }
 
@@ -125,13 +122,13 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(securityManager);
         /**
-         * 默认的登陆访问url  正式系统为index  本地系统为docs
+         * 默认的登陆访问url
          */
-        shiroFilter.setLoginUrl("/index.html");
+        shiroFilter.setLoginUrl("/docs.html");
         /**
-         * 登陆成功后跳转的url  正式系统为index  本地系统为docs
+         * 登陆成功后跳转的url
          */
-        shiroFilter.setSuccessUrl("/index.html");
+        shiroFilter.setSuccessUrl("/docs.html");
         /**
          * 没有权限跳转的url
          */
